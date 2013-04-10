@@ -1,0 +1,14 @@
+org.mitre.jose
+org.mitre.jose.keystore
+org.mitre.jwt.signer.service
+org.mitre.jwt.signer.service.impl
+org.mitre.oauth2.model
+org.mitre.oauth2.repository
+org.mitre.oauth2.service
+org.mitre.oauth2.service.impl
+org.mitre.openid.connect.config
+org.mitre.openid.connect.model
+org.mitre.openid.connect.repository
+org.mitre.openid.connect.service
+org.mitre.openid.connect.view
+org.mitre.util.jpa
