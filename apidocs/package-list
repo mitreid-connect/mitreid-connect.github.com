@@ -1,3 +1,5 @@
+org.mitre.discovery.view
+org.mitre.discovery.web
 org.mitre.jose
 org.mitre.jose.keystore
 org.mitre.jwt.signer.service
@@ -20,7 +22,6 @@ org.mitre.openid.connect.client.model
 org.mitre.openid.connect.client.service
 org.mitre.openid.connect.client.service.impl
 org.mitre.openid.connect.config
-org.mitre.openid.connect.exception
 org.mitre.openid.connect.model
 org.mitre.openid.connect.repository
 org.mitre.openid.connect.repository.impl

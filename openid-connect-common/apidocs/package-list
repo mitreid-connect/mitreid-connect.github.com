@@ -6,6 +6,7 @@ org.mitre.oauth2.model
 org.mitre.oauth2.repository
 org.mitre.oauth2.service
 org.mitre.oauth2.service.impl
+org.mitre.openid.connect
 org.mitre.openid.connect.config
 org.mitre.openid.connect.model
 org.mitre.openid.connect.repository

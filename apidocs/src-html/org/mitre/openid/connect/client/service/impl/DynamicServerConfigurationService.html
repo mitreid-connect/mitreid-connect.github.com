@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * <a name="line.2"></a>
+<span class="sourceLineNo">003</span> */<a name="line.3"></a>
+<span class="sourceLineNo">004</span>package org.mitre.openid.connect.client.service.impl;<a name="line.4"></a>
+<span class="sourceLineNo">005</span><a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.concurrent.ExecutionException;<a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.apache.http.client.HttpClient;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import org.apache.http.impl.client.DefaultHttpClient;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.mitre.openid.connect.client.service.ServerConfigurationService;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import org.mitre.openid.connect.config.ServerConfiguration;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.slf4j.Logger;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.slf4j.LoggerFactory;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.springframework.web.client.RestTemplate;<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>import com.google.common.cache.CacheBuilder;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import com.google.common.cache.CacheLoader;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import com.google.common.cache.LoadingCache;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import com.google.gson.JsonElement;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import com.google.gson.JsonObject;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import com.google.gson.JsonParser;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>/**<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * <a name="line.25"></a>
+<span class="sourceLineNo">026</span> * Dynamically fetches OpenID Connect server configurations based on the issuer. Caches the server configurations.<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * <a name="line.27"></a>
+<span class="sourceLineNo">028</span> * @author jricher<a name="line.28"></a>
+<span class="sourceLineNo">029</span> *<a name="line.29"></a>
+<span class="sourceLineNo">030</span> */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>public class DynamicServerConfigurationService implements ServerConfigurationService {<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>        private static Logger logger = LoggerFactory.getLogger(DynamicServerConfigurationService.class);<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        <a name="line.34"></a>
+<span class="sourceLineNo">035</span>        // map of issuer -&gt; server configuration, loaded dynamically from service discovery<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        private LoadingCache&lt;String, ServerConfiguration&gt; servers;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        <a name="line.37"></a>
+<span class="sourceLineNo">038</span>        public DynamicServerConfigurationService() {<a name="line.38"></a>
+<span class="sourceLineNo">039</span>                // initialize the cache<a name="line.39"></a>
+<span class="sourceLineNo">040</span>                servers = CacheBuilder.newBuilder().build(new OpenIDConnectServiceConfigurationFetcher());<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        }<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        <a name="line.42"></a>
+<span class="sourceLineNo">043</span>        @Override<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        public ServerConfiguration getServerConfiguration(String issuer) {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>                try {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                return servers.get(issuer);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        } catch (ExecutionException e) {<a name="line.47"></a>
+<span class="sourceLineNo">048</span>                logger.warn("Couldn't load configuration for " + issuer, e);<a name="line.48"></a>
+<span class="sourceLineNo">049</span>                return null; <a name="line.49"></a>
+<span class="sourceLineNo">050</span>        }<a name="line.50"></a>
+<span class="sourceLineNo">051</span>                <a name="line.51"></a>
+<span class="sourceLineNo">052</span>        }<a name="line.52"></a>
+<span class="sourceLineNo">053</span><a name="line.53"></a>
+<span class="sourceLineNo">054</span>        /**<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * @author jricher<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     *<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     */<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    private class OpenIDConnectServiceConfigurationFetcher extends CacheLoader&lt;String, ServerConfiguration&gt; {<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        private HttpClient httpClient = new DefaultHttpClient();<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        private HttpComponentsClientHttpRequestFactory httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                private JsonParser parser = new JsonParser();<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
+<span class="sourceLineNo">063</span>        @Override<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        public ServerConfiguration load(String issuer) throws Exception {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                RestTemplate restTemplate = new RestTemplate(httpFactory);<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>                // data holder<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                ServerConfiguration conf = new ServerConfiguration();<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                <a name="line.69"></a>
+<span class="sourceLineNo">070</span>                // construct the well-known URI<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                String url = issuer + "/.well-known/openid-configuration";<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                <a name="line.72"></a>
+<span class="sourceLineNo">073</span>                // fetch the value<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                String jsonString = restTemplate.getForObject(url, String.class);<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>                JsonElement parsed = parser.parse(jsonString);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                if (parsed.isJsonObject()) {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        <a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        JsonObject o = parsed.getAsJsonObject();<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                        <a name="line.80"></a>
+<span class="sourceLineNo">081</span>                        // sanity checks<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                        if (!issuer.equals(o.get("issuer").getAsString())) {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                                throw new IllegalStateException("Discovered issuers didn't match, expected " + issuer + " got " + o.get("issuer").getAsString());<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        }<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        <a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        conf.setIssuer(o.get("issuer").getAsString());<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        conf.setAuthorizationEndpointUri(o.get("authorization_endpoint").getAsString());<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        conf.setTokenEndpointUri(o.get("token_endpoint").getAsString());<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        conf.setJwksUri(o.get("jwks_uri").getAsString());<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                        conf.setUserInfoUri(o.get("userinfo_endpoint").getAsString());<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                        conf.setRegistrationEndpointUri(o.get("registration_endpoint").getAsString());<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        return conf;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                } else {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        throw new IllegalStateException("Couldn't parse server discovery results for " + url); <a name="line.95"></a>
+<span class="sourceLineNo">096</span>                }<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                <a name="line.97"></a>
+<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>    }<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>}<a name="line.102"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

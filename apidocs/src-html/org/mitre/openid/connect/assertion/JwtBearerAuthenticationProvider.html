@@ -16,18 +16,18 @@
 <span class="sourceLineNo">008</span><a name="line.8"></a>
 <span class="sourceLineNo">009</span>import org.mitre.jwt.signer.service.JwtSigningAndValidationService;<a name="line.9"></a>
 <span class="sourceLineNo">010</span>import org.mitre.jwt.signer.service.impl.JWKSetSigningAndValidationServiceCacheService;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import org.mitre.oauth2.exception.ClientNotFoundException;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.12"></a>
-<span class="sourceLineNo">013</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.13"></a>
-<span class="sourceLineNo">014</span>import org.mitre.openid.connect.config.ConfigurationPropertiesBean;<a name="line.14"></a>
-<span class="sourceLineNo">015</span>import org.slf4j.Logger;<a name="line.15"></a>
-<span class="sourceLineNo">016</span>import org.slf4j.LoggerFactory;<a name="line.16"></a>
-<span class="sourceLineNo">017</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>import org.springframework.security.authentication.AuthenticationProvider;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import org.springframework.security.core.Authentication;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import org.springframework.security.core.AuthenticationException;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.springframework.security.core.userdetails.UsernameNotFoundException;<a name="line.22"></a>
+<span class="sourceLineNo">011</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.mitre.openid.connect.config.ConfigurationPropertiesBean;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.slf4j.Logger;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.slf4j.LoggerFactory;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import org.springframework.security.authentication.AuthenticationProvider;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import org.springframework.security.core.Authentication;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import org.springframework.security.core.AuthenticationException;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.springframework.security.core.userdetails.UsernameNotFoundException;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.springframework.security.oauth2.common.exceptions.InvalidClientException;<a name="line.22"></a>
 <span class="sourceLineNo">023</span><a name="line.23"></a>
 <span class="sourceLineNo">024</span>import com.nimbusds.jwt.JWT;<a name="line.24"></a>
 <span class="sourceLineNo">025</span>import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;<a name="line.25"></a>
@@ -125,7 +125,7 @@
 <span class="sourceLineNo">117</span>                // IFF we managed to get all the way down here, the token is valid<a name="line.117"></a>
 <span class="sourceLineNo">118</span>                        return new JwtBearerAssertionAuthenticationToken(client.getClientId(), jwt, client.getAuthorities());<a name="line.118"></a>
 <span class="sourceLineNo">119</span>                <a name="line.119"></a>
-<span class="sourceLineNo">120</span>        } catch (ClientNotFoundException e) {<a name="line.120"></a>
+<span class="sourceLineNo">120</span>        } catch (InvalidClientException e) {<a name="line.120"></a>
 <span class="sourceLineNo">121</span>                throw new UsernameNotFoundException("Could not find client: " + jwtAuth.getClientId());<a name="line.121"></a>
 <span class="sourceLineNo">122</span>        } catch (ParseException e) {<a name="line.122"></a>
 <span class="sourceLineNo">123</span>                // TODO Auto-generated catch block<a name="line.123"></a>
