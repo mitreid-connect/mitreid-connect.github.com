@@ -22,6 +22,7 @@ org.mitre.openid.connect.client.model
 org.mitre.openid.connect.client.service
 org.mitre.openid.connect.client.service.impl
 org.mitre.openid.connect.config
+org.mitre.openid.connect.filter
 org.mitre.openid.connect.model
 org.mitre.openid.connect.repository
 org.mitre.openid.connect.repository.impl

@@ -8,6 +8,7 @@ org.mitre.oauth2.view
 org.mitre.oauth2.web
 org.mitre.openid.connect
 org.mitre.openid.connect.assertion
+org.mitre.openid.connect.filter
 org.mitre.openid.connect.repository.impl
 org.mitre.openid.connect.service.impl
 org.mitre.openid.connect.token
