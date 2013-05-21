@@ -31,10 +31,10 @@
 <span class="sourceLineNo">023</span><a name="line.23"></a>
 <span class="sourceLineNo">024</span>import org.apache.http.client.utils.URIBuilder;<a name="line.24"></a>
 <span class="sourceLineNo">025</span>import org.mitre.jwt.signer.service.JwtSigningAndValidationService;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.mitre.openid.connect.client.service.AuthRequestUrlBuilder;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.mitre.openid.connect.config.ServerConfiguration;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.springframework.security.oauth2.provider.ClientDetails;<a name="line.29"></a>
+<span class="sourceLineNo">026</span>import org.mitre.oauth2.model.RegisteredClient;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.mitre.openid.connect.client.service.AuthRequestUrlBuilder;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.mitre.openid.connect.config.ServerConfiguration;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.29"></a>
 <span class="sourceLineNo">030</span><a name="line.30"></a>
 <span class="sourceLineNo">031</span>import com.google.common.base.Joiner;<a name="line.31"></a>
 <span class="sourceLineNo">032</span>import com.nimbusds.jose.JWSHeader;<a name="line.32"></a>
@@ -53,7 +53,7 @@
 <span class="sourceLineNo">045</span>         * @see org.mitre.openid.connect.client.service.AuthRequestUrlBuilder#buildAuthRequestUrl(org.mitre.openid.connect.config.ServerConfiguration, org.springframework.security.oauth2.provider.ClientDetails, java.lang.String, java.lang.String, java.lang.String)<a name="line.45"></a>
 <span class="sourceLineNo">046</span>         */<a name="line.46"></a>
 <span class="sourceLineNo">047</span>        @Override<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        public String buildAuthRequestUrl(ServerConfiguration serverConfig, ClientDetails clientConfig, String redirectUri, String nonce, String state) {<a name="line.48"></a>
+<span class="sourceLineNo">048</span>        public String buildAuthRequestUrl(ServerConfiguration serverConfig, RegisteredClient clientConfig, String redirectUri, String nonce, String state) {<a name="line.48"></a>
 <span class="sourceLineNo">049</span><a name="line.49"></a>
 <span class="sourceLineNo">050</span>                // create our signed JWT for the request object<a name="line.50"></a>
 <span class="sourceLineNo">051</span>                JWTClaimsSet claims = new JWTClaimsSet();<a name="line.51"></a>
