@@ -80,7 +80,7 @@
 <span class="sourceLineNo">072</span>                try {<a name="line.72"></a>
 <span class="sourceLineNo">073</span>                        token = tokenServices.readAccessToken(tokenValue);<a name="line.73"></a>
 <span class="sourceLineNo">074</span>                } catch (InvalidTokenException e) {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                        logger.error("Verify failed; AuthenticationException: " + e.getStackTrace().toString());<a name="line.75"></a>
+<span class="sourceLineNo">075</span>                        logger.error("Verify failed; AuthenticationException", e);<a name="line.75"></a>
 <span class="sourceLineNo">076</span>                        Map&lt;String,Boolean&gt; entity = ImmutableMap.of("valid", Boolean.FALSE);<a name="line.76"></a>
 <span class="sourceLineNo">077</span>                        model.addAttribute("entity", entity);<a name="line.77"></a>
 <span class="sourceLineNo">078</span>                        return "jsonEntityView";<a name="line.78"></a>

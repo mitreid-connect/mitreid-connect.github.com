@@ -100,12 +100,12 @@
 <span class="sourceLineNo">092</span>                        whitelist = gson.fromJson(json, WhitelistedSite.class);<a name="line.92"></a>
 <span class="sourceLineNo">093</span><a name="line.93"></a>
 <span class="sourceLineNo">094</span>                } catch (JsonParseException e) {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                        logger.error("addNewWhitelistedSite failed due to JsonParseException: " + e.getStackTrace().toString());<a name="line.95"></a>
+<span class="sourceLineNo">095</span>                        logger.error("addNewWhitelistedSite failed due to JsonParseException", e);<a name="line.95"></a>
 <span class="sourceLineNo">096</span>                        m.addAttribute("code", HttpStatus.BAD_REQUEST);<a name="line.96"></a>
 <span class="sourceLineNo">097</span>                        m.addAttribute("errorMessage", "Could not save new whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.");<a name="line.97"></a>
 <span class="sourceLineNo">098</span>                        return "jsonErrorView";<a name="line.98"></a>
 <span class="sourceLineNo">099</span>                } catch (IllegalStateException e) {<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                        logger.error("addNewWhitelistedSite failed due to IllegalStateException: " + e.getStackTrace().toString());<a name="line.100"></a>
+<span class="sourceLineNo">100</span>                        logger.error("addNewWhitelistedSite failed due to IllegalStateException", e);<a name="line.100"></a>
 <span class="sourceLineNo">101</span>                        m.addAttribute("code", HttpStatus.BAD_REQUEST);<a name="line.101"></a>
 <span class="sourceLineNo">102</span>                        m.addAttribute("errorMessage", "Could not save new whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.");<a name="line.102"></a>
 <span class="sourceLineNo">103</span>                        return "jsonErrorView";<a name="line.103"></a>
@@ -137,12 +137,12 @@
 <span class="sourceLineNo">129</span>                        whitelist = gson.fromJson(json, WhitelistedSite.class);<a name="line.129"></a>
 <span class="sourceLineNo">130</span><a name="line.130"></a>
 <span class="sourceLineNo">131</span>                } catch (JsonParseException e) {<a name="line.131"></a>
-<span class="sourceLineNo">132</span>                        logger.error("updateWhitelistedSite failed due to JsonParseException: " + e.getStackTrace().toString());<a name="line.132"></a>
+<span class="sourceLineNo">132</span>                        logger.error("updateWhitelistedSite failed due to JsonParseException", e);<a name="line.132"></a>
 <span class="sourceLineNo">133</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.133"></a>
 <span class="sourceLineNo">134</span>                        m.put("errorMessage", "Could not update whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.");<a name="line.134"></a>
 <span class="sourceLineNo">135</span>                        return "jsonErrorView";<a name="line.135"></a>
 <span class="sourceLineNo">136</span>                } catch (IllegalStateException e) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                        logger.error("updateWhitelistedSite failed due to IllegalStateException: " + e.getStackTrace().toString());<a name="line.137"></a>
+<span class="sourceLineNo">137</span>                        logger.error("updateWhitelistedSite failed due to IllegalStateException", e);<a name="line.137"></a>
 <span class="sourceLineNo">138</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.138"></a>
 <span class="sourceLineNo">139</span>                        m.put("errorMessage", "Could not update whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.");<a name="line.139"></a>
 <span class="sourceLineNo">140</span>                        return "jsonErrorView";<a name="line.140"></a>

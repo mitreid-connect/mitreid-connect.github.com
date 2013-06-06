@@ -314,51 +314,41 @@
 <span class="sourceLineNo">306</span><a name="line.306"></a>
 <span class="sourceLineNo">307</span>                        clientService.deleteClient(client);<a name="line.307"></a>
 <span class="sourceLineNo">308</span><a name="line.308"></a>
-<span class="sourceLineNo">309</span>                        // we return the token that we got in<a name="line.309"></a>
-<span class="sourceLineNo">310</span>                        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();<a name="line.310"></a>
-<span class="sourceLineNo">311</span>                        OAuth2AccessTokenEntity token = tokenService.readAccessToken(details.getTokenValue());<a name="line.311"></a>
+<span class="sourceLineNo">309</span>                        // send it all out to the view<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                        m.addAttribute("client", client);<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                        m.addAttribute("code", HttpStatus.NO_CONTENT); // http 204<a name="line.311"></a>
 <span class="sourceLineNo">312</span><a name="line.312"></a>
-<span class="sourceLineNo">313</span>                        // TODO: urlencode the client id for safety?<a name="line.313"></a>
-<span class="sourceLineNo">314</span>                        RegisteredClient registered = new RegisteredClient(client, token.getValue(), config.getIssuer() + "register/" + client.getClientId());<a name="line.314"></a>
-<span class="sourceLineNo">315</span><a name="line.315"></a>
-<span class="sourceLineNo">316</span>                        // send it all out to the view<a name="line.316"></a>
-<span class="sourceLineNo">317</span>                        m.addAttribute("client", client);<a name="line.317"></a>
-<span class="sourceLineNo">318</span>                        m.addAttribute("code", HttpStatus.OK); // http 200<a name="line.318"></a>
-<span class="sourceLineNo">319</span>                        //m.addAttribute("token", token);<a name="line.319"></a>
-<span class="sourceLineNo">320</span>                        // TODO: urlencode the client id for safety?<a name="line.320"></a>
-<span class="sourceLineNo">321</span>                        //m.addAttribute("uri", config.getIssuer() + "register/" + client.getClientId());<a name="line.321"></a>
-<span class="sourceLineNo">322</span><a name="line.322"></a>
-<span class="sourceLineNo">323</span>                        return "clientInformationResponseView";<a name="line.323"></a>
-<span class="sourceLineNo">324</span>                } else {<a name="line.324"></a>
-<span class="sourceLineNo">325</span>                        // client mismatch<a name="line.325"></a>
-<span class="sourceLineNo">326</span>                        logger.error("readClientConfiguration failed, client ID mismatch: "<a name="line.326"></a>
-<span class="sourceLineNo">327</span>                                        + clientId + " and " + auth.getAuthorizationRequest().getClientId() + " do not match.");<a name="line.327"></a>
-<span class="sourceLineNo">328</span>                        m.addAttribute("code", HttpStatus.FORBIDDEN); // http 403<a name="line.328"></a>
-<span class="sourceLineNo">329</span><a name="line.329"></a>
-<span class="sourceLineNo">330</span>                        return "httpCodeView";<a name="line.330"></a>
-<span class="sourceLineNo">331</span>                }<a name="line.331"></a>
-<span class="sourceLineNo">332</span>        }<a name="line.332"></a>
-<span class="sourceLineNo">333</span><a name="line.333"></a>
-<span class="sourceLineNo">334</span><a name="line.334"></a>
-<span class="sourceLineNo">335</span><a name="line.335"></a>
-<span class="sourceLineNo">336</span><a name="line.336"></a>
-<span class="sourceLineNo">337</span>        /**<a name="line.337"></a>
-<span class="sourceLineNo">338</span>         * @param client<a name="line.338"></a>
-<span class="sourceLineNo">339</span>         * @return<a name="line.339"></a>
-<span class="sourceLineNo">340</span>         * @throws AuthenticationException<a name="line.340"></a>
-<span class="sourceLineNo">341</span>         */<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        private OAuth2AccessTokenEntity createRegistrationAccessToken(ClientDetailsEntity client) throws AuthenticationException {<a name="line.342"></a>
-<span class="sourceLineNo">343</span>                // create a registration access token, treat it like a client credentials flow<a name="line.343"></a>
-<span class="sourceLineNo">344</span>                // I can't use the auth request interface here because it has no setters and bad constructors -- THIS IS BAD API DESIGN<a name="line.344"></a>
-<span class="sourceLineNo">345</span>                DefaultAuthorizationRequest authorizationRequest = new DefaultAuthorizationRequest(client.getClientId(), Sets.newHashSet(OAuth2AccessTokenEntity.REGISTRATION_TOKEN_SCOPE));<a name="line.345"></a>
-<span class="sourceLineNo">346</span>                authorizationRequest.setApproved(true);<a name="line.346"></a>
-<span class="sourceLineNo">347</span>                authorizationRequest.setAuthorities(Sets.newHashSet(new SimpleGrantedAuthority("ROLE_CLIENT")));<a name="line.347"></a>
-<span class="sourceLineNo">348</span>                OAuth2Authentication authentication = new OAuth2Authentication(authorizationRequest, null);<a name="line.348"></a>
-<span class="sourceLineNo">349</span>                OAuth2AccessTokenEntity registrationAccessToken = (OAuth2AccessTokenEntity) tokenService.createAccessToken(authentication);<a name="line.349"></a>
-<span class="sourceLineNo">350</span>                return registrationAccessToken;<a name="line.350"></a>
-<span class="sourceLineNo">351</span>        }<a name="line.351"></a>
-<span class="sourceLineNo">352</span><a name="line.352"></a>
-<span class="sourceLineNo">353</span>}<a name="line.353"></a>
+<span class="sourceLineNo">313</span>                        return "httpCodeView";<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                } else {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                        // client mismatch<a name="line.315"></a>
+<span class="sourceLineNo">316</span>                        logger.error("readClientConfiguration failed, client ID mismatch: "<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                                        + clientId + " and " + auth.getAuthorizationRequest().getClientId() + " do not match.");<a name="line.317"></a>
+<span class="sourceLineNo">318</span>                        m.addAttribute("code", HttpStatus.FORBIDDEN); // http 403<a name="line.318"></a>
+<span class="sourceLineNo">319</span><a name="line.319"></a>
+<span class="sourceLineNo">320</span>                        return "httpCodeView";<a name="line.320"></a>
+<span class="sourceLineNo">321</span>                }<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        }<a name="line.322"></a>
+<span class="sourceLineNo">323</span><a name="line.323"></a>
+<span class="sourceLineNo">324</span><a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>        /**<a name="line.327"></a>
+<span class="sourceLineNo">328</span>         * @param client<a name="line.328"></a>
+<span class="sourceLineNo">329</span>         * @return<a name="line.329"></a>
+<span class="sourceLineNo">330</span>         * @throws AuthenticationException<a name="line.330"></a>
+<span class="sourceLineNo">331</span>         */<a name="line.331"></a>
+<span class="sourceLineNo">332</span>        private OAuth2AccessTokenEntity createRegistrationAccessToken(ClientDetailsEntity client) throws AuthenticationException {<a name="line.332"></a>
+<span class="sourceLineNo">333</span>                // create a registration access token, treat it like a client credentials flow<a name="line.333"></a>
+<span class="sourceLineNo">334</span>                // I can't use the auth request interface here because it has no setters and bad constructors -- THIS IS BAD API DESIGN<a name="line.334"></a>
+<span class="sourceLineNo">335</span>                DefaultAuthorizationRequest authorizationRequest = new DefaultAuthorizationRequest(client.getClientId(), Sets.newHashSet(OAuth2AccessTokenEntity.REGISTRATION_TOKEN_SCOPE));<a name="line.335"></a>
+<span class="sourceLineNo">336</span>                authorizationRequest.setApproved(true);<a name="line.336"></a>
+<span class="sourceLineNo">337</span>                authorizationRequest.setAuthorities(Sets.newHashSet(new SimpleGrantedAuthority("ROLE_CLIENT")));<a name="line.337"></a>
+<span class="sourceLineNo">338</span>                OAuth2Authentication authentication = new OAuth2Authentication(authorizationRequest, null);<a name="line.338"></a>
+<span class="sourceLineNo">339</span>                OAuth2AccessTokenEntity registrationAccessToken = (OAuth2AccessTokenEntity) tokenService.createAccessToken(authentication);<a name="line.339"></a>
+<span class="sourceLineNo">340</span>                return registrationAccessToken;<a name="line.340"></a>
+<span class="sourceLineNo">341</span>        }<a name="line.341"></a>
+<span class="sourceLineNo">342</span><a name="line.342"></a>
+<span class="sourceLineNo">343</span>}<a name="line.343"></a>
 
 
 

@@ -104,12 +104,12 @@
 <span class="sourceLineNo">096</span><a name="line.96"></a>
 <span class="sourceLineNo">097</span>                }<a name="line.97"></a>
 <span class="sourceLineNo">098</span>                catch (JsonSyntaxException e) {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        logger.error("addNewBlacklistedSite failed due to JsonSyntaxException: " + e.getStackTrace().toString());<a name="line.99"></a>
+<span class="sourceLineNo">099</span>                        logger.error("addNewBlacklistedSite failed due to JsonSyntaxException: ", e);<a name="line.99"></a>
 <span class="sourceLineNo">100</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.100"></a>
 <span class="sourceLineNo">101</span>                        m.put("errorMessage", "Could not save new blacklisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.");<a name="line.101"></a>
 <span class="sourceLineNo">102</span>                        return "jsonErrorView";<a name="line.102"></a>
 <span class="sourceLineNo">103</span>                } catch (IllegalStateException e) {<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                        logger.error("addNewBlacklistedSite failed due to IllegalStateException: " + e.getStackTrace().toString());<a name="line.104"></a>
+<span class="sourceLineNo">104</span>                        logger.error("addNewBlacklistedSite failed due to IllegalStateException", e);<a name="line.104"></a>
 <span class="sourceLineNo">105</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.105"></a>
 <span class="sourceLineNo">106</span>                        m.put("errorMessage", "Could not save new blacklisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.");<a name="line.106"></a>
 <span class="sourceLineNo">107</span>                        return "jsonErrorView";<a name="line.107"></a>
@@ -136,12 +136,12 @@
 <span class="sourceLineNo">128</span><a name="line.128"></a>
 <span class="sourceLineNo">129</span>                }<a name="line.129"></a>
 <span class="sourceLineNo">130</span>                catch (JsonSyntaxException e) {<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                        logger.error("updateBlacklistedSite failed due to JsonSyntaxException: " + e.getStackTrace().toString());<a name="line.131"></a>
+<span class="sourceLineNo">131</span>                        logger.error("updateBlacklistedSite failed due to JsonSyntaxException", e);<a name="line.131"></a>
 <span class="sourceLineNo">132</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.132"></a>
 <span class="sourceLineNo">133</span>                        m.put("errorMessage", "Could not update blacklisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.");<a name="line.133"></a>
 <span class="sourceLineNo">134</span>                        return "jsonErrorView";<a name="line.134"></a>
 <span class="sourceLineNo">135</span>                } catch (IllegalStateException e) {<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                        logger.error("updateBlacklistedSite failed due to IllegalStateException: " + e.getStackTrace().toString());<a name="line.136"></a>
+<span class="sourceLineNo">136</span>                        logger.error("updateBlacklistedSite failed due to IllegalStateException", e);<a name="line.136"></a>
 <span class="sourceLineNo">137</span>                        m.put("code", HttpStatus.BAD_REQUEST);<a name="line.137"></a>
 <span class="sourceLineNo">138</span>                        m.put("errorMessage", "Could not update blacklisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.");<a name="line.138"></a>
 <span class="sourceLineNo">139</span>                        return "jsonErrorView";<a name="line.139"></a>
