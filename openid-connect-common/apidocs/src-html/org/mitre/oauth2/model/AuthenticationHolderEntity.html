@@ -39,7 +39,7 @@
 <span class="sourceLineNo">031</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.31"></a>
 <span class="sourceLineNo">032</span><a name="line.32"></a>
 <span class="sourceLineNo">033</span>@Entity<a name="line.33"></a>
-<span class="sourceLineNo">034</span>@Table(name="authentication_holder")<a name="line.34"></a>
+<span class="sourceLineNo">034</span>@Table(name = "authentication_holder")<a name="line.34"></a>
 <span class="sourceLineNo">035</span>@NamedQueries ({<a name="line.35"></a>
 <span class="sourceLineNo">036</span>        @NamedQuery(name = "AuthenticationHolderEntity.getByAuthentication", query = "select a from AuthenticationHolderEntity a where a.authentication = :authentication")<a name="line.36"></a>
 <span class="sourceLineNo">037</span>})<a name="line.37"></a>
@@ -57,37 +57,39 @@
 <span class="sourceLineNo">049</span><a name="line.49"></a>
 <span class="sourceLineNo">050</span>        @Id<a name="line.50"></a>
 <span class="sourceLineNo">051</span>        @GeneratedValue(strategy = GenerationType.IDENTITY)<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        public Long getId() {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>                return id;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        }<a name="line.54"></a>
-<span class="sourceLineNo">055</span><a name="line.55"></a>
-<span class="sourceLineNo">056</span>        public void setId(Long id) {<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                this.id = id;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        }<a name="line.58"></a>
-<span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>        @Basic<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        @Column(name="owner_id")<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        public Long getOwnerId() {<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                return ownerId;<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        }<a name="line.64"></a>
-<span class="sourceLineNo">065</span><a name="line.65"></a>
-<span class="sourceLineNo">066</span>        public void setOwnerId(Long owner_id) {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                this.ownerId = owner_id;<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        }<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>        @Lob<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        @Basic(fetch=FetchType.LAZY)<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        public OAuth2Authentication getAuthentication() {<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                return authentication;<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        }<a name="line.74"></a>
-<span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span>        public void setAuthentication(OAuth2Authentication authentication) {<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                this.authentication = authentication;<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        }<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">052</span>        @Column(name = "id")<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        public Long getId() {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                return id;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        }<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>        public void setId(Long id) {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                this.id = id;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        }<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>        @Basic<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        @Column(name = "owner_id")<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        public Long getOwnerId() {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                return ownerId;<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>        public void setOwnerId(Long owner_id) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                this.ownerId = owner_id;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        }<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>        @Lob<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        @Basic(fetch=FetchType.LAZY)<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        @Column(name = "authentication")<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        public OAuth2Authentication getAuthentication() {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                return authentication;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>        public void setAuthentication(OAuth2Authentication authentication) {<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                this.authentication = authentication;<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        }<a name="line.80"></a>
 <span class="sourceLineNo">081</span><a name="line.81"></a>
-<span class="sourceLineNo">082</span>}<a name="line.82"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>}<a name="line.84"></a>
 
 
 

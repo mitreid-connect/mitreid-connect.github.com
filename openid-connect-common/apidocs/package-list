@@ -12,4 +12,5 @@ org.mitre.openid.connect.model
 org.mitre.openid.connect.repository
 org.mitre.openid.connect.service
 org.mitre.openid.connect.view
+org.mitre.openid.connect.web
 org.mitre.util.jpa
