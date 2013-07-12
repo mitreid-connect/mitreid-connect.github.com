@@ -24,139 +24,150 @@
 <span class="sourceLineNo">016</span> ******************************************************************************/<a name="line.16"></a>
 <span class="sourceLineNo">017</span>package org.mitre.openid.connect.client.service.impl;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import static org.junit.Assert.*;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.net.URISyntaxException;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.security.NoSuchAlgorithmException;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.security.spec.InvalidKeySpecException;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.util.Map;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.apache.http.client.utils.URIBuilder;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.junit.Before;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.junit.Test;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.mitre.jwt.signer.service.impl.DefaultJwtSigningAndValidationService;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.mitre.oauth2.model.RegisteredClient;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.mitre.openid.connect.config.ServerConfiguration;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import org.mockito.Mockito;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
-<span class="sourceLineNo">035</span>import com.google.common.base.Joiner;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>import com.google.common.collect.Maps;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>import com.google.common.collect.Sets;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import com.nimbusds.jose.Algorithm;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import com.nimbusds.jose.JWSHeader;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import com.nimbusds.jose.jwk.JWK;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import com.nimbusds.jose.jwk.RSAKey;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import com.nimbusds.jose.jwk.Use;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import com.nimbusds.jose.util.Base64URL;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>import com.nimbusds.jwt.JWTClaimsSet;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>import com.nimbusds.jwt.SignedJWT;<a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46"></a>
-<span class="sourceLineNo">047</span>/**<a name="line.47"></a>
-<span class="sourceLineNo">048</span> * @author wkim<a name="line.48"></a>
-<span class="sourceLineNo">049</span> * <a name="line.49"></a>
-<span class="sourceLineNo">050</span> */<a name="line.50"></a>
-<span class="sourceLineNo">051</span>public class TestSignedAuthRequestUrlBuilder {<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>        // Test fixture:<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        ServerConfiguration serverConfig;<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        RegisteredClient clientConfig;<a name="line.55"></a>
-<span class="sourceLineNo">056</span><a name="line.56"></a>
-<span class="sourceLineNo">057</span>        // RSA key properties:<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        // {@link package com.nimbusds.jose.jwk#RSAKey}<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        private String n = "0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx4cbbfAAtVT86zw" + <a name="line.59"></a>
-<span class="sourceLineNo">060</span>                                        "u1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMstn64tZ_2W-5JsGY4Hc" + <a name="line.60"></a>
-<span class="sourceLineNo">061</span>                                        "5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2QvzqY368QQMicAtaSqzs8K" + <a name="line.61"></a>
-<span class="sourceLineNo">062</span>                                        "JZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbISD08qNLyrdkt-bFTWhAI4vMQFh" + <a name="line.62"></a>
-<span class="sourceLineNo">063</span>                                        "6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqbw0Ls1jF44-csFCur-kEgU8awapJzKnqDKgw";<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        private String e = "AQAB";<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        private String d = "X4cTteJY_gn4FYPsXB8rdXix5vwsg1FLN5E3EaG6RJoVH-HLLKD9M7dx5oo7GURknc" +<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                                        "hnrRweUkC7hT5fJLM0WbFAKNLWY2vv7B6NqXSzUvxT0_YSfqijwp3RTzlBaCxWp4doFk5" +<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                                        "N2o8Gy_nHNKroADIkJ46pRUohsXywbReAdYaMwFs9tv8d_cPVY3i07a3t8MN6TNwm0dSa" +<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                                        "wm9v47UiCl3Sk5ZiG7xojPLu4sbg1U2jx4IBTNBznbJSzFHK66jT8bgkuqsk0GjskDJk1" +<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                                        "9Z4qwjwbsnn4j2WBii3RL-Us2lGVkY8fkFzme1z0HbIkfz0Y6mqnOYtqc0X4jfcKoAC8Q";<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        private String alg = "RS256";<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        private String kid = "2011-04-29";<a name="line.71"></a>
+<span class="sourceLineNo">019</span>import static org.junit.Assert.assertEquals;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import static org.junit.Assert.assertTrue;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import static org.junit.Assert.fail;<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.net.URI;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.net.URISyntaxException;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.security.NoSuchAlgorithmException;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.security.spec.InvalidKeySpecException;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.text.ParseException;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.util.Arrays;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import java.util.List;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import java.util.Map;<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>import net.minidev.json.JSONObject;<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.junit.Before;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.junit.Test;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.mitre.jwt.signer.service.impl.DefaultJwtSigningAndValidationService;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.mitre.oauth2.model.RegisteredClient;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.mitre.openid.connect.config.ServerConfiguration;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.mockito.Mockito;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.springframework.security.authentication.AuthenticationServiceException;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.springframework.web.util.UriComponents;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.springframework.web.util.UriComponentsBuilder;<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>import com.google.common.base.Joiner;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import com.google.common.collect.Maps;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import com.google.common.collect.Sets;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import com.nimbusds.jose.Algorithm;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import com.nimbusds.jose.JWSObject;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import com.nimbusds.jose.jwk.JWK;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>import com.nimbusds.jose.jwk.RSAKey;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>import com.nimbusds.jose.jwk.Use;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>import com.nimbusds.jose.util.Base64URL;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>import com.nimbusds.jose.util.JSONObjectUtils;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>import com.nimbusds.jwt.JWTClaimsSet;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>import com.nimbusds.jwt.SignedJWT;<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>/**<a name="line.58"></a>
+<span class="sourceLineNo">059</span> * @author wkim<a name="line.59"></a>
+<span class="sourceLineNo">060</span> * <a name="line.60"></a>
+<span class="sourceLineNo">061</span> */<a name="line.61"></a>
+<span class="sourceLineNo">062</span>public class TestSignedAuthRequestUrlBuilder {<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>        // Test fixture:<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        private ServerConfiguration serverConfig;<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        private RegisteredClient clientConfig;<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>        private String redirectUri = "https://client.example.org/";<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        private String nonce = "34fasf3ds";<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        private String state = "af0ifjsldkj";<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private String responseType = "code";<a name="line.71"></a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span>        private DefaultJwtSigningAndValidationService signingAndValidationService;<a name="line.73"></a>
-<span class="sourceLineNo">074</span><a name="line.74"></a>
-<span class="sourceLineNo">075</span>        private SignedAuthRequestUrlBuilder urlBuilder = new SignedAuthRequestUrlBuilder();<a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span>        @Before<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        public void prepare() throws NoSuchAlgorithmException, InvalidKeySpecException {<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>                RSAKey key = new RSAKey(new Base64URL(n), new Base64URL(e), new Base64URL(d), Use.SIGNATURE, new Algorithm(alg), kid);<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                Map&lt;String, JWK&gt; keys = Maps.newHashMap();<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                keys.put("client", key);<a name="line.82"></a>
-<span class="sourceLineNo">083</span><a name="line.83"></a>
-<span class="sourceLineNo">084</span>                signingAndValidationService = new DefaultJwtSigningAndValidationService(keys);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                signingAndValidationService.setDefaultSignerKeyId("client");<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                signingAndValidationService.setDefaultSigningAlgorithmName(alg);<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>                urlBuilder.setSigningAndValidationService(signingAndValidationService);<a name="line.88"></a>
-<span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>                serverConfig = Mockito.mock(ServerConfiguration.class);<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                Mockito.when(serverConfig.getAuthorizationEndpointUri()).thenReturn("https://server.example.com/authorize");<a name="line.91"></a>
+<span class="sourceLineNo">073</span>        // RSA key properties:<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        // {@link package com.nimbusds.jose.jwk#RSAKey}<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        private String n = "0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx4cbbfAAtVT86zw" + <a name="line.75"></a>
+<span class="sourceLineNo">076</span>                                        "u1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMstn64tZ_2W-5JsGY4Hc" + <a name="line.76"></a>
+<span class="sourceLineNo">077</span>                                        "5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2QvzqY368QQMicAtaSqzs8K" + <a name="line.77"></a>
+<span class="sourceLineNo">078</span>                                        "JZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbISD08qNLyrdkt-bFTWhAI4vMQFh" + <a name="line.78"></a>
+<span class="sourceLineNo">079</span>                                        "6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqbw0Ls1jF44-csFCur-kEgU8awapJzKnqDKgw";<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        private String e = "AQAB";<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        private String d = "X4cTteJY_gn4FYPsXB8rdXix5vwsg1FLN5E3EaG6RJoVH-HLLKD9M7dx5oo7GURknc" +<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                                        "hnrRweUkC7hT5fJLM0WbFAKNLWY2vv7B6NqXSzUvxT0_YSfqijwp3RTzlBaCxWp4doFk5" +<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                                        "N2o8Gy_nHNKroADIkJ46pRUohsXywbReAdYaMwFs9tv8d_cPVY3i07a3t8MN6TNwm0dSa" +<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                                        "wm9v47UiCl3Sk5ZiG7xojPLu4sbg1U2jx4IBTNBznbJSzFHK66jT8bgkuqsk0GjskDJk1" +<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                                        "9Z4qwjwbsnn4j2WBii3RL-Us2lGVkY8fkFzme1z0HbIkfz0Y6mqnOYtqc0X4jfcKoAC8Q";<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        private String alg = "RS256";<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        private String kid = "2011-04-29";<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>        private DefaultJwtSigningAndValidationService signingAndValidationService;<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        private SignedAuthRequestUrlBuilder urlBuilder = new SignedAuthRequestUrlBuilder();<a name="line.91"></a>
 <span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>                clientConfig = Mockito.mock(RegisteredClient.class);<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                Mockito.when(clientConfig.getClientId()).thenReturn("s6BhdRkqt3");<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                Mockito.when(clientConfig.getScope()).thenReturn(Sets.newHashSet("openid", "profile"));<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>        @Test<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        public void buildAuthRequestUrl() {<a name="line.99"></a>
-<span class="sourceLineNo">100</span><a name="line.100"></a>
-<span class="sourceLineNo">101</span>                String redirectUri = "https://client.example.org/";<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                String nonce = "34fasf3ds";<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                String state = "af0ifjsldkj";<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>                JWTClaimsSet claims = new JWTClaimsSet();<a name="line.105"></a>
-<span class="sourceLineNo">106</span><a name="line.106"></a>
-<span class="sourceLineNo">107</span>                //set parameters to JwtClaims<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                claims.setCustomClaim("response_type", "code");<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                claims.setCustomClaim("client_id", clientConfig.getClientId());<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                claims.setCustomClaim("scope", Joiner.on(" ").join(clientConfig.getScope()));<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>                // build our redirect URI<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                claims.setCustomClaim("redirect_uri", redirectUri);<a name="line.113"></a>
-<span class="sourceLineNo">114</span><a name="line.114"></a>
-<span class="sourceLineNo">115</span>                // this comes back in the id token<a name="line.115"></a>
-<span class="sourceLineNo">116</span>                claims.setCustomClaim("nonce", nonce);<a name="line.116"></a>
-<span class="sourceLineNo">117</span><a name="line.117"></a>
-<span class="sourceLineNo">118</span>                // this comes back in the auth request return<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                claims.setCustomClaim("state", state);<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>                SignedJWT jwt = new SignedJWT(new JWSHeader(signingAndValidationService.getDefaultSigningAlgorithm()), claims);<a name="line.121"></a>
-<span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                signingAndValidationService.signJwt(jwt);<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>                String expected = null;<a name="line.125"></a>
+<span class="sourceLineNo">093</span>        @Before<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        public void prepare() throws NoSuchAlgorithmException, InvalidKeySpecException {<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                RSAKey key = new RSAKey(new Base64URL(n), new Base64URL(e), new Base64URL(d), Use.SIGNATURE, new Algorithm(alg), kid);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                Map&lt;String, JWK&gt; keys = Maps.newHashMap();<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                keys.put("client", key);<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>                signingAndValidationService = new DefaultJwtSigningAndValidationService(keys);<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                signingAndValidationService.setDefaultSignerKeyId("client");<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                signingAndValidationService.setDefaultSigningAlgorithmName(alg);<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>                urlBuilder.setSigningAndValidationService(signingAndValidationService);<a name="line.104"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
+<span class="sourceLineNo">106</span>                serverConfig = Mockito.mock(ServerConfiguration.class);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                Mockito.when(serverConfig.getAuthorizationEndpointUri()).thenReturn("https://server.example.com/authorize");<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>                clientConfig = Mockito.mock(RegisteredClient.class);<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                Mockito.when(clientConfig.getClientId()).thenReturn("s6BhdRkqt3");<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                Mockito.when(clientConfig.getScope()).thenReturn(Sets.newHashSet("openid", "profile"));<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        }<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>        /**<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         * This test takes the URI from the result of building a signed request <a name="line.115"></a>
+<span class="sourceLineNo">116</span>         * and checks that the JWS object parsed from the request URI matches up <a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * with the expected claim values.<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         */<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        @Test<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        public void buildAuthRequestUrl() {<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>                String requestUri = urlBuilder.buildAuthRequestUrl(serverConfig, clientConfig, redirectUri, nonce, state);<a name="line.122"></a>
+<span class="sourceLineNo">123</span><a name="line.123"></a>
+<span class="sourceLineNo">124</span>                // parsing the result<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                UriComponentsBuilder builder = null;<a name="line.125"></a>
 <span class="sourceLineNo">126</span>                <a name="line.126"></a>
 <span class="sourceLineNo">127</span>                try {<a name="line.127"></a>
-<span class="sourceLineNo">128</span>                        <a name="line.128"></a>
-<span class="sourceLineNo">129</span>                        URIBuilder uriBuilder = new URIBuilder(serverConfig.getAuthorizationEndpointUri());<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                        uriBuilder.addParameter("request", jwt.serialize());<a name="line.130"></a>
-<span class="sourceLineNo">131</span><a name="line.131"></a>
-<span class="sourceLineNo">132</span>                        expected = uriBuilder.build().toString();<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                        <a name="line.133"></a>
-<span class="sourceLineNo">134</span>                } catch (URISyntaxException e) {<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                        fail("URISyntaxException occurred.");<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                }<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                <a name="line.137"></a>
-<span class="sourceLineNo">138</span>                String actual = urlBuilder.buildAuthRequestUrl(serverConfig, clientConfig, redirectUri, nonce, state);<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                <a name="line.139"></a>
-<span class="sourceLineNo">140</span>                assertEquals(expected, actual);<a name="line.140"></a>
-<span class="sourceLineNo">141</span>        }<a name="line.141"></a>
-<span class="sourceLineNo">142</span>        <a name="line.142"></a>
-<span class="sourceLineNo">143</span>        @Test(expected = AuthenticationServiceException.class)<a name="line.143"></a>
-<span class="sourceLineNo">144</span>        public void buildAuthRequestUrl_badUri() {<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                <a name="line.145"></a>
-<span class="sourceLineNo">146</span>                Mockito.when(serverConfig.getAuthorizationEndpointUri()).thenReturn("e=mc^2");<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                <a name="line.147"></a>
-<span class="sourceLineNo">148</span>                urlBuilder.buildAuthRequestUrl(serverConfig, clientConfig, "example.com", "", "");<a name="line.148"></a>
-<span class="sourceLineNo">149</span>        }<a name="line.149"></a>
-<span class="sourceLineNo">150</span><a name="line.150"></a>
-<span class="sourceLineNo">151</span>}<a name="line.151"></a>
+<span class="sourceLineNo">128</span>                        builder = UriComponentsBuilder.fromUri(new URI(requestUri));<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                } catch (URISyntaxException e1) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                        fail("URISyntaxException was thrown.");<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                }<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                <a name="line.132"></a>
+<span class="sourceLineNo">133</span>                UriComponents components = builder.build();<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                String jwtString = components.getQueryParams().get("request").get(0);<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                ReadOnlyJWTClaimsSet claims = null;<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                <a name="line.136"></a>
+<span class="sourceLineNo">137</span>                try {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                        SignedJWT jwt = SignedJWT.parse(jwtString);<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                        claims = jwt.getJWTClaimsSet();<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                } catch (ParseException e) {<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                        fail("ParseException was thrown.");<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                }<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                <a name="line.143"></a>
+<span class="sourceLineNo">144</span>                assertEquals(responseType, claims.getClaim("response_type"));<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                assertEquals(clientConfig.getClientId(), claims.getClaim("client_id"));<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                <a name="line.146"></a>
+<span class="sourceLineNo">147</span>                List&lt;String&gt; scopeList = Arrays.asList(((String) claims.getClaim("scope")).split(" "));<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                assertTrue(scopeList.containsAll(clientConfig.getScope()));<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                <a name="line.149"></a>
+<span class="sourceLineNo">150</span>                assertEquals(redirectUri, claims.getClaim("redirect_uri"));<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                assertEquals(nonce, claims.getClaim("nonce"));<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                assertEquals(state, claims.getClaim("state"));<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>        @Test(expected = AuthenticationServiceException.class)<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        public void buildAuthRequestUrl_badUri() {<a name="line.156"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
+<span class="sourceLineNo">158</span>                Mockito.when(serverConfig.getAuthorizationEndpointUri()).thenReturn("e=mc^2");<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>                urlBuilder.buildAuthRequestUrl(serverConfig, clientConfig, "example.com", "", "");<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        }<a name="line.161"></a>
+<span class="sourceLineNo">162</span>}<a name="line.162"></a>
 
 
 
