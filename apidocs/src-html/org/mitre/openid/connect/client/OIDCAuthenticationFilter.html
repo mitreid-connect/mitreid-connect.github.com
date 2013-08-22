@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -193,7 +193,7 @@
 <span class="sourceLineNo">185</span>                                throw new AuthenticationServiceException("No client configuration found for issuer: " + issuer);<a name="line.185"></a>
 <span class="sourceLineNo">186</span>                        }<a name="line.186"></a>
 <span class="sourceLineNo">187</span><a name="line.187"></a>
-<span class="sourceLineNo">188</span>                        String redirectUri = null; <a name="line.188"></a>
+<span class="sourceLineNo">188</span>                        String redirectUri = null;<a name="line.188"></a>
 <span class="sourceLineNo">189</span>                        if (clientConfig.getRegisteredRedirectUri() != null &amp;&amp; clientConfig.getRegisteredRedirectUri().size() == 1) {<a name="line.189"></a>
 <span class="sourceLineNo">190</span>                                // if there's a redirect uri configured (and only one), use that<a name="line.190"></a>
 <span class="sourceLineNo">191</span>                                redirectUri = clientConfig.getRegisteredRedirectUri().toArray(new String[] {})[0];<a name="line.191"></a>
@@ -411,8 +411,8 @@
 <span class="sourceLineNo">403</span>                                }<a name="line.403"></a>
 <span class="sourceLineNo">404</span><a name="line.404"></a>
 <span class="sourceLineNo">405</span>                                // compare the nonce to our stored claim<a name="line.405"></a>
-<span class="sourceLineNo">406</span>                                // TODO: Nimbus claims as strings?<a name="line.406"></a>
-<span class="sourceLineNo">407</span>                                String nonce = (String) idClaims.getCustomClaim("nonce");<a name="line.407"></a>
+<span class="sourceLineNo">406</span>                                // would be nice to have a getClaimAsString() kind of method from nimbus..<a name="line.406"></a>
+<span class="sourceLineNo">407</span>                                String nonce = (String) idClaims.getClaim("nonce");<a name="line.407"></a>
 <span class="sourceLineNo">408</span>                                if (Strings.isNullOrEmpty(nonce)) {<a name="line.408"></a>
 <span class="sourceLineNo">409</span><a name="line.409"></a>
 <span class="sourceLineNo">410</span>                                        logger.error("ID token did not contain a nonce claim.");<a name="line.410"></a>

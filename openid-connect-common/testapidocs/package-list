@@ -1,3 +1,4 @@
+org.mitre.discovery.util
 org.mitre.jose
 org.mitre.oauth2.model
 org.mitre.openid.connect

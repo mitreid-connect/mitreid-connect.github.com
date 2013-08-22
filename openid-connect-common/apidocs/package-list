@@ -1,3 +1,4 @@
+org.mitre.discovery.util
 org.mitre.jose
 org.mitre.jose.keystore
 org.mitre.jwt.signer.service

@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -122,7 +122,7 @@
 <span class="sourceLineNo">114</span><a name="line.114"></a>
 <span class="sourceLineNo">115</span>                Set&lt;String&gt; scopes = OAuth2Utils.parseParameterList(parameters.get("scope"));<a name="line.115"></a>
 <span class="sourceLineNo">116</span>                if ((scopes == null || scopes.isEmpty())) {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                        //TODO: do we want to allow default scoping at all?<a name="line.117"></a>
+<span class="sourceLineNo">117</span>                        // default scoping<a name="line.117"></a>
 <span class="sourceLineNo">118</span>                        Set&lt;String&gt; clientScopes = client.getScope();<a name="line.118"></a>
 <span class="sourceLineNo">119</span>                        scopes = clientScopes;<a name="line.119"></a>
 <span class="sourceLineNo">120</span>                }<a name="line.120"></a>
@@ -239,8 +239,8 @@
 <span class="sourceLineNo">231</span>                        }<a name="line.231"></a>
 <span class="sourceLineNo">232</span><a name="line.232"></a>
 <span class="sourceLineNo">233</span>                } catch (ParseException e) {<a name="line.233"></a>
-<span class="sourceLineNo">234</span>                        // TODO Auto-generated catch block<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                        e.printStackTrace();<a name="line.235"></a>
+<span class="sourceLineNo">234</span><a name="line.234"></a>
+<span class="sourceLineNo">235</span>                        logger.error("Failed to process request object, error was: ", e);<a name="line.235"></a>
 <span class="sourceLineNo">236</span>                }<a name="line.236"></a>
 <span class="sourceLineNo">237</span>                return parameters;<a name="line.237"></a>
 <span class="sourceLineNo">238</span>        }<a name="line.238"></a>

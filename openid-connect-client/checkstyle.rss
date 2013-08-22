@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>OpenID Connect Client - Checkstyle report</title>
+    <link>https://github.com/mitreid-connect/openid-connect-client</link>
+    <description>OpenID Connect Client - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2013</copyright>
+    <item>
+      <title>File: 35,
+             Errors: 6,
+             Warnings: 79,
+             Infos: 0
+      </title>
+            <link>https://github.com/mitreid-connect/openid-connect-client/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.OAuth2AccessTokenImpl.java">org/mitre/oauth2/introspectingfilter/OAuth2AccessTokenImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.IntrospectionUrlProvider.java">org/mitre/oauth2/introspectingfilter/IntrospectionUrlProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.ServerConfigurationService.java">org/mitre/openid/connect/client/service/ServerConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.HybridClientConfigurationService.java">org/mitre/openid/connect/client/service/impl/HybridClientConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticClientConfigurationService.java">org/mitre/openid/connect/client/service/impl/StaticClientConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.StaticIntrospectionUrlProvider.java">org/mitre/oauth2/introspectingfilter/StaticIntrospectionUrlProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.ClientConfigurationService.java">org/mitre/openid/connect/client/service/ClientConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.OIDCAuthenticationFilter.java">org/mitre/openid/connect/client/OIDCAuthenticationFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  34
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.OIDCAuthenticationProvider.java">org/mitre/openid/connect/client/OIDCAuthenticationProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.DynamicServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/DynamicServerConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/StaticServerConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.keypublisher.JwkViewResolver.java">org/mitre/openid/connect/client/keypublisher/JwkViewResolver.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.PlainAuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/impl/PlainAuthRequestUrlBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.NamedAdminAuthoritiesMapper.java">org/mitre/openid/connect/client/NamedAdminAuthoritiesMapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.AuthorizationRequestImpl.java">org/mitre/oauth2/introspectingfilter/AuthorizationRequestImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.InMemoryRegisteredClientService.java">org/mitre/openid/connect/client/service/impl/InMemoryRegisteredClientService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.SubjectIssuerGrantedAuthority.java">org/mitre/openid/connect/client/SubjectIssuerGrantedAuthority.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.IntrospectionAuthorityGranter.java">org/mitre/oauth2/introspectingfilter/IntrospectionAuthorityGranter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.keypublisher.ClientKeyPublisherMapping.java">org/mitre/openid/connect/client/keypublisher/ClientKeyPublisherMapping.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticSingleIssuerService.java">org/mitre/openid/connect/client/service/impl/StaticSingleIssuerService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.IntrospectingTokenService.java">org/mitre/oauth2/introspectingfilter/IntrospectingTokenService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService.java">org/mitre/openid/connect/client/service/impl/DynamicRegistrationClientConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.IssuerService.java">org/mitre/openid/connect/client/service/IssuerService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/AuthRequestUrlBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.SignedAuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/impl/SignedAuthRequestUrlBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.JWTParsingIntrospectionUrlProvider.java">org/mitre/oauth2/introspectingfilter/JWTParsingIntrospectionUrlProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.SimpleIntrospectionAuthorityGranter.java">org/mitre/oauth2/introspectingfilter/SimpleIntrospectionAuthorityGranter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.model.IssuerServiceResponse.java">org/mitre/openid/connect/client/model/IssuerServiceResponse.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.WebfingerIssuerService.java">org/mitre/openid/connect/client/service/impl/WebfingerIssuerService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.HybridServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/HybridServerConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.UserInfoFetcher.java">org/mitre/openid/connect/client/UserInfoFetcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.keypublisher.ClientKeyPublisher.java">org/mitre/openid/connect/client/keypublisher/ClientKeyPublisher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.JsonFileRegisteredClientService.java">org/mitre/openid/connect/client/service/impl/JsonFileRegisteredClientService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.RegisteredClientService.java">org/mitre/openid/connect/client/service/RegisteredClientService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.ThirdPartyIssuerService.java">org/mitre/openid/connect/client/service/impl/ThirdPartyIssuerService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
