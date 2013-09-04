@@ -8,7 +8,7 @@
     <language>en-us</language>
     <copyright>&#169;2013</copyright>
     <item>
-      <title>File: 35,
+      <title>File: 37,
              Errors: 6,
              Warnings: 79,
              Infos: 0
@@ -169,6 +169,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestOptionsService.java">org/mitre/openid/connect/client/service/AuthRequestOptionsService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/StaticServerConfigurationService.java</a>
                 </td>
                 <td>
@@ -267,6 +281,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticAuthRequestOptionsService.java">org/mitre/openid/connect/client/service/impl/StaticAuthRequestOptionsService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.oauth2.introspectingfilter.IntrospectionAuthorityGranter.java">org/mitre/oauth2/introspectingfilter/IntrospectionAuthorityGranter.java</a>
                 </td>
                 <td>
@@ -323,6 +351,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/AuthRequestUrlBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService.java">org/mitre/openid/connect/client/service/impl/DynamicRegistrationClientConfigurationService.java</a>
                 </td>
                 <td>
@@ -338,20 +380,6 @@
                           <tr>
                 <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.IssuerService.java">org/mitre/openid/connect/client/service/IssuerService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/AuthRequestUrlBuilder.java</a>
                 </td>
                 <td>
                   0
