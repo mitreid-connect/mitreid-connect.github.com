@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -39,7 +39,7 @@
 <span class="sourceLineNo">031</span><a name="line.31"></a>
 <span class="sourceLineNo">032</span>import org.apache.http.impl.client.DefaultHttpClient;<a name="line.32"></a>
 <span class="sourceLineNo">033</span>import org.mitre.jwt.signer.service.JwtSigningAndValidationService;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import org.mitre.jwt.signer.service.impl.JWKSetSigningAndValidationServiceCacheService;<a name="line.34"></a>
+<span class="sourceLineNo">034</span>import org.mitre.jwt.signer.service.impl.JWKSetCacheService;<a name="line.34"></a>
 <span class="sourceLineNo">035</span>import org.mitre.oauth2.model.RegisteredClient;<a name="line.35"></a>
 <span class="sourceLineNo">036</span>import org.mitre.openid.connect.client.model.IssuerServiceResponse;<a name="line.36"></a>
 <span class="sourceLineNo">037</span>import org.mitre.openid.connect.client.service.AuthRequestOptionsService;<a name="line.37"></a>
@@ -71,7 +71,7 @@
 <span class="sourceLineNo">063</span>import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;<a name="line.63"></a>
 <span class="sourceLineNo">064</span>import com.nimbusds.jwt.SignedJWT;<a name="line.64"></a>
 <span class="sourceLineNo">065</span><a name="line.65"></a>
-<span class="sourceLineNo">066</span>import static org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod.SECRET_BASIC;<a name="line.66"></a>
+<span class="sourceLineNo">066</span>import static org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod.*;<a name="line.66"></a>
 <span class="sourceLineNo">067</span><a name="line.67"></a>
 <span class="sourceLineNo">068</span>/**<a name="line.68"></a>
 <span class="sourceLineNo">069</span> * OpenID Connect Authentication Filter class<a name="line.69"></a>
@@ -93,7 +93,7 @@
 <span class="sourceLineNo">085</span>        private int timeSkewAllowance = 300;<a name="line.85"></a>
 <span class="sourceLineNo">086</span><a name="line.86"></a>
 <span class="sourceLineNo">087</span>        @Autowired<a name="line.87"></a>
-<span class="sourceLineNo">088</span>        private JWKSetSigningAndValidationServiceCacheService validationServices;<a name="line.88"></a>
+<span class="sourceLineNo">088</span>        private JWKSetCacheService validationServices;<a name="line.88"></a>
 <span class="sourceLineNo">089</span><a name="line.89"></a>
 <span class="sourceLineNo">090</span>        // modular services to build out client filter<a name="line.90"></a>
 <span class="sourceLineNo">091</span>        private ServerConfigurationService servers;<a name="line.91"></a>
@@ -363,7 +363,7 @@
 <span class="sourceLineNo">355</span>                                ReadOnlyJWTClaimsSet idClaims = idToken.getJWTClaimsSet();<a name="line.355"></a>
 <span class="sourceLineNo">356</span><a name="line.356"></a>
 <span class="sourceLineNo">357</span>                                // check the signature<a name="line.357"></a>
-<span class="sourceLineNo">358</span>                                JwtSigningAndValidationService jwtValidator = validationServices.get(serverConfig.getJwksUri());<a name="line.358"></a>
+<span class="sourceLineNo">358</span>                                JwtSigningAndValidationService jwtValidator = validationServices.getValidator(serverConfig.getJwksUri());<a name="line.358"></a>
 <span class="sourceLineNo">359</span>                                if (jwtValidator != null) {<a name="line.359"></a>
 <span class="sourceLineNo">360</span>                                        if(!jwtValidator.validateSignature(idToken)) {<a name="line.360"></a>
 <span class="sourceLineNo">361</span>                                                throw new AuthenticationServiceException("Signature validation failed");<a name="line.361"></a>
@@ -417,222 +417,221 @@
 <span class="sourceLineNo">409</span>                                }<a name="line.409"></a>
 <span class="sourceLineNo">410</span><a name="line.410"></a>
 <span class="sourceLineNo">411</span>                                // compare the nonce to our stored claim<a name="line.411"></a>
-<span class="sourceLineNo">412</span>                                // would be nice to have a getClaimAsString() kind of method from nimbus..<a name="line.412"></a>
-<span class="sourceLineNo">413</span>                                String nonce = (String) idClaims.getClaim("nonce");<a name="line.413"></a>
-<span class="sourceLineNo">414</span>                                if (Strings.isNullOrEmpty(nonce)) {<a name="line.414"></a>
-<span class="sourceLineNo">415</span><a name="line.415"></a>
-<span class="sourceLineNo">416</span>                                        logger.error("ID token did not contain a nonce claim.");<a name="line.416"></a>
-<span class="sourceLineNo">417</span><a name="line.417"></a>
-<span class="sourceLineNo">418</span>                                        throw new AuthenticationServiceException("ID token did not contain a nonce claim.");<a name="line.418"></a>
-<span class="sourceLineNo">419</span>                                }<a name="line.419"></a>
-<span class="sourceLineNo">420</span><a name="line.420"></a>
-<span class="sourceLineNo">421</span>                                String storedNonce = getStoredNonce(session);<a name="line.421"></a>
-<span class="sourceLineNo">422</span>                                if (!nonce.equals(storedNonce)) {<a name="line.422"></a>
-<span class="sourceLineNo">423</span>                                        logger.error("Possible replay attack detected! The comparison of the nonce in the returned "<a name="line.423"></a>
-<span class="sourceLineNo">424</span>                                                        + "ID Token to the session " + NONCE_SESSION_VARIABLE + " failed. Expected " + storedNonce + " got " + nonce + ".");<a name="line.424"></a>
-<span class="sourceLineNo">425</span><a name="line.425"></a>
-<span class="sourceLineNo">426</span>                                        throw new AuthenticationServiceException(<a name="line.426"></a>
-<span class="sourceLineNo">427</span>                                                        "Possible replay attack detected! The comparison of the nonce in the returned "<a name="line.427"></a>
-<span class="sourceLineNo">428</span>                                                                        + "ID Token to the session " + NONCE_SESSION_VARIABLE + " failed. Expected " + storedNonce + " got " + nonce + ".");<a name="line.428"></a>
-<span class="sourceLineNo">429</span>                                }<a name="line.429"></a>
-<span class="sourceLineNo">430</span><a name="line.430"></a>
-<span class="sourceLineNo">431</span>                                // pull the subject (user id) out as a claim on the id_token<a name="line.431"></a>
-<span class="sourceLineNo">432</span><a name="line.432"></a>
-<span class="sourceLineNo">433</span>                                String userId = idClaims.getSubject();<a name="line.433"></a>
-<span class="sourceLineNo">434</span><a name="line.434"></a>
-<span class="sourceLineNo">435</span>                                // construct an OIDCAuthenticationToken and return a Authentication object w/the userId and the idToken<a name="line.435"></a>
-<span class="sourceLineNo">436</span><a name="line.436"></a>
-<span class="sourceLineNo">437</span>                                OIDCAuthenticationToken token = new OIDCAuthenticationToken(userId, idClaims.getIssuer(), serverConfig, idTokenValue, accessTokenValue, refreshTokenValue);<a name="line.437"></a>
-<span class="sourceLineNo">438</span><a name="line.438"></a>
-<span class="sourceLineNo">439</span>                                Authentication authentication = this.getAuthenticationManager().authenticate(token);<a name="line.439"></a>
-<span class="sourceLineNo">440</span><a name="line.440"></a>
-<span class="sourceLineNo">441</span>                                return authentication;<a name="line.441"></a>
-<span class="sourceLineNo">442</span>                        } catch (ParseException e) {<a name="line.442"></a>
-<span class="sourceLineNo">443</span>                                throw new AuthenticationServiceException("Couldn't parse idToken: ", e);<a name="line.443"></a>
-<span class="sourceLineNo">444</span>                        }<a name="line.444"></a>
+<span class="sourceLineNo">412</span>                                String nonce = idClaims.getStringClaim("nonce");<a name="line.412"></a>
+<span class="sourceLineNo">413</span>                                if (Strings.isNullOrEmpty(nonce)) {<a name="line.413"></a>
+<span class="sourceLineNo">414</span><a name="line.414"></a>
+<span class="sourceLineNo">415</span>                                        logger.error("ID token did not contain a nonce claim.");<a name="line.415"></a>
+<span class="sourceLineNo">416</span><a name="line.416"></a>
+<span class="sourceLineNo">417</span>                                        throw new AuthenticationServiceException("ID token did not contain a nonce claim.");<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                                }<a name="line.418"></a>
+<span class="sourceLineNo">419</span><a name="line.419"></a>
+<span class="sourceLineNo">420</span>                                String storedNonce = getStoredNonce(session);<a name="line.420"></a>
+<span class="sourceLineNo">421</span>                                if (!nonce.equals(storedNonce)) {<a name="line.421"></a>
+<span class="sourceLineNo">422</span>                                        logger.error("Possible replay attack detected! The comparison of the nonce in the returned "<a name="line.422"></a>
+<span class="sourceLineNo">423</span>                                                        + "ID Token to the session " + NONCE_SESSION_VARIABLE + " failed. Expected " + storedNonce + " got " + nonce + ".");<a name="line.423"></a>
+<span class="sourceLineNo">424</span><a name="line.424"></a>
+<span class="sourceLineNo">425</span>                                        throw new AuthenticationServiceException(<a name="line.425"></a>
+<span class="sourceLineNo">426</span>                                                        "Possible replay attack detected! The comparison of the nonce in the returned "<a name="line.426"></a>
+<span class="sourceLineNo">427</span>                                                                        + "ID Token to the session " + NONCE_SESSION_VARIABLE + " failed. Expected " + storedNonce + " got " + nonce + ".");<a name="line.427"></a>
+<span class="sourceLineNo">428</span>                                }<a name="line.428"></a>
+<span class="sourceLineNo">429</span><a name="line.429"></a>
+<span class="sourceLineNo">430</span>                                // pull the subject (user id) out as a claim on the id_token<a name="line.430"></a>
+<span class="sourceLineNo">431</span><a name="line.431"></a>
+<span class="sourceLineNo">432</span>                                String userId = idClaims.getSubject();<a name="line.432"></a>
+<span class="sourceLineNo">433</span><a name="line.433"></a>
+<span class="sourceLineNo">434</span>                                // construct an OIDCAuthenticationToken and return a Authentication object w/the userId and the idToken<a name="line.434"></a>
+<span class="sourceLineNo">435</span><a name="line.435"></a>
+<span class="sourceLineNo">436</span>                                OIDCAuthenticationToken token = new OIDCAuthenticationToken(userId, idClaims.getIssuer(), serverConfig, idTokenValue, accessTokenValue, refreshTokenValue);<a name="line.436"></a>
+<span class="sourceLineNo">437</span><a name="line.437"></a>
+<span class="sourceLineNo">438</span>                                Authentication authentication = this.getAuthenticationManager().authenticate(token);<a name="line.438"></a>
+<span class="sourceLineNo">439</span><a name="line.439"></a>
+<span class="sourceLineNo">440</span>                                return authentication;<a name="line.440"></a>
+<span class="sourceLineNo">441</span>                        } catch (ParseException e) {<a name="line.441"></a>
+<span class="sourceLineNo">442</span>                                throw new AuthenticationServiceException("Couldn't parse idToken: ", e);<a name="line.442"></a>
+<span class="sourceLineNo">443</span>                        }<a name="line.443"></a>
+<span class="sourceLineNo">444</span><a name="line.444"></a>
 <span class="sourceLineNo">445</span><a name="line.445"></a>
 <span class="sourceLineNo">446</span><a name="line.446"></a>
-<span class="sourceLineNo">447</span><a name="line.447"></a>
-<span class="sourceLineNo">448</span>                }<a name="line.448"></a>
-<span class="sourceLineNo">449</span>        }<a name="line.449"></a>
-<span class="sourceLineNo">450</span><a name="line.450"></a>
-<span class="sourceLineNo">451</span>        /**<a name="line.451"></a>
-<span class="sourceLineNo">452</span>         * Handle Authorization Endpoint error<a name="line.452"></a>
-<span class="sourceLineNo">453</span>         * <a name="line.453"></a>
-<span class="sourceLineNo">454</span>         * @param request<a name="line.454"></a>
-<span class="sourceLineNo">455</span>         *            The request from which to extract parameters and handle the<a name="line.455"></a>
-<span class="sourceLineNo">456</span>         *            error<a name="line.456"></a>
-<span class="sourceLineNo">457</span>         * @param response<a name="line.457"></a>
-<span class="sourceLineNo">458</span>         *            The response, needed to do a redirect to display the error<a name="line.458"></a>
-<span class="sourceLineNo">459</span>         * @throws IOException<a name="line.459"></a>
-<span class="sourceLineNo">460</span>         *             If an input or output exception occurs<a name="line.460"></a>
-<span class="sourceLineNo">461</span>         */<a name="line.461"></a>
-<span class="sourceLineNo">462</span>        protected void handleError(HttpServletRequest request, HttpServletResponse response) throws IOException {<a name="line.462"></a>
-<span class="sourceLineNo">463</span><a name="line.463"></a>
-<span class="sourceLineNo">464</span>                String error = request.getParameter("error");<a name="line.464"></a>
-<span class="sourceLineNo">465</span>                String errorDescription = request.getParameter("error_description");<a name="line.465"></a>
-<span class="sourceLineNo">466</span>                String errorURI = request.getParameter("error_uri");<a name="line.466"></a>
-<span class="sourceLineNo">467</span><a name="line.467"></a>
-<span class="sourceLineNo">468</span>                throw new AuthenticationServiceException("Error from Authorization Endpoint: " + error + " " + errorDescription + " " + errorURI);<a name="line.468"></a>
-<span class="sourceLineNo">469</span>        }<a name="line.469"></a>
-<span class="sourceLineNo">470</span><a name="line.470"></a>
-<span class="sourceLineNo">471</span>        /**<a name="line.471"></a>
-<span class="sourceLineNo">472</span>         * Get the named stored session variable as a string. Return null if not found or not a string.<a name="line.472"></a>
-<span class="sourceLineNo">473</span>         * @param session<a name="line.473"></a>
-<span class="sourceLineNo">474</span>         * @param key<a name="line.474"></a>
-<span class="sourceLineNo">475</span>         * @return<a name="line.475"></a>
-<span class="sourceLineNo">476</span>         */<a name="line.476"></a>
-<span class="sourceLineNo">477</span>        private static String getStoredSessionString(HttpSession session, String key) {<a name="line.477"></a>
-<span class="sourceLineNo">478</span>                Object o = session.getAttribute(key);<a name="line.478"></a>
-<span class="sourceLineNo">479</span>                if (o != null &amp;&amp; o instanceof String) {<a name="line.479"></a>
-<span class="sourceLineNo">480</span>                        return o.toString();<a name="line.480"></a>
-<span class="sourceLineNo">481</span>                } else {<a name="line.481"></a>
-<span class="sourceLineNo">482</span>                        return null;<a name="line.482"></a>
-<span class="sourceLineNo">483</span>                }<a name="line.483"></a>
-<span class="sourceLineNo">484</span>        }<a name="line.484"></a>
-<span class="sourceLineNo">485</span><a name="line.485"></a>
-<span class="sourceLineNo">486</span>        /**<a name="line.486"></a>
-<span class="sourceLineNo">487</span>         * Create a cryptographically random nonce and store it in the session<a name="line.487"></a>
-<span class="sourceLineNo">488</span>         * @param session<a name="line.488"></a>
-<span class="sourceLineNo">489</span>         * @return<a name="line.489"></a>
-<span class="sourceLineNo">490</span>         */<a name="line.490"></a>
-<span class="sourceLineNo">491</span>        protected static String createNonce(HttpSession session) {<a name="line.491"></a>
-<span class="sourceLineNo">492</span>                String nonce = new BigInteger(50, new SecureRandom()).toString(16);<a name="line.492"></a>
-<span class="sourceLineNo">493</span>                session.setAttribute(NONCE_SESSION_VARIABLE, nonce);<a name="line.493"></a>
-<span class="sourceLineNo">494</span><a name="line.494"></a>
-<span class="sourceLineNo">495</span>                return nonce;<a name="line.495"></a>
-<span class="sourceLineNo">496</span>        }<a name="line.496"></a>
-<span class="sourceLineNo">497</span><a name="line.497"></a>
-<span class="sourceLineNo">498</span>        /**<a name="line.498"></a>
-<span class="sourceLineNo">499</span>         * Get the nonce we stored in the session<a name="line.499"></a>
-<span class="sourceLineNo">500</span>         * @param session<a name="line.500"></a>
-<span class="sourceLineNo">501</span>         * @return<a name="line.501"></a>
-<span class="sourceLineNo">502</span>         */<a name="line.502"></a>
-<span class="sourceLineNo">503</span>        protected static String getStoredNonce(HttpSession session) {<a name="line.503"></a>
-<span class="sourceLineNo">504</span>                return getStoredSessionString(session, NONCE_SESSION_VARIABLE);<a name="line.504"></a>
-<span class="sourceLineNo">505</span>        }<a name="line.505"></a>
-<span class="sourceLineNo">506</span><a name="line.506"></a>
-<span class="sourceLineNo">507</span>        /**<a name="line.507"></a>
-<span class="sourceLineNo">508</span>         * Create a cryptographically random state and store it in the session<a name="line.508"></a>
-<span class="sourceLineNo">509</span>         * @param session<a name="line.509"></a>
-<span class="sourceLineNo">510</span>         * @return<a name="line.510"></a>
-<span class="sourceLineNo">511</span>         */<a name="line.511"></a>
-<span class="sourceLineNo">512</span>        protected static String createState(HttpSession session) {<a name="line.512"></a>
-<span class="sourceLineNo">513</span>                String state = new BigInteger(50, new SecureRandom()).toString(16);<a name="line.513"></a>
-<span class="sourceLineNo">514</span>                session.setAttribute(STATE_SESSION_VARIABLE, state);<a name="line.514"></a>
-<span class="sourceLineNo">515</span><a name="line.515"></a>
-<span class="sourceLineNo">516</span>                return state;<a name="line.516"></a>
-<span class="sourceLineNo">517</span>        }<a name="line.517"></a>
-<span class="sourceLineNo">518</span><a name="line.518"></a>
-<span class="sourceLineNo">519</span>        /**<a name="line.519"></a>
-<span class="sourceLineNo">520</span>         * Get the state we stored in the session<a name="line.520"></a>
-<span class="sourceLineNo">521</span>         * @param session<a name="line.521"></a>
-<span class="sourceLineNo">522</span>         * @return<a name="line.522"></a>
-<span class="sourceLineNo">523</span>         */<a name="line.523"></a>
-<span class="sourceLineNo">524</span>        protected static String getStoredState(HttpSession session) {<a name="line.524"></a>
-<span class="sourceLineNo">525</span>                return getStoredSessionString(session, STATE_SESSION_VARIABLE);<a name="line.525"></a>
-<span class="sourceLineNo">526</span>        }<a name="line.526"></a>
+<span class="sourceLineNo">447</span>                }<a name="line.447"></a>
+<span class="sourceLineNo">448</span>        }<a name="line.448"></a>
+<span class="sourceLineNo">449</span><a name="line.449"></a>
+<span class="sourceLineNo">450</span>        /**<a name="line.450"></a>
+<span class="sourceLineNo">451</span>         * Handle Authorization Endpoint error<a name="line.451"></a>
+<span class="sourceLineNo">452</span>         * <a name="line.452"></a>
+<span class="sourceLineNo">453</span>         * @param request<a name="line.453"></a>
+<span class="sourceLineNo">454</span>         *            The request from which to extract parameters and handle the<a name="line.454"></a>
+<span class="sourceLineNo">455</span>         *            error<a name="line.455"></a>
+<span class="sourceLineNo">456</span>         * @param response<a name="line.456"></a>
+<span class="sourceLineNo">457</span>         *            The response, needed to do a redirect to display the error<a name="line.457"></a>
+<span class="sourceLineNo">458</span>         * @throws IOException<a name="line.458"></a>
+<span class="sourceLineNo">459</span>         *             If an input or output exception occurs<a name="line.459"></a>
+<span class="sourceLineNo">460</span>         */<a name="line.460"></a>
+<span class="sourceLineNo">461</span>        protected void handleError(HttpServletRequest request, HttpServletResponse response) throws IOException {<a name="line.461"></a>
+<span class="sourceLineNo">462</span><a name="line.462"></a>
+<span class="sourceLineNo">463</span>                String error = request.getParameter("error");<a name="line.463"></a>
+<span class="sourceLineNo">464</span>                String errorDescription = request.getParameter("error_description");<a name="line.464"></a>
+<span class="sourceLineNo">465</span>                String errorURI = request.getParameter("error_uri");<a name="line.465"></a>
+<span class="sourceLineNo">466</span><a name="line.466"></a>
+<span class="sourceLineNo">467</span>                throw new AuthenticationServiceException("Error from Authorization Endpoint: " + error + " " + errorDescription + " " + errorURI);<a name="line.467"></a>
+<span class="sourceLineNo">468</span>        }<a name="line.468"></a>
+<span class="sourceLineNo">469</span><a name="line.469"></a>
+<span class="sourceLineNo">470</span>        /**<a name="line.470"></a>
+<span class="sourceLineNo">471</span>         * Get the named stored session variable as a string. Return null if not found or not a string.<a name="line.471"></a>
+<span class="sourceLineNo">472</span>         * @param session<a name="line.472"></a>
+<span class="sourceLineNo">473</span>         * @param key<a name="line.473"></a>
+<span class="sourceLineNo">474</span>         * @return<a name="line.474"></a>
+<span class="sourceLineNo">475</span>         */<a name="line.475"></a>
+<span class="sourceLineNo">476</span>        private static String getStoredSessionString(HttpSession session, String key) {<a name="line.476"></a>
+<span class="sourceLineNo">477</span>                Object o = session.getAttribute(key);<a name="line.477"></a>
+<span class="sourceLineNo">478</span>                if (o != null &amp;&amp; o instanceof String) {<a name="line.478"></a>
+<span class="sourceLineNo">479</span>                        return o.toString();<a name="line.479"></a>
+<span class="sourceLineNo">480</span>                } else {<a name="line.480"></a>
+<span class="sourceLineNo">481</span>                        return null;<a name="line.481"></a>
+<span class="sourceLineNo">482</span>                }<a name="line.482"></a>
+<span class="sourceLineNo">483</span>        }<a name="line.483"></a>
+<span class="sourceLineNo">484</span><a name="line.484"></a>
+<span class="sourceLineNo">485</span>        /**<a name="line.485"></a>
+<span class="sourceLineNo">486</span>         * Create a cryptographically random nonce and store it in the session<a name="line.486"></a>
+<span class="sourceLineNo">487</span>         * @param session<a name="line.487"></a>
+<span class="sourceLineNo">488</span>         * @return<a name="line.488"></a>
+<span class="sourceLineNo">489</span>         */<a name="line.489"></a>
+<span class="sourceLineNo">490</span>        protected static String createNonce(HttpSession session) {<a name="line.490"></a>
+<span class="sourceLineNo">491</span>                String nonce = new BigInteger(50, new SecureRandom()).toString(16);<a name="line.491"></a>
+<span class="sourceLineNo">492</span>                session.setAttribute(NONCE_SESSION_VARIABLE, nonce);<a name="line.492"></a>
+<span class="sourceLineNo">493</span><a name="line.493"></a>
+<span class="sourceLineNo">494</span>                return nonce;<a name="line.494"></a>
+<span class="sourceLineNo">495</span>        }<a name="line.495"></a>
+<span class="sourceLineNo">496</span><a name="line.496"></a>
+<span class="sourceLineNo">497</span>        /**<a name="line.497"></a>
+<span class="sourceLineNo">498</span>         * Get the nonce we stored in the session<a name="line.498"></a>
+<span class="sourceLineNo">499</span>         * @param session<a name="line.499"></a>
+<span class="sourceLineNo">500</span>         * @return<a name="line.500"></a>
+<span class="sourceLineNo">501</span>         */<a name="line.501"></a>
+<span class="sourceLineNo">502</span>        protected static String getStoredNonce(HttpSession session) {<a name="line.502"></a>
+<span class="sourceLineNo">503</span>                return getStoredSessionString(session, NONCE_SESSION_VARIABLE);<a name="line.503"></a>
+<span class="sourceLineNo">504</span>        }<a name="line.504"></a>
+<span class="sourceLineNo">505</span><a name="line.505"></a>
+<span class="sourceLineNo">506</span>        /**<a name="line.506"></a>
+<span class="sourceLineNo">507</span>         * Create a cryptographically random state and store it in the session<a name="line.507"></a>
+<span class="sourceLineNo">508</span>         * @param session<a name="line.508"></a>
+<span class="sourceLineNo">509</span>         * @return<a name="line.509"></a>
+<span class="sourceLineNo">510</span>         */<a name="line.510"></a>
+<span class="sourceLineNo">511</span>        protected static String createState(HttpSession session) {<a name="line.511"></a>
+<span class="sourceLineNo">512</span>                String state = new BigInteger(50, new SecureRandom()).toString(16);<a name="line.512"></a>
+<span class="sourceLineNo">513</span>                session.setAttribute(STATE_SESSION_VARIABLE, state);<a name="line.513"></a>
+<span class="sourceLineNo">514</span><a name="line.514"></a>
+<span class="sourceLineNo">515</span>                return state;<a name="line.515"></a>
+<span class="sourceLineNo">516</span>        }<a name="line.516"></a>
+<span class="sourceLineNo">517</span><a name="line.517"></a>
+<span class="sourceLineNo">518</span>        /**<a name="line.518"></a>
+<span class="sourceLineNo">519</span>         * Get the state we stored in the session<a name="line.519"></a>
+<span class="sourceLineNo">520</span>         * @param session<a name="line.520"></a>
+<span class="sourceLineNo">521</span>         * @return<a name="line.521"></a>
+<span class="sourceLineNo">522</span>         */<a name="line.522"></a>
+<span class="sourceLineNo">523</span>        protected static String getStoredState(HttpSession session) {<a name="line.523"></a>
+<span class="sourceLineNo">524</span>                return getStoredSessionString(session, STATE_SESSION_VARIABLE);<a name="line.524"></a>
+<span class="sourceLineNo">525</span>        }<a name="line.525"></a>
+<span class="sourceLineNo">526</span><a name="line.526"></a>
 <span class="sourceLineNo">527</span><a name="line.527"></a>
 <span class="sourceLineNo">528</span><a name="line.528"></a>
-<span class="sourceLineNo">529</span><a name="line.529"></a>
-<span class="sourceLineNo">530</span>        //<a name="line.530"></a>
-<span class="sourceLineNo">531</span>        // Getters and setters for configuration variables<a name="line.531"></a>
-<span class="sourceLineNo">532</span>        //<a name="line.532"></a>
+<span class="sourceLineNo">529</span>        //<a name="line.529"></a>
+<span class="sourceLineNo">530</span>        // Getters and setters for configuration variables<a name="line.530"></a>
+<span class="sourceLineNo">531</span>        //<a name="line.531"></a>
+<span class="sourceLineNo">532</span><a name="line.532"></a>
 <span class="sourceLineNo">533</span><a name="line.533"></a>
-<span class="sourceLineNo">534</span><a name="line.534"></a>
-<span class="sourceLineNo">535</span>        public int getTimeSkewAllowance() {<a name="line.535"></a>
-<span class="sourceLineNo">536</span>                return timeSkewAllowance;<a name="line.536"></a>
-<span class="sourceLineNo">537</span>        }<a name="line.537"></a>
-<span class="sourceLineNo">538</span><a name="line.538"></a>
-<span class="sourceLineNo">539</span>        public void setTimeSkewAllowance(int timeSkewAllowance) {<a name="line.539"></a>
-<span class="sourceLineNo">540</span>                this.timeSkewAllowance = timeSkewAllowance;<a name="line.540"></a>
-<span class="sourceLineNo">541</span>        }<a name="line.541"></a>
-<span class="sourceLineNo">542</span><a name="line.542"></a>
-<span class="sourceLineNo">543</span>        /**<a name="line.543"></a>
-<span class="sourceLineNo">544</span>         * @return the validationServices<a name="line.544"></a>
-<span class="sourceLineNo">545</span>         */<a name="line.545"></a>
-<span class="sourceLineNo">546</span>        public JWKSetSigningAndValidationServiceCacheService getValidationServices() {<a name="line.546"></a>
-<span class="sourceLineNo">547</span>                return validationServices;<a name="line.547"></a>
-<span class="sourceLineNo">548</span>        }<a name="line.548"></a>
-<span class="sourceLineNo">549</span><a name="line.549"></a>
-<span class="sourceLineNo">550</span>        /**<a name="line.550"></a>
-<span class="sourceLineNo">551</span>         * @param validationServices the validationServices to set<a name="line.551"></a>
-<span class="sourceLineNo">552</span>         */<a name="line.552"></a>
-<span class="sourceLineNo">553</span>        public void setValidationServices(JWKSetSigningAndValidationServiceCacheService validationServices) {<a name="line.553"></a>
-<span class="sourceLineNo">554</span>                this.validationServices = validationServices;<a name="line.554"></a>
-<span class="sourceLineNo">555</span>        }<a name="line.555"></a>
-<span class="sourceLineNo">556</span><a name="line.556"></a>
-<span class="sourceLineNo">557</span>        /**<a name="line.557"></a>
-<span class="sourceLineNo">558</span>         * @return the servers<a name="line.558"></a>
-<span class="sourceLineNo">559</span>         */<a name="line.559"></a>
-<span class="sourceLineNo">560</span>        public ServerConfigurationService getServerConfigurationService() {<a name="line.560"></a>
-<span class="sourceLineNo">561</span>                return servers;<a name="line.561"></a>
-<span class="sourceLineNo">562</span>        }<a name="line.562"></a>
-<span class="sourceLineNo">563</span><a name="line.563"></a>
-<span class="sourceLineNo">564</span>        /**<a name="line.564"></a>
-<span class="sourceLineNo">565</span>         * @param servers the servers to set<a name="line.565"></a>
-<span class="sourceLineNo">566</span>         */<a name="line.566"></a>
-<span class="sourceLineNo">567</span>        public void setServerConfigurationService(ServerConfigurationService servers) {<a name="line.567"></a>
-<span class="sourceLineNo">568</span>                this.servers = servers;<a name="line.568"></a>
-<span class="sourceLineNo">569</span>        }<a name="line.569"></a>
-<span class="sourceLineNo">570</span><a name="line.570"></a>
-<span class="sourceLineNo">571</span>        /**<a name="line.571"></a>
-<span class="sourceLineNo">572</span>         * @return the clients<a name="line.572"></a>
-<span class="sourceLineNo">573</span>         */<a name="line.573"></a>
-<span class="sourceLineNo">574</span>        public ClientConfigurationService getClientConfigurationService() {<a name="line.574"></a>
-<span class="sourceLineNo">575</span>                return clients;<a name="line.575"></a>
-<span class="sourceLineNo">576</span>        }<a name="line.576"></a>
-<span class="sourceLineNo">577</span><a name="line.577"></a>
-<span class="sourceLineNo">578</span>        /**<a name="line.578"></a>
-<span class="sourceLineNo">579</span>         * @param clients the clients to set<a name="line.579"></a>
-<span class="sourceLineNo">580</span>         */<a name="line.580"></a>
-<span class="sourceLineNo">581</span>        public void setClientConfigurationService(ClientConfigurationService clients) {<a name="line.581"></a>
-<span class="sourceLineNo">582</span>                this.clients = clients;<a name="line.582"></a>
-<span class="sourceLineNo">583</span>        }<a name="line.583"></a>
-<span class="sourceLineNo">584</span><a name="line.584"></a>
-<span class="sourceLineNo">585</span>        /**<a name="line.585"></a>
-<span class="sourceLineNo">586</span>         * @return the issuerService<a name="line.586"></a>
-<span class="sourceLineNo">587</span>         */<a name="line.587"></a>
-<span class="sourceLineNo">588</span>        public IssuerService getIssuerService() {<a name="line.588"></a>
-<span class="sourceLineNo">589</span>                return issuerService;<a name="line.589"></a>
-<span class="sourceLineNo">590</span>        }<a name="line.590"></a>
-<span class="sourceLineNo">591</span><a name="line.591"></a>
-<span class="sourceLineNo">592</span>        /**<a name="line.592"></a>
-<span class="sourceLineNo">593</span>         * @param issuerService the issuerService to set<a name="line.593"></a>
-<span class="sourceLineNo">594</span>         */<a name="line.594"></a>
-<span class="sourceLineNo">595</span>        public void setIssuerService(IssuerService issuerService) {<a name="line.595"></a>
-<span class="sourceLineNo">596</span>                this.issuerService = issuerService;<a name="line.596"></a>
-<span class="sourceLineNo">597</span>        }<a name="line.597"></a>
-<span class="sourceLineNo">598</span><a name="line.598"></a>
-<span class="sourceLineNo">599</span>        /**<a name="line.599"></a>
-<span class="sourceLineNo">600</span>         * @return the authRequestBuilder<a name="line.600"></a>
-<span class="sourceLineNo">601</span>         */<a name="line.601"></a>
-<span class="sourceLineNo">602</span>        public AuthRequestUrlBuilder getAuthRequestUrlBuilder() {<a name="line.602"></a>
-<span class="sourceLineNo">603</span>                return authRequestBuilder;<a name="line.603"></a>
-<span class="sourceLineNo">604</span>        }<a name="line.604"></a>
-<span class="sourceLineNo">605</span><a name="line.605"></a>
-<span class="sourceLineNo">606</span>        /**<a name="line.606"></a>
-<span class="sourceLineNo">607</span>         * @param authRequestBuilder the authRequestBuilder to set<a name="line.607"></a>
-<span class="sourceLineNo">608</span>         */<a name="line.608"></a>
-<span class="sourceLineNo">609</span>        public void setAuthRequestUrlBuilder(AuthRequestUrlBuilder authRequestBuilder) {<a name="line.609"></a>
-<span class="sourceLineNo">610</span>                this.authRequestBuilder = authRequestBuilder;<a name="line.610"></a>
-<span class="sourceLineNo">611</span>        }<a name="line.611"></a>
-<span class="sourceLineNo">612</span><a name="line.612"></a>
-<span class="sourceLineNo">613</span>        /**<a name="line.613"></a>
-<span class="sourceLineNo">614</span>         * @return the authOptions<a name="line.614"></a>
-<span class="sourceLineNo">615</span>         */<a name="line.615"></a>
-<span class="sourceLineNo">616</span>        public AuthRequestOptionsService getAuthRequestOptionsService() {<a name="line.616"></a>
-<span class="sourceLineNo">617</span>                return authOptions;<a name="line.617"></a>
-<span class="sourceLineNo">618</span>        }<a name="line.618"></a>
-<span class="sourceLineNo">619</span><a name="line.619"></a>
-<span class="sourceLineNo">620</span>        /**<a name="line.620"></a>
-<span class="sourceLineNo">621</span>         * @param authOptions the authOptions to set<a name="line.621"></a>
-<span class="sourceLineNo">622</span>         */<a name="line.622"></a>
-<span class="sourceLineNo">623</span>        public void setAuthRequestOptionsService(AuthRequestOptionsService authOptions) {<a name="line.623"></a>
-<span class="sourceLineNo">624</span>                this.authOptions = authOptions;<a name="line.624"></a>
-<span class="sourceLineNo">625</span>        }<a name="line.625"></a>
-<span class="sourceLineNo">626</span><a name="line.626"></a>
-<span class="sourceLineNo">627</span>}<a name="line.627"></a>
+<span class="sourceLineNo">534</span>        public int getTimeSkewAllowance() {<a name="line.534"></a>
+<span class="sourceLineNo">535</span>                return timeSkewAllowance;<a name="line.535"></a>
+<span class="sourceLineNo">536</span>        }<a name="line.536"></a>
+<span class="sourceLineNo">537</span><a name="line.537"></a>
+<span class="sourceLineNo">538</span>        public void setTimeSkewAllowance(int timeSkewAllowance) {<a name="line.538"></a>
+<span class="sourceLineNo">539</span>                this.timeSkewAllowance = timeSkewAllowance;<a name="line.539"></a>
+<span class="sourceLineNo">540</span>        }<a name="line.540"></a>
+<span class="sourceLineNo">541</span><a name="line.541"></a>
+<span class="sourceLineNo">542</span>        /**<a name="line.542"></a>
+<span class="sourceLineNo">543</span>         * @return the validationServices<a name="line.543"></a>
+<span class="sourceLineNo">544</span>         */<a name="line.544"></a>
+<span class="sourceLineNo">545</span>        public JWKSetCacheService getValidationServices() {<a name="line.545"></a>
+<span class="sourceLineNo">546</span>                return validationServices;<a name="line.546"></a>
+<span class="sourceLineNo">547</span>        }<a name="line.547"></a>
+<span class="sourceLineNo">548</span><a name="line.548"></a>
+<span class="sourceLineNo">549</span>        /**<a name="line.549"></a>
+<span class="sourceLineNo">550</span>         * @param validationServices the validationServices to set<a name="line.550"></a>
+<span class="sourceLineNo">551</span>         */<a name="line.551"></a>
+<span class="sourceLineNo">552</span>        public void setValidationServices(JWKSetCacheService validationServices) {<a name="line.552"></a>
+<span class="sourceLineNo">553</span>                this.validationServices = validationServices;<a name="line.553"></a>
+<span class="sourceLineNo">554</span>        }<a name="line.554"></a>
+<span class="sourceLineNo">555</span><a name="line.555"></a>
+<span class="sourceLineNo">556</span>        /**<a name="line.556"></a>
+<span class="sourceLineNo">557</span>         * @return the servers<a name="line.557"></a>
+<span class="sourceLineNo">558</span>         */<a name="line.558"></a>
+<span class="sourceLineNo">559</span>        public ServerConfigurationService getServerConfigurationService() {<a name="line.559"></a>
+<span class="sourceLineNo">560</span>                return servers;<a name="line.560"></a>
+<span class="sourceLineNo">561</span>        }<a name="line.561"></a>
+<span class="sourceLineNo">562</span><a name="line.562"></a>
+<span class="sourceLineNo">563</span>        /**<a name="line.563"></a>
+<span class="sourceLineNo">564</span>         * @param servers the servers to set<a name="line.564"></a>
+<span class="sourceLineNo">565</span>         */<a name="line.565"></a>
+<span class="sourceLineNo">566</span>        public void setServerConfigurationService(ServerConfigurationService servers) {<a name="line.566"></a>
+<span class="sourceLineNo">567</span>                this.servers = servers;<a name="line.567"></a>
+<span class="sourceLineNo">568</span>        }<a name="line.568"></a>
+<span class="sourceLineNo">569</span><a name="line.569"></a>
+<span class="sourceLineNo">570</span>        /**<a name="line.570"></a>
+<span class="sourceLineNo">571</span>         * @return the clients<a name="line.571"></a>
+<span class="sourceLineNo">572</span>         */<a name="line.572"></a>
+<span class="sourceLineNo">573</span>        public ClientConfigurationService getClientConfigurationService() {<a name="line.573"></a>
+<span class="sourceLineNo">574</span>                return clients;<a name="line.574"></a>
+<span class="sourceLineNo">575</span>        }<a name="line.575"></a>
+<span class="sourceLineNo">576</span><a name="line.576"></a>
+<span class="sourceLineNo">577</span>        /**<a name="line.577"></a>
+<span class="sourceLineNo">578</span>         * @param clients the clients to set<a name="line.578"></a>
+<span class="sourceLineNo">579</span>         */<a name="line.579"></a>
+<span class="sourceLineNo">580</span>        public void setClientConfigurationService(ClientConfigurationService clients) {<a name="line.580"></a>
+<span class="sourceLineNo">581</span>                this.clients = clients;<a name="line.581"></a>
+<span class="sourceLineNo">582</span>        }<a name="line.582"></a>
+<span class="sourceLineNo">583</span><a name="line.583"></a>
+<span class="sourceLineNo">584</span>        /**<a name="line.584"></a>
+<span class="sourceLineNo">585</span>         * @return the issuerService<a name="line.585"></a>
+<span class="sourceLineNo">586</span>         */<a name="line.586"></a>
+<span class="sourceLineNo">587</span>        public IssuerService getIssuerService() {<a name="line.587"></a>
+<span class="sourceLineNo">588</span>                return issuerService;<a name="line.588"></a>
+<span class="sourceLineNo">589</span>        }<a name="line.589"></a>
+<span class="sourceLineNo">590</span><a name="line.590"></a>
+<span class="sourceLineNo">591</span>        /**<a name="line.591"></a>
+<span class="sourceLineNo">592</span>         * @param issuerService the issuerService to set<a name="line.592"></a>
+<span class="sourceLineNo">593</span>         */<a name="line.593"></a>
+<span class="sourceLineNo">594</span>        public void setIssuerService(IssuerService issuerService) {<a name="line.594"></a>
+<span class="sourceLineNo">595</span>                this.issuerService = issuerService;<a name="line.595"></a>
+<span class="sourceLineNo">596</span>        }<a name="line.596"></a>
+<span class="sourceLineNo">597</span><a name="line.597"></a>
+<span class="sourceLineNo">598</span>        /**<a name="line.598"></a>
+<span class="sourceLineNo">599</span>         * @return the authRequestBuilder<a name="line.599"></a>
+<span class="sourceLineNo">600</span>         */<a name="line.600"></a>
+<span class="sourceLineNo">601</span>        public AuthRequestUrlBuilder getAuthRequestUrlBuilder() {<a name="line.601"></a>
+<span class="sourceLineNo">602</span>                return authRequestBuilder;<a name="line.602"></a>
+<span class="sourceLineNo">603</span>        }<a name="line.603"></a>
+<span class="sourceLineNo">604</span><a name="line.604"></a>
+<span class="sourceLineNo">605</span>        /**<a name="line.605"></a>
+<span class="sourceLineNo">606</span>         * @param authRequestBuilder the authRequestBuilder to set<a name="line.606"></a>
+<span class="sourceLineNo">607</span>         */<a name="line.607"></a>
+<span class="sourceLineNo">608</span>        public void setAuthRequestUrlBuilder(AuthRequestUrlBuilder authRequestBuilder) {<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                this.authRequestBuilder = authRequestBuilder;<a name="line.609"></a>
+<span class="sourceLineNo">610</span>        }<a name="line.610"></a>
+<span class="sourceLineNo">611</span><a name="line.611"></a>
+<span class="sourceLineNo">612</span>        /**<a name="line.612"></a>
+<span class="sourceLineNo">613</span>         * @return the authOptions<a name="line.613"></a>
+<span class="sourceLineNo">614</span>         */<a name="line.614"></a>
+<span class="sourceLineNo">615</span>        public AuthRequestOptionsService getAuthRequestOptionsService() {<a name="line.615"></a>
+<span class="sourceLineNo">616</span>                return authOptions;<a name="line.616"></a>
+<span class="sourceLineNo">617</span>        }<a name="line.617"></a>
+<span class="sourceLineNo">618</span><a name="line.618"></a>
+<span class="sourceLineNo">619</span>        /**<a name="line.619"></a>
+<span class="sourceLineNo">620</span>         * @param authOptions the authOptions to set<a name="line.620"></a>
+<span class="sourceLineNo">621</span>         */<a name="line.621"></a>
+<span class="sourceLineNo">622</span>        public void setAuthRequestOptionsService(AuthRequestOptionsService authOptions) {<a name="line.622"></a>
+<span class="sourceLineNo">623</span>                this.authOptions = authOptions;<a name="line.623"></a>
+<span class="sourceLineNo">624</span>        }<a name="line.624"></a>
+<span class="sourceLineNo">625</span><a name="line.625"></a>
+<span class="sourceLineNo">626</span>}<a name="line.626"></a>
 
 
 

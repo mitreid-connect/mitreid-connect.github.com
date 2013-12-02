@@ -2,15 +2,15 @@
 
 <rss version="0.91">
   <channel>
-    <title>OpenID Connect Server - Checkstyle report</title>
+    <title>OpenID Connect Server Library - Checkstyle report</title>
     <link></link>
-    <description>OpenID Connect Server - Checkstyle report</description>
+    <description>OpenID Connect Server Library - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2013</copyright>
     <item>
-      <title>File: 64,
-             Errors: 3,
-             Warnings: 307,
+      <title>File: 66,
+             Errors: 14,
+             Warnings: 348,
              Infos: 0
       </title>
             <link>/checkstyle.html</link>
@@ -29,6 +29,20 @@
           <tbody>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.service.impl.UUIDPairwiseIdentiferService.java">org/mitre/openid/connect/service/impl/UUIDPairwiseIdentiferService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.web.ScopeAPI.java">org/mitre/oauth2/web/ScopeAPI.java</a>
                 </td>
                 <td>
@@ -43,6 +57,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.ConnectOAuth2RequestFactory.java">org/mitre/openid/connect/ConnectOAuth2RequestFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  26
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.web.ApprovedSiteAPI.java">org/mitre/openid/connect/web/ApprovedSiteAPI.java</a>
                 </td>
                 <td>
@@ -50,6 +78,20 @@
                 </td>
                 <td>
                   15
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.service.impl.DefaultScopeClaimTranslationService.java">org/mitre/openid/connect/service/impl/DefaultScopeClaimTranslationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  24
                 </td>
                 <td>
                   0
@@ -85,27 +127,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.web.RequestObjectAuthorizationEndpoint.java">org/mitre/openid/connect/web/RequestObjectAuthorizationEndpoint.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.view.UserInfoView.java">org/mitre/openid/connect/view/UserInfoView.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  8
+                  5
                 </td>
                 <td>
                   0
@@ -133,10 +161,10 @@
                   0
                 </td>
                 <td>
-                  6
+                  8
                 </td>
                 <td>
-                  2
+                  3
                 </td>
               </tr>
                           <tr>
@@ -203,7 +231,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -239,20 +267,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.web.WhitelistAPI.java">org/mitre/openid/connect/web/WhitelistAPI.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  20
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.util.IdTokenHashUtils.java">org/mitre/openid/connect/util/IdTokenHashUtils.java</a>
                 </td>
                 <td>
@@ -267,13 +281,41 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.web.AuthenticationTimeStamper.java">org/mitre/openid/connect/web/AuthenticationTimeStamper.java</a>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.web.WhitelistAPI.java">org/mitre/openid/connect/web/WhitelistAPI.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  20
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.oauth2.token.StructuredScopeAwareOAuth2RequestValidator.java">org/mitre/oauth2/token/StructuredScopeAwareOAuth2RequestValidator.java</a>
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
                 </td>
                 <td>
                   2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.web.AuthenticationTimeStamper.java">org/mitre/openid/connect/web/AuthenticationTimeStamper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -301,7 +343,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -315,7 +357,7 @@
                   0
                 </td>
                 <td>
-                  8
+                  12
                 </td>
                 <td>
                   0
@@ -379,6 +421,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.repository.impl.JpaPairwiseIdentifierRepository.java">org/mitre/openid/connect/repository/impl/JpaPairwiseIdentifierRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.web.IntrospectionEndpoint.java">org/mitre/oauth2/web/IntrospectionEndpoint.java</a>
                 </td>
                 <td>
@@ -421,20 +477,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.service.impl.DefaultNonceService.java">org/mitre/openid/connect/service/impl/DefaultNonceService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.token.JwtAssertionTokenGranter.java">org/mitre/oauth2/token/JwtAssertionTokenGranter.java</a>
                 </td>
                 <td>
@@ -442,20 +484,6 @@
                 </td>
                 <td>
                   2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.repository.impl.JpaNonceRepository.java">org/mitre/openid/connect/repository/impl/JpaNonceRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0
@@ -497,10 +525,24 @@
                   0
                 </td>
                 <td>
-                  5
+                  1
                 </td>
                 <td>
-                  1
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.service.impl.DefaultOIDCTokenService.java">org/mitre/openid/connect/service/impl/DefaultOIDCTokenService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  2
                 </td>
               </tr>
                           <tr>
@@ -511,10 +553,10 @@
                   0
                 </td>
                 <td>
-                  14
+                  17
                 </td>
                 <td>
-                  0
+                  4
                 </td>
               </tr>
                           <tr>
@@ -539,7 +581,7 @@
                   0
                 </td>
                 <td>
-                  29
+                  31
                 </td>
                 <td>
                   0
@@ -645,20 +687,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.ConnectAuthorizationRequestManager.java">org/mitre/openid/connect/ConnectAuthorizationRequestManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  16
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.assertion.JwtBearerAssertionAuthenticationToken.java">org/mitre/openid/connect/assertion/JwtBearerAssertionAuthenticationToken.java</a>
                 </td>
                 <td>
@@ -679,7 +707,7 @@
                   0
                 </td>
                 <td>
-                  10
+                  14
                 </td>
                 <td>
                   0
@@ -693,7 +721,7 @@
                   0
                 </td>
                 <td>
-                  8
+                  11
                 </td>
                 <td>
                   0
@@ -749,7 +777,21 @@
                   0
                 </td>
                 <td>
-                  4
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.oauth2.web.CorsFilter.java">org/mitre/oauth2/web/CorsFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -771,27 +813,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.oauth2.exception.NonceReuseException.java">org/mitre/oauth2/exception/NonceReuseException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.repository.impl.JpaSystemScopeRepository.java">org/mitre/oauth2/repository/impl/JpaSystemScopeRepository.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -855,13 +883,27 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultSystemScopeService.java">org/mitre/oauth2/service/impl/DefaultSystemScopeService.java</a>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.view.JsonApprovedSiteView.java">org/mitre/openid/connect/view/JsonApprovedSiteView.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultSystemScopeService.java">org/mitre/oauth2/service/impl/DefaultSystemScopeService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -876,20 +918,6 @@
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="/checkstyle.html#org.mitre.openid.connect.repository.impl.JpaEventRepository.java">org/mitre/openid/connect/repository/impl/JpaEventRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
                 </td>
                 <td>
                   0

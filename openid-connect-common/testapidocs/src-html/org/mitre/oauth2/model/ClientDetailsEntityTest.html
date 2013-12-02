@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -64,8 +64,8 @@
 <span class="sourceLineNo">056</span>                c.setSectorIdentifierUri("https://other.example.net/file_of_redirect_uris.json");<a name="line.56"></a>
 <span class="sourceLineNo">057</span>                c.setTokenEndpointAuthMethod(ClientDetailsEntity.AuthMethod.SECRET_BASIC);<a name="line.57"></a>
 <span class="sourceLineNo">058</span>                c.setJwksUri("https://client.example.org/my_public_keys.jwks");<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                c.setUserInfoEncryptedResponseAlg(new JWEAlgorithmEmbed(JWEAlgorithm.RSA1_5));<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                c.setUserInfoEncryptedResponseEnc(new JWEEncryptionMethodEmbed(EncryptionMethod.A128CBC_HS256));<a name="line.60"></a>
+<span class="sourceLineNo">059</span>                c.setUserInfoEncryptedResponseAlg(JWEAlgorithm.RSA1_5);<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                c.setUserInfoEncryptedResponseEnc(EncryptionMethod.A128CBC_HS256);<a name="line.60"></a>
 <span class="sourceLineNo">061</span>                c.setContacts(ImmutableSet.of("ve7jtb@example.org", "mary@example.org"));<a name="line.61"></a>
 <span class="sourceLineNo">062</span>                c.setRequestUris(ImmutableSet.of("https://client.example.org/rf.txt#qpXaRLh_n93TTR9F252ValdatUQvQiJi5BDub2BeznA"));<a name="line.62"></a>
 <span class="sourceLineNo">063</span>                c.setCreatedAt(now);<a name="line.63"></a>
@@ -81,8 +81,8 @@
 <span class="sourceLineNo">073</span>                assertEquals("https://other.example.net/file_of_redirect_uris.json", c.getSectorIdentifierUri());<a name="line.73"></a>
 <span class="sourceLineNo">074</span>                assertEquals(ClientDetailsEntity.AuthMethod.SECRET_BASIC, c.getTokenEndpointAuthMethod());<a name="line.74"></a>
 <span class="sourceLineNo">075</span>                assertEquals("https://client.example.org/my_public_keys.jwks", c.getJwksUri());<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                assertEquals(JWEAlgorithm.RSA1_5, c.getUserInfoEncryptedResponseAlg().getAlgorithm());<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                assertEquals(EncryptionMethod.A128CBC_HS256, c.getUserInfoEncryptedResponseEnc().getAlgorithm());<a name="line.77"></a>
+<span class="sourceLineNo">076</span>                assertEquals(JWEAlgorithm.RSA1_5, c.getUserInfoEncryptedResponseAlg());<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                assertEquals(EncryptionMethod.A128CBC_HS256, c.getUserInfoEncryptedResponseEnc());<a name="line.77"></a>
 <span class="sourceLineNo">078</span>                assertEquals(ImmutableSet.of("ve7jtb@example.org", "mary@example.org"), c.getContacts());<a name="line.78"></a>
 <span class="sourceLineNo">079</span>                assertEquals(ImmutableSet.of("https://client.example.org/rf.txt#qpXaRLh_n93TTR9F252ValdatUQvQiJi5BDub2BeznA"), c.getRequestUris());<a name="line.79"></a>
 <span class="sourceLineNo">080</span>                assertEquals(now, c.getCreatedAt());<a name="line.80"></a>

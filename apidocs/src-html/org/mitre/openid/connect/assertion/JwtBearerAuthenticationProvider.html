@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -31,7 +31,7 @@
 <span class="sourceLineNo">023</span>import java.util.Date;<a name="line.23"></a>
 <span class="sourceLineNo">024</span><a name="line.24"></a>
 <span class="sourceLineNo">025</span>import org.mitre.jwt.signer.service.JwtSigningAndValidationService;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.mitre.jwt.signer.service.impl.JWKSetSigningAndValidationServiceCacheService;<a name="line.26"></a>
+<span class="sourceLineNo">026</span>import org.mitre.jwt.signer.service.impl.JWKSetCacheService;<a name="line.26"></a>
 <span class="sourceLineNo">027</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.27"></a>
 <span class="sourceLineNo">028</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.28"></a>
 <span class="sourceLineNo">029</span>import org.mitre.openid.connect.config.ConfigurationPropertiesBean;<a name="line.29"></a>
@@ -59,7 +59,7 @@
 <span class="sourceLineNo">051</span><a name="line.51"></a>
 <span class="sourceLineNo">052</span>        // map of verifiers, load keys for clients<a name="line.52"></a>
 <span class="sourceLineNo">053</span>        @Autowired<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        private JWKSetSigningAndValidationServiceCacheService validators;<a name="line.54"></a>
+<span class="sourceLineNo">054</span>        private JWKSetCacheService validators;<a name="line.54"></a>
 <span class="sourceLineNo">055</span><a name="line.55"></a>
 <span class="sourceLineNo">056</span>        // Allow for time sync issues by having a window of X seconds.<a name="line.56"></a>
 <span class="sourceLineNo">057</span>        private int timeSkewAllowance = 300;<a name="line.57"></a>
@@ -90,7 +90,7 @@
 <span class="sourceLineNo">082</span>                        // check the signature with nimbus<a name="line.82"></a>
 <span class="sourceLineNo">083</span>                        if (jwt instanceof SignedJWT) {<a name="line.83"></a>
 <span class="sourceLineNo">084</span>                                SignedJWT jws = (SignedJWT)jwt;<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                                JwtSigningAndValidationService validator = validators.get(client.getJwksUri());<a name="line.85"></a>
+<span class="sourceLineNo">085</span>                                JwtSigningAndValidationService validator = validators.getValidator(client.getJwksUri());<a name="line.85"></a>
 <span class="sourceLineNo">086</span>                                if (validator == null || !validator.validateSignature(jws)) {<a name="line.86"></a>
 <span class="sourceLineNo">087</span>                                        throw new AuthenticationServiceException("Invalid signature");<a name="line.87"></a>
 <span class="sourceLineNo">088</span>                                }<a name="line.88"></a>

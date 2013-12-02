@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -68,154 +68,160 @@
 <span class="sourceLineNo">060</span><a name="line.60"></a>
 <span class="sourceLineNo">061</span>        private RegisteredClientService registeredClientService = new InMemoryRegisteredClientService();<a name="line.61"></a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>        // TODO: make sure the template doesn't have "client_id", "client_secret", or "registration_access_token" set on it already<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        private RegisteredClient template;<a name="line.64"></a>
-<span class="sourceLineNo">065</span><a name="line.65"></a>
-<span class="sourceLineNo">066</span>        private Set&lt;String&gt; whitelist = new HashSet&lt;String&gt;();<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        private Set&lt;String&gt; blacklist = new HashSet&lt;String&gt;();<a name="line.67"></a>
-<span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>        public DynamicRegistrationClientConfigurationService() {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                clients = CacheBuilder.newBuilder().build(new DynamicClientRegistrationLoader());<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        }<a name="line.71"></a>
-<span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span>        @Override<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        public RegisteredClient getClientConfiguration(ServerConfiguration issuer) {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                try {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                        if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(issuer)) {<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                                throw new AuthenticationServiceException("Whitelist was nonempty, issuer was not in whitelist: " + issuer);<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                        }<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        if (blacklist.contains(issuer)) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                                throw new AuthenticationServiceException("Issuer was in blacklist: " + issuer);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        }<a name="line.82"></a>
-<span class="sourceLineNo">083</span><a name="line.83"></a>
-<span class="sourceLineNo">084</span>                        return clients.get(issuer);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                } catch (ExecutionException e) {<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                        logger.warn("Unable to get client configuration", e);<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                        return null;<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                }<a name="line.88"></a>
-<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
-<span class="sourceLineNo">090</span><a name="line.90"></a>
-<span class="sourceLineNo">091</span>        /**<a name="line.91"></a>
-<span class="sourceLineNo">092</span>         * @return the template<a name="line.92"></a>
-<span class="sourceLineNo">093</span>         */<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        public RegisteredClient getTemplate() {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                return template;<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>        /**<a name="line.98"></a>
-<span class="sourceLineNo">099</span>         * @param template the template to set<a name="line.99"></a>
-<span class="sourceLineNo">100</span>         */<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        public void setTemplate(RegisteredClient template) {<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                this.template = template;<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * @return the registeredClientService<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         */<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        public RegisteredClientService getRegisteredClientService() {<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                return registeredClientService;<a name="line.109"></a>
-<span class="sourceLineNo">110</span>        }<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>        /**<a name="line.112"></a>
-<span class="sourceLineNo">113</span>         * @param registeredClientService the registeredClientService to set<a name="line.113"></a>
-<span class="sourceLineNo">114</span>         */<a name="line.114"></a>
-<span class="sourceLineNo">115</span>        public void setRegisteredClientService(RegisteredClientService registeredClientService) {<a name="line.115"></a>
-<span class="sourceLineNo">116</span>                this.registeredClientService = registeredClientService;<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        }<a name="line.117"></a>
-<span class="sourceLineNo">118</span><a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span>        /**<a name="line.120"></a>
-<span class="sourceLineNo">121</span>         * @return the whitelist<a name="line.121"></a>
-<span class="sourceLineNo">122</span>         */<a name="line.122"></a>
-<span class="sourceLineNo">123</span>        public Set&lt;String&gt; getWhitelist() {<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                return whitelist;<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        }<a name="line.125"></a>
-<span class="sourceLineNo">126</span><a name="line.126"></a>
-<span class="sourceLineNo">127</span>        /**<a name="line.127"></a>
-<span class="sourceLineNo">128</span>         * @param whitelist the whitelist to set<a name="line.128"></a>
-<span class="sourceLineNo">129</span>         */<a name="line.129"></a>
-<span class="sourceLineNo">130</span>        public void setWhitelist(Set&lt;String&gt; whitelist) {<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                this.whitelist = whitelist;<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133"></a>
-<span class="sourceLineNo">134</span>        /**<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         * @return the blacklist<a name="line.135"></a>
-<span class="sourceLineNo">136</span>         */<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        public Set&lt;String&gt; getBlacklist() {<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                return blacklist;<a name="line.138"></a>
-<span class="sourceLineNo">139</span>        }<a name="line.139"></a>
-<span class="sourceLineNo">140</span><a name="line.140"></a>
-<span class="sourceLineNo">141</span>        /**<a name="line.141"></a>
-<span class="sourceLineNo">142</span>         * @param blacklist the blacklist to set<a name="line.142"></a>
-<span class="sourceLineNo">143</span>         */<a name="line.143"></a>
-<span class="sourceLineNo">144</span>        public void setBlacklist(Set&lt;String&gt; blacklist) {<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                this.blacklist = blacklist;<a name="line.145"></a>
-<span class="sourceLineNo">146</span>        }<a name="line.146"></a>
-<span class="sourceLineNo">147</span><a name="line.147"></a>
-<span class="sourceLineNo">148</span><a name="line.148"></a>
-<span class="sourceLineNo">149</span>        /**<a name="line.149"></a>
-<span class="sourceLineNo">150</span>         * Loader class that fetches the client information.<a name="line.150"></a>
-<span class="sourceLineNo">151</span>         * <a name="line.151"></a>
-<span class="sourceLineNo">152</span>         * If a client has been registered (ie, it's known to the RegisteredClientService), then this<a name="line.152"></a>
-<span class="sourceLineNo">153</span>         * will fetch the client's configuration from the server.<a name="line.153"></a>
-<span class="sourceLineNo">154</span>         * <a name="line.154"></a>
-<span class="sourceLineNo">155</span>         * @author jricher<a name="line.155"></a>
-<span class="sourceLineNo">156</span>         *<a name="line.156"></a>
-<span class="sourceLineNo">157</span>         */<a name="line.157"></a>
-<span class="sourceLineNo">158</span>        public class DynamicClientRegistrationLoader extends CacheLoader&lt;ServerConfiguration, RegisteredClient&gt; {<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                private HttpClient httpClient = new DefaultHttpClient();<a name="line.159"></a>
-<span class="sourceLineNo">160</span>                private HttpComponentsClientHttpRequestFactory httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);<a name="line.160"></a>
-<span class="sourceLineNo">161</span>                private Gson gson = new Gson(); // note that this doesn't serialize nulls by default<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                <a name="line.162"></a>
-<span class="sourceLineNo">163</span>                @Override<a name="line.163"></a>
-<span class="sourceLineNo">164</span>                public RegisteredClient load(ServerConfiguration serverConfig) throws Exception {<a name="line.164"></a>
-<span class="sourceLineNo">165</span>                        RestTemplate restTemplate = new RestTemplate(httpFactory);<a name="line.165"></a>
-<span class="sourceLineNo">166</span><a name="line.166"></a>
-<span class="sourceLineNo">167</span><a name="line.167"></a>
-<span class="sourceLineNo">168</span>                        RegisteredClient knownClient = registeredClientService.getByIssuer(serverConfig.getIssuer());<a name="line.168"></a>
-<span class="sourceLineNo">169</span>                        if (knownClient == null) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span><a name="line.170"></a>
-<span class="sourceLineNo">171</span>                                // dynamically register this client<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                                JsonObject jsonRequest = ClientDetailsEntityJsonProcessor.serialize(template);<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                                String serializedClient = gson.toJson(jsonRequest);<a name="line.173"></a>
-<span class="sourceLineNo">174</span><a name="line.174"></a>
-<span class="sourceLineNo">175</span>                                HttpHeaders headers = new HttpHeaders();<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                                headers.setContentType(MediaType.APPLICATION_JSON);<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                                headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));<a name="line.177"></a>
-<span class="sourceLineNo">178</span><a name="line.178"></a>
-<span class="sourceLineNo">179</span>                                HttpEntity&lt;String&gt; entity = new HttpEntity&lt;String&gt;(serializedClient, headers);<a name="line.179"></a>
+<span class="sourceLineNo">063</span>        private RegisteredClient template;<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>        private Set&lt;String&gt; whitelist = new HashSet&lt;String&gt;();<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        private Set&lt;String&gt; blacklist = new HashSet&lt;String&gt;();<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>        public DynamicRegistrationClientConfigurationService() {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                clients = CacheBuilder.newBuilder().build(new DynamicClientRegistrationLoader());<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        }<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>        @Override<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        public RegisteredClient getClientConfiguration(ServerConfiguration issuer) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                try {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                        if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(issuer)) {<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                                throw new AuthenticationServiceException("Whitelist was nonempty, issuer was not in whitelist: " + issuer);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                        }<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        if (blacklist.contains(issuer)) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                                throw new AuthenticationServiceException("Issuer was in blacklist: " + issuer);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                        }<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>                        return clients.get(issuer);<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                } catch (ExecutionException e) {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        logger.warn("Unable to get client configuration", e);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        return null;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>        /**<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @return the template<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         */<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        public RegisteredClient getTemplate() {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                return template;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        /**<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         * @param template the template to set<a name="line.98"></a>
+<span class="sourceLineNo">099</span>         */<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        public void setTemplate(RegisteredClient template) {<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                // make sure the template doesn't have unwanted fields set on it<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                if (template != null) {<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                        template.setClientId(null);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                        template.setClientSecret(null);<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                        template.setRegistrationClientUri(null);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                        template.setRegistrationAccessToken(null);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                }<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                this.template = template;<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>        /**<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * @return the registeredClientService<a name="line.112"></a>
+<span class="sourceLineNo">113</span>         */<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        public RegisteredClientService getRegisteredClientService() {<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                return registeredClientService;<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        }<a name="line.116"></a>
+<span class="sourceLineNo">117</span><a name="line.117"></a>
+<span class="sourceLineNo">118</span>        /**<a name="line.118"></a>
+<span class="sourceLineNo">119</span>         * @param registeredClientService the registeredClientService to set<a name="line.119"></a>
+<span class="sourceLineNo">120</span>         */<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        public void setRegisteredClientService(RegisteredClientService registeredClientService) {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                this.registeredClientService = registeredClientService;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>        /**<a name="line.126"></a>
+<span class="sourceLineNo">127</span>         * @return the whitelist<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         */<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        public Set&lt;String&gt; getWhitelist() {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                return whitelist;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * @param whitelist the whitelist to set<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         */<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        public void setWhitelist(Set&lt;String&gt; whitelist) {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                this.whitelist = whitelist;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        }<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>        /**<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * @return the blacklist<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         */<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        public Set&lt;String&gt; getBlacklist() {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                return blacklist;<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>        /**<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * @param blacklist the blacklist to set<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         */<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        public void setBlacklist(Set&lt;String&gt; blacklist) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                this.blacklist = blacklist;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        }<a name="line.152"></a>
+<span class="sourceLineNo">153</span><a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>        /**<a name="line.155"></a>
+<span class="sourceLineNo">156</span>         * Loader class that fetches the client information.<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * <a name="line.157"></a>
+<span class="sourceLineNo">158</span>         * If a client has been registered (ie, it's known to the RegisteredClientService), then this<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         * will fetch the client's configuration from the server.<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         * <a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * @author jricher<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         *<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public class DynamicClientRegistrationLoader extends CacheLoader&lt;ServerConfiguration, RegisteredClient&gt; {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                private HttpClient httpClient = new DefaultHttpClient();<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                private HttpComponentsClientHttpRequestFactory httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                private Gson gson = new Gson(); // note that this doesn't serialize nulls by default<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                <a name="line.168"></a>
+<span class="sourceLineNo">169</span>                @Override<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                public RegisteredClient load(ServerConfiguration serverConfig) throws Exception {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                        RestTemplate restTemplate = new RestTemplate(httpFactory);<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span><a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        RegisteredClient knownClient = registeredClientService.getByIssuer(serverConfig.getIssuer());<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                        if (knownClient == null) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>                                // dynamically register this client<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                                JsonObject jsonRequest = ClientDetailsEntityJsonProcessor.serialize(template);<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                                String serializedClient = gson.toJson(jsonRequest);<a name="line.179"></a>
 <span class="sourceLineNo">180</span><a name="line.180"></a>
-<span class="sourceLineNo">181</span>                                String registered = restTemplate.postForObject(serverConfig.getRegistrationEndpointUri(), entity, String.class);<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                                // TODO: handle HTTP errors<a name="line.182"></a>
-<span class="sourceLineNo">183</span><a name="line.183"></a>
-<span class="sourceLineNo">184</span>                                RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);<a name="line.184"></a>
-<span class="sourceLineNo">185</span><a name="line.185"></a>
-<span class="sourceLineNo">186</span>                                // save this client for later<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                                registeredClientService.save(serverConfig.getIssuer(), client);<a name="line.187"></a>
-<span class="sourceLineNo">188</span><a name="line.188"></a>
-<span class="sourceLineNo">189</span>                                return client;<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                        } else {<a name="line.190"></a>
+<span class="sourceLineNo">181</span>                                HttpHeaders headers = new HttpHeaders();<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                                headers.setContentType(MediaType.APPLICATION_JSON);<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                                headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>                                HttpEntity&lt;String&gt; entity = new HttpEntity&lt;String&gt;(serializedClient, headers);<a name="line.185"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
+<span class="sourceLineNo">187</span>                                String registered = restTemplate.postForObject(serverConfig.getRegistrationEndpointUri(), entity, String.class);<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                                // TODO: handle HTTP errors<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>                                RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);<a name="line.190"></a>
 <span class="sourceLineNo">191</span><a name="line.191"></a>
-<span class="sourceLineNo">192</span>                                // load this client's information from the server<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                                HttpHeaders headers = new HttpHeaders();<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                                headers.set("Authorization", String.format("%s %s", OAuth2AccessToken.BEARER_TYPE, knownClient.getRegistrationAccessToken()));<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                                headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));<a name="line.195"></a>
-<span class="sourceLineNo">196</span><a name="line.196"></a>
-<span class="sourceLineNo">197</span>                                HttpEntity&lt;String&gt; entity = new HttpEntity&lt;String&gt;(headers);<a name="line.197"></a>
-<span class="sourceLineNo">198</span><a name="line.198"></a>
-<span class="sourceLineNo">199</span>                                String registered = restTemplate.exchange(knownClient.getRegistrationClientUri(), HttpMethod.GET, entity, String.class).getBody();<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                                // TODO: handle HTTP errors<a name="line.200"></a>
-<span class="sourceLineNo">201</span><a name="line.201"></a>
-<span class="sourceLineNo">202</span>                                RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);<a name="line.202"></a>
-<span class="sourceLineNo">203</span><a name="line.203"></a>
-<span class="sourceLineNo">204</span>                                return client;<a name="line.204"></a>
-<span class="sourceLineNo">205</span>                        }<a name="line.205"></a>
-<span class="sourceLineNo">206</span>                }<a name="line.206"></a>
+<span class="sourceLineNo">192</span>                                // save this client for later<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                                registeredClientService.save(serverConfig.getIssuer(), client);<a name="line.193"></a>
+<span class="sourceLineNo">194</span><a name="line.194"></a>
+<span class="sourceLineNo">195</span>                                return client;<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                        } else {<a name="line.196"></a>
+<span class="sourceLineNo">197</span><a name="line.197"></a>
+<span class="sourceLineNo">198</span>                                // load this client's information from the server<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                                HttpHeaders headers = new HttpHeaders();<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                                headers.set("Authorization", String.format("%s %s", OAuth2AccessToken.BEARER_TYPE, knownClient.getRegistrationAccessToken()));<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                                headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>                                HttpEntity&lt;String&gt; entity = new HttpEntity&lt;String&gt;(headers);<a name="line.203"></a>
+<span class="sourceLineNo">204</span><a name="line.204"></a>
+<span class="sourceLineNo">205</span>                                String registered = restTemplate.exchange(knownClient.getRegistrationClientUri(), HttpMethod.GET, entity, String.class).getBody();<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                                // TODO: handle HTTP errors<a name="line.206"></a>
 <span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span>        }<a name="line.208"></a>
+<span class="sourceLineNo">208</span>                                RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);<a name="line.208"></a>
 <span class="sourceLineNo">209</span><a name="line.209"></a>
-<span class="sourceLineNo">210</span>}<a name="line.210"></a>
+<span class="sourceLineNo">210</span>                                return client;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                        }<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                }<a name="line.212"></a>
+<span class="sourceLineNo">213</span><a name="line.213"></a>
+<span class="sourceLineNo">214</span>        }<a name="line.214"></a>
+<span class="sourceLineNo">215</span><a name="line.215"></a>
+<span class="sourceLineNo">216</span>}<a name="line.216"></a>
 
 
 

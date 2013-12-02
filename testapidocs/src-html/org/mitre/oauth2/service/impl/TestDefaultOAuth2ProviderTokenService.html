@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -24,378 +24,388 @@
 <span class="sourceLineNo">016</span> ******************************************************************************/<a name="line.16"></a>
 <span class="sourceLineNo">017</span>package org.mitre.oauth2.service.impl;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import java.util.Date;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import java.util.Set;<a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.junit.Before;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import org.junit.Test;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import org.junit.runner.RunWith;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import org.mitre.oauth2.model.AuthenticationHolderEntity;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.mitre.oauth2.model.OAuth2AccessTokenEntity;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.mitre.oauth2.model.OAuth2RefreshTokenEntity;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.mitre.oauth2.repository.AuthenticationHolderRepository;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.mitre.oauth2.repository.OAuth2TokenRepository;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import org.mockito.InjectMocks;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import org.mockito.Matchers;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import org.mockito.Mock;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import org.mockito.Mockito;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>import org.mockito.runners.MockitoJUnitRunner;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import org.springframework.security.oauth2.common.exceptions.InvalidClientException;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import org.springframework.security.oauth2.provider.AuthorizationRequest;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import org.springframework.security.oauth2.provider.token.TokenEnhancer;<a name="line.43"></a>
-<span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>import com.google.common.collect.Sets;<a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46"></a>
-<span class="sourceLineNo">047</span>import static org.hamcrest.CoreMatchers.equalTo;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>import static org.hamcrest.CoreMatchers.is;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>import static org.hamcrest.CoreMatchers.notNullValue;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>import static org.hamcrest.CoreMatchers.nullValue;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>import static org.junit.Assert.assertThat;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>import static org.junit.Assert.assertTrue;<a name="line.52"></a>
-<span class="sourceLineNo">053</span>import static org.junit.Assert.fail;<a name="line.53"></a>
-<span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>/**<a name="line.55"></a>
-<span class="sourceLineNo">056</span> * @author wkim<a name="line.56"></a>
-<span class="sourceLineNo">057</span> *<a name="line.57"></a>
-<span class="sourceLineNo">058</span> */<a name="line.58"></a>
-<span class="sourceLineNo">059</span>@RunWith(MockitoJUnitRunner.class)<a name="line.59"></a>
-<span class="sourceLineNo">060</span>public class TestDefaultOAuth2ProviderTokenService {<a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>        // Grace period for time-sensitive tests.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        private static final long DELTA = 100L;<a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>        // Test Fixture:<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        private OAuth2Authentication authentication;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        private ClientDetailsEntity client;<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        private String clientId = "test_client";<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        private Set&lt;String&gt; scope = Sets.newHashSet("openid", "profile", "email", "offline_access");<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        private OAuth2RefreshTokenEntity refreshToken;<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        private String refreshTokenValue = "refresh_token_value";<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        private AuthorizationRequest authRequest;<a name="line.72"></a>
-<span class="sourceLineNo">073</span><a name="line.73"></a>
-<span class="sourceLineNo">074</span>        // for use when refreshing access tokens<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        private AuthorizationRequest storedAuthRequest;<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        private OAuth2Authentication storedAuthentication;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        private AuthenticationHolderEntity storedAuthHolder;<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        private Set&lt;String&gt; storedScope;<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>        @Mock<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        private OAuth2TokenRepository tokenRepository;<a name="line.81"></a>
-<span class="sourceLineNo">082</span><a name="line.82"></a>
-<span class="sourceLineNo">083</span>        @Mock<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        private AuthenticationHolderRepository authenticationHolderRepository;<a name="line.84"></a>
-<span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>        @Mock<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        private ClientDetailsEntityService clientDetailsService;<a name="line.87"></a>
-<span class="sourceLineNo">088</span><a name="line.88"></a>
-<span class="sourceLineNo">089</span>        @Mock<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        private TokenEnhancer tokenEnhancer;<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        @InjectMocks<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        private DefaultOAuth2ProviderTokenService service;<a name="line.93"></a>
-<span class="sourceLineNo">094</span><a name="line.94"></a>
-<span class="sourceLineNo">095</span>        /**<a name="line.95"></a>
-<span class="sourceLineNo">096</span>         * Set up a mock authentication and mock client to work with.<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         */<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        @Before<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        public void prepare() {<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                Mockito.reset(tokenRepository, authenticationHolderRepository, clientDetailsService, tokenEnhancer);<a name="line.100"></a>
-<span class="sourceLineNo">101</span><a name="line.101"></a>
-<span class="sourceLineNo">102</span>                authentication = Mockito.mock(OAuth2Authentication.class);<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                Mockito.when(authentication.getAuthorizationRequest()).thenReturn(Mockito.mock(AuthorizationRequest.class));<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                AuthorizationRequest clientAuth = authentication.getAuthorizationRequest();<a name="line.104"></a>
-<span class="sourceLineNo">105</span><a name="line.105"></a>
-<span class="sourceLineNo">106</span>                client = Mockito.mock(ClientDetailsEntity.class);<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                Mockito.when(client.getClientId()).thenReturn(clientId);<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                Mockito.when(clientDetailsService.loadClientByClientId(clientId)).thenReturn(client);<a name="line.108"></a>
+<span class="sourceLineNo">019</span>import static org.hamcrest.CoreMatchers.equalTo;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import static org.hamcrest.CoreMatchers.is;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import static org.hamcrest.CoreMatchers.notNullValue;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import static org.hamcrest.CoreMatchers.nullValue;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import static org.junit.Assert.assertThat;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import static org.junit.Assert.assertTrue;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import static org.junit.Assert.fail;<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.util.Date;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.util.Set;<a name="line.28"></a>
+<span class="sourceLineNo">029</span><a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.junit.Before;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.junit.Test;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.junit.runner.RunWith;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.mitre.oauth2.model.AuthenticationHolderEntity;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.mitre.oauth2.model.OAuth2AccessTokenEntity;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.mitre.oauth2.model.OAuth2RefreshTokenEntity;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.mitre.oauth2.repository.AuthenticationHolderRepository;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.mitre.oauth2.repository.OAuth2TokenRepository;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.mitre.oauth2.service.SystemScopeService;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.mockito.AdditionalAnswers;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.mockito.InjectMocks;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.mockito.Matchers;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import org.mockito.Mock;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import org.mockito.Mockito;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import org.mockito.invocation.InvocationOnMock;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import org.mockito.runners.MockitoJUnitRunner;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import org.mockito.stubbing.Answer;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>import org.springframework.security.oauth2.common.exceptions.InvalidClientException;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>import org.springframework.security.oauth2.provider.OAuth2Request;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>import org.springframework.security.oauth2.provider.TokenRequest;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>import org.springframework.security.oauth2.provider.token.TokenEnhancer;<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>import com.google.common.collect.Sets;<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>/**<a name="line.60"></a>
+<span class="sourceLineNo">061</span> * @author wkim<a name="line.61"></a>
+<span class="sourceLineNo">062</span> *<a name="line.62"></a>
+<span class="sourceLineNo">063</span> */<a name="line.63"></a>
+<span class="sourceLineNo">064</span>@RunWith(MockitoJUnitRunner.class)<a name="line.64"></a>
+<span class="sourceLineNo">065</span>public class TestDefaultOAuth2ProviderTokenService {<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>        // Grace period for time-sensitive tests.<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        private static final long DELTA = 100L;<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>        // Test Fixture:<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private OAuth2Authentication authentication;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        private ClientDetailsEntity client;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        private String clientId = "test_client";<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        private Set&lt;String&gt; scope = Sets.newHashSet("openid", "profile", "email", "offline_access");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        private OAuth2RefreshTokenEntity refreshToken;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        private String refreshTokenValue = "refresh_token_value";<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        private TokenRequest tokenRequest;<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>        // for use when refreshing access tokens<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        private OAuth2Request storedAuthRequest;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        private OAuth2Authentication storedAuthentication;<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        private AuthenticationHolderEntity storedAuthHolder;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        private Set&lt;String&gt; storedScope;<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>        @Mock<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        private OAuth2TokenRepository tokenRepository;<a name="line.86"></a>
+<span class="sourceLineNo">087</span><a name="line.87"></a>
+<span class="sourceLineNo">088</span>        @Mock<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        private AuthenticationHolderRepository authenticationHolderRepository;<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        @Mock<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        private ClientDetailsEntityService clientDetailsService;<a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>        @Mock<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        private TokenEnhancer tokenEnhancer;<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        @Mock<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        private SystemScopeService scopeService;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        <a name="line.99"></a>
+<span class="sourceLineNo">100</span>        @InjectMocks<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        private DefaultOAuth2ProviderTokenService service;<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>        /**<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         * Set up a mock authentication and mock client to work with.<a name="line.104"></a>
+<span class="sourceLineNo">105</span>         */<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        @Before<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        public void prepare() {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                Mockito.reset(tokenRepository, authenticationHolderRepository, clientDetailsService, tokenEnhancer);<a name="line.108"></a>
 <span class="sourceLineNo">109</span><a name="line.109"></a>
-<span class="sourceLineNo">110</span>                Mockito.when(clientAuth.getClientId()).thenReturn(clientId);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                Mockito.when(clientAuth.getScope()).thenReturn(scope);<a name="line.111"></a>
-<span class="sourceLineNo">112</span><a name="line.112"></a>
-<span class="sourceLineNo">113</span>                // by default in tests, allow refresh tokens<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                Mockito.when(client.isAllowRefresh()).thenReturn(true);<a name="line.114"></a>
+<span class="sourceLineNo">110</span>                <a name="line.110"></a>
+<span class="sourceLineNo">111</span>                <a name="line.111"></a>
+<span class="sourceLineNo">112</span>                authentication = Mockito.mock(OAuth2Authentication.class);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                OAuth2Request clientAuth = new OAuth2Request(null, clientId, null, true, scope, null, null, null, null);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                Mockito.when(authentication.getOAuth2Request()).thenReturn(clientAuth);<a name="line.114"></a>
 <span class="sourceLineNo">115</span><a name="line.115"></a>
-<span class="sourceLineNo">116</span>                refreshToken = Mockito.mock(OAuth2RefreshTokenEntity.class);<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                Mockito.when(tokenRepository.getRefreshTokenByValue(refreshTokenValue)).thenReturn(refreshToken);<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                Mockito.when(refreshToken.getClient()).thenReturn(client);<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                Mockito.when(refreshToken.isExpired()).thenReturn(false);<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>                authRequest = Mockito.mock(AuthorizationRequest.class);<a name="line.121"></a>
+<span class="sourceLineNo">116</span>                client = Mockito.mock(ClientDetailsEntity.class);<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                Mockito.when(client.getClientId()).thenReturn(clientId);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                Mockito.when(clientDetailsService.loadClientByClientId(clientId)).thenReturn(client);<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>                // by default in tests, allow refresh tokens<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                Mockito.when(client.isAllowRefresh()).thenReturn(true);<a name="line.121"></a>
 <span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                storedAuthRequest = Mockito.mock(AuthorizationRequest.class);<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                storedAuthentication = Mockito.mock(OAuth2Authentication.class);<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                storedAuthHolder = Mockito.mock(AuthenticationHolderEntity.class);<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                storedScope = Sets.newHashSet(scope);<a name="line.126"></a>
+<span class="sourceLineNo">123</span>                refreshToken = Mockito.mock(OAuth2RefreshTokenEntity.class);<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                Mockito.when(tokenRepository.getRefreshTokenByValue(refreshTokenValue)).thenReturn(refreshToken);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                Mockito.when(refreshToken.getClient()).thenReturn(client);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                Mockito.when(refreshToken.isExpired()).thenReturn(false);<a name="line.126"></a>
 <span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>                Mockito.when(refreshToken.getAuthenticationHolder()).thenReturn(storedAuthHolder);<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                Mockito.when(storedAuthHolder.getAuthentication()).thenReturn(storedAuthentication);<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                Mockito.when(storedAuthentication.getAuthorizationRequest()).thenReturn(storedAuthRequest);<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                Mockito.when(storedAuthRequest.getScope()).thenReturn(storedScope);<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133"></a>
-<span class="sourceLineNo">134</span>        /**<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         * Tests exception handling for null authentication or null authorization.<a name="line.135"></a>
-<span class="sourceLineNo">136</span>         */<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        @Test<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        public void createAccessToken_nullAuth() {<a name="line.138"></a>
-<span class="sourceLineNo">139</span><a name="line.139"></a>
-<span class="sourceLineNo">140</span>                Mockito.when(authentication.getAuthorizationRequest()).thenReturn(null);<a name="line.140"></a>
-<span class="sourceLineNo">141</span><a name="line.141"></a>
-<span class="sourceLineNo">142</span>                try {<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                        service.createAccessToken(null);<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                        fail("Authentication parameter is null. Excpected a AuthenticationCredentialsNotFoundException.");<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                } catch (AuthenticationCredentialsNotFoundException e) {<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                        assertThat(e, is(notNullValue()));<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                }<a name="line.147"></a>
-<span class="sourceLineNo">148</span><a name="line.148"></a>
-<span class="sourceLineNo">149</span>                try {<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                        service.createAccessToken(authentication);<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                        fail("AuthorizationRequest is null. Excpected a AuthenticationCredentialsNotFoundException.");<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                } catch (AuthenticationCredentialsNotFoundException e) {<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                        assertThat(e, is(notNullValue()));<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                }<a name="line.154"></a>
-<span class="sourceLineNo">155</span>        }<a name="line.155"></a>
-<span class="sourceLineNo">156</span><a name="line.156"></a>
-<span class="sourceLineNo">157</span>        /**<a name="line.157"></a>
-<span class="sourceLineNo">158</span>         * Tests exception handling for clients not found.<a name="line.158"></a>
-<span class="sourceLineNo">159</span>         */<a name="line.159"></a>
-<span class="sourceLineNo">160</span>        @Test(expected = InvalidClientException.class)<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        public void createAccessToken_nullClient() {<a name="line.161"></a>
-<span class="sourceLineNo">162</span><a name="line.162"></a>
-<span class="sourceLineNo">163</span>                Mockito.when(clientDetailsService.loadClientByClientId(Matchers.anyString())).thenReturn(null);<a name="line.163"></a>
-<span class="sourceLineNo">164</span><a name="line.164"></a>
-<span class="sourceLineNo">165</span>                service.createAccessToken(authentication);<a name="line.165"></a>
-<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
-<span class="sourceLineNo">167</span><a name="line.167"></a>
-<span class="sourceLineNo">168</span>        /**<a name="line.168"></a>
-<span class="sourceLineNo">169</span>         * Tests the creation of access tokens for clients that are not allowed to have refresh tokens.<a name="line.169"></a>
-<span class="sourceLineNo">170</span>         */<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        @Test<a name="line.171"></a>
-<span class="sourceLineNo">172</span>        public void createAccessToken_noRefresh() {<a name="line.172"></a>
-<span class="sourceLineNo">173</span><a name="line.173"></a>
-<span class="sourceLineNo">174</span>                Mockito.when(client.isAllowRefresh()).thenReturn(false);<a name="line.174"></a>
-<span class="sourceLineNo">175</span><a name="line.175"></a>
-<span class="sourceLineNo">176</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.176"></a>
+<span class="sourceLineNo">128</span>                tokenRequest = new TokenRequest(null, clientId, null, null);<a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>                storedAuthentication = authentication;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                storedAuthRequest = clientAuth;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                storedAuthHolder = Mockito.mock(AuthenticationHolderEntity.class);<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                storedScope = Sets.newHashSet(scope);<a name="line.133"></a>
+<span class="sourceLineNo">134</span><a name="line.134"></a>
+<span class="sourceLineNo">135</span>                Mockito.when(refreshToken.getAuthenticationHolder()).thenReturn(storedAuthHolder);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                Mockito.when(storedAuthHolder.getAuthentication()).thenReturn(storedAuthentication);<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                Mockito.when(storedAuthentication.getOAuth2Request()).thenReturn(storedAuthRequest);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                <a name="line.138"></a>
+<span class="sourceLineNo">139</span>                Mockito.when(authenticationHolderRepository.save(Matchers.any(AuthenticationHolderEntity.class))).thenReturn(storedAuthHolder);<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                <a name="line.140"></a>
+<span class="sourceLineNo">141</span>                Mockito.when(scopeService.removeRestrictedScopes(Matchers.anySet())).then(AdditionalAnswers.returnsFirstArg());<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        }<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>        /**<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         * Tests exception handling for null authentication or null authorization.<a name="line.145"></a>
+<span class="sourceLineNo">146</span>         */<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        @Test<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        public void createAccessToken_nullAuth() {<a name="line.148"></a>
+<span class="sourceLineNo">149</span><a name="line.149"></a>
+<span class="sourceLineNo">150</span>                Mockito.when(authentication.getOAuth2Request()).thenReturn(null);<a name="line.150"></a>
+<span class="sourceLineNo">151</span><a name="line.151"></a>
+<span class="sourceLineNo">152</span>                try {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                        service.createAccessToken(null);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                        fail("Authentication parameter is null. Excpected a AuthenticationCredentialsNotFoundException.");<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                } catch (AuthenticationCredentialsNotFoundException e) {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                        assertThat(e, is(notNullValue()));<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                }<a name="line.157"></a>
+<span class="sourceLineNo">158</span><a name="line.158"></a>
+<span class="sourceLineNo">159</span>                try {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                        service.createAccessToken(authentication);<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                        fail("AuthorizationRequest is null. Excpected a AuthenticationCredentialsNotFoundException.");<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                } catch (AuthenticationCredentialsNotFoundException e) {<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                        assertThat(e, is(notNullValue()));<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                }<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        }<a name="line.165"></a>
+<span class="sourceLineNo">166</span><a name="line.166"></a>
+<span class="sourceLineNo">167</span>        /**<a name="line.167"></a>
+<span class="sourceLineNo">168</span>         * Tests exception handling for clients not found.<a name="line.168"></a>
+<span class="sourceLineNo">169</span>         */<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        @Test(expected = InvalidClientException.class)<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        public void createAccessToken_nullClient() {<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>                Mockito.when(clientDetailsService.loadClientByClientId(Matchers.anyString())).thenReturn(null);<a name="line.173"></a>
+<span class="sourceLineNo">174</span><a name="line.174"></a>
+<span class="sourceLineNo">175</span>                service.createAccessToken(authentication);<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        }<a name="line.176"></a>
 <span class="sourceLineNo">177</span><a name="line.177"></a>
-<span class="sourceLineNo">178</span>                Mockito.verify(clientDetailsService).loadClientByClientId(Matchers.anyString());<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                Mockito.verify(authenticationHolderRepository).save(Matchers.any(AuthenticationHolderEntity.class));<a name="line.179"></a>
-<span class="sourceLineNo">180</span>                Mockito.verify(tokenEnhancer).enhance(token, authentication);<a name="line.180"></a>
-<span class="sourceLineNo">181</span>                Mockito.verify(tokenRepository).saveAccessToken(token);<a name="line.181"></a>
-<span class="sourceLineNo">182</span><a name="line.182"></a>
-<span class="sourceLineNo">183</span>                Mockito.verify(tokenRepository, Mockito.never()).saveRefreshToken(Matchers.any(OAuth2RefreshTokenEntity.class));<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                assertThat(token.getRefreshToken(), is(nullValue()));<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
-<span class="sourceLineNo">186</span><a name="line.186"></a>
-<span class="sourceLineNo">187</span>        /**<a name="line.187"></a>
-<span class="sourceLineNo">188</span>         * Tests the creation of access tokens for clients that are allowed to have refresh tokens.<a name="line.188"></a>
-<span class="sourceLineNo">189</span>         */<a name="line.189"></a>
-<span class="sourceLineNo">190</span>        @Test<a name="line.190"></a>
-<span class="sourceLineNo">191</span>        public void createAccessToken_yesRefresh() {<a name="line.191"></a>
+<span class="sourceLineNo">178</span>        /**<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         * Tests the creation of access tokens for clients that are not allowed to have refresh tokens.<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         */<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        @Test<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        public void createAccessToken_noRefresh() {<a name="line.182"></a>
+<span class="sourceLineNo">183</span><a name="line.183"></a>
+<span class="sourceLineNo">184</span>                Mockito.when(client.isAllowRefresh()).thenReturn(false);<a name="line.184"></a>
+<span class="sourceLineNo">185</span><a name="line.185"></a>
+<span class="sourceLineNo">186</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.186"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
+<span class="sourceLineNo">188</span>                Mockito.verify(clientDetailsService).loadClientByClientId(Matchers.anyString());<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                Mockito.verify(authenticationHolderRepository).save(Matchers.any(AuthenticationHolderEntity.class));<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                Mockito.verify(tokenEnhancer).enhance(token, authentication);<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                Mockito.verify(tokenRepository).saveAccessToken(token);<a name="line.191"></a>
 <span class="sourceLineNo">192</span><a name="line.192"></a>
-<span class="sourceLineNo">193</span>                AuthorizationRequest clientAuth = authentication.getAuthorizationRequest();<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                Mockito.when(clientAuth.getScope()).thenReturn(Sets.newHashSet("offline_access"));<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                Mockito.when(client.isAllowRefresh()).thenReturn(true);<a name="line.195"></a>
+<span class="sourceLineNo">193</span>                Mockito.verify(tokenRepository, Mockito.never()).saveRefreshToken(Matchers.any(OAuth2RefreshTokenEntity.class));<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                assertThat(token.getRefreshToken(), is(nullValue()));<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        }<a name="line.195"></a>
 <span class="sourceLineNo">196</span><a name="line.196"></a>
-<span class="sourceLineNo">197</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.197"></a>
-<span class="sourceLineNo">198</span><a name="line.198"></a>
-<span class="sourceLineNo">199</span>                // Note: a refactor may be appropriate to only save refresh tokens once to the repository during creation.<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                Mockito.verify(tokenRepository, Mockito.atLeastOnce()).saveRefreshToken(Matchers.any(OAuth2RefreshTokenEntity.class));<a name="line.200"></a>
-<span class="sourceLineNo">201</span>                assertThat(token.getRefreshToken(), is(notNullValue()));<a name="line.201"></a>
+<span class="sourceLineNo">197</span>        /**<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * Tests the creation of access tokens for clients that are allowed to have refresh tokens.<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         */<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        @Test<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        public void createAccessToken_yesRefresh() {<a name="line.201"></a>
 <span class="sourceLineNo">202</span><a name="line.202"></a>
-<span class="sourceLineNo">203</span>        }<a name="line.203"></a>
-<span class="sourceLineNo">204</span><a name="line.204"></a>
-<span class="sourceLineNo">205</span>        /**<a name="line.205"></a>
-<span class="sourceLineNo">206</span>         * Checks to see that the expiration date of new tokens is being set accurately to within some delta for time skew.<a name="line.206"></a>
-<span class="sourceLineNo">207</span>         */<a name="line.207"></a>
-<span class="sourceLineNo">208</span>        @Test<a name="line.208"></a>
-<span class="sourceLineNo">209</span>        public void createAccessToken_expiration() {<a name="line.209"></a>
-<span class="sourceLineNo">210</span><a name="line.210"></a>
-<span class="sourceLineNo">211</span>                Integer accessTokenValiditySeconds = 3600;<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                Integer refreshTokenValiditySeconds = 600;<a name="line.212"></a>
-<span class="sourceLineNo">213</span><a name="line.213"></a>
-<span class="sourceLineNo">214</span>                Mockito.when(client.getAccessTokenValiditySeconds()).thenReturn(accessTokenValiditySeconds);<a name="line.214"></a>
-<span class="sourceLineNo">215</span>                Mockito.when(client.getRefreshTokenValiditySeconds()).thenReturn(refreshTokenValiditySeconds);<a name="line.215"></a>
-<span class="sourceLineNo">216</span><a name="line.216"></a>
-<span class="sourceLineNo">217</span>                long start = System.currentTimeMillis();<a name="line.217"></a>
-<span class="sourceLineNo">218</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.218"></a>
-<span class="sourceLineNo">219</span>                long end = System.currentTimeMillis();<a name="line.219"></a>
+<span class="sourceLineNo">203</span>                OAuth2Request clientAuth = new OAuth2Request(null, clientId, null, true, Sets.newHashSet(SystemScopeService.OFFLINE_ACCESS), null, null, null, null);<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                Mockito.when(authentication.getOAuth2Request()).thenReturn(clientAuth);<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                Mockito.when(client.isAllowRefresh()).thenReturn(true);<a name="line.205"></a>
+<span class="sourceLineNo">206</span><a name="line.206"></a>
+<span class="sourceLineNo">207</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>                // Note: a refactor may be appropriate to only save refresh tokens once to the repository during creation.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                Mockito.verify(tokenRepository, Mockito.atLeastOnce()).saveRefreshToken(Matchers.any(OAuth2RefreshTokenEntity.class));<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                assertThat(token.getRefreshToken(), is(notNullValue()));<a name="line.211"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
+<span class="sourceLineNo">213</span>        }<a name="line.213"></a>
+<span class="sourceLineNo">214</span><a name="line.214"></a>
+<span class="sourceLineNo">215</span>        /**<a name="line.215"></a>
+<span class="sourceLineNo">216</span>         * Checks to see that the expiration date of new tokens is being set accurately to within some delta for time skew.<a name="line.216"></a>
+<span class="sourceLineNo">217</span>         */<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        @Test<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        public void createAccessToken_expiration() {<a name="line.219"></a>
 <span class="sourceLineNo">220</span><a name="line.220"></a>
-<span class="sourceLineNo">221</span>                // Accounting for some delta for time skew on either side.<a name="line.221"></a>
-<span class="sourceLineNo">222</span>                Date lowerBoundAccessTokens = new Date(start + (accessTokenValiditySeconds * 1000L) - DELTA);<a name="line.222"></a>
-<span class="sourceLineNo">223</span>                Date upperBoundAccessTokens = new Date(end + (accessTokenValiditySeconds * 1000L) + DELTA);<a name="line.223"></a>
-<span class="sourceLineNo">224</span>                Date lowerBoundRefreshTokens = new Date(start + (refreshTokenValiditySeconds * 1000L) - DELTA);<a name="line.224"></a>
-<span class="sourceLineNo">225</span>                Date upperBoundRefreshTokens = new Date(end + (refreshTokenValiditySeconds * 1000L) + DELTA);<a name="line.225"></a>
+<span class="sourceLineNo">221</span>                Integer accessTokenValiditySeconds = 3600;<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                Integer refreshTokenValiditySeconds = 600;<a name="line.222"></a>
+<span class="sourceLineNo">223</span><a name="line.223"></a>
+<span class="sourceLineNo">224</span>                Mockito.when(client.getAccessTokenValiditySeconds()).thenReturn(accessTokenValiditySeconds);<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                Mockito.when(client.getRefreshTokenValiditySeconds()).thenReturn(refreshTokenValiditySeconds);<a name="line.225"></a>
 <span class="sourceLineNo">226</span><a name="line.226"></a>
-<span class="sourceLineNo">227</span>                assertTrue(token.getExpiration().after(lowerBoundAccessTokens) &amp;&amp; token.getExpiration().before(upperBoundAccessTokens));<a name="line.227"></a>
-<span class="sourceLineNo">228</span>                assertTrue(token.getRefreshToken().getExpiration().after(lowerBoundRefreshTokens) &amp;&amp; token.getRefreshToken().getExpiration().before(upperBoundRefreshTokens));<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        }<a name="line.229"></a>
+<span class="sourceLineNo">227</span>                long start = System.currentTimeMillis();<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                long end = System.currentTimeMillis();<a name="line.229"></a>
 <span class="sourceLineNo">230</span><a name="line.230"></a>
-<span class="sourceLineNo">231</span>        @Test<a name="line.231"></a>
-<span class="sourceLineNo">232</span>        public void createAccessToken_checkClient() {<a name="line.232"></a>
-<span class="sourceLineNo">233</span><a name="line.233"></a>
-<span class="sourceLineNo">234</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.234"></a>
-<span class="sourceLineNo">235</span><a name="line.235"></a>
-<span class="sourceLineNo">236</span>                assertThat(token.getClient().getClientId(), equalTo(clientId));<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
-<span class="sourceLineNo">238</span><a name="line.238"></a>
-<span class="sourceLineNo">239</span>        @Test<a name="line.239"></a>
-<span class="sourceLineNo">240</span>        public void createAccessToken_checkScopes() {<a name="line.240"></a>
-<span class="sourceLineNo">241</span><a name="line.241"></a>
-<span class="sourceLineNo">242</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.242"></a>
+<span class="sourceLineNo">231</span>                // Accounting for some delta for time skew on either side.<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                Date lowerBoundAccessTokens = new Date(start + (accessTokenValiditySeconds * 1000L) - DELTA);<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                Date upperBoundAccessTokens = new Date(end + (accessTokenValiditySeconds * 1000L) + DELTA);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                Date lowerBoundRefreshTokens = new Date(start + (refreshTokenValiditySeconds * 1000L) - DELTA);<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                Date upperBoundRefreshTokens = new Date(end + (refreshTokenValiditySeconds * 1000L) + DELTA);<a name="line.235"></a>
+<span class="sourceLineNo">236</span><a name="line.236"></a>
+<span class="sourceLineNo">237</span>                assertTrue(token.getExpiration().after(lowerBoundAccessTokens) &amp;&amp; token.getExpiration().before(upperBoundAccessTokens));<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                assertTrue(token.getRefreshToken().getExpiration().after(lowerBoundRefreshTokens) &amp;&amp; token.getRefreshToken().getExpiration().before(upperBoundRefreshTokens));<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        }<a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>        @Test<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        public void createAccessToken_checkClient() {<a name="line.242"></a>
 <span class="sourceLineNo">243</span><a name="line.243"></a>
-<span class="sourceLineNo">244</span>                assertThat(token.getScope(), equalTo(scope));<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        }<a name="line.245"></a>
-<span class="sourceLineNo">246</span><a name="line.246"></a>
-<span class="sourceLineNo">247</span>        @Test<a name="line.247"></a>
-<span class="sourceLineNo">248</span>        public void createAccessToken_checkAttachedAuthentication() {<a name="line.248"></a>
-<span class="sourceLineNo">249</span><a name="line.249"></a>
-<span class="sourceLineNo">250</span>                AuthenticationHolderEntity authHolder = Mockito.mock(AuthenticationHolderEntity.class);<a name="line.250"></a>
-<span class="sourceLineNo">251</span>                Mockito.when(authHolder.getAuthentication()).thenReturn(authentication);<a name="line.251"></a>
-<span class="sourceLineNo">252</span><a name="line.252"></a>
-<span class="sourceLineNo">253</span>                Mockito.when(authenticationHolderRepository.save(Matchers.any(AuthenticationHolderEntity.class))).thenReturn(authHolder);<a name="line.253"></a>
-<span class="sourceLineNo">254</span><a name="line.254"></a>
-<span class="sourceLineNo">255</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.255"></a>
+<span class="sourceLineNo">244</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>                assertThat(token.getClient().getClientId(), equalTo(clientId));<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        }<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>        @Test<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        public void createAccessToken_checkScopes() {<a name="line.250"></a>
+<span class="sourceLineNo">251</span><a name="line.251"></a>
+<span class="sourceLineNo">252</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.252"></a>
+<span class="sourceLineNo">253</span><a name="line.253"></a>
+<span class="sourceLineNo">254</span>                assertThat(token.getScope(), equalTo(scope));<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        }<a name="line.255"></a>
 <span class="sourceLineNo">256</span><a name="line.256"></a>
-<span class="sourceLineNo">257</span>                assertThat(token.getAuthenticationHolder().getAuthentication(), equalTo(authentication));<a name="line.257"></a>
-<span class="sourceLineNo">258</span>                Mockito.verify(authenticationHolderRepository).save(Matchers.any(AuthenticationHolderEntity.class));<a name="line.258"></a>
-<span class="sourceLineNo">259</span>        }<a name="line.259"></a>
-<span class="sourceLineNo">260</span><a name="line.260"></a>
-<span class="sourceLineNo">261</span>        @Test(expected = InvalidTokenException.class)<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        public void refreshAccessToken_noRefreshToken() {<a name="line.262"></a>
-<span class="sourceLineNo">263</span><a name="line.263"></a>
-<span class="sourceLineNo">264</span>                Mockito.when(tokenRepository.getRefreshTokenByValue(Matchers.anyString())).thenReturn(null);<a name="line.264"></a>
-<span class="sourceLineNo">265</span><a name="line.265"></a>
-<span class="sourceLineNo">266</span>                service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.266"></a>
-<span class="sourceLineNo">267</span>        }<a name="line.267"></a>
-<span class="sourceLineNo">268</span><a name="line.268"></a>
-<span class="sourceLineNo">269</span>        @Test(expected = InvalidClientException.class)<a name="line.269"></a>
-<span class="sourceLineNo">270</span>        public void refreshAccessToken_notAllowRefresh() {<a name="line.270"></a>
-<span class="sourceLineNo">271</span><a name="line.271"></a>
-<span class="sourceLineNo">272</span>                Mockito.when(client.isAllowRefresh()).thenReturn(false);<a name="line.272"></a>
+<span class="sourceLineNo">257</span>        @Test<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        public void createAccessToken_checkAttachedAuthentication() {<a name="line.258"></a>
+<span class="sourceLineNo">259</span><a name="line.259"></a>
+<span class="sourceLineNo">260</span>                AuthenticationHolderEntity authHolder = Mockito.mock(AuthenticationHolderEntity.class);<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                Mockito.when(authHolder.getAuthentication()).thenReturn(authentication);<a name="line.261"></a>
+<span class="sourceLineNo">262</span><a name="line.262"></a>
+<span class="sourceLineNo">263</span>                Mockito.when(authenticationHolderRepository.save(Matchers.any(AuthenticationHolderEntity.class))).thenReturn(authHolder);<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>                OAuth2AccessTokenEntity token = service.createAccessToken(authentication);<a name="line.265"></a>
+<span class="sourceLineNo">266</span><a name="line.266"></a>
+<span class="sourceLineNo">267</span>                assertThat(token.getAuthenticationHolder().getAuthentication(), equalTo(authentication));<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                Mockito.verify(authenticationHolderRepository).save(Matchers.any(AuthenticationHolderEntity.class));<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        }<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>        @Test(expected = InvalidTokenException.class)<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        public void refreshAccessToken_noRefreshToken() {<a name="line.272"></a>
 <span class="sourceLineNo">273</span><a name="line.273"></a>
-<span class="sourceLineNo">274</span>                service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        }<a name="line.275"></a>
-<span class="sourceLineNo">276</span><a name="line.276"></a>
-<span class="sourceLineNo">277</span>        @Test(expected = InvalidTokenException.class)<a name="line.277"></a>
-<span class="sourceLineNo">278</span>        public void refreshAccessToken_expired() {<a name="line.278"></a>
-<span class="sourceLineNo">279</span><a name="line.279"></a>
-<span class="sourceLineNo">280</span>                Mockito.when(refreshToken.isExpired()).thenReturn(true);<a name="line.280"></a>
+<span class="sourceLineNo">274</span>                Mockito.when(tokenRepository.getRefreshTokenByValue(Matchers.anyString())).thenReturn(null);<a name="line.274"></a>
+<span class="sourceLineNo">275</span><a name="line.275"></a>
+<span class="sourceLineNo">276</span>                service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        }<a name="line.277"></a>
+<span class="sourceLineNo">278</span><a name="line.278"></a>
+<span class="sourceLineNo">279</span>        @Test(expected = InvalidClientException.class)<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        public void refreshAccessToken_notAllowRefresh() {<a name="line.280"></a>
 <span class="sourceLineNo">281</span><a name="line.281"></a>
-<span class="sourceLineNo">282</span>                service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.282"></a>
-<span class="sourceLineNo">283</span>        }<a name="line.283"></a>
-<span class="sourceLineNo">284</span><a name="line.284"></a>
-<span class="sourceLineNo">285</span>        @Test<a name="line.285"></a>
-<span class="sourceLineNo">286</span>        public void refreshAccessToken_verifyAcessToken() {<a name="line.286"></a>
-<span class="sourceLineNo">287</span><a name="line.287"></a>
-<span class="sourceLineNo">288</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.288"></a>
+<span class="sourceLineNo">282</span>                Mockito.when(client.isAllowRefresh()).thenReturn(false);<a name="line.282"></a>
+<span class="sourceLineNo">283</span><a name="line.283"></a>
+<span class="sourceLineNo">284</span>                service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        }<a name="line.285"></a>
+<span class="sourceLineNo">286</span><a name="line.286"></a>
+<span class="sourceLineNo">287</span>        @Test(expected = InvalidTokenException.class)<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        public void refreshAccessToken_expired() {<a name="line.288"></a>
 <span class="sourceLineNo">289</span><a name="line.289"></a>
-<span class="sourceLineNo">290</span>                Mockito.verify(tokenRepository).clearAccessTokensForRefreshToken(refreshToken);<a name="line.290"></a>
+<span class="sourceLineNo">290</span>                Mockito.when(refreshToken.isExpired()).thenReturn(true);<a name="line.290"></a>
 <span class="sourceLineNo">291</span><a name="line.291"></a>
-<span class="sourceLineNo">292</span>                assertThat(token.getClient(), equalTo(client));<a name="line.292"></a>
-<span class="sourceLineNo">293</span>                assertThat(token.getRefreshToken(), equalTo(refreshToken));<a name="line.293"></a>
-<span class="sourceLineNo">294</span>                assertThat(token.getAuthenticationHolder(), equalTo(storedAuthHolder));<a name="line.294"></a>
-<span class="sourceLineNo">295</span><a name="line.295"></a>
-<span class="sourceLineNo">296</span>                Mockito.verify(tokenEnhancer).enhance(token, storedAuthentication);<a name="line.296"></a>
-<span class="sourceLineNo">297</span>                Mockito.verify(tokenRepository).saveAccessToken(token);<a name="line.297"></a>
-<span class="sourceLineNo">298</span>        }<a name="line.298"></a>
+<span class="sourceLineNo">292</span>                service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        }<a name="line.293"></a>
+<span class="sourceLineNo">294</span><a name="line.294"></a>
+<span class="sourceLineNo">295</span>        @Test<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        public void refreshAccessToken_verifyAcessToken() {<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.298"></a>
 <span class="sourceLineNo">299</span><a name="line.299"></a>
-<span class="sourceLineNo">300</span>        @Test<a name="line.300"></a>
-<span class="sourceLineNo">301</span>        public void refreshAccessToken_requestingSameScope() {<a name="line.301"></a>
-<span class="sourceLineNo">302</span><a name="line.302"></a>
-<span class="sourceLineNo">303</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.303"></a>
-<span class="sourceLineNo">304</span><a name="line.304"></a>
-<span class="sourceLineNo">305</span>                assertThat(token.getScope(), equalTo(storedScope));<a name="line.305"></a>
-<span class="sourceLineNo">306</span>        }<a name="line.306"></a>
-<span class="sourceLineNo">307</span><a name="line.307"></a>
-<span class="sourceLineNo">308</span>        @Test<a name="line.308"></a>
-<span class="sourceLineNo">309</span>        public void refreshAccessToken_requestingLessScope() {<a name="line.309"></a>
-<span class="sourceLineNo">310</span><a name="line.310"></a>
-<span class="sourceLineNo">311</span>                Set&lt;String&gt; lessScope = Sets.newHashSet("openid", "profile");<a name="line.311"></a>
+<span class="sourceLineNo">300</span>                Mockito.verify(tokenRepository).clearAccessTokensForRefreshToken(refreshToken);<a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>                assertThat(token.getClient(), equalTo(client));<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                assertThat(token.getRefreshToken(), equalTo(refreshToken));<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                assertThat(token.getAuthenticationHolder(), equalTo(storedAuthHolder));<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>                Mockito.verify(tokenEnhancer).enhance(token, storedAuthentication);<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                Mockito.verify(tokenRepository).saveAccessToken(token);<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>        @Test<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        public void refreshAccessToken_requestingSameScope() {<a name="line.311"></a>
 <span class="sourceLineNo">312</span><a name="line.312"></a>
-<span class="sourceLineNo">313</span>                Mockito.when(authRequest.getScope()).thenReturn(lessScope);<a name="line.313"></a>
+<span class="sourceLineNo">313</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.313"></a>
 <span class="sourceLineNo">314</span><a name="line.314"></a>
-<span class="sourceLineNo">315</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.315"></a>
-<span class="sourceLineNo">316</span><a name="line.316"></a>
-<span class="sourceLineNo">317</span>                assertThat(token.getScope(), equalTo(lessScope));<a name="line.317"></a>
-<span class="sourceLineNo">318</span>        }<a name="line.318"></a>
-<span class="sourceLineNo">319</span><a name="line.319"></a>
-<span class="sourceLineNo">320</span>        @Test(expected = InvalidScopeException.class)<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        public void refreshAccessToken_requestingMoreScope() {<a name="line.321"></a>
+<span class="sourceLineNo">315</span>                assertThat(token.getScope(), equalTo(storedScope));<a name="line.315"></a>
+<span class="sourceLineNo">316</span>        }<a name="line.316"></a>
+<span class="sourceLineNo">317</span><a name="line.317"></a>
+<span class="sourceLineNo">318</span>        @Test<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        public void refreshAccessToken_requestingLessScope() {<a name="line.319"></a>
+<span class="sourceLineNo">320</span><a name="line.320"></a>
+<span class="sourceLineNo">321</span>                Set&lt;String&gt; lessScope = Sets.newHashSet("openid", "profile");<a name="line.321"></a>
 <span class="sourceLineNo">322</span><a name="line.322"></a>
-<span class="sourceLineNo">323</span>                Set&lt;String&gt; moreScope = Sets.newHashSet(storedScope);<a name="line.323"></a>
-<span class="sourceLineNo">324</span>                moreScope.add("address");<a name="line.324"></a>
-<span class="sourceLineNo">325</span>                moreScope.add("phone");<a name="line.325"></a>
+<span class="sourceLineNo">323</span>                tokenRequest.setScope(lessScope);<a name="line.323"></a>
+<span class="sourceLineNo">324</span><a name="line.324"></a>
+<span class="sourceLineNo">325</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.325"></a>
 <span class="sourceLineNo">326</span><a name="line.326"></a>
-<span class="sourceLineNo">327</span>                Mockito.when(authRequest.getScope()).thenReturn(moreScope);<a name="line.327"></a>
-<span class="sourceLineNo">328</span><a name="line.328"></a>
-<span class="sourceLineNo">329</span>                service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.329"></a>
-<span class="sourceLineNo">330</span>        }<a name="line.330"></a>
-<span class="sourceLineNo">331</span><a name="line.331"></a>
-<span class="sourceLineNo">332</span>        /**<a name="line.332"></a>
-<span class="sourceLineNo">333</span>         * Tests the case where only some of the valid scope values are being requested along with<a name="line.333"></a>
-<span class="sourceLineNo">334</span>         * other extra unauthorized scope values.<a name="line.334"></a>
-<span class="sourceLineNo">335</span>         */<a name="line.335"></a>
-<span class="sourceLineNo">336</span>        @Test(expected = InvalidScopeException.class)<a name="line.336"></a>
-<span class="sourceLineNo">337</span>        public void refreshAccessToken_requestingMixedScope() {<a name="line.337"></a>
+<span class="sourceLineNo">327</span>                assertThat(token.getScope(), equalTo(lessScope));<a name="line.327"></a>
+<span class="sourceLineNo">328</span>        }<a name="line.328"></a>
+<span class="sourceLineNo">329</span><a name="line.329"></a>
+<span class="sourceLineNo">330</span>        @Test(expected = InvalidScopeException.class)<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        public void refreshAccessToken_requestingMoreScope() {<a name="line.331"></a>
+<span class="sourceLineNo">332</span><a name="line.332"></a>
+<span class="sourceLineNo">333</span>                Set&lt;String&gt; moreScope = Sets.newHashSet(storedScope);<a name="line.333"></a>
+<span class="sourceLineNo">334</span>                moreScope.add("address");<a name="line.334"></a>
+<span class="sourceLineNo">335</span>                moreScope.add("phone");<a name="line.335"></a>
+<span class="sourceLineNo">336</span><a name="line.336"></a>
+<span class="sourceLineNo">337</span>                tokenRequest.setScope(moreScope);<a name="line.337"></a>
 <span class="sourceLineNo">338</span><a name="line.338"></a>
-<span class="sourceLineNo">339</span>                Set&lt;String&gt; mixedScope = Sets.newHashSet("openid", "profile", "address", "phone"); // no email or offline_access<a name="line.339"></a>
-<span class="sourceLineNo">340</span><a name="line.340"></a>
-<span class="sourceLineNo">341</span>                Mockito.when(authRequest.getScope()).thenReturn(mixedScope);<a name="line.341"></a>
-<span class="sourceLineNo">342</span><a name="line.342"></a>
-<span class="sourceLineNo">343</span>                service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.343"></a>
-<span class="sourceLineNo">344</span>        }<a name="line.344"></a>
-<span class="sourceLineNo">345</span><a name="line.345"></a>
-<span class="sourceLineNo">346</span>        @Test<a name="line.346"></a>
-<span class="sourceLineNo">347</span>        public void refreshAccessToken_requestingEmptyScope() {<a name="line.347"></a>
+<span class="sourceLineNo">339</span>                service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        }<a name="line.340"></a>
+<span class="sourceLineNo">341</span><a name="line.341"></a>
+<span class="sourceLineNo">342</span>        /**<a name="line.342"></a>
+<span class="sourceLineNo">343</span>         * Tests the case where only some of the valid scope values are being requested along with<a name="line.343"></a>
+<span class="sourceLineNo">344</span>         * other extra unauthorized scope values.<a name="line.344"></a>
+<span class="sourceLineNo">345</span>         */<a name="line.345"></a>
+<span class="sourceLineNo">346</span>        @Test(expected = InvalidScopeException.class)<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        public void refreshAccessToken_requestingMixedScope() {<a name="line.347"></a>
 <span class="sourceLineNo">348</span><a name="line.348"></a>
-<span class="sourceLineNo">349</span>                Set&lt;String&gt; emptyScope = Sets.newHashSet();<a name="line.349"></a>
+<span class="sourceLineNo">349</span>                Set&lt;String&gt; mixedScope = Sets.newHashSet("openid", "profile", "address", "phone"); // no email or offline_access<a name="line.349"></a>
 <span class="sourceLineNo">350</span><a name="line.350"></a>
-<span class="sourceLineNo">351</span>                Mockito.when(authRequest.getScope()).thenReturn(emptyScope);<a name="line.351"></a>
+<span class="sourceLineNo">351</span>                tokenRequest.setScope(mixedScope);<a name="line.351"></a>
 <span class="sourceLineNo">352</span><a name="line.352"></a>
-<span class="sourceLineNo">353</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.353"></a>
-<span class="sourceLineNo">354</span><a name="line.354"></a>
-<span class="sourceLineNo">355</span>                assertThat(token.getScope(), equalTo(storedScope));<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        }<a name="line.356"></a>
-<span class="sourceLineNo">357</span><a name="line.357"></a>
-<span class="sourceLineNo">358</span>        @Test<a name="line.358"></a>
-<span class="sourceLineNo">359</span>        public void refreshAccessToken_requestingNullScope() {<a name="line.359"></a>
+<span class="sourceLineNo">353</span>                service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.353"></a>
+<span class="sourceLineNo">354</span>        }<a name="line.354"></a>
+<span class="sourceLineNo">355</span><a name="line.355"></a>
+<span class="sourceLineNo">356</span>        @Test<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        public void refreshAccessToken_requestingEmptyScope() {<a name="line.357"></a>
+<span class="sourceLineNo">358</span><a name="line.358"></a>
+<span class="sourceLineNo">359</span>                Set&lt;String&gt; emptyScope = Sets.newHashSet();<a name="line.359"></a>
 <span class="sourceLineNo">360</span><a name="line.360"></a>
-<span class="sourceLineNo">361</span>                Mockito.when(authRequest.getScope()).thenReturn(null);<a name="line.361"></a>
+<span class="sourceLineNo">361</span>                tokenRequest.setScope(emptyScope);<a name="line.361"></a>
 <span class="sourceLineNo">362</span><a name="line.362"></a>
-<span class="sourceLineNo">363</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.363"></a>
+<span class="sourceLineNo">363</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.363"></a>
 <span class="sourceLineNo">364</span><a name="line.364"></a>
 <span class="sourceLineNo">365</span>                assertThat(token.getScope(), equalTo(storedScope));<a name="line.365"></a>
-<span class="sourceLineNo">366</span><a name="line.366"></a>
-<span class="sourceLineNo">367</span>        }<a name="line.367"></a>
-<span class="sourceLineNo">368</span><a name="line.368"></a>
-<span class="sourceLineNo">369</span>        /**<a name="line.369"></a>
-<span class="sourceLineNo">370</span>         * Checks to see that the expiration date of refreshed tokens is being set accurately to within some delta for time skew.<a name="line.370"></a>
-<span class="sourceLineNo">371</span>         */<a name="line.371"></a>
-<span class="sourceLineNo">372</span>        @Test<a name="line.372"></a>
-<span class="sourceLineNo">373</span>        public void refreshAccessToken_expiration() {<a name="line.373"></a>
+<span class="sourceLineNo">366</span>        }<a name="line.366"></a>
+<span class="sourceLineNo">367</span><a name="line.367"></a>
+<span class="sourceLineNo">368</span>        @Test<a name="line.368"></a>
+<span class="sourceLineNo">369</span>        public void refreshAccessToken_requestingNullScope() {<a name="line.369"></a>
+<span class="sourceLineNo">370</span><a name="line.370"></a>
+<span class="sourceLineNo">371</span>                tokenRequest.setScope(null);<a name="line.371"></a>
+<span class="sourceLineNo">372</span><a name="line.372"></a>
+<span class="sourceLineNo">373</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.373"></a>
 <span class="sourceLineNo">374</span><a name="line.374"></a>
-<span class="sourceLineNo">375</span>                Integer accessTokenValiditySeconds = 3600;<a name="line.375"></a>
+<span class="sourceLineNo">375</span>                assertThat(token.getScope(), equalTo(storedScope));<a name="line.375"></a>
 <span class="sourceLineNo">376</span><a name="line.376"></a>
-<span class="sourceLineNo">377</span>                Mockito.when(client.getAccessTokenValiditySeconds()).thenReturn(accessTokenValiditySeconds);<a name="line.377"></a>
+<span class="sourceLineNo">377</span>        }<a name="line.377"></a>
 <span class="sourceLineNo">378</span><a name="line.378"></a>
-<span class="sourceLineNo">379</span>                long start = System.currentTimeMillis();<a name="line.379"></a>
-<span class="sourceLineNo">380</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, authRequest);<a name="line.380"></a>
-<span class="sourceLineNo">381</span>                long end = System.currentTimeMillis();<a name="line.381"></a>
-<span class="sourceLineNo">382</span><a name="line.382"></a>
-<span class="sourceLineNo">383</span>                // Accounting for some delta for time skew on either side.<a name="line.383"></a>
-<span class="sourceLineNo">384</span>                Date lowerBoundAccessTokens = new Date(start + (accessTokenValiditySeconds * 1000L) - DELTA);<a name="line.384"></a>
-<span class="sourceLineNo">385</span>                Date upperBoundAccessTokens = new Date(end + (accessTokenValiditySeconds * 1000L) + DELTA);<a name="line.385"></a>
+<span class="sourceLineNo">379</span>        /**<a name="line.379"></a>
+<span class="sourceLineNo">380</span>         * Checks to see that the expiration date of refreshed tokens is being set accurately to within some delta for time skew.<a name="line.380"></a>
+<span class="sourceLineNo">381</span>         */<a name="line.381"></a>
+<span class="sourceLineNo">382</span>        @Test<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        public void refreshAccessToken_expiration() {<a name="line.383"></a>
+<span class="sourceLineNo">384</span><a name="line.384"></a>
+<span class="sourceLineNo">385</span>                Integer accessTokenValiditySeconds = 3600;<a name="line.385"></a>
 <span class="sourceLineNo">386</span><a name="line.386"></a>
-<span class="sourceLineNo">387</span>                assertTrue(token.getExpiration().after(lowerBoundAccessTokens) &amp;&amp; token.getExpiration().before(upperBoundAccessTokens));<a name="line.387"></a>
-<span class="sourceLineNo">388</span>        }<a name="line.388"></a>
-<span class="sourceLineNo">389</span><a name="line.389"></a>
-<span class="sourceLineNo">390</span>}<a name="line.390"></a>
+<span class="sourceLineNo">387</span>                Mockito.when(client.getAccessTokenValiditySeconds()).thenReturn(accessTokenValiditySeconds);<a name="line.387"></a>
+<span class="sourceLineNo">388</span><a name="line.388"></a>
+<span class="sourceLineNo">389</span>                long start = System.currentTimeMillis();<a name="line.389"></a>
+<span class="sourceLineNo">390</span>                OAuth2AccessTokenEntity token = service.refreshAccessToken(refreshTokenValue, tokenRequest);<a name="line.390"></a>
+<span class="sourceLineNo">391</span>                long end = System.currentTimeMillis();<a name="line.391"></a>
+<span class="sourceLineNo">392</span><a name="line.392"></a>
+<span class="sourceLineNo">393</span>                // Accounting for some delta for time skew on either side.<a name="line.393"></a>
+<span class="sourceLineNo">394</span>                Date lowerBoundAccessTokens = new Date(start + (accessTokenValiditySeconds * 1000L) - DELTA);<a name="line.394"></a>
+<span class="sourceLineNo">395</span>                Date upperBoundAccessTokens = new Date(end + (accessTokenValiditySeconds * 1000L) + DELTA);<a name="line.395"></a>
+<span class="sourceLineNo">396</span><a name="line.396"></a>
+<span class="sourceLineNo">397</span>                assertTrue(token.getExpiration().after(lowerBoundAccessTokens) &amp;&amp; token.getExpiration().before(upperBoundAccessTokens));<a name="line.397"></a>
+<span class="sourceLineNo">398</span>        }<a name="line.398"></a>
+<span class="sourceLineNo">399</span><a name="line.399"></a>
+<span class="sourceLineNo">400</span>}<a name="line.400"></a>
 
 
 

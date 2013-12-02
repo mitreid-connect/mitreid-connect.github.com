@@ -1,6 +1,8 @@
 org.mitre.discovery.util
 org.mitre.jose
 org.mitre.jose.keystore
+org.mitre.jwt.encryption.service
+org.mitre.jwt.encryption.service.impl
 org.mitre.jwt.signer.service
 org.mitre.jwt.signer.service.impl
 org.mitre.oauth2.model
