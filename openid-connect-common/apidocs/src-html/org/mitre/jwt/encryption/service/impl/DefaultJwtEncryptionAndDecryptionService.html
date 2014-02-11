@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -69,7 +69,7 @@
 <span class="sourceLineNo">061</span>        private Map&lt;String, JWEDecrypter&gt; decrypters = new HashMap&lt;String, JWEDecrypter&gt;();<a name="line.61"></a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
 <span class="sourceLineNo">063</span>        private String defaultEncryptionKeyId;<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        <a name="line.64"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
 <span class="sourceLineNo">065</span>        private String defaultDecryptionKeyId;<a name="line.65"></a>
 <span class="sourceLineNo">066</span><a name="line.66"></a>
 <span class="sourceLineNo">067</span>        private JWEAlgorithm defaultAlgorithm;<a name="line.67"></a>
@@ -78,7 +78,7 @@
 <span class="sourceLineNo">070</span>        private Map&lt;String, JWK&gt; keys = new HashMap&lt;String, JWK&gt;();<a name="line.70"></a>
 <span class="sourceLineNo">071</span><a name="line.71"></a>
 <span class="sourceLineNo">072</span>        /**<a name="line.72"></a>
-<span class="sourceLineNo">073</span>         * Build this service based on the keys given. All public keys will be used to make encrypters, <a name="line.73"></a>
+<span class="sourceLineNo">073</span>         * Build this service based on the keys given. All public keys will be used to make encrypters,<a name="line.73"></a>
 <span class="sourceLineNo">074</span>         * all private keys will be used to make decrypters.<a name="line.74"></a>
 <span class="sourceLineNo">075</span>         * <a name="line.75"></a>
 <span class="sourceLineNo">076</span>         * @param keys<a name="line.76"></a>
@@ -90,7 +90,7 @@
 <span class="sourceLineNo">082</span>                this.keys = keys;<a name="line.82"></a>
 <span class="sourceLineNo">083</span>                buildEncryptersAndDecrypters();<a name="line.83"></a>
 <span class="sourceLineNo">084</span>        }<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        <a name="line.85"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
 <span class="sourceLineNo">086</span>        /**<a name="line.86"></a>
 <span class="sourceLineNo">087</span>         * Build this service based on the given keystore. All keys must have a key<a name="line.87"></a>
 <span class="sourceLineNo">088</span>         * id ({@code kid}) field in order to be used.<a name="line.88"></a>
@@ -101,7 +101,7 @@
 <span class="sourceLineNo">093</span>         * @throws JOSEException<a name="line.93"></a>
 <span class="sourceLineNo">094</span>         */<a name="line.94"></a>
 <span class="sourceLineNo">095</span>        public DefaultJwtEncryptionAndDecryptionService(JWKSetKeyStore keyStore) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                <a name="line.96"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
 <span class="sourceLineNo">097</span>                // convert all keys in the keystore to a map based on key id<a name="line.97"></a>
 <span class="sourceLineNo">098</span>                for (JWK key : keyStore.getKeys()) {<a name="line.98"></a>
 <span class="sourceLineNo">099</span>                        if (!Strings.isNullOrEmpty(key.getKeyID())) {<a name="line.99"></a>
@@ -110,11 +110,11 @@
 <span class="sourceLineNo">102</span>                                throw new IllegalArgumentException("Tried to load a key from a keystore without a 'kid' field: " + key);<a name="line.102"></a>
 <span class="sourceLineNo">103</span>                        }<a name="line.103"></a>
 <span class="sourceLineNo">104</span>                }<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                <a name="line.105"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
 <span class="sourceLineNo">106</span>                buildEncryptersAndDecrypters();<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                <a name="line.107"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
 <span class="sourceLineNo">108</span>        }<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        <a name="line.109"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
 <span class="sourceLineNo">110</span><a name="line.110"></a>
 <span class="sourceLineNo">111</span>        @PostConstruct<a name="line.111"></a>
 <span class="sourceLineNo">112</span>        public void afterPropertiesSet() throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException{<a name="line.112"></a>
@@ -177,7 +177,7 @@
 <span class="sourceLineNo">169</span>                try {<a name="line.169"></a>
 <span class="sourceLineNo">170</span>                        jwt.encrypt(encrypter);<a name="line.170"></a>
 <span class="sourceLineNo">171</span>                } catch (JOSEException e) {<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                        <a name="line.172"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
 <span class="sourceLineNo">173</span>                        logger.error("Failed to encrypt JWT, error was: ", e);<a name="line.173"></a>
 <span class="sourceLineNo">174</span>                }<a name="line.174"></a>
 <span class="sourceLineNo">175</span><a name="line.175"></a>
@@ -197,7 +197,7 @@
 <span class="sourceLineNo">189</span>                try {<a name="line.189"></a>
 <span class="sourceLineNo">190</span>                        jwt.decrypt(decrypter);<a name="line.190"></a>
 <span class="sourceLineNo">191</span>                } catch (JOSEException e) {<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                        <a name="line.192"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
 <span class="sourceLineNo">193</span>                        logger.error("Failed to decrypt JWT, error was: ", e);<a name="line.193"></a>
 <span class="sourceLineNo">194</span>                }<a name="line.194"></a>
 <span class="sourceLineNo">195</span><a name="line.195"></a>
@@ -205,10 +205,10 @@
 <span class="sourceLineNo">197</span><a name="line.197"></a>
 <span class="sourceLineNo">198</span>        /**<a name="line.198"></a>
 <span class="sourceLineNo">199</span>         * Builds all the encrypters and decrypters for this service based on the key map.<a name="line.199"></a>
-<span class="sourceLineNo">200</span>         * @throws  <a name="line.200"></a>
-<span class="sourceLineNo">201</span>         * @throws InvalidKeySpecException <a name="line.201"></a>
-<span class="sourceLineNo">202</span>         * @throws NoSuchAlgorithmException <a name="line.202"></a>
-<span class="sourceLineNo">203</span>         * @throws JOSEException <a name="line.203"></a>
+<span class="sourceLineNo">200</span>         * @throws<a name="line.200"></a>
+<span class="sourceLineNo">201</span>         * @throws InvalidKeySpecException<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * @throws NoSuchAlgorithmException<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         * @throws JOSEException<a name="line.203"></a>
 <span class="sourceLineNo">204</span>         */<a name="line.204"></a>
 <span class="sourceLineNo">205</span>        private void buildEncryptersAndDecrypters() throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {<a name="line.205"></a>
 <span class="sourceLineNo">206</span><a name="line.206"></a>
@@ -237,7 +237,7 @@
 <span class="sourceLineNo">229</span><a name="line.229"></a>
 <span class="sourceLineNo">230</span>                                DirectEncrypter encrypter = new DirectEncrypter(((OctetSequenceKey) jwk).toByteArray());<a name="line.230"></a>
 <span class="sourceLineNo">231</span>                                DirectDecrypter decrypter = new DirectDecrypter(((OctetSequenceKey) jwk).toByteArray());<a name="line.231"></a>
-<span class="sourceLineNo">232</span>                                <a name="line.232"></a>
+<span class="sourceLineNo">232</span><a name="line.232"></a>
 <span class="sourceLineNo">233</span>                                encrypters.put(id, encrypter);<a name="line.233"></a>
 <span class="sourceLineNo">234</span>                                decrypters.put(id, decrypter);<a name="line.234"></a>
 <span class="sourceLineNo">235</span><a name="line.235"></a>
@@ -282,22 +282,22 @@
 <span class="sourceLineNo">274</span>        /* (non-Javadoc)<a name="line.274"></a>
 <span class="sourceLineNo">275</span>         * @see org.mitre.jwt.encryption.service.JwtEncryptionAndDecryptionService#getAllEncryptionEncsSupported()<a name="line.275"></a>
 <span class="sourceLineNo">276</span>         */<a name="line.276"></a>
-<span class="sourceLineNo">277</span>    @Override<a name="line.277"></a>
-<span class="sourceLineNo">278</span>    public Collection&lt;EncryptionMethod&gt; getAllEncryptionEncsSupported() {<a name="line.278"></a>
-<span class="sourceLineNo">279</span>        Set&lt;EncryptionMethod&gt; encs = new HashSet&lt;EncryptionMethod&gt;();<a name="line.279"></a>
-<span class="sourceLineNo">280</span>        <a name="line.280"></a>
-<span class="sourceLineNo">281</span>        for (JWEEncrypter encrypter : encrypters.values()) {<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                encs.addAll(encrypter.supportedEncryptionMethods());<a name="line.282"></a>
-<span class="sourceLineNo">283</span>        }<a name="line.283"></a>
-<span class="sourceLineNo">284</span>        <a name="line.284"></a>
-<span class="sourceLineNo">285</span>        for (JWEDecrypter decrypter : decrypters.values()) {<a name="line.285"></a>
-<span class="sourceLineNo">286</span>                encs.addAll(decrypter.supportedEncryptionMethods());<a name="line.286"></a>
-<span class="sourceLineNo">287</span>        }<a name="line.287"></a>
-<span class="sourceLineNo">288</span>        <a name="line.288"></a>
-<span class="sourceLineNo">289</span>        return encs;<a name="line.289"></a>
-<span class="sourceLineNo">290</span>    }<a name="line.290"></a>
+<span class="sourceLineNo">277</span>        @Override<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        public Collection&lt;EncryptionMethod&gt; getAllEncryptionEncsSupported() {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                Set&lt;EncryptionMethod&gt; encs = new HashSet&lt;EncryptionMethod&gt;();<a name="line.279"></a>
+<span class="sourceLineNo">280</span><a name="line.280"></a>
+<span class="sourceLineNo">281</span>                for (JWEEncrypter encrypter : encrypters.values()) {<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                        encs.addAll(encrypter.supportedEncryptionMethods());<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                }<a name="line.283"></a>
+<span class="sourceLineNo">284</span><a name="line.284"></a>
+<span class="sourceLineNo">285</span>                for (JWEDecrypter decrypter : decrypters.values()) {<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                        encs.addAll(decrypter.supportedEncryptionMethods());<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                }<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>                return encs;<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        }<a name="line.290"></a>
 <span class="sourceLineNo">291</span><a name="line.291"></a>
-<span class="sourceLineNo">292</span>        <a name="line.292"></a>
+<span class="sourceLineNo">292</span><a name="line.292"></a>
 <span class="sourceLineNo">293</span>}<a name="line.293"></a>
 
 

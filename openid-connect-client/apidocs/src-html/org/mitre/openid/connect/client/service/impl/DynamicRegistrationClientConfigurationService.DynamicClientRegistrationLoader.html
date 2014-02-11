@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -32,7 +32,7 @@
 <span class="sourceLineNo">024</span>import java.util.concurrent.ExecutionException;<a name="line.24"></a>
 <span class="sourceLineNo">025</span><a name="line.25"></a>
 <span class="sourceLineNo">026</span>import org.apache.http.client.HttpClient;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.apache.http.impl.client.DefaultHttpClient;<a name="line.27"></a>
+<span class="sourceLineNo">027</span>import org.apache.http.impl.client.SystemDefaultHttpClient;<a name="line.27"></a>
 <span class="sourceLineNo">028</span>import org.mitre.oauth2.model.RegisteredClient;<a name="line.28"></a>
 <span class="sourceLineNo">029</span>import org.mitre.openid.connect.ClientDetailsEntityJsonProcessor;<a name="line.29"></a>
 <span class="sourceLineNo">030</span>import org.mitre.openid.connect.client.service.ClientConfigurationService;<a name="line.30"></a>
@@ -170,10 +170,10 @@
 <span class="sourceLineNo">162</span>         *<a name="line.162"></a>
 <span class="sourceLineNo">163</span>         */<a name="line.163"></a>
 <span class="sourceLineNo">164</span>        public class DynamicClientRegistrationLoader extends CacheLoader&lt;ServerConfiguration, RegisteredClient&gt; {<a name="line.164"></a>
-<span class="sourceLineNo">165</span>                private HttpClient httpClient = new DefaultHttpClient();<a name="line.165"></a>
+<span class="sourceLineNo">165</span>                private HttpClient httpClient = new SystemDefaultHttpClient();<a name="line.165"></a>
 <span class="sourceLineNo">166</span>                private HttpComponentsClientHttpRequestFactory httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);<a name="line.166"></a>
 <span class="sourceLineNo">167</span>                private Gson gson = new Gson(); // note that this doesn't serialize nulls by default<a name="line.167"></a>
-<span class="sourceLineNo">168</span>                <a name="line.168"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
 <span class="sourceLineNo">169</span>                @Override<a name="line.169"></a>
 <span class="sourceLineNo">170</span>                public RegisteredClient load(ServerConfiguration serverConfig) throws Exception {<a name="line.170"></a>
 <span class="sourceLineNo">171</span>                        RestTemplate restTemplate = new RestTemplate(httpFactory);<a name="line.171"></a>

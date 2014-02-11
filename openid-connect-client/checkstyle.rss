@@ -6,11 +6,11 @@
     <link>https://github.com/mitreid-connect/openid-connect-client</link>
     <description>OpenID Connect Client - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2013</copyright>
+    <copyright>&#169;2014</copyright>
     <item>
       <title>File: 38,
-             Errors: 8,
-             Warnings: 87,
+             Errors: 13,
+             Warnings: 83,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/openid-connect-client/checkstyle.html</link>
@@ -38,7 +38,7 @@
                   4
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -119,10 +119,10 @@
                   0
                 </td>
                 <td>
-                  35
+                  33
                 </td>
                 <td>
-                  6
+                  7
                 </td>
               </tr>
                           <tr>
@@ -147,10 +147,10 @@
                   0
                 </td>
                 <td>
-                  4
+                  3
                 </td>
                 <td>
-                  0
+                  6
                 </td>
               </tr>
                           <tr>
@@ -343,10 +343,10 @@
                   0
                 </td>
                 <td>
-                  7
+                  6
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>

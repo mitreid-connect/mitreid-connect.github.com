@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -67,10 +67,10 @@
 <span class="sourceLineNo">059</span><a name="line.59"></a>
 <span class="sourceLineNo">060</span>        @Autowired<a name="line.60"></a>
 <span class="sourceLineNo">061</span>        private ApprovedSiteService approvedSiteService;<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        <a name="line.62"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
 <span class="sourceLineNo">063</span>        @Autowired<a name="line.63"></a>
 <span class="sourceLineNo">064</span>        private UserInfoService userInfoService;<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        <a name="line.65"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
 <span class="sourceLineNo">066</span>        @Autowired<a name="line.66"></a>
 <span class="sourceLineNo">067</span>        private OIDCTokenService connectTokenService;<a name="line.67"></a>
 <span class="sourceLineNo">068</span><a name="line.68"></a>
@@ -99,7 +99,7 @@
 <span class="sourceLineNo">091</span>                if (client.getIdTokenSignedResponseAlg() != null) {<a name="line.91"></a>
 <span class="sourceLineNo">092</span>                        signingAlg = client.getIdTokenSignedResponseAlg();<a name="line.92"></a>
 <span class="sourceLineNo">093</span>                }<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                <a name="line.94"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
 <span class="sourceLineNo">095</span>                SignedJWT signed = new SignedJWT(new JWSHeader(signingAlg), claims);<a name="line.95"></a>
 <span class="sourceLineNo">096</span><a name="line.96"></a>
 <span class="sourceLineNo">097</span>                jwtService.signJwt(signed);<a name="line.97"></a>
@@ -116,9 +116,9 @@
 <span class="sourceLineNo">108</span><a name="line.108"></a>
 <span class="sourceLineNo">109</span>                        String username = authentication.getName();<a name="line.109"></a>
 <span class="sourceLineNo">110</span>                        UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, clientId);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                        <a name="line.111"></a>
-<span class="sourceLineNo">112</span>                        OAuth2AccessTokenEntity idTokenEntity = connectTokenService.createIdToken(client, <a name="line.112"></a>
-<span class="sourceLineNo">113</span>                                        originalAuthRequest, (java.util.Date) claims.getIssueTime(),<a name="line.113"></a>
+<span class="sourceLineNo">111</span><a name="line.111"></a>
+<span class="sourceLineNo">112</span>                        OAuth2AccessTokenEntity idTokenEntity = connectTokenService.createIdToken(client,<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                                        originalAuthRequest, claims.getIssueTime(),<a name="line.113"></a>
 <span class="sourceLineNo">114</span>                                        userInfo.getSub(), signingAlg, token);<a name="line.114"></a>
 <span class="sourceLineNo">115</span><a name="line.115"></a>
 <span class="sourceLineNo">116</span>                        // attach the id token to the parent access token<a name="line.116"></a>

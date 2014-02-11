@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -68,7 +68,7 @@
 <span class="sourceLineNo">060</span><a name="line.60"></a>
 <span class="sourceLineNo">061</span>        // map of identifier to key<a name="line.61"></a>
 <span class="sourceLineNo">062</span>        private Map&lt;String, JWK&gt; keys = new HashMap&lt;String, JWK&gt;();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        <a name="line.63"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
 <span class="sourceLineNo">064</span>        /**<a name="line.64"></a>
 <span class="sourceLineNo">065</span>         * Build this service based on the keys given. All public keys will be used<a name="line.65"></a>
 <span class="sourceLineNo">066</span>         * to make verifiers, all private keys will be used to make signers.<a name="line.66"></a>
@@ -223,29 +223,29 @@
 <span class="sourceLineNo">215</span>        public void signJwt(SignedJWT jwt, JWSAlgorithm alg) {<a name="line.215"></a>
 <span class="sourceLineNo">216</span><a name="line.216"></a>
 <span class="sourceLineNo">217</span>                JWSSigner signer = null;<a name="line.217"></a>
-<span class="sourceLineNo">218</span>                <a name="line.218"></a>
+<span class="sourceLineNo">218</span><a name="line.218"></a>
 <span class="sourceLineNo">219</span>                for (JWSSigner s : signers.values()) {<a name="line.219"></a>
 <span class="sourceLineNo">220</span>                        if (s.supportedAlgorithms().contains(alg)) {<a name="line.220"></a>
 <span class="sourceLineNo">221</span>                                signer = s;<a name="line.221"></a>
 <span class="sourceLineNo">222</span>                                break;<a name="line.222"></a>
 <span class="sourceLineNo">223</span>                        }<a name="line.223"></a>
 <span class="sourceLineNo">224</span>                }<a name="line.224"></a>
-<span class="sourceLineNo">225</span>                <a name="line.225"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
 <span class="sourceLineNo">226</span>                if (signer == null) {<a name="line.226"></a>
 <span class="sourceLineNo">227</span>                        //If we can't find an algorithm that matches, we can't sign<a name="line.227"></a>
 <span class="sourceLineNo">228</span>                        logger.error("No matching algirthm found for alg=" + alg);<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                        <a name="line.229"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
 <span class="sourceLineNo">230</span>                }<a name="line.230"></a>
-<span class="sourceLineNo">231</span>                <a name="line.231"></a>
+<span class="sourceLineNo">231</span><a name="line.231"></a>
 <span class="sourceLineNo">232</span>                try {<a name="line.232"></a>
 <span class="sourceLineNo">233</span>                        jwt.sign(signer);<a name="line.233"></a>
 <span class="sourceLineNo">234</span>                } catch (JOSEException e) {<a name="line.234"></a>
 <span class="sourceLineNo">235</span><a name="line.235"></a>
 <span class="sourceLineNo">236</span>                        logger.error("Failed to sign JWT, error was: ", e);<a name="line.236"></a>
 <span class="sourceLineNo">237</span>                }<a name="line.237"></a>
-<span class="sourceLineNo">238</span>                <a name="line.238"></a>
+<span class="sourceLineNo">238</span><a name="line.238"></a>
 <span class="sourceLineNo">239</span>        }<a name="line.239"></a>
-<span class="sourceLineNo">240</span>        <a name="line.240"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
 <span class="sourceLineNo">241</span>        @Override<a name="line.241"></a>
 <span class="sourceLineNo">242</span>        public boolean validateSignature(SignedJWT jwt) {<a name="line.242"></a>
 <span class="sourceLineNo">243</span><a name="line.243"></a>

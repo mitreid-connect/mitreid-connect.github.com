@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -59,7 +59,7 @@
 <span class="sourceLineNo">051</span>        private boolean structured = false; // is this a default scope for newly-registered clients?<a name="line.51"></a>
 <span class="sourceLineNo">052</span>        private String structuredParamDescription;<a name="line.52"></a>
 <span class="sourceLineNo">053</span>        private String structuredValue;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        <a name="line.54"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
 <span class="sourceLineNo">055</span>        /**<a name="line.55"></a>
 <span class="sourceLineNo">056</span>         * Make a blank system scope with no value<a name="line.56"></a>
 <span class="sourceLineNo">057</span>         */<a name="line.57"></a>
@@ -74,7 +74,7 @@
 <span class="sourceLineNo">066</span>        public SystemScope(String value) {<a name="line.66"></a>
 <span class="sourceLineNo">067</span>                this.value = value;<a name="line.67"></a>
 <span class="sourceLineNo">068</span>        }<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        <a name="line.69"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
 <span class="sourceLineNo">070</span>        /**<a name="line.70"></a>
 <span class="sourceLineNo">071</span>         * @return the id<a name="line.71"></a>
 <span class="sourceLineNo">072</span>         */<a name="line.72"></a>
@@ -155,14 +155,14 @@
 <span class="sourceLineNo">147</span>        public boolean isDefaultScope() {<a name="line.147"></a>
 <span class="sourceLineNo">148</span>                return defaultScope;<a name="line.148"></a>
 <span class="sourceLineNo">149</span>        }<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        <a name="line.150"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
 <span class="sourceLineNo">151</span>        /**<a name="line.151"></a>
 <span class="sourceLineNo">152</span>         * @param defaultScope the defaultScope to set<a name="line.152"></a>
 <span class="sourceLineNo">153</span>         */<a name="line.153"></a>
 <span class="sourceLineNo">154</span>        public void setDefaultScope(boolean defaultScope) {<a name="line.154"></a>
 <span class="sourceLineNo">155</span>                this.defaultScope = defaultScope;<a name="line.155"></a>
 <span class="sourceLineNo">156</span>        }<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        <a name="line.157"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
 <span class="sourceLineNo">158</span>        /**<a name="line.158"></a>
 <span class="sourceLineNo">159</span>         * @return the isStructured status<a name="line.159"></a>
 <span class="sourceLineNo">160</span>         */<a name="line.160"></a>
@@ -171,7 +171,7 @@
 <span class="sourceLineNo">163</span>        public boolean isStructured() {<a name="line.163"></a>
 <span class="sourceLineNo">164</span>                return structured;<a name="line.164"></a>
 <span class="sourceLineNo">165</span>        }<a name="line.165"></a>
-<span class="sourceLineNo">166</span>        <a name="line.166"></a>
+<span class="sourceLineNo">166</span><a name="line.166"></a>
 <span class="sourceLineNo">167</span>        /**<a name="line.167"></a>
 <span class="sourceLineNo">168</span>         * @param structured the structured to set<a name="line.168"></a>
 <span class="sourceLineNo">169</span>         */<a name="line.169"></a>
@@ -184,7 +184,7 @@
 <span class="sourceLineNo">176</span>        public String getStructuredParamDescription() {<a name="line.176"></a>
 <span class="sourceLineNo">177</span>                return structuredParamDescription;<a name="line.177"></a>
 <span class="sourceLineNo">178</span>        }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        <a name="line.179"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
 <span class="sourceLineNo">180</span>        /**<a name="line.180"></a>
 <span class="sourceLineNo">181</span>         * @param isStructured the isStructured to set<a name="line.181"></a>
 <span class="sourceLineNo">182</span>         */<a name="line.182"></a>
@@ -192,7 +192,7 @@
 <span class="sourceLineNo">184</span>                this.structuredParamDescription = d;<a name="line.184"></a>
 <span class="sourceLineNo">185</span>        }<a name="line.185"></a>
 <span class="sourceLineNo">186</span><a name="line.186"></a>
-<span class="sourceLineNo">187</span>        <a name="line.187"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
 <span class="sourceLineNo">188</span>        /**<a name="line.188"></a>
 <span class="sourceLineNo">189</span>         * @return the structuredValue<a name="line.189"></a>
 <span class="sourceLineNo">190</span>         */<a name="line.190"></a>
@@ -212,99 +212,99 @@
 <span class="sourceLineNo">204</span>        /* (non-Javadoc)<a name="line.204"></a>
 <span class="sourceLineNo">205</span>         * @see java.lang.Object#hashCode()<a name="line.205"></a>
 <span class="sourceLineNo">206</span>         */<a name="line.206"></a>
-<span class="sourceLineNo">207</span>    @Override<a name="line.207"></a>
-<span class="sourceLineNo">208</span>    public int hashCode() {<a name="line.208"></a>
-<span class="sourceLineNo">209</span>            final int prime = 31;<a name="line.209"></a>
-<span class="sourceLineNo">210</span>            int result = 1;<a name="line.210"></a>
-<span class="sourceLineNo">211</span>            result = prime * result + (allowDynReg ? 1231 : 1237);<a name="line.211"></a>
-<span class="sourceLineNo">212</span>            result = prime * result + (defaultScope ? 1231 : 1237);<a name="line.212"></a>
-<span class="sourceLineNo">213</span>            result = prime * result + ((description == null) ? 0 : description.hashCode());<a name="line.213"></a>
-<span class="sourceLineNo">214</span>            result = prime * result + ((icon == null) ? 0 : icon.hashCode());<a name="line.214"></a>
-<span class="sourceLineNo">215</span>            result = prime * result + ((id == null) ? 0 : id.hashCode());<a name="line.215"></a>
-<span class="sourceLineNo">216</span>            result = prime * result + (structured ? 1231 : 1237);<a name="line.216"></a>
-<span class="sourceLineNo">217</span>            result = prime * result + ((structuredParamDescription == null) ? 0 : structuredParamDescription.hashCode());<a name="line.217"></a>
-<span class="sourceLineNo">218</span>            result = prime * result + ((structuredValue == null) ? 0 : structuredValue.hashCode());<a name="line.218"></a>
-<span class="sourceLineNo">219</span>            result = prime * result + ((value == null) ? 0 : value.hashCode());<a name="line.219"></a>
-<span class="sourceLineNo">220</span>            return result;<a name="line.220"></a>
-<span class="sourceLineNo">221</span>    }<a name="line.221"></a>
+<span class="sourceLineNo">207</span>        @Override<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        public int hashCode() {<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                final int prime = 31;<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                int result = 1;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                result = prime * result + (allowDynReg ? 1231 : 1237);<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                result = prime * result + (defaultScope ? 1231 : 1237);<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                result = prime * result + ((description == null) ? 0 : description.hashCode());<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                result = prime * result + ((icon == null) ? 0 : icon.hashCode());<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                result = prime * result + ((id == null) ? 0 : id.hashCode());<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                result = prime * result + (structured ? 1231 : 1237);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                result = prime * result + ((structuredParamDescription == null) ? 0 : structuredParamDescription.hashCode());<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                result = prime * result + ((structuredValue == null) ? 0 : structuredValue.hashCode());<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                result = prime * result + ((value == null) ? 0 : value.hashCode());<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                return result;<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        }<a name="line.221"></a>
 <span class="sourceLineNo">222</span><a name="line.222"></a>
 <span class="sourceLineNo">223</span>        /* (non-Javadoc)<a name="line.223"></a>
 <span class="sourceLineNo">224</span>         * @see java.lang.Object#equals(java.lang.Object)<a name="line.224"></a>
 <span class="sourceLineNo">225</span>         */<a name="line.225"></a>
-<span class="sourceLineNo">226</span>    @Override<a name="line.226"></a>
-<span class="sourceLineNo">227</span>    public boolean equals(Object obj) {<a name="line.227"></a>
-<span class="sourceLineNo">228</span>            if (this == obj) {<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                    return true;<a name="line.229"></a>
-<span class="sourceLineNo">230</span>            }<a name="line.230"></a>
-<span class="sourceLineNo">231</span>            if (obj == null) {<a name="line.231"></a>
-<span class="sourceLineNo">232</span>                    return false;<a name="line.232"></a>
-<span class="sourceLineNo">233</span>            }<a name="line.233"></a>
-<span class="sourceLineNo">234</span>            if (!(obj instanceof SystemScope)) {<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                    return false;<a name="line.235"></a>
-<span class="sourceLineNo">236</span>            }<a name="line.236"></a>
-<span class="sourceLineNo">237</span>            SystemScope other = (SystemScope) obj;<a name="line.237"></a>
-<span class="sourceLineNo">238</span>            if (allowDynReg != other.allowDynReg) {<a name="line.238"></a>
-<span class="sourceLineNo">239</span>                    return false;<a name="line.239"></a>
-<span class="sourceLineNo">240</span>            }<a name="line.240"></a>
-<span class="sourceLineNo">241</span>            if (defaultScope != other.defaultScope) {<a name="line.241"></a>
-<span class="sourceLineNo">242</span>                    return false;<a name="line.242"></a>
-<span class="sourceLineNo">243</span>            }<a name="line.243"></a>
-<span class="sourceLineNo">244</span>            if (description == null) {<a name="line.244"></a>
-<span class="sourceLineNo">245</span>                    if (other.description != null) {<a name="line.245"></a>
-<span class="sourceLineNo">246</span>                            return false;<a name="line.246"></a>
-<span class="sourceLineNo">247</span>                    }<a name="line.247"></a>
-<span class="sourceLineNo">248</span>            } else if (!description.equals(other.description)) {<a name="line.248"></a>
-<span class="sourceLineNo">249</span>                    return false;<a name="line.249"></a>
-<span class="sourceLineNo">250</span>            }<a name="line.250"></a>
-<span class="sourceLineNo">251</span>            if (icon == null) {<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                    if (other.icon != null) {<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                            return false;<a name="line.253"></a>
-<span class="sourceLineNo">254</span>                    }<a name="line.254"></a>
-<span class="sourceLineNo">255</span>            } else if (!icon.equals(other.icon)) {<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                    return false;<a name="line.256"></a>
-<span class="sourceLineNo">257</span>            }<a name="line.257"></a>
-<span class="sourceLineNo">258</span>            if (id == null) {<a name="line.258"></a>
-<span class="sourceLineNo">259</span>                    if (other.id != null) {<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                            return false;<a name="line.260"></a>
-<span class="sourceLineNo">261</span>                    }<a name="line.261"></a>
-<span class="sourceLineNo">262</span>            } else if (!id.equals(other.id)) {<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                    return false;<a name="line.263"></a>
-<span class="sourceLineNo">264</span>            }<a name="line.264"></a>
-<span class="sourceLineNo">265</span>            if (structured != other.structured) {<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                    return false;<a name="line.266"></a>
-<span class="sourceLineNo">267</span>            }<a name="line.267"></a>
-<span class="sourceLineNo">268</span>            if (structuredParamDescription == null) {<a name="line.268"></a>
-<span class="sourceLineNo">269</span>                    if (other.structuredParamDescription != null) {<a name="line.269"></a>
-<span class="sourceLineNo">270</span>                            return false;<a name="line.270"></a>
-<span class="sourceLineNo">271</span>                    }<a name="line.271"></a>
-<span class="sourceLineNo">272</span>            } else if (!structuredParamDescription.equals(other.structuredParamDescription)) {<a name="line.272"></a>
-<span class="sourceLineNo">273</span>                    return false;<a name="line.273"></a>
-<span class="sourceLineNo">274</span>            }<a name="line.274"></a>
-<span class="sourceLineNo">275</span>            if (structuredValue == null) {<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                    if (other.structuredValue != null) {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                            return false;<a name="line.277"></a>
-<span class="sourceLineNo">278</span>                    }<a name="line.278"></a>
-<span class="sourceLineNo">279</span>            } else if (!structuredValue.equals(other.structuredValue)) {<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                    return false;<a name="line.280"></a>
-<span class="sourceLineNo">281</span>            }<a name="line.281"></a>
-<span class="sourceLineNo">282</span>            if (value == null) {<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                    if (other.value != null) {<a name="line.283"></a>
-<span class="sourceLineNo">284</span>                            return false;<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                    }<a name="line.285"></a>
-<span class="sourceLineNo">286</span>            } else if (!value.equals(other.value)) {<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                    return false;<a name="line.287"></a>
-<span class="sourceLineNo">288</span>            }<a name="line.288"></a>
-<span class="sourceLineNo">289</span>            return true;<a name="line.289"></a>
-<span class="sourceLineNo">290</span>    }<a name="line.290"></a>
+<span class="sourceLineNo">226</span>        @Override<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        public boolean equals(Object obj) {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                if (this == obj) {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                        return true;<a name="line.229"></a>
+<span class="sourceLineNo">230</span>                }<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                if (obj == null) {<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                        return false;<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                }<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                if (!(obj instanceof SystemScope)) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                        return false;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>                }<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                SystemScope other = (SystemScope) obj;<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                if (allowDynReg != other.allowDynReg) {<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                        return false;<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                }<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                if (defaultScope != other.defaultScope) {<a name="line.241"></a>
+<span class="sourceLineNo">242</span>                        return false;<a name="line.242"></a>
+<span class="sourceLineNo">243</span>                }<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                if (description == null) {<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                        if (other.description != null) {<a name="line.245"></a>
+<span class="sourceLineNo">246</span>                                return false;<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                        }<a name="line.247"></a>
+<span class="sourceLineNo">248</span>                } else if (!description.equals(other.description)) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                        return false;<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                }<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                if (icon == null) {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                        if (other.icon != null) {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                                return false;<a name="line.253"></a>
+<span class="sourceLineNo">254</span>                        }<a name="line.254"></a>
+<span class="sourceLineNo">255</span>                } else if (!icon.equals(other.icon)) {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                        return false;<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                }<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                if (id == null) {<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                        if (other.id != null) {<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                                return false;<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                        }<a name="line.261"></a>
+<span class="sourceLineNo">262</span>                } else if (!id.equals(other.id)) {<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                        return false;<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                }<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                if (structured != other.structured) {<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                        return false;<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                }<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                if (structuredParamDescription == null) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                        if (other.structuredParamDescription != null) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                                return false;<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                        }<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                } else if (!structuredParamDescription.equals(other.structuredParamDescription)) {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                        return false;<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                }<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                if (structuredValue == null) {<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                        if (other.structuredValue != null) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                                return false;<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                        }<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                } else if (!structuredValue.equals(other.structuredValue)) {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                        return false;<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                }<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                if (value == null) {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                        if (other.value != null) {<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                                return false;<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                        }<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                } else if (!value.equals(other.value)) {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                        return false;<a name="line.287"></a>
+<span class="sourceLineNo">288</span>                }<a name="line.288"></a>
+<span class="sourceLineNo">289</span>                return true;<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        }<a name="line.290"></a>
 <span class="sourceLineNo">291</span><a name="line.291"></a>
 <span class="sourceLineNo">292</span>        /* (non-Javadoc)<a name="line.292"></a>
 <span class="sourceLineNo">293</span>         * @see java.lang.Object#toString()<a name="line.293"></a>
 <span class="sourceLineNo">294</span>         */<a name="line.294"></a>
-<span class="sourceLineNo">295</span>    @Override<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    public String toString() {<a name="line.296"></a>
-<span class="sourceLineNo">297</span>            return "SystemScope [id=" + id + ", value=" + value + ", description=" + description + ", icon=" + icon + ", allowDynReg=" + allowDynReg + ", defaultScope=" + defaultScope + ", structured=" + structured + ", structuredParamDescription=" + structuredParamDescription + ", structuredValue="<a name="line.297"></a>
-<span class="sourceLineNo">298</span>                    + structuredValue + "]";<a name="line.298"></a>
-<span class="sourceLineNo">299</span>    }<a name="line.299"></a>
+<span class="sourceLineNo">295</span>        @Override<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        public String toString() {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                return "SystemScope [id=" + id + ", value=" + value + ", description=" + description + ", icon=" + icon + ", allowDynReg=" + allowDynReg + ", defaultScope=" + defaultScope + ", structured=" + structured + ", structuredParamDescription=" + structuredParamDescription + ", structuredValue="<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                                + structuredValue + "]";<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        }<a name="line.299"></a>
 <span class="sourceLineNo">300</span><a name="line.300"></a>
 <span class="sourceLineNo">301</span>}<a name="line.301"></a>
 

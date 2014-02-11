@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -82,7 +82,7 @@
 <span class="sourceLineNo">074</span>        /**<a name="line.74"></a>
 <span class="sourceLineNo">075</span>         * <a name="line.75"></a>
 <span class="sourceLineNo">076</span>         */<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    private static final int DEFAULT_ID_TOKEN_VALIDITY_SECONDS = 600;<a name="line.77"></a>
+<span class="sourceLineNo">077</span>        private static final int DEFAULT_ID_TOKEN_VALIDITY_SECONDS = 600;<a name="line.77"></a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
 <span class="sourceLineNo">079</span>        private static final long serialVersionUID = -1617727085733786296L;<a name="line.79"></a>
 <span class="sourceLineNo">080</span><a name="line.80"></a>
@@ -118,7 +118,7 @@
 <span class="sourceLineNo">110</span>        private JWSAlgorithmEmbed idTokenSignedResponseAlg = null; // id_token_signed_response_alg<a name="line.110"></a>
 <span class="sourceLineNo">111</span>        private JWEAlgorithmEmbed idTokenEncryptedResponseAlg = null; // id_token_encrypted_response_alg<a name="line.111"></a>
 <span class="sourceLineNo">112</span>        private JWEEncryptionMethodEmbed idTokenEncryptedResponseEnc = null; // id_token_encrypted_response_enc<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        <a name="line.113"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
 <span class="sourceLineNo">114</span>        private JWSAlgorithmEmbed tokenEndpointAuthSigningAlg = null; // token_endpoint_auth_signing_alg<a name="line.114"></a>
 <span class="sourceLineNo">115</span><a name="line.115"></a>
 <span class="sourceLineNo">116</span>        private Integer defaultMaxAge; // default_max_age<a name="line.116"></a>
@@ -241,8 +241,8 @@
 <span class="sourceLineNo">233</span>                if (getIdTokenValiditySeconds() == null) {<a name="line.233"></a>
 <span class="sourceLineNo">234</span>                        setIdTokenValiditySeconds(DEFAULT_ID_TOKEN_VALIDITY_SECONDS);<a name="line.234"></a>
 <span class="sourceLineNo">235</span>                }<a name="line.235"></a>
-<span class="sourceLineNo">236</span>        }       <a name="line.236"></a>
-<span class="sourceLineNo">237</span>        <a name="line.237"></a>
+<span class="sourceLineNo">236</span>        }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
 <span class="sourceLineNo">238</span>        /**<a name="line.238"></a>
 <span class="sourceLineNo">239</span>         * @return the id<a name="line.239"></a>
 <span class="sourceLineNo">240</span>         */<a name="line.240"></a>
@@ -789,11 +789,11 @@
 <span class="sourceLineNo">781</span>        public JWSAlgorithmEmbed getTokenEndpointAuthSigningAlgEmbed() {<a name="line.781"></a>
 <span class="sourceLineNo">782</span>                return tokenEndpointAuthSigningAlg;<a name="line.782"></a>
 <span class="sourceLineNo">783</span>        }<a name="line.783"></a>
-<span class="sourceLineNo">784</span>        <a name="line.784"></a>
+<span class="sourceLineNo">784</span><a name="line.784"></a>
 <span class="sourceLineNo">785</span>        public void setTokenEndpointAuthSigningAlgEmbed(JWSAlgorithmEmbed tokenEndpointAuthSigningAlgEmbed) {<a name="line.785"></a>
 <span class="sourceLineNo">786</span>                this.tokenEndpointAuthSigningAlg = tokenEndpointAuthSigningAlgEmbed;<a name="line.786"></a>
 <span class="sourceLineNo">787</span>        }<a name="line.787"></a>
-<span class="sourceLineNo">788</span>        <a name="line.788"></a>
+<span class="sourceLineNo">788</span><a name="line.788"></a>
 <span class="sourceLineNo">789</span>        //<a name="line.789"></a>
 <span class="sourceLineNo">790</span>        // Transient passthrough methods for JOSE elements<a name="line.790"></a>
 <span class="sourceLineNo">791</span>        //<a name="line.791"></a>
@@ -888,7 +888,7 @@
 <span class="sourceLineNo">880</span>        public void setIdTokenEncryptedResponseEnc(EncryptionMethod idTokenEncryptedResponseEnc) {<a name="line.880"></a>
 <span class="sourceLineNo">881</span>                this.idTokenEncryptedResponseEnc = new JWEEncryptionMethodEmbed(idTokenEncryptedResponseEnc);<a name="line.881"></a>
 <span class="sourceLineNo">882</span>        }<a name="line.882"></a>
-<span class="sourceLineNo">883</span>        <a name="line.883"></a>
+<span class="sourceLineNo">883</span><a name="line.883"></a>
 <span class="sourceLineNo">884</span>        @Transient<a name="line.884"></a>
 <span class="sourceLineNo">885</span>        public JWSAlgorithm getTokenEndpointAuthSigningAlg() {<a name="line.885"></a>
 <span class="sourceLineNo">886</span>                if (tokenEndpointAuthSigningAlg != null) {<a name="line.886"></a>
@@ -897,11 +897,11 @@
 <span class="sourceLineNo">889</span>                        return null;<a name="line.889"></a>
 <span class="sourceLineNo">890</span>                }<a name="line.890"></a>
 <span class="sourceLineNo">891</span>        }<a name="line.891"></a>
-<span class="sourceLineNo">892</span>        <a name="line.892"></a>
+<span class="sourceLineNo">892</span><a name="line.892"></a>
 <span class="sourceLineNo">893</span>        public void setTokenEndpointAuthSigningAlg(JWSAlgorithm tokenEndpointAuthSigningAlg) {<a name="line.893"></a>
 <span class="sourceLineNo">894</span>                this.tokenEndpointAuthSigningAlg = new JWSAlgorithmEmbed(tokenEndpointAuthSigningAlg);<a name="line.894"></a>
 <span class="sourceLineNo">895</span>        }<a name="line.895"></a>
-<span class="sourceLineNo">896</span>        <a name="line.896"></a>
+<span class="sourceLineNo">896</span><a name="line.896"></a>
 <span class="sourceLineNo">897</span>        // END Transient JOSE methods<a name="line.897"></a>
 <span class="sourceLineNo">898</span><a name="line.898"></a>
 <span class="sourceLineNo">899</span>        @Basic<a name="line.899"></a>

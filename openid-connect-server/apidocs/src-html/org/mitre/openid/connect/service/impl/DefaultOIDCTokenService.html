@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -44,100 +44,100 @@
 <span class="sourceLineNo">036</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.36"></a>
 <span class="sourceLineNo">037</span>import org.springframework.security.core.AuthenticationException;<a name="line.37"></a>
 <span class="sourceLineNo">038</span>import org.springframework.security.core.authority.SimpleGrantedAuthority;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import org.springframework.security.oauth2.common.util.OAuth2Utils;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import org.springframework.security.oauth2.provider.OAuth2Request;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import org.springframework.stereotype.Service;<a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>import com.google.common.base.Strings;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>import com.google.common.collect.Lists;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>import com.google.common.collect.Maps;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>import com.google.common.collect.Sets;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>import com.nimbusds.jose.JWSAlgorithm;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>import com.nimbusds.jose.JWSHeader;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>import com.nimbusds.jose.util.Base64URL;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>import com.nimbusds.jwt.JWTClaimsSet;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>import com.nimbusds.jwt.SignedJWT;<a name="line.52"></a>
-<span class="sourceLineNo">053</span><a name="line.53"></a>
-<span class="sourceLineNo">054</span>/**<a name="line.54"></a>
-<span class="sourceLineNo">055</span> * Default implementation of service to create specialty OpenID Connect tokens.<a name="line.55"></a>
-<span class="sourceLineNo">056</span> * <a name="line.56"></a>
-<span class="sourceLineNo">057</span> * @author Amanda Anganes<a name="line.57"></a>
-<span class="sourceLineNo">058</span> *<a name="line.58"></a>
-<span class="sourceLineNo">059</span> */<a name="line.59"></a>
-<span class="sourceLineNo">060</span>@Service<a name="line.60"></a>
-<span class="sourceLineNo">061</span>public class DefaultOIDCTokenService implements OIDCTokenService {<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>        Logger logger = LoggerFactory.getLogger(DefaultOIDCTokenService.class);<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        <a name="line.64"></a>
-<span class="sourceLineNo">065</span>        @Autowired<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        private JwtSigningAndValidationService jwtService;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        <a name="line.67"></a>
-<span class="sourceLineNo">068</span>        @Autowired<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        private AuthenticationHolderRepository authenticationHolderRepository;<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        <a name="line.70"></a>
-<span class="sourceLineNo">071</span>        @Autowired<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        private ConfigurationPropertiesBean configBean;<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        <a name="line.73"></a>
-<span class="sourceLineNo">074</span>        @Override<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        public OAuth2AccessTokenEntity createIdToken(ClientDetailsEntity client, OAuth2Request request, Date issueTime, String sub, JWSAlgorithm signingAlg, OAuth2AccessTokenEntity accessToken) {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                <a name="line.76"></a>
-<span class="sourceLineNo">077</span>                OAuth2AccessTokenEntity idTokenEntity = new OAuth2AccessTokenEntity();<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                JWTClaimsSet idClaims = new JWTClaimsSet();<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                <a name="line.79"></a>
-<span class="sourceLineNo">080</span>                if (request.getExtensions().containsKey(AuthenticationTimeStamper.AUTH_TIMESTAMP)) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                        Date authTime = (Date) request.getExtensions().get(AuthenticationTimeStamper.AUTH_TIMESTAMP);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        idClaims.setClaim("auth_time", authTime.getTime() / 1000);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                }<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                <a name="line.84"></a>
-<span class="sourceLineNo">085</span>                idClaims.setIssueTime(issueTime);<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                <a name="line.86"></a>
-<span class="sourceLineNo">087</span>                if (client.getIdTokenValiditySeconds() != null) {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                        Date expiration = new Date(System.currentTimeMillis() + (client.getIdTokenValiditySeconds() * 1000L));<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                        idClaims.setExpirationTime(expiration);<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                        idTokenEntity.setExpiration(expiration);<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                }<a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>                idClaims.setIssuer(configBean.getIssuer());<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                idClaims.setSubject(sub);<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                idClaims.setAudience(Lists.newArrayList(client.getClientId()));<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>                String nonce = (String)request.getExtensions().get("nonce");<a name="line.97"></a>
-<span class="sourceLineNo">098</span>                if (!Strings.isNullOrEmpty(nonce)) {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        idClaims.setCustomClaim("nonce", nonce);<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                }<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                <a name="line.101"></a>
-<span class="sourceLineNo">102</span>                Set&lt;String&gt; responseTypes = request.getResponseTypes();<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                <a name="line.103"></a>
-<span class="sourceLineNo">104</span>                if (responseTypes.contains("token")) {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                        // calculate the token hash<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                        Base64URL at_hash = IdTokenHashUtils.getAccessTokenHash(signingAlg, accessToken);<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                        idClaims.setClaim("at_hash", at_hash);<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                }<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                <a name="line.109"></a>
-<span class="sourceLineNo">110</span>                SignedJWT idToken = new SignedJWT(new JWSHeader(signingAlg), idClaims);<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>                jwtService.signJwt(idToken);<a name="line.112"></a>
-<span class="sourceLineNo">113</span><a name="line.113"></a>
-<span class="sourceLineNo">114</span>                idTokenEntity.setJwt(idToken);<a name="line.114"></a>
-<span class="sourceLineNo">115</span><a name="line.115"></a>
-<span class="sourceLineNo">116</span>                idTokenEntity.setAuthenticationHolder(accessToken.getAuthenticationHolder());<a name="line.116"></a>
-<span class="sourceLineNo">117</span><a name="line.117"></a>
-<span class="sourceLineNo">118</span>                // create a scope set with just the special "id-token" scope<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                //Set&lt;String&gt; idScopes = new HashSet&lt;String&gt;(token.getScope()); // this would copy the original token's scopes in, we don't really want that<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                Set&lt;String&gt; idScopes = Sets.newHashSet(SystemScopeService.ID_TOKEN_SCOPE);<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                idTokenEntity.setScope(idScopes);<a name="line.121"></a>
-<span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                idTokenEntity.setClient(accessToken.getClient());<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                <a name="line.124"></a>
-<span class="sourceLineNo">125</span>                return idTokenEntity;<a name="line.125"></a>
-<span class="sourceLineNo">126</span>        }<a name="line.126"></a>
-<span class="sourceLineNo">127</span>        <a name="line.127"></a>
-<span class="sourceLineNo">128</span>        /**<a name="line.128"></a>
-<span class="sourceLineNo">129</span>         * @param client<a name="line.129"></a>
-<span class="sourceLineNo">130</span>         * @return<a name="line.130"></a>
-<span class="sourceLineNo">131</span>         * @throws AuthenticationException<a name="line.131"></a>
-<span class="sourceLineNo">132</span>         */<a name="line.132"></a>
+<span class="sourceLineNo">039</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.springframework.security.oauth2.provider.OAuth2Request;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.springframework.stereotype.Service;<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>import com.google.common.base.Strings;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import com.google.common.collect.Lists;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import com.google.common.collect.Maps;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import com.google.common.collect.Sets;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import com.nimbusds.jose.JWSAlgorithm;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import com.nimbusds.jose.JWSHeader;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import com.nimbusds.jose.util.Base64URL;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>import com.nimbusds.jwt.JWTClaimsSet;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>import com.nimbusds.jwt.SignedJWT;<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>/**<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * Default implementation of service to create specialty OpenID Connect tokens.<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * <a name="line.55"></a>
+<span class="sourceLineNo">056</span> * @author Amanda Anganes<a name="line.56"></a>
+<span class="sourceLineNo">057</span> *<a name="line.57"></a>
+<span class="sourceLineNo">058</span> */<a name="line.58"></a>
+<span class="sourceLineNo">059</span>@Service<a name="line.59"></a>
+<span class="sourceLineNo">060</span>public class DefaultOIDCTokenService implements OIDCTokenService {<a name="line.60"></a>
+<span class="sourceLineNo">061</span><a name="line.61"></a>
+<span class="sourceLineNo">062</span>        Logger logger = LoggerFactory.getLogger(DefaultOIDCTokenService.class);<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>        @Autowired<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        private JwtSigningAndValidationService jwtService;<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>        @Autowired<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        private AuthenticationHolderRepository authenticationHolderRepository;<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>        @Autowired<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private ConfigurationPropertiesBean configBean;<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>        @Override<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        public OAuth2AccessTokenEntity createIdToken(ClientDetailsEntity client, OAuth2Request request, Date issueTime, String sub, JWSAlgorithm signingAlg, OAuth2AccessTokenEntity accessToken) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>                OAuth2AccessTokenEntity idTokenEntity = new OAuth2AccessTokenEntity();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                JWTClaimsSet idClaims = new JWTClaimsSet();<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>                if (request.getExtensions().containsKey(AuthenticationTimeStamper.AUTH_TIMESTAMP)) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                        Date authTime = (Date) request.getExtensions().get(AuthenticationTimeStamper.AUTH_TIMESTAMP);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                        idClaims.setClaim("auth_time", authTime.getTime() / 1000);<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                }<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>                idClaims.setIssueTime(issueTime);<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>                if (client.getIdTokenValiditySeconds() != null) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        Date expiration = new Date(System.currentTimeMillis() + (client.getIdTokenValiditySeconds() * 1000L));<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        idClaims.setExpirationTime(expiration);<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        idTokenEntity.setExpiration(expiration);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>                idClaims.setIssuer(configBean.getIssuer());<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                idClaims.setSubject(sub);<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                idClaims.setAudience(Lists.newArrayList(client.getClientId()));<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                String nonce = (String)request.getExtensions().get("nonce");<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                if (!Strings.isNullOrEmpty(nonce)) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        idClaims.setCustomClaim("nonce", nonce);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                }<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>                Set&lt;String&gt; responseTypes = request.getResponseTypes();<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>                if (responseTypes.contains("token")) {<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                        // calculate the token hash<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                        Base64URL at_hash = IdTokenHashUtils.getAccessTokenHash(signingAlg, accessToken);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                        idClaims.setClaim("at_hash", at_hash);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>                SignedJWT idToken = new SignedJWT(new JWSHeader(signingAlg), idClaims);<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>                jwtService.signJwt(idToken);<a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>                idTokenEntity.setJwt(idToken);<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>                idTokenEntity.setAuthenticationHolder(accessToken.getAuthenticationHolder());<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>                // create a scope set with just the special "id-token" scope<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                //Set&lt;String&gt; idScopes = new HashSet&lt;String&gt;(token.getScope()); // this would copy the original token's scopes in, we don't really want that<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                Set&lt;String&gt; idScopes = Sets.newHashSet(SystemScopeService.ID_TOKEN_SCOPE);<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                idTokenEntity.setScope(idScopes);<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>                idTokenEntity.setClient(accessToken.getClient());<a name="line.122"></a>
+<span class="sourceLineNo">123</span><a name="line.123"></a>
+<span class="sourceLineNo">124</span>                return idTokenEntity;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        }<a name="line.125"></a>
+<span class="sourceLineNo">126</span><a name="line.126"></a>
+<span class="sourceLineNo">127</span>        /**<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         * @param client<a name="line.128"></a>
+<span class="sourceLineNo">129</span>         * @return<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * @throws AuthenticationException<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        @Override<a name="line.132"></a>
 <span class="sourceLineNo">133</span>        public OAuth2AccessTokenEntity createRegistrationAccessToken(ClientDetailsEntity client) {<a name="line.133"></a>
 <span class="sourceLineNo">134</span><a name="line.134"></a>
 <span class="sourceLineNo">135</span>                Map&lt;String, String&gt; authorizationParameters = Maps.newHashMap();<a name="line.135"></a>
@@ -172,9 +172,9 @@
 <span class="sourceLineNo">164</span>                token.setJwt(signed);<a name="line.164"></a>
 <span class="sourceLineNo">165</span><a name="line.165"></a>
 <span class="sourceLineNo">166</span>                return token;<a name="line.166"></a>
-<span class="sourceLineNo">167</span>                <a name="line.167"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
 <span class="sourceLineNo">168</span>        }<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        <a name="line.169"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
 <span class="sourceLineNo">170</span>        /**<a name="line.170"></a>
 <span class="sourceLineNo">171</span>         * @return the configBean<a name="line.171"></a>
 <span class="sourceLineNo">172</span>         */<a name="line.172"></a>
@@ -217,7 +217,7 @@
 <span class="sourceLineNo">209</span>                        AuthenticationHolderRepository authenticationHolderRepository) {<a name="line.209"></a>
 <span class="sourceLineNo">210</span>                this.authenticationHolderRepository = authenticationHolderRepository;<a name="line.210"></a>
 <span class="sourceLineNo">211</span>        }<a name="line.211"></a>
-<span class="sourceLineNo">212</span>        <a name="line.212"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
 <span class="sourceLineNo">213</span>}<a name="line.213"></a>
 
 

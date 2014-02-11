@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -57,15 +57,15 @@
 <span class="sourceLineNo">049</span> *<a name="line.49"></a>
 <span class="sourceLineNo">050</span> */<a name="line.50"></a>
 <span class="sourceLineNo">051</span>public class UserInfoInterceptor extends HandlerInterceptorAdapter {<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        <a name="line.52"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
 <span class="sourceLineNo">053</span>        private Gson gson = new GsonBuilder()<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                .registerTypeHierarchyAdapter(GrantedAuthority.class, new JsonSerializer&lt;GrantedAuthority&gt;() {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                        @Override<a name="line.55"></a>
-<span class="sourceLineNo">056</span>            public JsonElement serialize(GrantedAuthority src, Type typeOfSrc, JsonSerializationContext context) {<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                    return new JsonPrimitive(src.getAuthority());<a name="line.57"></a>
-<span class="sourceLineNo">058</span>            }<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                })<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                .create();<a name="line.60"></a>
+<span class="sourceLineNo">054</span>        .registerTypeHierarchyAdapter(GrantedAuthority.class, new JsonSerializer&lt;GrantedAuthority&gt;() {<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                @Override<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                public JsonElement serialize(GrantedAuthority src, Type typeOfSrc, JsonSerializationContext context) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                        return new JsonPrimitive(src.getAuthority());<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                }<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        })<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        .create();<a name="line.60"></a>
 <span class="sourceLineNo">061</span><a name="line.61"></a>
 <span class="sourceLineNo">062</span>        @Autowired<a name="line.62"></a>
 <span class="sourceLineNo">063</span>        private UserInfoService userInfoService;<a name="line.63"></a>
@@ -73,20 +73,20 @@
 <span class="sourceLineNo">065</span>        @Override<a name="line.65"></a>
 <span class="sourceLineNo">066</span>        public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {<a name="line.66"></a>
 <span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>                if (modelAndView != null &amp;&amp; !modelAndView.getModel().containsKey("userInfo")) { // skip checking at all if we have no model and view to hand the user to <a name="line.68"></a>
-<span class="sourceLineNo">069</span>                                                                                                                                                                                // or if there's already a userInfo object in there<a name="line.69"></a>
+<span class="sourceLineNo">068</span>                if (modelAndView != null &amp;&amp; !modelAndView.getModel().containsKey("userInfo")) { // skip checking at all if we have no model and view to hand the user to<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        // or if there's already a userInfo object in there<a name="line.69"></a>
 <span class="sourceLineNo">070</span><a name="line.70"></a>
 <span class="sourceLineNo">071</span>                        // TODO: this is a patch to get around a potential information leak from #492<a name="line.71"></a>
 <span class="sourceLineNo">072</span>                        if (!(modelAndView.getView() instanceof RedirectView)) {<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                        <a name="line.73"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
 <span class="sourceLineNo">074</span>                                // get our principal from the security context<a name="line.74"></a>
 <span class="sourceLineNo">075</span>                                Principal p = request.getUserPrincipal();<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        <a name="line.76"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
 <span class="sourceLineNo">077</span>                                if (p instanceof Authentication &amp;&amp; !modelAndView.getModel().containsKey("userAuthorities")){<a name="line.77"></a>
 <span class="sourceLineNo">078</span>                                        Authentication auth = (Authentication)p;<a name="line.78"></a>
 <span class="sourceLineNo">079</span>                                        modelAndView.addObject("userAuthorities", gson.toJson(auth.getAuthorities()));<a name="line.79"></a>
 <span class="sourceLineNo">080</span>                                }<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                                <a name="line.81"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
 <span class="sourceLineNo">082</span>                                if (p instanceof OIDCAuthenticationToken) {<a name="line.82"></a>
 <span class="sourceLineNo">083</span>                                        // if they're logging into this server from a remote OIDC server, pass through their user info<a name="line.83"></a>
 <span class="sourceLineNo">084</span>                                        OIDCAuthenticationToken oidc = (OIDCAuthenticationToken) p;<a name="line.84"></a>
@@ -94,10 +94,10 @@
 <span class="sourceLineNo">086</span>                                        modelAndView.addObject("userInfoJson", oidc.getUserInfo().toJson());<a name="line.86"></a>
 <span class="sourceLineNo">087</span>                                } else {<a name="line.87"></a>
 <span class="sourceLineNo">088</span>                                        if (p != null &amp;&amp; p.getName() != null) { // don't bother checking if we don't have a principal<a name="line.88"></a>
-<span class="sourceLineNo">089</span>        <a name="line.89"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
 <span class="sourceLineNo">090</span>                                                // try to look up a user based on the principal's name<a name="line.90"></a>
 <span class="sourceLineNo">091</span>                                                UserInfo user = userInfoService.getByUsername(p.getName());<a name="line.91"></a>
-<span class="sourceLineNo">092</span>        <a name="line.92"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
 <span class="sourceLineNo">093</span>                                                // if we have one, inject it so views can use it<a name="line.93"></a>
 <span class="sourceLineNo">094</span>                                                if (user != null) {<a name="line.94"></a>
 <span class="sourceLineNo">095</span>                                                        modelAndView.addObject("userInfo", user);<a name="line.95"></a>

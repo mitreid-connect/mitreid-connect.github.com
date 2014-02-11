@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2013 The MITRE Corporation <a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * <a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -86,10 +86,10 @@
 <span class="sourceLineNo">078</span><a name="line.78"></a>
 <span class="sourceLineNo">079</span>        @Autowired<a name="line.79"></a>
 <span class="sourceLineNo">080</span>        private TokenEnhancer tokenEnhancer;<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        <a name="line.81"></a>
-<span class="sourceLineNo">082</span>        @Autowired <a name="line.82"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
+<span class="sourceLineNo">082</span>        @Autowired<a name="line.82"></a>
 <span class="sourceLineNo">083</span>        private SystemScopeService scopeService;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        <a name="line.84"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
 <span class="sourceLineNo">085</span>        @Override<a name="line.85"></a>
 <span class="sourceLineNo">086</span>        public Set&lt;OAuth2AccessTokenEntity&gt; getAllAccessTokensForUser(String id) {<a name="line.86"></a>
 <span class="sourceLineNo">087</span><a name="line.87"></a>
@@ -132,7 +132,7 @@
 <span class="sourceLineNo">124</span><a name="line.124"></a>
 <span class="sourceLineNo">125</span>        @Autowired<a name="line.125"></a>
 <span class="sourceLineNo">126</span>        private ApprovedSiteService approvedSiteService;<a name="line.126"></a>
-<span class="sourceLineNo">127</span>        <a name="line.127"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
 <span class="sourceLineNo">128</span><a name="line.128"></a>
 <span class="sourceLineNo">129</span>        @Override<a name="line.129"></a>
 <span class="sourceLineNo">130</span>        public OAuth2AccessTokenEntity createAccessToken(OAuth2Authentication authentication) throws AuthenticationException, InvalidClientException {<a name="line.130"></a>
@@ -159,7 +159,7 @@
 <span class="sourceLineNo">151</span>                        scopes = scopeService.removeRestrictedScopes(scopes);<a name="line.151"></a>
 <span class="sourceLineNo">152</span>                        token.setScope(scopes);<a name="line.152"></a>
 <span class="sourceLineNo">153</span><a name="line.153"></a>
-<span class="sourceLineNo">154</span>                        // make it expire if necessary <a name="line.154"></a>
+<span class="sourceLineNo">154</span>                        // make it expire if necessary<a name="line.154"></a>
 <span class="sourceLineNo">155</span>                        if (client.getAccessTokenValiditySeconds() != null &amp;&amp; client.getAccessTokenValiditySeconds() &gt; 0) {<a name="line.155"></a>
 <span class="sourceLineNo">156</span>                                Date expiration = new Date(System.currentTimeMillis() + (client.getAccessTokenValiditySeconds() * 1000L));<a name="line.156"></a>
 <span class="sourceLineNo">157</span>                                token.setExpiration(expiration);<a name="line.157"></a>
@@ -269,7 +269,7 @@
 <span class="sourceLineNo">261</span>                Set&lt;String&gt; refreshScopes = new HashSet&lt;String&gt;(refreshToken.getAuthenticationHolder().getAuthentication().getOAuth2Request().getScope());<a name="line.261"></a>
 <span class="sourceLineNo">262</span>                // remove any of the special system scopes<a name="line.262"></a>
 <span class="sourceLineNo">263</span>                refreshScopes = scopeService.removeRestrictedScopes(refreshScopes);<a name="line.263"></a>
-<span class="sourceLineNo">264</span>                <a name="line.264"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
 <span class="sourceLineNo">265</span>                Set&lt;String&gt; scope = authRequest.getScope() == null ? new HashSet&lt;String&gt;() : new HashSet&lt;String&gt;(authRequest.getScope());<a name="line.265"></a>
 <span class="sourceLineNo">266</span>                // remove any of the special system scopes<a name="line.266"></a>
 <span class="sourceLineNo">267</span>                scope = scopeService.removeRestrictedScopes(scope);<a name="line.267"></a>
@@ -416,21 +416,21 @@
 <span class="sourceLineNo">408</span>                        revokeRefreshToken(oAuth2RefreshTokenEntity);<a name="line.408"></a>
 <span class="sourceLineNo">409</span>                }<a name="line.409"></a>
 <span class="sourceLineNo">410</span>        }<a name="line.410"></a>
-<span class="sourceLineNo">411</span>        <a name="line.411"></a>
+<span class="sourceLineNo">411</span><a name="line.411"></a>
 <span class="sourceLineNo">412</span>        private Predicate&lt;OAuth2AccessTokenEntity&gt; isAccessTokenExpired = new Predicate&lt;OAuth2AccessTokenEntity&gt;() {<a name="line.412"></a>
 <span class="sourceLineNo">413</span>                @Override<a name="line.413"></a>
 <span class="sourceLineNo">414</span>                public boolean apply(OAuth2AccessTokenEntity input) {<a name="line.414"></a>
 <span class="sourceLineNo">415</span>                        return (input != null &amp;&amp; input.isExpired());<a name="line.415"></a>
 <span class="sourceLineNo">416</span>                }<a name="line.416"></a>
 <span class="sourceLineNo">417</span>        };<a name="line.417"></a>
-<span class="sourceLineNo">418</span>        <a name="line.418"></a>
+<span class="sourceLineNo">418</span><a name="line.418"></a>
 <span class="sourceLineNo">419</span>        private Predicate&lt;OAuth2RefreshTokenEntity&gt; isRefreshTokenExpired = new Predicate&lt;OAuth2RefreshTokenEntity&gt;() {<a name="line.419"></a>
 <span class="sourceLineNo">420</span>                @Override<a name="line.420"></a>
 <span class="sourceLineNo">421</span>                public boolean apply(OAuth2RefreshTokenEntity input) {<a name="line.421"></a>
 <span class="sourceLineNo">422</span>                        return (input != null &amp;&amp; input.isExpired());<a name="line.422"></a>
 <span class="sourceLineNo">423</span>                }<a name="line.423"></a>
 <span class="sourceLineNo">424</span>        };<a name="line.424"></a>
-<span class="sourceLineNo">425</span>        <a name="line.425"></a>
+<span class="sourceLineNo">425</span><a name="line.425"></a>
 <span class="sourceLineNo">426</span>        private Collection&lt;OAuth2AccessTokenEntity&gt; getExpiredAccessTokens() {<a name="line.426"></a>
 <span class="sourceLineNo">427</span>                return Collections2.filter(tokenRepository.getAllAccessTokens(), isAccessTokenExpired);<a name="line.427"></a>
 <span class="sourceLineNo">428</span>        }<a name="line.428"></a>
