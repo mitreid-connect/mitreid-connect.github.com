@@ -9,8 +9,8 @@
     <copyright>&#169;2014</copyright>
     <item>
       <title>File: 159,
-             Errors: 25,
-             Warnings: 942,
+             Errors: 22,
+             Warnings: 962,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/checkstyle.html</link>
@@ -29,20 +29,6 @@
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.client.service.impl.HybridIssuerService.java">org/mitre/openid/connect/client/service/impl/HybridIssuerService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.introspectingfilter.OAuth2AccessTokenImpl.java">org/mitre/oauth2/introspectingfilter/OAuth2AccessTokenImpl.java</a>
                 </td>
                 <td>
@@ -50,6 +36,20 @@
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.client.service.impl.HybridIssuerService.java">org/mitre/openid/connect/client/service/impl/HybridIssuerService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -119,7 +119,7 @@
                   0
                 </td>
                 <td>
-                  26
+                  25
                 </td>
                 <td>
                   0
@@ -169,34 +169,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.repository.impl.JpaOAuth2TokenRepository.java">org/mitre/oauth2/repository/impl/JpaOAuth2TokenRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.discovery.view.WebfingerView.java">org/mitre/discovery/view/WebfingerView.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.service.impl.DefaultScopeClaimTranslationService.java">org/mitre/openid/connect/service/impl/DefaultScopeClaimTranslationService.java</a>
                 </td>
                 <td>
@@ -211,7 +183,35 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.repository.impl.JpaOAuth2TokenRepository.java">org/mitre/oauth2/repository/impl/JpaOAuth2TokenRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.introspectingfilter.service.impl.JWTParsingIntrospectionConfigurationService.java">org/mitre/oauth2/introspectingfilter/service/impl/JWTParsingIntrospectionConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.discovery.view.WebfingerView.java">org/mitre/discovery/view/WebfingerView.java</a>
                 </td>
                 <td>
                   0
@@ -329,7 +329,7 @@
                   0
                 </td>
                 <td>
-                  7
+                  8
                 </td>
                 <td>
                   2
@@ -393,20 +393,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.web.AccessTokenAPI.java">org/mitre/oauth2/web/AccessTokenAPI.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.service.impl.DefaultStatsService.java">org/mitre/openid/connect/service/impl/DefaultStatsService.java</a>
                 </td>
                 <td>
@@ -414,20 +400,6 @@
                 </td>
                 <td>
                   2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.util.IdTokenHashUtils.java">org/mitre/openid/connect/util/IdTokenHashUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
                 </td>
                 <td>
                   0
@@ -449,6 +421,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.util.IdTokenHashUtils.java">org/mitre/openid/connect/util/IdTokenHashUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.token.StructuredScopeAwareOAuth2RequestValidator.java">org/mitre/oauth2/token/StructuredScopeAwareOAuth2RequestValidator.java</a>
                 </td>
                 <td>
@@ -456,6 +442,20 @@
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.web.TokenAPI.java">org/mitre/oauth2/web/TokenAPI.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
                 </td>
                 <td>
                   0
@@ -631,20 +631,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.web.RefreshTokenAPI.java">org/mitre/oauth2/web/RefreshTokenAPI.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.client.model.IssuerServiceResponse.java">org/mitre/openid/connect/client/model/IssuerServiceResponse.java</a>
                 </td>
                 <td>
@@ -791,7 +777,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  10
                 </td>
                 <td>
                   0
@@ -850,7 +836,7 @@
                   7
                 </td>
                 <td>
-                  5
+                  0
                 </td>
               </tr>
                           <tr>
@@ -1149,20 +1135,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.exception.DuplicateClientIdException.java">org/mitre/oauth2/exception/DuplicateClientIdException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.client.keypublisher.ClientKeyPublisher.java">org/mitre/openid/connect/client/keypublisher/ClientKeyPublisher.java</a>
                 </td>
                 <td>
@@ -1170,6 +1142,20 @@
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.exception.DuplicateClientIdException.java">org/mitre/oauth2/exception/DuplicateClientIdException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -1471,20 +1457,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.view.HttpCodeView.java">org/mitre/openid/connect/view/HttpCodeView.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.web.UserInfoEndpoint.java">org/mitre/openid/connect/web/UserInfoEndpoint.java</a>
                 </td>
                 <td>
@@ -1492,6 +1464,20 @@
                 </td>
                 <td>
                   12
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.view.HttpCodeView.java">org/mitre/openid/connect/view/HttpCodeView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -1751,6 +1737,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.view.TokenApiView.java">org/mitre/oauth2/view/TokenApiView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.service.impl.DefaultOAuth2AuthorizationCodeService.java">org/mitre/oauth2/service/impl/DefaultOAuth2AuthorizationCodeService.java</a>
                 </td>
                 <td>
@@ -1813,7 +1813,7 @@
                   0
                 </td>
                 <td>
-                  33
+                  38
                 </td>
                 <td>
                   7
@@ -1849,20 +1849,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.discovery.util.JsonUtils.java">org/mitre/discovery/util/JsonUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  13
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.jwt.encryption.service.impl.DefaultJwtEncryptionAndDecryptionService.java">org/mitre/jwt/encryption/service/impl/DefaultJwtEncryptionAndDecryptionService.java</a>
                 </td>
                 <td>
@@ -1870,6 +1856,20 @@
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.discovery.util.JsonUtils.java">org/mitre/discovery/util/JsonUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
                 </td>
                 <td>
                   0
@@ -1891,13 +1891,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.service.impl.DefaultOAuth2ProviderTokenService.java">org/mitre/oauth2/service/impl/DefaultOAuth2ProviderTokenService.java</a>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.view.JsonEntityView.java">org/mitre/openid/connect/view/JsonEntityView.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  11
+                  1
                 </td>
                 <td>
                   0
@@ -1919,13 +1919,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.view.JsonEntityView.java">org/mitre/openid/connect/view/JsonEntityView.java</a>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.service.impl.DefaultOAuth2ProviderTokenService.java">org/mitre/oauth2/service/impl/DefaultOAuth2ProviderTokenService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  11
                 </td>
                 <td>
                   0
@@ -1942,7 +1942,7 @@
                   11
                 </td>
                 <td>
-                  0
+                  2
                 </td>
               </tr>
                           <tr>
@@ -2073,7 +2073,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.repository.AuthenticationHolderRepository.java">org/mitre/oauth2/repository/AuthenticationHolderRepository.java</a>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.repository.BlacklistedSiteRepository.java">org/mitre/openid/connect/repository/BlacklistedSiteRepository.java</a>
                 </td>
                 <td>
                   0
@@ -2087,7 +2087,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.repository.BlacklistedSiteRepository.java">org/mitre/openid/connect/repository/BlacklistedSiteRepository.java</a>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.repository.AuthenticationHolderRepository.java">org/mitre/oauth2/repository/AuthenticationHolderRepository.java</a>
                 </td>
                 <td>
                   0
@@ -2129,20 +2129,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.service.UserInfoService.java">org/mitre/openid/connect/service/UserInfoService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.model.OIDCAuthenticationToken.java">org/mitre/openid/connect/model/OIDCAuthenticationToken.java</a>
                 </td>
                 <td>
@@ -2150,6 +2136,20 @@
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.openid.connect.service.UserInfoService.java">org/mitre/openid/connect/service/UserInfoService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
                 <td>
                   0
