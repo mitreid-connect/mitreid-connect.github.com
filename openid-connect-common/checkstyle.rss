@@ -10,7 +10,7 @@
     <item>
       <title>File: 55,
              Errors: 4,
-             Warnings: 517,
+             Warnings: 518,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/openid-connect-common/checkstyle.html</link>
@@ -763,7 +763,7 @@
                   0
                 </td>
                 <td>
-                  3
+                  4
                 </td>
                 <td>
                   0

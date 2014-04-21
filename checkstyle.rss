@@ -9,8 +9,8 @@
     <copyright>&#169;2014</copyright>
     <item>
       <title>File: 159,
-             Errors: 22,
-             Warnings: 962,
+             Errors: 24,
+             Warnings: 967,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/checkstyle.html</link>
@@ -189,7 +189,7 @@
                   0
                 </td>
                 <td>
-                  4
+                  5
                 </td>
                 <td>
                   0
@@ -399,7 +399,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -833,7 +833,7 @@
                   0
                 </td>
                 <td>
-                  7
+                  9
                 </td>
                 <td>
                   0
@@ -1127,7 +1127,7 @@
                   0
                 </td>
                 <td>
-                  3
+                  4
                 </td>
                 <td>
                   0
@@ -1928,7 +1928,7 @@
                   11
                 </td>
                 <td>
-                  0
+                  2
                 </td>
               </tr>
                           <tr>
