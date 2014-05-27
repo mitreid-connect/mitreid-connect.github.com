@@ -107,7 +107,7 @@
 <span class="sourceLineNo">099</span><a name="line.99"></a>
 <span class="sourceLineNo">100</span>                Mockito.when(ap5.getUserId()).thenReturn(userId2);<a name="line.100"></a>
 <span class="sourceLineNo">101</span>                Mockito.when(ap5.getClientId()).thenReturn(clientId1);<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                <a name="line.102"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
 <span class="sourceLineNo">103</span>                Mockito.when(ap6.getUserId()).thenReturn(userId1);<a name="line.103"></a>
 <span class="sourceLineNo">104</span>                Mockito.when(ap6.getClientId()).thenReturn(clientId4);<a name="line.104"></a>
 <span class="sourceLineNo">105</span><a name="line.105"></a>
@@ -178,10 +178,10 @@
 <span class="sourceLineNo">170</span>                assertThat(service.getCountForClientId(3L), is(1));<a name="line.170"></a>
 <span class="sourceLineNo">171</span>                assertThat(service.getCountForClientId(4L), is(0));<a name="line.171"></a>
 <span class="sourceLineNo">172</span>        }<a name="line.172"></a>
-<span class="sourceLineNo">173</span>        <a name="line.173"></a>
+<span class="sourceLineNo">173</span><a name="line.173"></a>
 <span class="sourceLineNo">174</span>        @Test<a name="line.174"></a>
 <span class="sourceLineNo">175</span>        public void cacheAndReset() {<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                <a name="line.176"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
 <span class="sourceLineNo">177</span>                Map&lt;String, Integer&gt; stats = service.getSummaryStats();<a name="line.177"></a>
 <span class="sourceLineNo">178</span><a name="line.178"></a>
 <span class="sourceLineNo">179</span>                assertThat(stats.get("approvalCount"), is(4));<a name="line.179"></a>
@@ -189,23 +189,23 @@
 <span class="sourceLineNo">181</span>                assertThat(stats.get("clientCount"), is(3));<a name="line.181"></a>
 <span class="sourceLineNo">182</span><a name="line.182"></a>
 <span class="sourceLineNo">183</span>                Mockito.when(approvedSiteService.getAll()).thenReturn(Sets.newHashSet(ap1, ap2, ap3, ap4, ap5, ap6));<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                <a name="line.184"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
 <span class="sourceLineNo">185</span>                Map&lt;String, Integer&gt; stats2 = service.getSummaryStats();<a name="line.185"></a>
-<span class="sourceLineNo">186</span>                <a name="line.186"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
 <span class="sourceLineNo">187</span>                // cache should remain the same due to memoized functions<a name="line.187"></a>
 <span class="sourceLineNo">188</span>                assertThat(stats2.get("approvalCount"), is(4));<a name="line.188"></a>
 <span class="sourceLineNo">189</span>                assertThat(stats2.get("userCount"), is(2));<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                assertThat(stats2.get("clientCount"), is(3));           <a name="line.190"></a>
-<span class="sourceLineNo">191</span>                <a name="line.191"></a>
+<span class="sourceLineNo">190</span>                assertThat(stats2.get("clientCount"), is(3));<a name="line.190"></a>
+<span class="sourceLineNo">191</span><a name="line.191"></a>
 <span class="sourceLineNo">192</span>                // reset the cache and make sure the count goes up<a name="line.192"></a>
 <span class="sourceLineNo">193</span>                service.resetCache();<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                <a name="line.194"></a>
+<span class="sourceLineNo">194</span><a name="line.194"></a>
 <span class="sourceLineNo">195</span>                Map&lt;String, Integer&gt; stats3 = service.getSummaryStats();<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                <a name="line.196"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
 <span class="sourceLineNo">197</span>                assertThat(stats3.get("approvalCount"), is(6));<a name="line.197"></a>
 <span class="sourceLineNo">198</span>                assertThat(stats3.get("userCount"), is(2));<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                assertThat(stats3.get("clientCount"), is(4));           <a name="line.199"></a>
-<span class="sourceLineNo">200</span>                <a name="line.200"></a>
+<span class="sourceLineNo">199</span>                assertThat(stats3.get("clientCount"), is(4));<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
 <span class="sourceLineNo">201</span>        }<a name="line.201"></a>
 <span class="sourceLineNo">202</span>}<a name="line.202"></a>
 
