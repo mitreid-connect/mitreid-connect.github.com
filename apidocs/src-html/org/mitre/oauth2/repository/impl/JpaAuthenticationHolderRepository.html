@@ -41,8 +41,8 @@
 <span class="sourceLineNo">033</span>@Transactional<a name="line.33"></a>
 <span class="sourceLineNo">034</span>public class JpaAuthenticationHolderRepository implements AuthenticationHolderRepository {<a name="line.34"></a>
 <span class="sourceLineNo">035</span><a name="line.35"></a>
-<span class="sourceLineNo">036</span>        private static final int MAXEXPIREDRESULTS = 1000;      <a name="line.36"></a>
-<span class="sourceLineNo">037</span>        <a name="line.37"></a>
+<span class="sourceLineNo">036</span>        private static final int MAXEXPIREDRESULTS = 1000;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
 <span class="sourceLineNo">038</span>        @PersistenceContext<a name="line.38"></a>
 <span class="sourceLineNo">039</span>        private EntityManager manager;<a name="line.39"></a>
 <span class="sourceLineNo">040</span><a name="line.40"></a>
@@ -85,7 +85,7 @@
 <span class="sourceLineNo">077</span>        public AuthenticationHolderEntity save(AuthenticationHolderEntity a) {<a name="line.77"></a>
 <span class="sourceLineNo">078</span>                return JpaUtil.saveOrUpdate(a.getId(), manager, a);<a name="line.78"></a>
 <span class="sourceLineNo">079</span>        }<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        <a name="line.80"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
 <span class="sourceLineNo">081</span>        @Override<a name="line.81"></a>
 <span class="sourceLineNo">082</span>        @Transactional<a name="line.82"></a>
 <span class="sourceLineNo">083</span>        public List&lt;AuthenticationHolderEntity&gt; getOrphanedAuthenticationHolders() {<a name="line.83"></a>

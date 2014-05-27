@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2014</copyright>
     <item>
-      <title>File: 66,
-             Errors: 7,
-             Warnings: 361,
+      <title>File: 69,
+             Errors: 3,
+             Warnings: 387,
              Infos: 0
       </title>
             <link>/checkstyle.html</link>
@@ -63,7 +63,7 @@
                   0
                 </td>
                 <td>
-                  25
+                  23
                 </td>
                 <td>
                   0
@@ -133,7 +133,7 @@
                   0
                 </td>
                 <td>
-                  4
+                  5
                 </td>
                 <td>
                   0
@@ -161,7 +161,7 @@
                   0
                 </td>
                 <td>
-                  8
+                  9
                 </td>
                 <td>
                   2
@@ -357,7 +357,7 @@
                   0
                 </td>
                 <td>
-                  12
+                  14
                 </td>
                 <td>
                   0
@@ -385,7 +385,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -525,7 +525,7 @@
                   0
                 </td>
                 <td>
-                  4
+                  6
                 </td>
                 <td>
                   1
@@ -539,7 +539,7 @@
                   0
                 </td>
                 <td>
-                  17
+                  22
                 </td>
                 <td>
                   0
@@ -595,7 +595,7 @@
                   0
                 </td>
                 <td>
-                  10
+                  8
                 </td>
                 <td>
                   0
@@ -651,7 +651,7 @@
                   0
                 </td>
                 <td>
-                  9
+                  10
                 </td>
                 <td>
                   0
@@ -701,6 +701,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.web.ProtectedResourceRegistrationEndpoint.java">org/mitre/openid/connect/web/ProtectedResourceRegistrationEndpoint.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultOAuth2ClientDetailsEntityService.java">org/mitre/oauth2/service/impl/DefaultOAuth2ClientDetailsEntityService.java</a>
                 </td>
                 <td>
@@ -738,7 +752,7 @@
                   11
                 </td>
                 <td>
-                  2
+                  0
                 </td>
               </tr>
                           <tr>
@@ -766,7 +780,7 @@
                   11
                 </td>
                 <td>
-                  2
+                  0
                 </td>
               </tr>
                           <tr>
@@ -777,7 +791,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  8
                 </td>
                 <td>
                   0
@@ -869,6 +883,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.openid.connect.view.UserInfoJwtView.java">org/mitre/openid/connect/view/UserInfoJwtView.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.web.ManagerController.java">org/mitre/openid/connect/web/ManagerController.java</a>
                 </td>
                 <td>
@@ -897,6 +925,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultSystemScopeService.java">org/mitre/oauth2/service/impl/DefaultSystemScopeService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.exception.DuplicateClientIdException.java">org/mitre/oauth2/exception/DuplicateClientIdException.java</a>
                 </td>
                 <td>
@@ -911,13 +953,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultSystemScopeService.java">org/mitre/oauth2/service/impl/DefaultSystemScopeService.java</a>
+                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultIntrospectionAuthorizer.java">org/mitre/oauth2/service/impl/DefaultIntrospectionAuthorizer.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
                   0

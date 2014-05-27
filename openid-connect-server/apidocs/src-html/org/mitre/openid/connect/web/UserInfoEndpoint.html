@@ -24,73 +24,99 @@
 <span class="sourceLineNo">016</span> ******************************************************************************/<a name="line.16"></a>
 <span class="sourceLineNo">017</span>package org.mitre.openid.connect.web;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import org.mitre.openid.connect.model.UserInfo;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import org.mitre.openid.connect.service.UserInfoService;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import org.slf4j.Logger;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.slf4j.LoggerFactory;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import org.springframework.http.HttpStatus;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import org.springframework.security.access.prepost.PreAuthorize;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.springframework.stereotype.Controller;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.springframework.ui.Model;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.springframework.web.bind.annotation.RequestMapping;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.springframework.web.bind.annotation.RequestMethod;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.springframework.web.bind.annotation.RequestParam;<a name="line.31"></a>
-<span class="sourceLineNo">032</span><a name="line.32"></a>
-<span class="sourceLineNo">033</span>import com.google.common.base.Strings;<a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
-<span class="sourceLineNo">035</span>/**<a name="line.35"></a>
-<span class="sourceLineNo">036</span> * OpenID Connect UserInfo endpoint, as specified in Standard sec 5 and Messages sec 2.4.<a name="line.36"></a>
-<span class="sourceLineNo">037</span> * <a name="line.37"></a>
-<span class="sourceLineNo">038</span> * @author AANGANES<a name="line.38"></a>
-<span class="sourceLineNo">039</span> *<a name="line.39"></a>
-<span class="sourceLineNo">040</span> */<a name="line.40"></a>
-<span class="sourceLineNo">041</span>@Controller<a name="line.41"></a>
-<span class="sourceLineNo">042</span>public class UserInfoEndpoint {<a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>        @Autowired<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        private UserInfoService userInfoService;<a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46"></a>
-<span class="sourceLineNo">047</span>        private static Logger logger = LoggerFactory.getLogger(UserInfoEndpoint.class);<a name="line.47"></a>
-<span class="sourceLineNo">048</span><a name="line.48"></a>
-<span class="sourceLineNo">049</span>        /**<a name="line.49"></a>
-<span class="sourceLineNo">050</span>         * Get information about the user as specified in the accessToken included in this request<a name="line.50"></a>
-<span class="sourceLineNo">051</span>         */<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        @PreAuthorize("hasRole('ROLE_USER') and #oauth2.hasScope('openid')")<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        @RequestMapping(value="/userinfo", method= {RequestMethod.GET, RequestMethod.POST}, produces = "application/json")<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        public String getInfo(@RequestParam(value="claims", required=false) String claimsRequestJsonString, OAuth2Authentication auth, Model model) {<a name="line.54"></a>
+<span class="sourceLineNo">019</span>import java.util.List;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.mitre.openid.connect.model.UserInfo;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.mitre.openid.connect.service.UserInfoService;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.slf4j.Logger;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.slf4j.LoggerFactory;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.springframework.http.HttpStatus;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.springframework.http.MediaType;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.springframework.security.access.prepost.PreAuthorize;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.springframework.stereotype.Controller;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.springframework.ui.Model;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.springframework.web.bind.annotation.RequestHeader;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.springframework.web.bind.annotation.RequestMapping;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.springframework.web.bind.annotation.RequestMethod;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.springframework.web.bind.annotation.RequestParam;<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>import com.google.common.base.Strings;<a name="line.39"></a>
+<span class="sourceLineNo">040</span><a name="line.40"></a>
+<span class="sourceLineNo">041</span>/**<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * OpenID Connect UserInfo endpoint, as specified in Standard sec 5 and Messages sec 2.4.<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * <a name="line.43"></a>
+<span class="sourceLineNo">044</span> * @author AANGANES<a name="line.44"></a>
+<span class="sourceLineNo">045</span> *<a name="line.45"></a>
+<span class="sourceLineNo">046</span> */<a name="line.46"></a>
+<span class="sourceLineNo">047</span>@Controller<a name="line.47"></a>
+<span class="sourceLineNo">048</span>public class UserInfoEndpoint {<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>        @Autowired<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        private UserInfoService userInfoService;<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>        @Autowired<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        private ClientDetailsEntityService clientService;<a name="line.54"></a>
 <span class="sourceLineNo">055</span><a name="line.55"></a>
-<span class="sourceLineNo">056</span>                if (auth == null) {<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                        logger.error("getInfo failed; no principal. Requester is not authorized.");<a name="line.57"></a>
-<span class="sourceLineNo">058</span>                        model.addAttribute("code", HttpStatus.FORBIDDEN);<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                        return "httpCodeView";<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                }<a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>                String username = auth.getName();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, auth.getOAuth2Request().getClientId());<a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>                if (userInfo == null) {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                        logger.error("getInfo failed; user not found: " + username);<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                        model.addAttribute("code", HttpStatus.NOT_FOUND);<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                        return "httpCodeView";<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                }<a name="line.69"></a>
-<span class="sourceLineNo">070</span><a name="line.70"></a>
-<span class="sourceLineNo">071</span>                model.addAttribute("scope", auth.getOAuth2Request().getScope());<a name="line.71"></a>
+<span class="sourceLineNo">056</span>        private static Logger logger = LoggerFactory.getLogger(UserInfoEndpoint.class);<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>        /**<a name="line.58"></a>
+<span class="sourceLineNo">059</span>         * Get information about the user as specified in the accessToken included in this request<a name="line.59"></a>
+<span class="sourceLineNo">060</span>         */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        @PreAuthorize("hasRole('ROLE_USER') and #oauth2.hasScope('openid')")<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        @RequestMapping(value="/userinfo", method= {RequestMethod.GET, RequestMethod.POST}, produces = {"application/json", "application/jwt"})<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        public String getInfo(@RequestParam(value="claims", required=false) String claimsRequestJsonString,<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                        @RequestHeader(value="Accept") String acceptHeader,<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                        OAuth2Authentication auth, Model model) {<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>                if (auth == null) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                        logger.error("getInfo failed; no principal. Requester is not authorized.");<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        model.addAttribute("code", HttpStatus.FORBIDDEN);<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        return "httpCodeView";<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                }<a name="line.71"></a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span>                model.addAttribute("authorizedClaims", auth.getOAuth2Request().getExtensions().get("claims"));<a name="line.73"></a>
-<span class="sourceLineNo">074</span><a name="line.74"></a>
-<span class="sourceLineNo">075</span>                if (!Strings.isNullOrEmpty(claimsRequestJsonString)) {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                        model.addAttribute("requestedClaims", claimsRequestJsonString);<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                }<a name="line.77"></a>
-<span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span>                model.addAttribute("userInfo", userInfo);<a name="line.79"></a>
-<span class="sourceLineNo">080</span><a name="line.80"></a>
-<span class="sourceLineNo">081</span>                return "userInfoView";<a name="line.81"></a>
-<span class="sourceLineNo">082</span><a name="line.82"></a>
-<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
-<span class="sourceLineNo">084</span><a name="line.84"></a>
-<span class="sourceLineNo">085</span>}<a name="line.85"></a>
+<span class="sourceLineNo">073</span>                String username = auth.getName();<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, auth.getOAuth2Request().getClientId());<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>                if (userInfo == null) {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                        logger.error("getInfo failed; user not found: " + username);<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        model.addAttribute("code", HttpStatus.NOT_FOUND);<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        return "httpCodeView";<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                }<a name="line.80"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
+<span class="sourceLineNo">082</span>                model.addAttribute("scope", auth.getOAuth2Request().getScope());<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>                model.addAttribute("authorizedClaims", auth.getOAuth2Request().getExtensions().get("claims"));<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>                if (!Strings.isNullOrEmpty(claimsRequestJsonString)) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        model.addAttribute("requestedClaims", claimsRequestJsonString);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>                model.addAttribute("userInfo", userInfo);<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>                // content negotiation<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                List&lt;MediaType&gt; mediaTypes = MediaType.parseMediaTypes(acceptHeader);<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                MediaType.sortBySpecificityAndQuality(mediaTypes);<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                MediaType jose = new MediaType("application", "jwt");<a name="line.96"></a>
+<span class="sourceLineNo">097</span><a name="line.97"></a>
+<span class="sourceLineNo">098</span>                for (MediaType m : mediaTypes) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                        if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(jose)) {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                                ClientDetailsEntity client = clientService.loadClientByClientId(auth.getOAuth2Request().getClientId());<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                                model.addAttribute("client", client);<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>                                return "userInfoJwtView";<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                        }<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>                return "userInfoView";<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>}<a name="line.111"></a>
 
 
 

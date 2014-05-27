@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.30565110565110565" branch-rate="0.1823587710604559" lines-covered="622" lines-valid="2035" branches-covered="184" branches-valid="1009" complexity="1.9235588972431077" version="1.9.4.1" timestamp="1398122832336">
+<coverage line-rate="0.30033800096571706" branch-rate="0.18163869693978282" lines-covered="622" lines-valid="2071" branches-covered="184" branches-valid="1013" complexity="1.937733499377335" version="1.9.4.1" timestamp="1401224446824">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-common/src/main/java</source>
@@ -13,58 +13,90 @@
 					<methods>
 						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="28" hits="1" branch="false"/>
+								<line number="44" hits="1" branch="false"/>
 							</lines>
 						</method>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="26" hits="0" branch="false"/>
+								<line number="42" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsArray" signature="(Ljava/util/Set;)Lcom/google/gson/JsonElement;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="36" hits="6" branch="false"/>
+								<line number="52" hits="6" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsBoolean" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/lang/Boolean;" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="111" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="127" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="112" hits="0" branch="false"/>
-								<line number="113" hits="0" branch="true" condition-coverage="0% (0/4)">
+								<line number="128" hits="0" branch="false"/>
+								<line number="129" hits="0" branch="true" condition-coverage="0% (0/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 										<condition number="1" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="114" hits="0" branch="false"/>
-								<line number="116" hits="0" branch="false"/>
-								<line number="119" hits="0" branch="false"/>
+								<line number="130" hits="0" branch="false"/>
+								<line number="132" hits="0" branch="false"/>
+								<line number="135" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsDate" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/Date;" line-rate="0.8333333333333334" branch-rate="0.6666666666666666">
 							<lines>
-								<line number="43" hits="2" branch="true" condition-coverage="100% (2/2)">
+								<line number="59" hits="2" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="44" hits="1" branch="false"/>
-								<line number="45" hits="1" branch="true" condition-coverage="50% (2/4)">
+								<line number="60" hits="1" branch="false"/>
+								<line number="61" hits="1" branch="true" condition-coverage="50% (2/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="50%"/>
 										<condition number="1" type="jump" coverage="50%"/>
 									</conditions>
 								</line>
-								<line number="46" hits="1" branch="false"/>
-								<line number="48" hits="0" branch="false"/>
-								<line number="51" hits="1" branch="false"/>
+								<line number="62" hits="1" branch="false"/>
+								<line number="64" hits="0" branch="false"/>
+								<line number="67" hits="1" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsEncryptionMethodList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
+							<lines>
+								<line number="197" hits="0" branch="false"/>
+								<line number="198" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="199" hits="0" branch="false"/>
+								<line number="200" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="201" hits="0" branch="false"/>
+								<line number="202" hits="0" branch="false"/>
+								<line number="203" hits="0" branch="false"/>
+								<line number="205" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getAsJweAlgorithm" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/JWEAlgorithm;" line-rate="1.0" branch-rate="1.0">
+							<lines>
+								<line number="75" hits="4" branch="false"/>
+								<line number="76" hits="4" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="77" hits="2" branch="false"/>
+								<line number="79" hits="2" branch="false"/>
+							</lines>
+						</method>
+						<method name="getAsJweAlgorithmList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
 							<lines>
 								<line number="181" hits="0" branch="false"/>
 								<line number="182" hits="0" branch="true" condition-coverage="0% (0/2)">
@@ -84,19 +116,31 @@
 								<line number="189" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="getAsJweAlgorithm" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/JWEAlgorithm;" line-rate="1.0" branch-rate="1.0">
+						<method name="getAsJweEncryptionMethod" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/EncryptionMethod;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="59" hits="4" branch="false"/>
-								<line number="60" hits="4" branch="true" condition-coverage="100% (2/2)">
+								<line number="87" hits="4" branch="false"/>
+								<line number="88" hits="4" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="61" hits="2" branch="false"/>
-								<line number="63" hits="2" branch="false"/>
+								<line number="89" hits="2" branch="false"/>
+								<line number="91" hits="2" branch="false"/>
 							</lines>
 						</method>
-						<method name="getAsJweAlgorithmList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
+						<method name="getAsJwsAlgorithm" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/JWSAlgorithm;" line-rate="0.75" branch-rate="0.5">
+							<lines>
+								<line number="99" hits="8" branch="false"/>
+								<line number="100" hits="8" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="101" hits="0" branch="false"/>
+								<line number="103" hits="8" branch="false"/>
+							</lines>
+						</method>
+						<method name="getAsJwsAlgorithmList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
 							<lines>
 								<line number="165" hits="0" branch="false"/>
 								<line number="166" hits="0" branch="true" condition-coverage="0% (0/2)">
@@ -116,193 +160,133 @@
 								<line number="173" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="getAsJweEncryptionMethod" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/EncryptionMethod;" line-rate="1.0" branch-rate="1.0">
-							<lines>
-								<line number="71" hits="4" branch="false"/>
-								<line number="72" hits="4" branch="true" condition-coverage="100% (2/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="100%"/>
-									</conditions>
-								</line>
-								<line number="73" hits="2" branch="false"/>
-								<line number="75" hits="2" branch="false"/>
-							</lines>
-						</method>
-						<method name="getAsJwsAlgorithm" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Lcom/nimbusds/jose/JWSAlgorithm;" line-rate="0.75" branch-rate="0.5">
-							<lines>
-								<line number="83" hits="8" branch="false"/>
-								<line number="84" hits="8" branch="true" condition-coverage="50% (1/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="50%"/>
-									</conditions>
-								</line>
-								<line number="85" hits="0" branch="false"/>
-								<line number="87" hits="8" branch="false"/>
-							</lines>
-						</method>
-						<method name="getAsJwsAlgorithmList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
-							<lines>
-								<line number="149" hits="0" branch="false"/>
-								<line number="150" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="151" hits="0" branch="false"/>
-								<line number="152" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="153" hits="0" branch="false"/>
-								<line number="154" hits="0" branch="false"/>
-								<line number="155" hits="0" branch="false"/>
-								<line number="157" hits="0" branch="false"/>
-							</lines>
-						</method>
 						<method name="getAsString" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/lang/String;" line-rate="0.8333333333333334" branch-rate="0.6666666666666666">
 							<lines>
-								<line number="95" hits="48" branch="true" condition-coverage="100% (2/2)">
+								<line number="111" hits="48" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="96" hits="22" branch="false"/>
-								<line number="97" hits="22" branch="true" condition-coverage="50% (2/4)">
+								<line number="112" hits="22" branch="false"/>
+								<line number="113" hits="22" branch="true" condition-coverage="50% (2/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="50%"/>
 										<condition number="1" type="jump" coverage="50%"/>
 									</conditions>
 								</line>
-								<line number="98" hits="22" branch="false"/>
-								<line number="100" hits="0" branch="false"/>
-								<line number="103" hits="26" branch="false"/>
+								<line number="114" hits="22" branch="false"/>
+								<line number="116" hits="0" branch="false"/>
+								<line number="119" hits="26" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsStringList" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/List;" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="138" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="154" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="139" hits="0" branch="false"/>
-								<line number="141" hits="0" branch="false"/>
+								<line number="155" hits="0" branch="false"/>
+								<line number="157" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAsStringSet" signature="(Lcom/google/gson/JsonObject;Ljava/lang/String;)Ljava/util/Set;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="127" hits="12" branch="true" condition-coverage="100% (2/2)">
+								<line number="143" hits="12" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="128" hits="10" branch="false"/>
-								<line number="130" hits="2" branch="false"/>
+								<line number="144" hits="10" branch="false"/>
+								<line number="146" hits="2" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="26" hits="0" branch="false"/>
-						<line number="28" hits="1" branch="false"/>
-						<line number="36" hits="6" branch="false"/>
-						<line number="43" hits="2" branch="true" condition-coverage="100% (2/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="100%"/>
-							</conditions>
-						</line>
+						<line number="42" hits="0" branch="false"/>
 						<line number="44" hits="1" branch="false"/>
-						<line number="45" hits="1" branch="true" condition-coverage="50% (2/4)">
+						<line number="52" hits="6" branch="false"/>
+						<line number="59" hits="2" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="60" hits="1" branch="false"/>
+						<line number="61" hits="1" branch="true" condition-coverage="50% (2/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="50%"/>
 								<condition number="1" type="jump" coverage="50%"/>
 							</conditions>
 						</line>
-						<line number="46" hits="1" branch="false"/>
-						<line number="48" hits="0" branch="false"/>
-						<line number="51" hits="1" branch="false"/>
-						<line number="59" hits="4" branch="false"/>
-						<line number="60" hits="4" branch="true" condition-coverage="100% (2/2)">
+						<line number="62" hits="1" branch="false"/>
+						<line number="64" hits="0" branch="false"/>
+						<line number="67" hits="1" branch="false"/>
+						<line number="75" hits="4" branch="false"/>
+						<line number="76" hits="4" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="61" hits="2" branch="false"/>
-						<line number="63" hits="2" branch="false"/>
-						<line number="71" hits="4" branch="false"/>
-						<line number="72" hits="4" branch="true" condition-coverage="100% (2/2)">
+						<line number="77" hits="2" branch="false"/>
+						<line number="79" hits="2" branch="false"/>
+						<line number="87" hits="4" branch="false"/>
+						<line number="88" hits="4" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="73" hits="2" branch="false"/>
-						<line number="75" hits="2" branch="false"/>
-						<line number="83" hits="8" branch="false"/>
-						<line number="84" hits="8" branch="true" condition-coverage="50% (1/2)">
+						<line number="89" hits="2" branch="false"/>
+						<line number="91" hits="2" branch="false"/>
+						<line number="99" hits="8" branch="false"/>
+						<line number="100" hits="8" branch="true" condition-coverage="50% (1/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="50%"/>
 							</conditions>
 						</line>
-						<line number="85" hits="0" branch="false"/>
-						<line number="87" hits="8" branch="false"/>
-						<line number="95" hits="48" branch="true" condition-coverage="100% (2/2)">
+						<line number="101" hits="0" branch="false"/>
+						<line number="103" hits="8" branch="false"/>
+						<line number="111" hits="48" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="96" hits="22" branch="false"/>
-						<line number="97" hits="22" branch="true" condition-coverage="50% (2/4)">
+						<line number="112" hits="22" branch="false"/>
+						<line number="113" hits="22" branch="true" condition-coverage="50% (2/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="50%"/>
 								<condition number="1" type="jump" coverage="50%"/>
 							</conditions>
 						</line>
-						<line number="98" hits="22" branch="false"/>
-						<line number="100" hits="0" branch="false"/>
-						<line number="103" hits="26" branch="false"/>
-						<line number="111" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="114" hits="22" branch="false"/>
+						<line number="116" hits="0" branch="false"/>
+						<line number="119" hits="26" branch="false"/>
+						<line number="127" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="112" hits="0" branch="false"/>
-						<line number="113" hits="0" branch="true" condition-coverage="0% (0/4)">
+						<line number="128" hits="0" branch="false"/>
+						<line number="129" hits="0" branch="true" condition-coverage="0% (0/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="114" hits="0" branch="false"/>
-						<line number="116" hits="0" branch="false"/>
-						<line number="119" hits="0" branch="false"/>
-						<line number="127" hits="12" branch="true" condition-coverage="100% (2/2)">
+						<line number="130" hits="0" branch="false"/>
+						<line number="132" hits="0" branch="false"/>
+						<line number="135" hits="0" branch="false"/>
+						<line number="143" hits="12" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="128" hits="10" branch="false"/>
-						<line number="130" hits="2" branch="false"/>
-						<line number="138" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="144" hits="10" branch="false"/>
+						<line number="146" hits="2" branch="false"/>
+						<line number="154" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="139" hits="0" branch="false"/>
-						<line number="141" hits="0" branch="false"/>
-						<line number="149" hits="0" branch="false"/>
-						<line number="150" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="151" hits="0" branch="false"/>
-						<line number="152" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="153" hits="0" branch="false"/>
-						<line number="154" hits="0" branch="false"/>
 						<line number="155" hits="0" branch="false"/>
 						<line number="157" hits="0" branch="false"/>
 						<line number="165" hits="0" branch="false"/>
@@ -337,42 +321,58 @@
 						<line number="186" hits="0" branch="false"/>
 						<line number="187" hits="0" branch="false"/>
 						<line number="189" hits="0" branch="false"/>
+						<line number="197" hits="0" branch="false"/>
+						<line number="198" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="199" hits="0" branch="false"/>
+						<line number="200" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="201" hits="0" branch="false"/>
+						<line number="202" hits="0" branch="false"/>
+						<line number="203" hits="0" branch="false"/>
+						<line number="205" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.discovery.util.JsonUtils$1" filename="org/mitre/discovery/util/JsonUtils.java" line-rate="1.0" branch-rate="1.0" complexity="3.8333333333333335">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="36" hits="6" branch="false"/>
+								<line number="52" hits="6" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="36" hits="6" branch="false"/>
+						<line number="52" hits="6" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.discovery.util.JsonUtils$2" filename="org/mitre/discovery/util/JsonUtils.java" line-rate="1.0" branch-rate="1.0" complexity="3.8333333333333335">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="128" hits="10" branch="false"/>
+								<line number="144" hits="10" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="128" hits="10" branch="false"/>
+						<line number="144" hits="10" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.discovery.util.JsonUtils$3" filename="org/mitre/discovery/util/JsonUtils.java" line-rate="0.0" branch-rate="1.0" complexity="3.8333333333333335">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="139" hits="0" branch="false"/>
+								<line number="155" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="139" hits="0" branch="false"/>
+						<line number="155" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.discovery.util.WebfingerURLNormalizer" filename="org/mitre/discovery/util/WebfingerURLNormalizer.java" line-rate="0.8421052631578947" branch-rate="0.8125" complexity="10.0">
@@ -1559,7 +1559,7 @@
 				</class>
 			</classes>
 		</package>
-		<package name="org.mitre.jwt.signer.service.impl" line-rate="0.0" branch-rate="0.0" complexity="3.0">
+		<package name="org.mitre.jwt.signer.service.impl" line-rate="0.0" branch-rate="0.0" complexity="3.4761904761904763">
 			<classes>
 				<class name="org.mitre.jwt.signer.service.impl.DefaultJwtSigningAndValidationService" filename="org/mitre/jwt/signer/service/impl/DefaultJwtSigningAndValidationService.java" line-rate="0.0" branch-rate="0.0" complexity="3.4615384615384617">
 					<methods>
@@ -1993,7 +1993,7 @@
 						<line number="289" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="1.8">
+				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="2.6">
 					<methods>
 						<method name="&lt;clinit&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
@@ -2010,10 +2010,13 @@
 						</method>
 						<method name="getEncrypter" signature="(Ljava/lang/String;)Lorg/mitre/jwt/encryption/service/JwtEncryptionAndDecryptionService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="90" hits="0" branch="false"/>
-								<line number="91" hits="0" branch="false"/>
-								<line number="92" hits="0" branch="false"/>
 								<line number="93" hits="0" branch="false"/>
+								<line number="94" hits="0" branch="false"/>
+								<line number="95" hits="0" branch="false"/>
+								<line number="96" hits="0" branch="false"/>
+								<line number="97" hits="0" branch="false"/>
+								<line number="98" hits="0" branch="false"/>
+								<line number="99" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getValidator" signature="(Ljava/lang/String;)Lorg/mitre/jwt/signer/service/JwtSigningAndValidationService;" line-rate="0.0" branch-rate="1.0">
@@ -2022,6 +2025,9 @@
 								<line number="82" hits="0" branch="false"/>
 								<line number="83" hits="0" branch="false"/>
 								<line number="84" hits="0" branch="false"/>
+								<line number="85" hits="0" branch="false"/>
+								<line number="86" hits="0" branch="false"/>
+								<line number="87" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
@@ -2035,30 +2041,36 @@
 						<line number="82" hits="0" branch="false"/>
 						<line number="83" hits="0" branch="false"/>
 						<line number="84" hits="0" branch="false"/>
-						<line number="90" hits="0" branch="false"/>
-						<line number="91" hits="0" branch="false"/>
-						<line number="92" hits="0" branch="false"/>
+						<line number="85" hits="0" branch="false"/>
+						<line number="86" hits="0" branch="false"/>
+						<line number="87" hits="0" branch="false"/>
 						<line number="93" hits="0" branch="false"/>
+						<line number="94" hits="0" branch="false"/>
+						<line number="95" hits="0" branch="false"/>
+						<line number="96" hits="0" branch="false"/>
+						<line number="97" hits="0" branch="false"/>
+						<line number="98" hits="0" branch="false"/>
+						<line number="99" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$1" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="1.0" branch-rate="1.0" complexity="1.8">
+				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$1" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="1.0" branch-rate="1.0" complexity="2.6">
 					<methods>
 					</methods>
 					<lines>
 					</lines>
 				</class>
-				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$JWKSetEncryptorFetcher" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="1.8">
+				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$JWKSetEncryptorFetcher" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="2.6">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="130" hits="0" branch="false"/>
-								<line number="131" hits="0" branch="false"/>
-								<line number="132" hits="0" branch="false"/>
+								<line number="136" hits="0" branch="false"/>
+								<line number="137" hits="0" branch="false"/>
+								<line number="138" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService$1;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="129" hits="0" branch="false"/>
+								<line number="135" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="load" signature="(Ljava/lang/Object;)Ljava/lang/Object;" line-rate="1.0" branch-rate="1.0">
@@ -2067,38 +2079,38 @@
 						</method>
 						<method name="load" signature="(Ljava/lang/String;)Lorg/mitre/jwt/encryption/service/JwtEncryptionAndDecryptionService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="138" hits="0" branch="false"/>
-								<line number="139" hits="0" branch="false"/>
-								<line number="141" hits="0" branch="false"/>
-								<line number="143" hits="0" branch="false"/>
+								<line number="144" hits="0" branch="false"/>
 								<line number="145" hits="0" branch="false"/>
+								<line number="147" hits="0" branch="false"/>
+								<line number="149" hits="0" branch="false"/>
+								<line number="151" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="129" hits="0" branch="false"/>
-						<line number="130" hits="0" branch="false"/>
-						<line number="131" hits="0" branch="false"/>
-						<line number="132" hits="0" branch="false"/>
+						<line number="135" hits="0" branch="false"/>
+						<line number="136" hits="0" branch="false"/>
+						<line number="137" hits="0" branch="false"/>
 						<line number="138" hits="0" branch="false"/>
-						<line number="139" hits="0" branch="false"/>
-						<line number="141" hits="0" branch="false"/>
-						<line number="143" hits="0" branch="false"/>
+						<line number="144" hits="0" branch="false"/>
 						<line number="145" hits="0" branch="false"/>
+						<line number="147" hits="0" branch="false"/>
+						<line number="149" hits="0" branch="false"/>
+						<line number="151" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$JWKSetVerifierFetcher" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="1.8">
+				<class name="org.mitre.jwt.signer.service.impl.JWKSetCacheService$JWKSetVerifierFetcher" filename="org/mitre/jwt/signer/service/impl/JWKSetCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="2.6">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="102" hits="0" branch="false"/>
-								<line number="103" hits="0" branch="false"/>
-								<line number="104" hits="0" branch="false"/>
+								<line number="108" hits="0" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
+								<line number="110" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService$1;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="101" hits="0" branch="false"/>
+								<line number="107" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="load" signature="(Ljava/lang/Object;)Ljava/lang/Object;" line-rate="1.0" branch-rate="1.0">
@@ -2107,24 +2119,140 @@
 						</method>
 						<method name="load" signature="(Ljava/lang/String;)Lorg/mitre/jwt/signer/service/JwtSigningAndValidationService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="112" hits="0" branch="false"/>
-								<line number="113" hits="0" branch="false"/>
-								<line number="115" hits="0" branch="false"/>
-								<line number="117" hits="0" branch="false"/>
+								<line number="118" hits="0" branch="false"/>
 								<line number="119" hits="0" branch="false"/>
+								<line number="121" hits="0" branch="false"/>
+								<line number="123" hits="0" branch="false"/>
+								<line number="125" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
+						<line number="107" hits="0" branch="false"/>
+						<line number="108" hits="0" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
+						<line number="110" hits="0" branch="false"/>
+						<line number="118" hits="0" branch="false"/>
+						<line number="119" hits="0" branch="false"/>
+						<line number="121" hits="0" branch="false"/>
+						<line number="123" hits="0" branch="false"/>
+						<line number="125" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="org.mitre.jwt.signer.service.impl.SymmetricCacheService" filename="org/mitre/jwt/signer/service/impl/SymmetricCacheService.java" line-rate="0.0" branch-rate="0.0" complexity="5.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="51" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="56" hits="0" branch="false"/>
+								<line number="57" hits="0" branch="false"/>
+								<line number="61" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="access$000" signature="()Lorg/slf4j/Logger;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="49" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSymmetricValidtor" signature="(Lorg/mitre/oauth2/model/ClientDetailsEntity;)Lorg/mitre/jwt/signer/service/JwtSigningAndValidationService;" line-rate="0.0" branch-rate="0.0">
+							<lines>
+								<line number="72" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="73" hits="0" branch="false"/>
+								<line number="74" hits="0" branch="false"/>
+								<line number="77" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="78" hits="0" branch="false"/>
+								<line number="79" hits="0" branch="false"/>
+								<line number="83" hits="0" branch="false"/>
+								<line number="84" hits="0" branch="false"/>
+								<line number="85" hits="0" branch="false"/>
+								<line number="86" hits="0" branch="false"/>
+								<line number="87" hits="0" branch="false"/>
+								<line number="88" hits="0" branch="false"/>
+								<line number="89" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="49" hits="0" branch="false"/>
+						<line number="51" hits="0" branch="false"/>
+						<line number="56" hits="0" branch="false"/>
+						<line number="57" hits="0" branch="false"/>
+						<line number="61" hits="0" branch="false"/>
+						<line number="72" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="73" hits="0" branch="false"/>
+						<line number="74" hits="0" branch="false"/>
+						<line number="77" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="78" hits="0" branch="false"/>
+						<line number="79" hits="0" branch="false"/>
+						<line number="83" hits="0" branch="false"/>
+						<line number="84" hits="0" branch="false"/>
+						<line number="85" hits="0" branch="false"/>
+						<line number="86" hits="0" branch="false"/>
+						<line number="87" hits="0" branch="false"/>
+						<line number="88" hits="0" branch="false"/>
+						<line number="89" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="org.mitre.jwt.signer.service.impl.SymmetricCacheService$SymmetricValidatorBuilder" filename="org/mitre/jwt/signer/service/impl/SymmetricCacheService.java" line-rate="0.0" branch-rate="1.0" complexity="5.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lorg/mitre/jwt/signer/service/impl/SymmetricCacheService;)V" line-rate="1.0" branch-rate="1.0">
+							<lines>
+							</lines>
+						</method>
+						<method name="load" signature="(Ljava/lang/Object;)Ljava/lang/Object;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="94" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="load" signature="(Ljava/lang/String;)Lorg/mitre/jwt/signer/service/JwtSigningAndValidationService;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="99" hits="0" branch="false"/>
+								<line number="101" hits="0" branch="false"/>
+								<line number="102" hits="0" branch="false"/>
+								<line number="103" hits="0" branch="false"/>
+								<line number="105" hits="0" branch="false"/>
+								<line number="107" hits="0" branch="false"/>
+								<line number="108" hits="0" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
+								<line number="110" hits="0" branch="false"/>
+								<line number="111" hits="0" branch="false"/>
+								<line number="113" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="94" hits="0" branch="false"/>
+						<line number="99" hits="0" branch="false"/>
 						<line number="101" hits="0" branch="false"/>
 						<line number="102" hits="0" branch="false"/>
 						<line number="103" hits="0" branch="false"/>
-						<line number="104" hits="0" branch="false"/>
-						<line number="112" hits="0" branch="false"/>
+						<line number="105" hits="0" branch="false"/>
+						<line number="107" hits="0" branch="false"/>
+						<line number="108" hits="0" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
+						<line number="110" hits="0" branch="false"/>
+						<line number="111" hits="0" branch="false"/>
 						<line number="113" hits="0" branch="false"/>
-						<line number="115" hits="0" branch="false"/>
-						<line number="117" hits="0" branch="false"/>
-						<line number="119" hits="0" branch="false"/>
 					</lines>
 				</class>
 			</classes>
@@ -5186,6 +5314,12 @@
 		<package name="org.mitre.oauth2.service" line-rate="1.0" branch-rate="1.0" complexity="1.0">
 			<classes>
 				<class name="org.mitre.oauth2.service.ClientDetailsEntityService" filename="org/mitre/oauth2/service/ClientDetailsEntityService.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="org.mitre.oauth2.service.IntrospectionAuthorizer" filename="org/mitre/oauth2/service/IntrospectionAuthorizer.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
 					<methods>
 					</methods>
 					<lines>
@@ -10559,59 +10693,56 @@
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="29" hits="0" branch="false"/>
+								<line number="45" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getId" signature="()Ljava/lang/Long;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="43" hits="0" branch="false"/>
+								<line number="59" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getIdentifier" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="59" hits="0" branch="false"/>
+								<line number="75" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getSectorIdentifier" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="91" hits="0" branch="false"/>
+								<line number="107" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getUserSub" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="75" hits="0" branch="false"/>
+								<line number="91" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setId" signature="(Ljava/lang/Long;)V" line-rate="0.0" branch-rate="1.0">
-							<lines>
-								<line number="50" hits="0" branch="false"/>
-								<line number="51" hits="0" branch="false"/>
-							</lines>
-						</method>
-						<method name="setIdentifier" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
 								<line number="66" hits="0" branch="false"/>
 								<line number="67" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="setSectorIdentifier" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
-							<lines>
-								<line number="98" hits="0" branch="false"/>
-								<line number="99" hits="0" branch="false"/>
-							</lines>
-						</method>
-						<method name="setUserSub" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
+						<method name="setIdentifier" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
 								<line number="82" hits="0" branch="false"/>
 								<line number="83" hits="0" branch="false"/>
 							</lines>
 						</method>
+						<method name="setSectorIdentifier" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="114" hits="0" branch="false"/>
+								<line number="115" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="setUserSub" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="98" hits="0" branch="false"/>
+								<line number="99" hits="0" branch="false"/>
+							</lines>
+						</method>
 					</methods>
 					<lines>
-						<line number="29" hits="0" branch="false"/>
-						<line number="43" hits="0" branch="false"/>
-						<line number="50" hits="0" branch="false"/>
-						<line number="51" hits="0" branch="false"/>
+						<line number="45" hits="0" branch="false"/>
 						<line number="59" hits="0" branch="false"/>
 						<line number="66" hits="0" branch="false"/>
 						<line number="67" hits="0" branch="false"/>
@@ -10621,6 +10752,9 @@
 						<line number="91" hits="0" branch="false"/>
 						<line number="98" hits="0" branch="false"/>
 						<line number="99" hits="0" branch="false"/>
+						<line number="107" hits="0" branch="false"/>
+						<line number="114" hits="0" branch="false"/>
+						<line number="115" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.openid.connect.model.UserInfo" filename="org/mitre/openid/connect/model/UserInfo.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">

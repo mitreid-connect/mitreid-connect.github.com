@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2014</copyright>
     <item>
-      <title>File: 38,
-             Errors: 13,
-             Warnings: 88,
+      <title>File: 40,
+             Errors: 6,
+             Warnings: 90,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/openid-connect-client/checkstyle.html</link>
@@ -99,6 +99,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.TargetLinkURIChecker.java">org/mitre/openid/connect/client/TargetLinkURIChecker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.ClientConfigurationService.java">org/mitre/openid/connect/client/service/ClientConfigurationService.java</a>
                 </td>
                 <td>
@@ -119,10 +133,10 @@
                   0
                 </td>
                 <td>
-                  38
+                  37
                 </td>
                 <td>
-                  7
+                  6
                 </td>
               </tr>
                           <tr>
@@ -150,7 +164,7 @@
                   3
                 </td>
                 <td>
-                  6
+                  0
                 </td>
               </tr>
                           <tr>
@@ -260,6 +274,20 @@
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.StaticPrefixTargetLinkURIChecker.java">org/mitre/openid/connect/client/StaticPrefixTargetLinkURIChecker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -385,7 +413,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -455,7 +483,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  7
                 </td>
                 <td>
                   0

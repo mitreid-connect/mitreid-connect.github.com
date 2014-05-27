@@ -84,7 +84,7 @@
 <span class="sourceLineNo">076</span>                        return "tokenApiView";<a name="line.76"></a>
 <span class="sourceLineNo">077</span>                }<a name="line.77"></a>
 <span class="sourceLineNo">078</span>        }<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        <a name="line.79"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
 <span class="sourceLineNo">080</span>        @RequestMapping(value = "/access/{id}", method = RequestMethod.DELETE, produces = "application/json")<a name="line.80"></a>
 <span class="sourceLineNo">081</span>        public String deleteAccessTokenById(@PathVariable("id") Long id, ModelMap m, Principal p) {<a name="line.81"></a>
 <span class="sourceLineNo">082</span><a name="line.82"></a>
@@ -102,19 +102,19 @@
 <span class="sourceLineNo">094</span>                        return "jsonErrorView";<a name="line.94"></a>
 <span class="sourceLineNo">095</span>                } else {<a name="line.95"></a>
 <span class="sourceLineNo">096</span>                        tokenService.revokeAccessToken(token);<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                        <a name="line.97"></a>
-<span class="sourceLineNo">098</span>                        return "httpCodeView";                  <a name="line.98"></a>
+<span class="sourceLineNo">097</span><a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        return "httpCodeView";<a name="line.98"></a>
 <span class="sourceLineNo">099</span>                }<a name="line.99"></a>
 <span class="sourceLineNo">100</span>        }<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        <a name="line.101"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
 <span class="sourceLineNo">102</span>        @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = "application/json")<a name="line.102"></a>
 <span class="sourceLineNo">103</span>        public String getAllRefreshTokens(ModelMap m, Principal p) {<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                <a name="line.104"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
 <span class="sourceLineNo">105</span>                Set&lt;OAuth2RefreshTokenEntity&gt; allTokens = tokenService.getAllRefreshTokensForUser(p.getName());<a name="line.105"></a>
 <span class="sourceLineNo">106</span>                m.put("entity", allTokens);<a name="line.106"></a>
 <span class="sourceLineNo">107</span>                return "tokenApiView";<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                <a name="line.108"></a>
-<span class="sourceLineNo">109</span>                <a name="line.109"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
 <span class="sourceLineNo">110</span>        }<a name="line.110"></a>
 <span class="sourceLineNo">111</span><a name="line.111"></a>
 <span class="sourceLineNo">112</span>        @RequestMapping(value = "/refresh/{id}", method = RequestMethod.GET, produces = "application/json")<a name="line.112"></a>
@@ -137,7 +137,7 @@
 <span class="sourceLineNo">129</span>                        return "tokenApiView";<a name="line.129"></a>
 <span class="sourceLineNo">130</span>                }<a name="line.130"></a>
 <span class="sourceLineNo">131</span>        }<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        <a name="line.132"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
 <span class="sourceLineNo">133</span>        @RequestMapping(value = "/refresh/{id}", method = RequestMethod.DELETE, produces = "application/json")<a name="line.133"></a>
 <span class="sourceLineNo">134</span>        public String deleteRefreshTokenById(@PathVariable("id") Long id, ModelMap m, Principal p) {<a name="line.134"></a>
 <span class="sourceLineNo">135</span><a name="line.135"></a>
@@ -155,11 +155,11 @@
 <span class="sourceLineNo">147</span>                        return "jsonErrorView";<a name="line.147"></a>
 <span class="sourceLineNo">148</span>                } else {<a name="line.148"></a>
 <span class="sourceLineNo">149</span>                        tokenService.revokeRefreshToken(token);<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                        <a name="line.150"></a>
-<span class="sourceLineNo">151</span>                        return "httpCodeView";                  <a name="line.151"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>                        return "httpCodeView";<a name="line.151"></a>
 <span class="sourceLineNo">152</span>                }<a name="line.152"></a>
 <span class="sourceLineNo">153</span>        }<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        <a name="line.154"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
 <span class="sourceLineNo">155</span>}<a name="line.155"></a>
 
 
