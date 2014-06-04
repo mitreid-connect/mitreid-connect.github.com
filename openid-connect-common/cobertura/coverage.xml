@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.30033800096571706" branch-rate="0.18163869693978282" lines-covered="622" lines-valid="2071" branches-covered="184" branches-valid="1013" complexity="1.937733499377335" version="1.9.4.1" timestamp="1401224446824">
+<coverage line-rate="0.29990356798457085" branch-rate="0.18092428711897737" lines-covered="622" lines-valid="2074" branches-covered="184" branches-valid="1017" complexity="1.9402241594022416" version="1.9.4.1" timestamp="1401910586208">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-common/src/main/java</source>
@@ -10971,9 +10971,9 @@
 				</class>
 			</classes>
 		</package>
-		<package name="org.mitre.openid.connect.web" line-rate="0.0" branch-rate="0.0" complexity="5.5">
+		<package name="org.mitre.openid.connect.web" line-rate="0.0" branch-rate="0.0" complexity="6.5">
 			<classes>
-				<class name="org.mitre.openid.connect.web.UserInfoInterceptor" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="0.0" complexity="5.5">
+				<class name="org.mitre.openid.connect.web.UserInfoInterceptor" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="0.0" complexity="6.5">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
@@ -11009,24 +11009,32 @@
 									</conditions>
 								</line>
 								<line number="84" hits="0" branch="false"/>
-								<line number="85" hits="0" branch="false"/>
+								<line number="85" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
 								<line number="86" hits="0" branch="false"/>
 								<line number="87" hits="0" branch="false"/>
-								<line number="88" hits="0" branch="true" condition-coverage="0% (0/4)">
+								<line number="89" hits="0" branch="false"/>
+								<line number="90" hits="0" branch="false"/>
+								<line number="92" hits="0" branch="false"/>
+								<line number="94" hits="0" branch="true" condition-coverage="0% (0/6)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 										<condition number="1" type="jump" coverage="0%"/>
+										<condition number="2" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="91" hits="0" branch="false"/>
-								<line number="94" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="97" hits="0" branch="false"/>
+								<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="95" hits="0" branch="false"/>
-								<line number="96" hits="0" branch="false"/>
-								<line number="103" hits="0" branch="false"/>
+								<line number="101" hits="0" branch="false"/>
+								<line number="102" hits="0" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
@@ -11059,27 +11067,35 @@
 							</conditions>
 						</line>
 						<line number="84" hits="0" branch="false"/>
-						<line number="85" hits="0" branch="false"/>
+						<line number="85" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
 						<line number="86" hits="0" branch="false"/>
 						<line number="87" hits="0" branch="false"/>
-						<line number="88" hits="0" branch="true" condition-coverage="0% (0/4)">
+						<line number="89" hits="0" branch="false"/>
+						<line number="90" hits="0" branch="false"/>
+						<line number="92" hits="0" branch="false"/>
+						<line number="94" hits="0" branch="true" condition-coverage="0% (0/6)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
+								<condition number="2" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="91" hits="0" branch="false"/>
-						<line number="94" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="97" hits="0" branch="false"/>
+						<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="95" hits="0" branch="false"/>
-						<line number="96" hits="0" branch="false"/>
-						<line number="103" hits="0" branch="false"/>
+						<line number="101" hits="0" branch="false"/>
+						<line number="102" hits="0" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.web.UserInfoInterceptor$1" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="1.0" complexity="5.5">
+				<class name="org.mitre.openid.connect.web.UserInfoInterceptor$1" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="1.0" complexity="6.5">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/web/UserInfoInterceptor;)V" line-rate="1.0" branch-rate="1.0">
 							<lines>

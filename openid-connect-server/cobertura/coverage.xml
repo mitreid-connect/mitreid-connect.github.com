@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.12524385485758877" branch-rate="0.1496881496881497" lines-covered="321" lines-valid="2563" branches-covered="144" branches-valid="962" complexity="3.1666666666666665" version="1.9.4.1" timestamp="1401224527515">
+<coverage line-rate="0.12524385485758877" branch-rate="0.1496881496881497" lines-covered="321" lines-valid="2563" branches-covered="144" branches-valid="962" complexity="3.1602373887240356" version="1.9.4.1" timestamp="1401910630151">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-server/src/main/java</source>
@@ -7831,7 +7831,7 @@
 				</class>
 			</classes>
 		</package>
-		<package name="org.mitre.openid.connect.view" line-rate="0.0" branch-rate="0.0" complexity="3.0344827586206895">
+		<package name="org.mitre.openid.connect.view" line-rate="0.0" branch-rate="0.0" complexity="2.966666666666667">
 			<classes>
 				<class name="org.mitre.openid.connect.view.AbstractClientEntityView" filename="org/mitre/openid/connect/view/AbstractClientEntityView.java" line-rate="0.0" branch-rate="0.0" complexity="2.6">
 					<methods>
@@ -8229,63 +8229,63 @@
 						<line number="48" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="0.0" complexity="2.0">
+				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="0.0" complexity="1.8">
 					<methods>
 						<method name="&lt;clinit&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="54" hits="0" branch="false"/>
+								<line number="55" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="52" hits="0" branch="false"/>
-								<line number="56" hits="0" branch="false"/>
+								<line number="53" hits="0" branch="false"/>
+								<line number="57" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="renderMergedOutputModel" signature="(Ljava/util/Map;Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)V" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="91" hits="0" branch="false"/>
-								<line number="94" hits="0" branch="false"/>
-								<line number="95" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="96" hits="0" branch="false"/>
+								<line number="99" hits="0" branch="false"/>
+								<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="96" hits="0" branch="false"/>
-								<line number="99" hits="0" branch="false"/>
-								<line number="103" hits="0" branch="false"/>
+								<line number="101" hits="0" branch="false"/>
 								<line number="104" hits="0" branch="false"/>
-								<line number="105" hits="0" branch="false"/>
-								<line number="107" hits="0" branch="false"/>
+								<line number="108" hits="0" branch="false"/>
 								<line number="109" hits="0" branch="false"/>
-								<line number="111" hits="0" branch="false"/>
+								<line number="110" hits="0" branch="false"/>
 								<line number="112" hits="0" branch="false"/>
+								<line number="114" hits="0" branch="false"/>
+								<line number="116" hits="0" branch="false"/>
+								<line number="117" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="52" hits="0" branch="false"/>
-						<line number="54" hits="0" branch="false"/>
-						<line number="56" hits="0" branch="false"/>
-						<line number="91" hits="0" branch="false"/>
-						<line number="94" hits="0" branch="false"/>
-						<line number="95" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="53" hits="0" branch="false"/>
+						<line number="55" hits="0" branch="false"/>
+						<line number="57" hits="0" branch="false"/>
+						<line number="96" hits="0" branch="false"/>
+						<line number="99" hits="0" branch="false"/>
+						<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="96" hits="0" branch="false"/>
-						<line number="99" hits="0" branch="false"/>
-						<line number="103" hits="0" branch="false"/>
+						<line number="101" hits="0" branch="false"/>
 						<line number="104" hits="0" branch="false"/>
-						<line number="105" hits="0" branch="false"/>
-						<line number="107" hits="0" branch="false"/>
+						<line number="108" hits="0" branch="false"/>
 						<line number="109" hits="0" branch="false"/>
-						<line number="111" hits="0" branch="false"/>
+						<line number="110" hits="0" branch="false"/>
 						<line number="112" hits="0" branch="false"/>
+						<line number="114" hits="0" branch="false"/>
+						<line number="116" hits="0" branch="false"/>
+						<line number="117" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView$1" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="1.0" complexity="2.0">
+				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView$1" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="1.0" complexity="1.8">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/view/JsonApprovedSiteView;)V" line-rate="1.0" branch-rate="1.0">
 							<lines>
@@ -8293,7 +8293,29 @@
 						</method>
 						<method name="serialize" signature="(Ljava/lang/Object;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="75" hits="0" branch="false"/>
+								<line number="83" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="serialize" signature="(Lorg/mitre/openid/connect/model/WhitelistedSite;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="86" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="83" hits="0" branch="false"/>
+						<line number="86" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView$2" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="1.0" complexity="1.8">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/view/JsonApprovedSiteView;)V" line-rate="1.0" branch-rate="1.0">
+							<lines>
+							</lines>
+						</method>
+						<method name="serialize" signature="(Ljava/lang/Object;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="76" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="serialize" signature="(Lorg/mitre/oauth2/model/OAuth2AccessTokenEntity;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
@@ -8303,44 +8325,44 @@
 						</method>
 					</methods>
 					<lines>
-						<line number="75" hits="0" branch="false"/>
+						<line number="76" hits="0" branch="false"/>
 						<line number="80" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView$2" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="0.0" complexity="2.0">
+				<class name="org.mitre.openid.connect.view.JsonApprovedSiteView$3" filename="org/mitre/openid/connect/view/JsonApprovedSiteView.java" line-rate="0.0" branch-rate="0.0" complexity="1.8">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/view/JsonApprovedSiteView;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="57" hits="0" branch="false"/>
+								<line number="58" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="shouldSkipClass" signature="(Ljava/lang/Class;)Z" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="68" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="69" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="69" hits="0" branch="false"/>
-								<line number="71" hits="0" branch="false"/>
+								<line number="70" hits="0" branch="false"/>
+								<line number="72" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="shouldSkipField" signature="(Lcom/google/gson/FieldAttributes;)Z" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="62" hits="0" branch="false"/>
+								<line number="63" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="57" hits="0" branch="false"/>
-						<line number="62" hits="0" branch="false"/>
-						<line number="68" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="58" hits="0" branch="false"/>
+						<line number="63" hits="0" branch="false"/>
+						<line number="69" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="69" hits="0" branch="false"/>
-						<line number="71" hits="0" branch="false"/>
+						<line number="70" hits="0" branch="false"/>
+						<line number="72" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.openid.connect.view.JsonEntityView" filename="org/mitre/openid/connect/view/JsonEntityView.java" line-rate="0.0" branch-rate="0.0" complexity="2.3333333333333335">
@@ -10214,8 +10236,6 @@
 						</method>
 						<method name="showHomePage" signature="(Lorg/springframework/ui/ModelMap;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="41" hits="0" branch="false"/>
-								<line number="43" hits="0" branch="false"/>
 								<line number="44" hits="0" branch="false"/>
 							</lines>
 						</method>
@@ -10229,8 +10249,6 @@
 					</methods>
 					<lines>
 						<line number="33" hits="0" branch="false"/>
-						<line number="41" hits="0" branch="false"/>
-						<line number="43" hits="0" branch="false"/>
 						<line number="44" hits="0" branch="false"/>
 						<line number="50" hits="0" branch="false"/>
 						<line number="56" hits="0" branch="false"/>
@@ -10609,7 +10627,7 @@
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="32" hits="0" branch="false"/>
+								<line number="31" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="statsByClient" signature="(Lorg/springframework/ui/ModelMap;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
@@ -10621,30 +10639,30 @@
 						</method>
 						<method name="statsByClientId" signature="(Ljava/lang/Long;Lorg/springframework/ui/ModelMap;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="59" hits="0" branch="false"/>
-								<line number="61" hits="0" branch="false"/>
-								<line number="63" hits="0" branch="false"/>
+								<line number="60" hits="0" branch="false"/>
+								<line number="62" hits="0" branch="false"/>
+								<line number="64" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="statsSummary" signature="(Lorg/springframework/ui/ModelMap;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="40" hits="0" branch="false"/>
-								<line number="42" hits="0" branch="false"/>
-								<line number="44" hits="0" branch="false"/>
+								<line number="39" hits="0" branch="false"/>
+								<line number="41" hits="0" branch="false"/>
+								<line number="43" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="32" hits="0" branch="false"/>
-						<line number="40" hits="0" branch="false"/>
-						<line number="42" hits="0" branch="false"/>
-						<line number="44" hits="0" branch="false"/>
+						<line number="31" hits="0" branch="false"/>
+						<line number="39" hits="0" branch="false"/>
+						<line number="41" hits="0" branch="false"/>
+						<line number="43" hits="0" branch="false"/>
 						<line number="50" hits="0" branch="false"/>
 						<line number="52" hits="0" branch="false"/>
 						<line number="54" hits="0" branch="false"/>
-						<line number="59" hits="0" branch="false"/>
-						<line number="61" hits="0" branch="false"/>
-						<line number="63" hits="0" branch="false"/>
+						<line number="60" hits="0" branch="false"/>
+						<line number="62" hits="0" branch="false"/>
+						<line number="64" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.openid.connect.web.UserInfoEndpoint" filename="org/mitre/openid/connect/web/UserInfoEndpoint.java" line-rate="0.0" branch-rate="0.0" complexity="10.0">
