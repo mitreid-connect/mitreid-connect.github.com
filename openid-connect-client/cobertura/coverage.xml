@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.11122047244094488" branch-rate="0.05063291139240506" lines-covered="113" lines-valid="1016" branches-covered="16" branches-valid="316" complexity="2.2719298245614037" version="1.9.4.1" timestamp="1401910607426">
+<coverage line-rate="0.11067580803134182" branch-rate="0.049689440993788817" lines-covered="113" lines-valid="1021" branches-covered="16" branches-valid="322" complexity="2.289473684210526" version="1.9.4.1" timestamp="1403188433160">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-client/src/main/java</source>
@@ -775,7 +775,7 @@
 				</class>
 			</classes>
 		</package>
-		<package name="org.mitre.openid.connect.client" line-rate="0.0" branch-rate="0.0" complexity="3.185185185185185">
+		<package name="org.mitre.openid.connect.client" line-rate="0.0" branch-rate="0.0" complexity="3.259259259259259">
 			<classes>
 				<class name="org.mitre.openid.connect.client.NamedAdminAuthoritiesMapper" filename="org/mitre/openid/connect/client/NamedAdminAuthoritiesMapper.java" line-rate="0.0" branch-rate="0.0" complexity="1.4">
 					<methods>
@@ -865,7 +865,7 @@
 						<line number="93" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="0.0" complexity="3.264705882352941">
+				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="0.0" complexity="3.3823529411764706">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
@@ -928,84 +928,84 @@
 						</method>
 						<method name="createNonce" signature="(Ljavax/servlet/http/HttpSession;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="579" hits="0" branch="false"/>
-								<line number="580" hits="0" branch="false"/>
-								<line number="582" hits="0" branch="false"/>
+								<line number="593" hits="0" branch="false"/>
+								<line number="594" hits="0" branch="false"/>
+								<line number="596" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="createState" signature="(Ljavax/servlet/http/HttpSession;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="600" hits="0" branch="false"/>
-								<line number="601" hits="0" branch="false"/>
-								<line number="603" hits="0" branch="false"/>
+								<line number="614" hits="0" branch="false"/>
+								<line number="615" hits="0" branch="false"/>
+								<line number="617" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAuthRequestOptionsService" signature="()Lorg/mitre/openid/connect/client/service/AuthRequestOptionsService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="747" hits="0" branch="false"/>
+								<line number="761" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAuthRequestUrlBuilder" signature="()Lorg/mitre/openid/connect/client/service/AuthRequestUrlBuilder;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="733" hits="0" branch="false"/>
+								<line number="747" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getClientConfigurationService" signature="()Lorg/mitre/openid/connect/client/service/ClientConfigurationService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="705" hits="0" branch="false"/>
+								<line number="719" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getIssuerService" signature="()Lorg/mitre/openid/connect/client/service/IssuerService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="719" hits="0" branch="false"/>
+								<line number="733" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getServerConfigurationService" signature="()Lorg/mitre/openid/connect/client/service/ServerConfigurationService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="691" hits="0" branch="false"/>
+								<line number="705" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getStoredNonce" signature="(Ljavax/servlet/http/HttpSession;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="591" hits="0" branch="false"/>
+								<line number="605" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getStoredSessionString" signature="(Ljavax/servlet/http/HttpSession;Ljava/lang/String;)Ljava/lang/String;" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="565" hits="0" branch="false"/>
-								<line number="566" hits="0" branch="true" condition-coverage="0% (0/4)">
+								<line number="579" hits="0" branch="false"/>
+								<line number="580" hits="0" branch="true" condition-coverage="0% (0/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 										<condition number="1" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="567" hits="0" branch="false"/>
-								<line number="569" hits="0" branch="false"/>
+								<line number="581" hits="0" branch="false"/>
+								<line number="583" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getStoredState" signature="(Ljavax/servlet/http/HttpSession;)Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="612" hits="0" branch="false"/>
+								<line number="626" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getSymmetricCacheService" signature="()Lorg/mitre/jwt/signer/service/impl/SymmetricCacheService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="758" hits="0" branch="false"/>
+								<line number="772" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getTargetLinkURIAuthenticationSuccessHandler" signature="()Lorg/mitre/openid/connect/client/OIDCAuthenticationFilter$TargetLinkURIAuthenticationSuccessHandler;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="766" hits="0" branch="false"/>
+								<line number="780" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getTimeSkewAllowance" signature="()I" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="666" hits="0" branch="false"/>
+								<line number="680" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getValidationServices" signature="()Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="677" hits="0" branch="false"/>
+								<line number="691" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="handleAuthorizationCodeResponse" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)Lorg/springframework/security/core/Authentication;" line-rate="0.0" branch-rate="0.0">
@@ -1145,88 +1145,84 @@
 								<line number="440" hits="0" branch="false"/>
 								<line number="443" hits="0" branch="false"/>
 								<line number="446" hits="0" branch="false"/>
-								<line number="447" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="448" hits="0" branch="false"/>
+								<line number="449" hits="0" branch="true" condition-coverage="0% (0/6)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
+										<condition number="1" type="jump" coverage="0%"/>
+										<condition number="2" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="448" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="449" hits="0" branch="false"/>
-								<line number="452" hits="0" branch="false"/>
-								<line number="456" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
+								<line number="454" hits="0" branch="false"/>
 								<line number="457" hits="0" branch="false"/>
-								<line number="458" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="460" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="459" hits="0" branch="false"/>
-								<line number="463" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="461" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="464" hits="0" branch="false"/>
-								<line number="467" hits="0" branch="false"/>
-								<line number="468" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="462" hits="0" branch="false"/>
+								<line number="465" hits="0" branch="false"/>
+								<line number="466" hits="0" branch="false"/>
+								<line number="470" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="469" hits="0" branch="false"/>
-								<line number="474" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="471" hits="0" branch="false"/>
+								<line number="472" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="475" hits="0" branch="false"/>
-								<line number="476" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="473" hits="0" branch="false"/>
+								<line number="477" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="477" hits="0" branch="false"/>
+								<line number="478" hits="0" branch="false"/>
+								<line number="481" hits="0" branch="false"/>
 								<line number="482" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
 								<line number="483" hits="0" branch="false"/>
-								<line number="486" hits="0" branch="false"/>
-								<line number="487" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="488" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="488" hits="0" branch="false"/>
-								<line number="493" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="489" hits="0" branch="false"/>
+								<line number="490" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="494" hits="0" branch="false"/>
-								<line number="495" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="491" hits="0" branch="false"/>
+								<line number="496" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="496" hits="0" branch="false"/>
+								<line number="497" hits="0" branch="false"/>
 								<line number="500" hits="0" branch="false"/>
 								<line number="501" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="503" hits="0" branch="false"/>
-								<line number="505" hits="0" branch="false"/>
+								<line number="502" hits="0" branch="false"/>
+								<line number="507" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
 								<line number="508" hits="0" branch="false"/>
 								<line number="509" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
@@ -1234,13 +1230,28 @@
 									</conditions>
 								</line>
 								<line number="510" hits="0" branch="false"/>
-								<line number="513" hits="0" branch="false"/>
-								<line number="520" hits="0" branch="false"/>
+								<line number="514" hits="0" branch="false"/>
+								<line number="515" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="517" hits="0" branch="false"/>
+								<line number="519" hits="0" branch="false"/>
+								<line number="522" hits="0" branch="false"/>
+								<line number="523" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
 								<line number="524" hits="0" branch="false"/>
-								<line number="526" hits="0" branch="false"/>
-								<line number="528" hits="0" branch="false"/>
-								<line number="529" hits="0" branch="false"/>
-								<line number="530" hits="0" branch="false"/>
+								<line number="527" hits="0" branch="false"/>
+								<line number="534" hits="0" branch="false"/>
+								<line number="538" hits="0" branch="false"/>
+								<line number="540" hits="0" branch="false"/>
+								<line number="542" hits="0" branch="false"/>
+								<line number="543" hits="0" branch="false"/>
+								<line number="544" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="handleAuthorizationRequest" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)V" line-rate="0.0" branch-rate="0.0">
@@ -1312,82 +1323,82 @@
 						</method>
 						<method name="handleError" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="551" hits="0" branch="false"/>
-								<line number="552" hits="0" branch="false"/>
-								<line number="553" hits="0" branch="false"/>
-								<line number="555" hits="0" branch="false"/>
+								<line number="565" hits="0" branch="false"/>
+								<line number="566" hits="0" branch="false"/>
+								<line number="567" hits="0" branch="false"/>
+								<line number="569" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setAuthRequestOptionsService" signature="(Lorg/mitre/openid/connect/client/service/AuthRequestOptionsService;)V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="768" hits="0" branch="false"/>
+								<line number="769" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="setAuthRequestUrlBuilder" signature="(Lorg/mitre/openid/connect/client/service/AuthRequestUrlBuilder;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
 								<line number="754" hits="0" branch="false"/>
 								<line number="755" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="setAuthRequestUrlBuilder" signature="(Lorg/mitre/openid/connect/client/service/AuthRequestUrlBuilder;)V" line-rate="0.0" branch-rate="1.0">
-							<lines>
-								<line number="740" hits="0" branch="false"/>
-								<line number="741" hits="0" branch="false"/>
-							</lines>
-						</method>
 						<method name="setAuthenticationSuccessHandler" signature="(Lorg/springframework/security/web/authentication/AuthenticationSuccessHandler;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="618" hits="0" branch="false"/>
-								<line number="619" hits="0" branch="false"/>
-								<line number="620" hits="0" branch="false"/>
+								<line number="632" hits="0" branch="false"/>
+								<line number="633" hits="0" branch="false"/>
+								<line number="634" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setClientConfigurationService" signature="(Lorg/mitre/openid/connect/client/service/ClientConfigurationService;)V" line-rate="0.0" branch-rate="1.0">
-							<lines>
-								<line number="712" hits="0" branch="false"/>
-								<line number="713" hits="0" branch="false"/>
-							</lines>
-						</method>
-						<method name="setIssuerService" signature="(Lorg/mitre/openid/connect/client/service/IssuerService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
 								<line number="726" hits="0" branch="false"/>
 								<line number="727" hits="0" branch="false"/>
 							</lines>
 						</method>
+						<method name="setIssuerService" signature="(Lorg/mitre/openid/connect/client/service/IssuerService;)V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="740" hits="0" branch="false"/>
+								<line number="741" hits="0" branch="false"/>
+							</lines>
+						</method>
 						<method name="setServerConfigurationService" signature="(Lorg/mitre/openid/connect/client/service/ServerConfigurationService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="698" hits="0" branch="false"/>
-								<line number="699" hits="0" branch="false"/>
+								<line number="712" hits="0" branch="false"/>
+								<line number="713" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setSymmetricCacheService" signature="(Lorg/mitre/jwt/signer/service/impl/SymmetricCacheService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="762" hits="0" branch="false"/>
-								<line number="763" hits="0" branch="false"/>
+								<line number="776" hits="0" branch="false"/>
+								<line number="777" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setTargetLinkURIAuthenticationSuccessHandler" signature="(Lorg/mitre/openid/connect/client/OIDCAuthenticationFilter$TargetLinkURIAuthenticationSuccessHandler;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="771" hits="0" branch="false"/>
-								<line number="772" hits="0" branch="false"/>
+								<line number="785" hits="0" branch="false"/>
+								<line number="786" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setTargetLinkURIChecker" signature="(Lorg/mitre/openid/connect/client/TargetLinkURIChecker;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="779" hits="0" branch="false"/>
-								<line number="780" hits="0" branch="false"/>
+								<line number="793" hits="0" branch="false"/>
+								<line number="794" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="setTimeSkewAllowance" signature="(I)V" line-rate="0.0" branch-rate="1.0">
-							<lines>
-								<line number="670" hits="0" branch="false"/>
-								<line number="671" hits="0" branch="false"/>
-							</lines>
-						</method>
-						<method name="setValidationServices" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
 								<line number="684" hits="0" branch="false"/>
 								<line number="685" hits="0" branch="false"/>
 							</lines>
 						</method>
+						<method name="setValidationServices" signature="(Lorg/mitre/jwt/signer/service/impl/JWKSetCacheService;)V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="698" hits="0" branch="false"/>
+								<line number="699" hits="0" branch="false"/>
+							</lines>
+						</method>
 						<method name="targetLinkURIChecker" signature="()Lorg/mitre/openid/connect/client/TargetLinkURIChecker;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="775" hits="0" branch="false"/>
+								<line number="789" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
@@ -1629,88 +1640,84 @@
 						<line number="440" hits="0" branch="false"/>
 						<line number="443" hits="0" branch="false"/>
 						<line number="446" hits="0" branch="false"/>
-						<line number="447" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="448" hits="0" branch="false"/>
+						<line number="449" hits="0" branch="true" condition-coverage="0% (0/6)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
+								<condition number="1" type="jump" coverage="0%"/>
+								<condition number="2" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="448" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="449" hits="0" branch="false"/>
-						<line number="452" hits="0" branch="false"/>
-						<line number="456" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
+						<line number="454" hits="0" branch="false"/>
 						<line number="457" hits="0" branch="false"/>
-						<line number="458" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="460" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="459" hits="0" branch="false"/>
-						<line number="463" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="461" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="464" hits="0" branch="false"/>
-						<line number="467" hits="0" branch="false"/>
-						<line number="468" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="462" hits="0" branch="false"/>
+						<line number="465" hits="0" branch="false"/>
+						<line number="466" hits="0" branch="false"/>
+						<line number="470" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="469" hits="0" branch="false"/>
-						<line number="474" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="471" hits="0" branch="false"/>
+						<line number="472" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="475" hits="0" branch="false"/>
-						<line number="476" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="473" hits="0" branch="false"/>
+						<line number="477" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="477" hits="0" branch="false"/>
+						<line number="478" hits="0" branch="false"/>
+						<line number="481" hits="0" branch="false"/>
 						<line number="482" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
 						<line number="483" hits="0" branch="false"/>
-						<line number="486" hits="0" branch="false"/>
-						<line number="487" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="488" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="488" hits="0" branch="false"/>
-						<line number="493" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="489" hits="0" branch="false"/>
+						<line number="490" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="494" hits="0" branch="false"/>
-						<line number="495" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="491" hits="0" branch="false"/>
+						<line number="496" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="496" hits="0" branch="false"/>
+						<line number="497" hits="0" branch="false"/>
 						<line number="500" hits="0" branch="false"/>
 						<line number="501" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="503" hits="0" branch="false"/>
-						<line number="505" hits="0" branch="false"/>
+						<line number="502" hits="0" branch="false"/>
+						<line number="507" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
 						<line number="508" hits="0" branch="false"/>
 						<line number="509" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
@@ -1718,41 +1725,53 @@
 							</conditions>
 						</line>
 						<line number="510" hits="0" branch="false"/>
-						<line number="513" hits="0" branch="false"/>
-						<line number="520" hits="0" branch="false"/>
+						<line number="514" hits="0" branch="false"/>
+						<line number="515" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="517" hits="0" branch="false"/>
+						<line number="519" hits="0" branch="false"/>
+						<line number="522" hits="0" branch="false"/>
+						<line number="523" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
 						<line number="524" hits="0" branch="false"/>
-						<line number="526" hits="0" branch="false"/>
-						<line number="528" hits="0" branch="false"/>
-						<line number="529" hits="0" branch="false"/>
-						<line number="530" hits="0" branch="false"/>
-						<line number="551" hits="0" branch="false"/>
-						<line number="552" hits="0" branch="false"/>
-						<line number="553" hits="0" branch="false"/>
-						<line number="555" hits="0" branch="false"/>
+						<line number="527" hits="0" branch="false"/>
+						<line number="534" hits="0" branch="false"/>
+						<line number="538" hits="0" branch="false"/>
+						<line number="540" hits="0" branch="false"/>
+						<line number="542" hits="0" branch="false"/>
+						<line number="543" hits="0" branch="false"/>
+						<line number="544" hits="0" branch="false"/>
 						<line number="565" hits="0" branch="false"/>
-						<line number="566" hits="0" branch="true" condition-coverage="0% (0/4)">
+						<line number="566" hits="0" branch="false"/>
+						<line number="567" hits="0" branch="false"/>
+						<line number="569" hits="0" branch="false"/>
+						<line number="579" hits="0" branch="false"/>
+						<line number="580" hits="0" branch="true" condition-coverage="0% (0/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="567" hits="0" branch="false"/>
-						<line number="569" hits="0" branch="false"/>
-						<line number="579" hits="0" branch="false"/>
-						<line number="580" hits="0" branch="false"/>
-						<line number="582" hits="0" branch="false"/>
-						<line number="591" hits="0" branch="false"/>
-						<line number="600" hits="0" branch="false"/>
-						<line number="601" hits="0" branch="false"/>
-						<line number="603" hits="0" branch="false"/>
-						<line number="612" hits="0" branch="false"/>
-						<line number="618" hits="0" branch="false"/>
-						<line number="619" hits="0" branch="false"/>
-						<line number="620" hits="0" branch="false"/>
-						<line number="666" hits="0" branch="false"/>
-						<line number="670" hits="0" branch="false"/>
-						<line number="671" hits="0" branch="false"/>
-						<line number="677" hits="0" branch="false"/>
+						<line number="581" hits="0" branch="false"/>
+						<line number="583" hits="0" branch="false"/>
+						<line number="593" hits="0" branch="false"/>
+						<line number="594" hits="0" branch="false"/>
+						<line number="596" hits="0" branch="false"/>
+						<line number="605" hits="0" branch="false"/>
+						<line number="614" hits="0" branch="false"/>
+						<line number="615" hits="0" branch="false"/>
+						<line number="617" hits="0" branch="false"/>
+						<line number="626" hits="0" branch="false"/>
+						<line number="632" hits="0" branch="false"/>
+						<line number="633" hits="0" branch="false"/>
+						<line number="634" hits="0" branch="false"/>
+						<line number="680" hits="0" branch="false"/>
 						<line number="684" hits="0" branch="false"/>
 						<line number="685" hits="0" branch="false"/>
 						<line number="691" hits="0" branch="false"/>
@@ -1770,18 +1789,21 @@
 						<line number="747" hits="0" branch="false"/>
 						<line number="754" hits="0" branch="false"/>
 						<line number="755" hits="0" branch="false"/>
-						<line number="758" hits="0" branch="false"/>
-						<line number="762" hits="0" branch="false"/>
-						<line number="763" hits="0" branch="false"/>
-						<line number="766" hits="0" branch="false"/>
-						<line number="771" hits="0" branch="false"/>
+						<line number="761" hits="0" branch="false"/>
+						<line number="768" hits="0" branch="false"/>
+						<line number="769" hits="0" branch="false"/>
 						<line number="772" hits="0" branch="false"/>
-						<line number="775" hits="0" branch="false"/>
-						<line number="779" hits="0" branch="false"/>
+						<line number="776" hits="0" branch="false"/>
+						<line number="777" hits="0" branch="false"/>
 						<line number="780" hits="0" branch="false"/>
+						<line number="785" hits="0" branch="false"/>
+						<line number="786" hits="0" branch="false"/>
+						<line number="789" hits="0" branch="false"/>
+						<line number="793" hits="0" branch="false"/>
+						<line number="794" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter$1" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="1.0" complexity="3.264705882352941">
+				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter$1" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="1.0" complexity="3.3823529411764706">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/client/OIDCAuthenticationFilter;Lorg/springframework/http/client/ClientHttpRequestFactory;Lorg/mitre/oauth2/model/RegisteredClient;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
@@ -1803,7 +1825,7 @@
 						<line number="315" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter$TargetLinkURIAuthenticationSuccessHandler" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="0.0" complexity="3.264705882352941">
+				<class name="org.mitre.openid.connect.client.OIDCAuthenticationFilter$TargetLinkURIAuthenticationSuccessHandler" filename="org/mitre/openid/connect/client/OIDCAuthenticationFilter.java" line-rate="0.0" branch-rate="0.0" complexity="3.3823529411764706">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/client/OIDCAuthenticationFilter;)V" line-rate="1.0" branch-rate="1.0">
 							<lines>
@@ -1811,40 +1833,40 @@
 						</method>
 						<method name="access$002" signature="(Lorg/mitre/openid/connect/client/OIDCAuthenticationFilter$TargetLinkURIAuthenticationSuccessHandler;Lorg/springframework/security/web/authentication/AuthenticationSuccessHandler;)Lorg/springframework/security/web/authentication/AuthenticationSuccessHandler;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="630" hits="0" branch="false"/>
+								<line number="644" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="onAuthenticationSuccess" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Lorg/springframework/security/core/Authentication;)V" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="639" hits="0" branch="false"/>
-								<line number="642" hits="0" branch="false"/>
-								<line number="644" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="653" hits="0" branch="false"/>
+								<line number="656" hits="0" branch="false"/>
+								<line number="658" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="645" hits="0" branch="false"/>
-								<line number="647" hits="0" branch="false"/>
-								<line number="649" hits="0" branch="false"/>
-								<line number="652" hits="0" branch="false"/>
-								<line number="655" hits="0" branch="false"/>
+								<line number="659" hits="0" branch="false"/>
+								<line number="661" hits="0" branch="false"/>
+								<line number="663" hits="0" branch="false"/>
+								<line number="666" hits="0" branch="false"/>
+								<line number="669" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="630" hits="0" branch="false"/>
-						<line number="639" hits="0" branch="false"/>
-						<line number="642" hits="0" branch="false"/>
-						<line number="644" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="644" hits="0" branch="false"/>
+						<line number="653" hits="0" branch="false"/>
+						<line number="656" hits="0" branch="false"/>
+						<line number="658" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="645" hits="0" branch="false"/>
-						<line number="647" hits="0" branch="false"/>
-						<line number="649" hits="0" branch="false"/>
-						<line number="652" hits="0" branch="false"/>
-						<line number="655" hits="0" branch="false"/>
+						<line number="659" hits="0" branch="false"/>
+						<line number="661" hits="0" branch="false"/>
+						<line number="663" hits="0" branch="false"/>
+						<line number="666" hits="0" branch="false"/>
+						<line number="669" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.openid.connect.client.OIDCAuthenticationProvider" filename="org/mitre/openid/connect/client/OIDCAuthenticationProvider.java" line-rate="0.0" branch-rate="0.0" complexity="3.6666666666666665">
