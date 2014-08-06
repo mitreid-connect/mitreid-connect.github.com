@@ -269,74 +269,75 @@
 <span class="sourceLineNo">261</span>                Collection&lt;JWSAlgorithm&gt; serverSigningAlgs = signService.getAllSigningAlgsSupported();<a name="line.261"></a>
 <span class="sourceLineNo">262</span>                Collection&lt;JWSAlgorithm&gt; clientSymmetricSigningAlgs = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512);<a name="line.262"></a>
 <span class="sourceLineNo">263</span>                Collection&lt;JWSAlgorithm&gt; clientSymmetricAndAsymmetricSigningAlgs = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512, JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512);<a name="line.263"></a>
-<span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span>                Map&lt;String, Object&gt; m = new HashMap&lt;String, Object&gt;();<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                m.put("issuer", config.getIssuer());<a name="line.266"></a>
-<span class="sourceLineNo">267</span>                m.put("authorization_endpoint", baseUrl + "authorize");<a name="line.267"></a>
-<span class="sourceLineNo">268</span>                m.put("token_endpoint", baseUrl + "token");<a name="line.268"></a>
-<span class="sourceLineNo">269</span>                m.put("userinfo_endpoint", baseUrl + "userinfo");<a name="line.269"></a>
-<span class="sourceLineNo">270</span>                //check_session_iframe<a name="line.270"></a>
-<span class="sourceLineNo">271</span>                //end_session_endpoint<a name="line.271"></a>
-<span class="sourceLineNo">272</span>                m.put("jwks_uri", baseUrl + "jwk");<a name="line.272"></a>
-<span class="sourceLineNo">273</span>                m.put("registration_endpoint", baseUrl + "register");<a name="line.273"></a>
-<span class="sourceLineNo">274</span>                m.put("scopes_supported", scopeService.toStrings(scopeService.getDynReg())); // these are the scopes that you can dynamically register for, which is what matters for discovery<a name="line.274"></a>
-<span class="sourceLineNo">275</span>                m.put("response_types_supported", Lists.newArrayList("code", "token")); // we don't support these yet: , "id_token", "id_token token"));<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                m.put("grant_types_supported", Lists.newArrayList("authorization_code", "implicit", "urn:ietf:params:oauth:grant-type:jwt-bearer", "client_credentials", "urn:ietf:params:oauth:grant_type:redelegate"));<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                //acr_values_supported<a name="line.277"></a>
-<span class="sourceLineNo">278</span>                m.put("subject_types_supported", Lists.newArrayList("public", "pairwise"));<a name="line.278"></a>
-<span class="sourceLineNo">279</span>                m.put("userinfo_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                m.put("userinfo_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.280"></a>
-<span class="sourceLineNo">281</span>                m.put("userinfo_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                m.put("id_token_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                m.put("id_token_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.283"></a>
-<span class="sourceLineNo">284</span>                m.put("id_token_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                m.put("request_object_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.285"></a>
-<span class="sourceLineNo">286</span>                m.put("request_object_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                m.put("request_object_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.287"></a>
-<span class="sourceLineNo">288</span>                m.put("token_endpoint_auth_methods_supported", Lists.newArrayList("client_secret_post", "client_secret_basic", "client_secret_jwt", "private_key_jwt", "none"));<a name="line.288"></a>
-<span class="sourceLineNo">289</span>                m.put("token_endpoint_auth_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.289"></a>
-<span class="sourceLineNo">290</span>                //display_types_supported<a name="line.290"></a>
-<span class="sourceLineNo">291</span>                m.put("claim_types_supported", Lists.newArrayList("normal" /*, "aggregated", "distributed"*/));<a name="line.291"></a>
-<span class="sourceLineNo">292</span>                m.put("claims_supported", Lists.newArrayList(<a name="line.292"></a>
-<span class="sourceLineNo">293</span>                                "sub",<a name="line.293"></a>
-<span class="sourceLineNo">294</span>                                "name",<a name="line.294"></a>
-<span class="sourceLineNo">295</span>                                "preferred_username",<a name="line.295"></a>
-<span class="sourceLineNo">296</span>                                "given_name",<a name="line.296"></a>
-<span class="sourceLineNo">297</span>                                "family_name",<a name="line.297"></a>
-<span class="sourceLineNo">298</span>                                "middle_name",<a name="line.298"></a>
-<span class="sourceLineNo">299</span>                                "nickname",<a name="line.299"></a>
-<span class="sourceLineNo">300</span>                                "profile",<a name="line.300"></a>
-<span class="sourceLineNo">301</span>                                "picture",<a name="line.301"></a>
-<span class="sourceLineNo">302</span>                                "website",<a name="line.302"></a>
-<span class="sourceLineNo">303</span>                                "gender",<a name="line.303"></a>
-<span class="sourceLineNo">304</span>                                "zone_info",<a name="line.304"></a>
-<span class="sourceLineNo">305</span>                                "locale",<a name="line.305"></a>
-<span class="sourceLineNo">306</span>                                "updated_time",<a name="line.306"></a>
-<span class="sourceLineNo">307</span>                                "birthdate",<a name="line.307"></a>
-<span class="sourceLineNo">308</span>                                "email",<a name="line.308"></a>
-<span class="sourceLineNo">309</span>                                "email_verified",<a name="line.309"></a>
-<span class="sourceLineNo">310</span>                                "phone_number",<a name="line.310"></a>
-<span class="sourceLineNo">311</span>                                "address"<a name="line.311"></a>
-<span class="sourceLineNo">312</span>                                ));<a name="line.312"></a>
-<span class="sourceLineNo">313</span>                m.put("service_documentation", baseUrl + "about");<a name="line.313"></a>
-<span class="sourceLineNo">314</span>                //claims_locales_supported<a name="line.314"></a>
-<span class="sourceLineNo">315</span>                //ui_locales_supported<a name="line.315"></a>
-<span class="sourceLineNo">316</span>                m.put("claims_parameter_supported", false);<a name="line.316"></a>
-<span class="sourceLineNo">317</span>                m.put("request_parameter_supported", true);<a name="line.317"></a>
-<span class="sourceLineNo">318</span>                m.put("request_uri_parameter_supported", false);<a name="line.318"></a>
-<span class="sourceLineNo">319</span>                m.put("require_request_uri_registration", false);<a name="line.319"></a>
-<span class="sourceLineNo">320</span>                m.put("op_policy_uri", baseUrl + "about");<a name="line.320"></a>
-<span class="sourceLineNo">321</span>                m.put("op_tos_uri", baseUrl + "about");<a name="line.321"></a>
-<span class="sourceLineNo">322</span><a name="line.322"></a>
-<span class="sourceLineNo">323</span>                m.put("introspection_endpoint", baseUrl + "introspect"); // token introspection endpoint for verifying tokens<a name="line.323"></a>
-<span class="sourceLineNo">324</span>                m.put("revocation_endpoint", baseUrl + "revoke"); // token revocation endpoint<a name="line.324"></a>
-<span class="sourceLineNo">325</span><a name="line.325"></a>
-<span class="sourceLineNo">326</span>                model.addAttribute("entity", m);<a name="line.326"></a>
-<span class="sourceLineNo">327</span><a name="line.327"></a>
-<span class="sourceLineNo">328</span>                return "jsonEntityView";<a name="line.328"></a>
-<span class="sourceLineNo">329</span>        }<a name="line.329"></a>
-<span class="sourceLineNo">330</span><a name="line.330"></a>
-<span class="sourceLineNo">331</span>}<a name="line.331"></a>
+<span class="sourceLineNo">264</span>                Collection&lt;Algorithm&gt; clientSymmetricAndAsymmetricSigningAlgsWithNone = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512, JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512, JWSAlgorithm.NONE);<a name="line.264"></a>
+<span class="sourceLineNo">265</span><a name="line.265"></a>
+<span class="sourceLineNo">266</span>                Map&lt;String, Object&gt; m = new HashMap&lt;String, Object&gt;();<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                m.put("issuer", config.getIssuer());<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                m.put("authorization_endpoint", baseUrl + "authorize");<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                m.put("token_endpoint", baseUrl + "token");<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                m.put("userinfo_endpoint", baseUrl + "userinfo");<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                //check_session_iframe<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                //end_session_endpoint<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                m.put("jwks_uri", baseUrl + "jwk");<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                m.put("registration_endpoint", baseUrl + "register");<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                m.put("scopes_supported", scopeService.toStrings(scopeService.getDynReg())); // these are the scopes that you can dynamically register for, which is what matters for discovery<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                m.put("response_types_supported", Lists.newArrayList("code", "token")); // we don't support these yet: , "id_token", "id_token token"));<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                m.put("grant_types_supported", Lists.newArrayList("authorization_code", "implicit", "urn:ietf:params:oauth:grant-type:jwt-bearer", "client_credentials", "urn:ietf:params:oauth:grant_type:redelegate"));<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                //acr_values_supported<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                m.put("subject_types_supported", Lists.newArrayList("public", "pairwise"));<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                m.put("userinfo_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                m.put("userinfo_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                m.put("userinfo_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                m.put("id_token_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgsWithNone, toAlgorithmName));<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                m.put("id_token_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                m.put("id_token_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                m.put("request_object_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                m.put("request_object_encryption_alg_values_supported", Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));<a name="line.287"></a>
+<span class="sourceLineNo">288</span>                m.put("request_object_encryption_enc_values_supported", Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));<a name="line.288"></a>
+<span class="sourceLineNo">289</span>                m.put("token_endpoint_auth_methods_supported", Lists.newArrayList("client_secret_post", "client_secret_basic", "client_secret_jwt", "private_key_jwt", "none"));<a name="line.289"></a>
+<span class="sourceLineNo">290</span>                m.put("token_endpoint_auth_signing_alg_values_supported", Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));<a name="line.290"></a>
+<span class="sourceLineNo">291</span>                //display_types_supported<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                m.put("claim_types_supported", Lists.newArrayList("normal" /*, "aggregated", "distributed"*/));<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                m.put("claims_supported", Lists.newArrayList(<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                                "sub",<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                                "name",<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                                "preferred_username",<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                                "given_name",<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                                "family_name",<a name="line.298"></a>
+<span class="sourceLineNo">299</span>                                "middle_name",<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                                "nickname",<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                                "profile",<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                                "picture",<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                                "website",<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                                "gender",<a name="line.304"></a>
+<span class="sourceLineNo">305</span>                                "zone_info",<a name="line.305"></a>
+<span class="sourceLineNo">306</span>                                "locale",<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                                "updated_time",<a name="line.307"></a>
+<span class="sourceLineNo">308</span>                                "birthdate",<a name="line.308"></a>
+<span class="sourceLineNo">309</span>                                "email",<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                                "email_verified",<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                                "phone_number",<a name="line.311"></a>
+<span class="sourceLineNo">312</span>                                "address"<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                                ));<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                m.put("service_documentation", baseUrl + "about");<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                //claims_locales_supported<a name="line.315"></a>
+<span class="sourceLineNo">316</span>                //ui_locales_supported<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                m.put("claims_parameter_supported", false);<a name="line.317"></a>
+<span class="sourceLineNo">318</span>                m.put("request_parameter_supported", true);<a name="line.318"></a>
+<span class="sourceLineNo">319</span>                m.put("request_uri_parameter_supported", false);<a name="line.319"></a>
+<span class="sourceLineNo">320</span>                m.put("require_request_uri_registration", false);<a name="line.320"></a>
+<span class="sourceLineNo">321</span>                m.put("op_policy_uri", baseUrl + "about");<a name="line.321"></a>
+<span class="sourceLineNo">322</span>                m.put("op_tos_uri", baseUrl + "about");<a name="line.322"></a>
+<span class="sourceLineNo">323</span><a name="line.323"></a>
+<span class="sourceLineNo">324</span>                m.put("introspection_endpoint", baseUrl + "introspect"); // token introspection endpoint for verifying tokens<a name="line.324"></a>
+<span class="sourceLineNo">325</span>                m.put("revocation_endpoint", baseUrl + "revoke"); // token revocation endpoint<a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>                model.addAttribute("entity", m);<a name="line.327"></a>
+<span class="sourceLineNo">328</span><a name="line.328"></a>
+<span class="sourceLineNo">329</span>                return "jsonEntityView";<a name="line.329"></a>
+<span class="sourceLineNo">330</span>        }<a name="line.330"></a>
+<span class="sourceLineNo">331</span><a name="line.331"></a>
+<span class="sourceLineNo">332</span>}<a name="line.332"></a>
 
 
 

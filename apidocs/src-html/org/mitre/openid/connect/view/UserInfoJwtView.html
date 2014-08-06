@@ -128,9 +128,9 @@
 <span class="sourceLineNo">120</span>                                }<a name="line.120"></a>
 <span class="sourceLineNo">121</span>                        } else {<a name="line.121"></a>
 <span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                                JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm();<a name="line.123"></a>
+<span class="sourceLineNo">123</span>                                JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm(); // default to the server's preference<a name="line.123"></a>
 <span class="sourceLineNo">124</span>                                if (client.getUserInfoSignedResponseAlg() != null) {<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                                        signingAlg = client.getUserInfoSignedResponseAlg();<a name="line.125"></a>
+<span class="sourceLineNo">125</span>                                        signingAlg = client.getUserInfoSignedResponseAlg(); // override with the client's preference if available<a name="line.125"></a>
 <span class="sourceLineNo">126</span>                                }<a name="line.126"></a>
 <span class="sourceLineNo">127</span><a name="line.127"></a>
 <span class="sourceLineNo">128</span>                                SignedJWT signed = new SignedJWT(new JWSHeader(signingAlg), claims);<a name="line.128"></a>

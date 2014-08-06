@@ -9,8 +9,8 @@
     <copyright>&#169;2014</copyright>
     <item>
       <title>File: 71,
-             Errors: 5,
-             Warnings: 416,
+             Errors: 7,
+             Warnings: 422,
              Infos: 0
       </title>
             <link>/checkstyle.html</link>
@@ -371,7 +371,7 @@
                   0
                 </td>
                 <td>
-                  14
+                  20
                 </td>
                 <td>
                   0
@@ -539,7 +539,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  7
                 </td>
                 <td>
                   1
@@ -581,10 +581,10 @@
                   0
                 </td>
                 <td>
-                  36
+                  35
                 </td>
                 <td>
-                  0
+                  2
                 </td>
               </tr>
                           <tr>
