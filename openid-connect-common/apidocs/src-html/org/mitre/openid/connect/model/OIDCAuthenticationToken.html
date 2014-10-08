@@ -50,7 +50,7 @@
 <span class="sourceLineNo">042</span>        private final String sub; // user id (parsed from the id token)<a name="line.42"></a>
 <span class="sourceLineNo">043</span><a name="line.43"></a>
 <span class="sourceLineNo">044</span>        private final transient ServerConfiguration serverConfiguration; // server configuration used to fulfill this token, don't serialize it<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        private final transient UserInfo userInfo; // user info container, don't serialize it b/c it might be huge and can be re-fetched<a name="line.45"></a>
+<span class="sourceLineNo">045</span>        private final UserInfo userInfo; // user info container, don't serialize it b/c it might be huge and can be re-fetched<a name="line.45"></a>
 <span class="sourceLineNo">046</span><a name="line.46"></a>
 <span class="sourceLineNo">047</span>        /**<a name="line.47"></a>
 <span class="sourceLineNo">048</span>         * Constructs OIDCAuthenticationToken with a full set of authorities, marking this as authenticated.<a name="line.48"></a>

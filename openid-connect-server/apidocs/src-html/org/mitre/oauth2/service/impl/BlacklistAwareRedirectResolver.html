@@ -17,35 +17,34 @@
 <span class="sourceLineNo">009</span>import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;<a name="line.9"></a>
 <span class="sourceLineNo">010</span>import org.springframework.security.oauth2.provider.ClientDetails;<a name="line.10"></a>
 <span class="sourceLineNo">011</span>import org.springframework.security.oauth2.provider.endpoint.DefaultRedirectResolver;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;<a name="line.12"></a>
-<span class="sourceLineNo">013</span>import org.springframework.stereotype.Component;<a name="line.13"></a>
-<span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span>/**<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * @author jricher<a name="line.16"></a>
-<span class="sourceLineNo">017</span> *<a name="line.17"></a>
-<span class="sourceLineNo">018</span> */<a name="line.18"></a>
-<span class="sourceLineNo">019</span>@Component("blacklistAwareRedirectResolver")<a name="line.19"></a>
-<span class="sourceLineNo">020</span>public class BlacklistAwareRedirectResolver extends DefaultRedirectResolver {<a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>        @Autowired<a name="line.22"></a>
-<span class="sourceLineNo">023</span>        private BlacklistedSiteService blacklistService;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>        <a name="line.24"></a>
-<span class="sourceLineNo">025</span>        /* (non-Javadoc)<a name="line.25"></a>
-<span class="sourceLineNo">026</span>         * @see org.springframework.security.oauth2.provider.endpoint.RedirectResolver#resolveRedirect(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)<a name="line.26"></a>
-<span class="sourceLineNo">027</span>         */<a name="line.27"></a>
-<span class="sourceLineNo">028</span>        @Override<a name="line.28"></a>
-<span class="sourceLineNo">029</span>        public String resolveRedirect(String requestedRedirect, ClientDetails client) throws OAuth2Exception {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                String redirect = super.resolveRedirect(requestedRedirect, client);<a name="line.30"></a>
-<span class="sourceLineNo">031</span>                if (blacklistService.isBlacklisted(redirect)) {<a name="line.31"></a>
-<span class="sourceLineNo">032</span>                        // don't let it go through<a name="line.32"></a>
-<span class="sourceLineNo">033</span>                        throw new InvalidRequestException("The supplied redirect_uri is not allowed on this server.");<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                } else {<a name="line.34"></a>
-<span class="sourceLineNo">035</span>                        // not blacklisted, passed the parent test, we're fine<a name="line.35"></a>
-<span class="sourceLineNo">036</span>                        return redirect;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>                }<a name="line.37"></a>
-<span class="sourceLineNo">038</span>        }<a name="line.38"></a>
-<span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>}<a name="line.40"></a>
+<span class="sourceLineNo">012</span>import org.springframework.stereotype.Component;<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span>/**<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * @author jricher<a name="line.15"></a>
+<span class="sourceLineNo">016</span> *<a name="line.16"></a>
+<span class="sourceLineNo">017</span> */<a name="line.17"></a>
+<span class="sourceLineNo">018</span>@Component("blacklistAwareRedirectResolver")<a name="line.18"></a>
+<span class="sourceLineNo">019</span>public class BlacklistAwareRedirectResolver extends DefaultRedirectResolver {<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>        @Autowired<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        private BlacklistedSiteService blacklistService;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>        <a name="line.23"></a>
+<span class="sourceLineNo">024</span>        /* (non-Javadoc)<a name="line.24"></a>
+<span class="sourceLineNo">025</span>         * @see org.springframework.security.oauth2.provider.endpoint.RedirectResolver#resolveRedirect(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)<a name="line.25"></a>
+<span class="sourceLineNo">026</span>         */<a name="line.26"></a>
+<span class="sourceLineNo">027</span>        @Override<a name="line.27"></a>
+<span class="sourceLineNo">028</span>        public String resolveRedirect(String requestedRedirect, ClientDetails client) throws OAuth2Exception {<a name="line.28"></a>
+<span class="sourceLineNo">029</span>                String redirect = super.resolveRedirect(requestedRedirect, client);<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                if (blacklistService.isBlacklisted(redirect)) {<a name="line.30"></a>
+<span class="sourceLineNo">031</span>                        // don't let it go through<a name="line.31"></a>
+<span class="sourceLineNo">032</span>                        throw new InvalidRequestException("The supplied redirect_uri is not allowed on this server.");<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                } else {<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                        // not blacklisted, passed the parent test, we're fine<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                        return redirect;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                }<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        }<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>}<a name="line.39"></a>
 
 
 

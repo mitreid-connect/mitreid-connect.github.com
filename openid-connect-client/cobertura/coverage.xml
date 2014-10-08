@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.10917874396135266" branch-rate="0.04790419161676647" lines-covered="113" lines-valid="1035" branches-covered="16" branches-valid="334" complexity="2.3217391304347825" version="1.9.4.1" timestamp="1407290471464">
+<coverage line-rate="0.10917874396135266" branch-rate="0.04790419161676647" lines-covered="113" lines-valid="1035" branches-covered="16" branches-valid="334" complexity="2.3217391304347825" version="1.9.4.1" timestamp="1412734513440">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-client/src/main/java</source>
@@ -4268,13 +4268,13 @@
 						</method>
 						<method name="afterPropertiesSet" signature="()V" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="135" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="132" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
+								<line number="133" hits="0" branch="false"/>
 								<line number="136" hits="0" branch="false"/>
-								<line number="139" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAccountChooserUrl" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="1.0">
@@ -4380,13 +4380,13 @@
 						<line number="120" hits="0" branch="false"/>
 						<line number="127" hits="1" branch="false"/>
 						<line number="128" hits="1" branch="false"/>
-						<line number="135" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="132" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
+						<line number="133" hits="0" branch="false"/>
 						<line number="136" hits="0" branch="false"/>
-						<line number="139" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.mitre.openid.connect.client.service.impl.WebfingerIssuerService" filename="org/mitre/openid/connect/client/service/impl/WebfingerIssuerService.java" line-rate="0.0" branch-rate="0.0" complexity="3.3636363636363638">

@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2014</copyright>
     <item>
-      <title>File: 57,
+      <title>File: 58,
              Errors: 4,
-             Warnings: 495,
+             Warnings: 499,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/openid-connect-common/checkstyle.html</link>
@@ -35,10 +35,10 @@
                   0
                 </td>
                 <td>
-                  6
+                  4
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -147,7 +147,7 @@
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -176,6 +176,20 @@
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.service.MITREidDataService.java">org/mitre/openid/connect/service/MITREidDataService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
                 <td>
                   1
@@ -651,7 +665,7 @@
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   1
