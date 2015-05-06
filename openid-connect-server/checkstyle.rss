@@ -6,11 +6,11 @@
     <link></link>
     <description>OpenID Connect Server Library - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014</copyright>
+    <copyright>&#169;2015</copyright>
     <item>
       <title>File: 76,
-             Errors: 7,
-             Warnings: 543,
+             Errors: 9,
+             Warnings: 536,
              Infos: 0
       </title>
             <link>/checkstyle.html</link>
@@ -497,7 +497,7 @@
                   0
                 </td>
                 <td>
-                  8
+                  7
                 </td>
                 <td>
                   0
@@ -603,6 +603,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="/checkstyle.html#org.mitre.oauth2.service.impl.DefaultIntrospectionResultAssembler.java">org/mitre/oauth2/service/impl/DefaultIntrospectionResultAssembler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="/checkstyle.html#org.mitre.openid.connect.web.ClientAPI.java">org/mitre/openid/connect/web/ClientAPI.java</a>
                 </td>
                 <td>
@@ -623,7 +637,7 @@
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
                 <td>
                   0
@@ -707,7 +721,7 @@
                   0
                 </td>
                 <td>
-                  9
+                  10
                 </td>
                 <td>
                   0
@@ -766,7 +780,7 @@
                   15
                 </td>
                 <td>
-                  0
+                  1
                 </td>
               </tr>
                           <tr>
@@ -777,10 +791,10 @@
                   0
                 </td>
                 <td>
-                  14
+                  10
                 </td>
                 <td>
-                  0
+                  1
                 </td>
               </tr>
                           <tr>
@@ -805,7 +819,7 @@
                   0
                 </td>
                 <td>
-                  11
+                  12
                 </td>
                 <td>
                   0
@@ -869,20 +883,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="/checkstyle.html#org.mitre.oauth2.view.TokenIntrospectionView.java">org/mitre/oauth2/view/TokenIntrospectionView.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="/checkstyle.html#org.mitre.oauth2.repository.impl.JpaSystemScopeRepository.java">org/mitre/oauth2/repository/impl/JpaSystemScopeRepository.java</a>
                 </td>
                 <td>
@@ -903,7 +903,7 @@
                   0
                 </td>
                 <td>
-                  43
+                  42
                 </td>
                 <td>
                   1

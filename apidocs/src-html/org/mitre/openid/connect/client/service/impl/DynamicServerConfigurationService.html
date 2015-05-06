@@ -162,7 +162,7 @@
 <span class="sourceLineNo">154</span>                                }<a name="line.154"></a>
 <span class="sourceLineNo">155</span><a name="line.155"></a>
 <span class="sourceLineNo">156</span>                                if (!issuer.equals(o.get("issuer").getAsString())) {<a name="line.156"></a>
-<span class="sourceLineNo">157</span>                                        throw new IllegalStateException("Discovered issuers didn't match, expected " + issuer + " got " + o.get("issuer").getAsString());<a name="line.157"></a>
+<span class="sourceLineNo">157</span>                                        logger.info("Issuer used for discover was " + issuer + " but final issuer is " + o.get("issuer").getAsString());<a name="line.157"></a>
 <span class="sourceLineNo">158</span>                                }<a name="line.158"></a>
 <span class="sourceLineNo">159</span><a name="line.159"></a>
 <span class="sourceLineNo">160</span>                                conf.setIssuer(o.get("issuer").getAsString());<a name="line.160"></a>

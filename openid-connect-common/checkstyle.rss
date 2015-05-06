@@ -6,11 +6,11 @@
     <link>https://github.com/mitreid-connect/openid-connect-common</link>
     <description>OpenID Connect Common - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014</copyright>
+    <copyright>&#169;2015</copyright>
     <item>
-      <title>File: 58,
+      <title>File: 59,
              Errors: 4,
-             Warnings: 499,
+             Warnings: 502,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/openid-connect-common/checkstyle.html</link>
@@ -161,7 +161,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -427,7 +427,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -778,6 +778,20 @@
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.oauth2.service.IntrospectionResultAssembler.java">org/mitre/oauth2/service/IntrospectionResultAssembler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0

@@ -6,11 +6,11 @@
     <link>https://github.com/mitreid-connect</link>
     <description>MITREid Connect - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014</copyright>
+    <copyright>&#169;2015</copyright>
     <item>
-      <title>File: 174,
-             Errors: 17,
-             Warnings: 1129,
+      <title>File: 175,
+             Errors: 19,
+             Warnings: 1125,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/checkstyle.html</link>
@@ -301,7 +301,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -637,7 +637,7 @@
                   0
                 </td>
                 <td>
-                  8
+                  7
                 </td>
                 <td>
                   0
@@ -749,7 +749,21 @@
                   0
                 </td>
                 <td>
-                  1
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.service.impl.DefaultIntrospectionResultAssembler.java">org/mitre/oauth2/service/impl/DefaultIntrospectionResultAssembler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
                 </td>
                 <td>
                   0
@@ -861,7 +875,7 @@
                   0
                 </td>
                 <td>
-                  9
+                  10
                 </td>
                 <td>
                   0
@@ -892,7 +906,7 @@
                   15
                 </td>
                 <td>
-                  0
+                  1
                 </td>
               </tr>
                           <tr>
@@ -903,10 +917,10 @@
                   0
                 </td>
                 <td>
-                  14
+                  10
                 </td>
                 <td>
-                  0
+                  1
                 </td>
               </tr>
                           <tr>
@@ -1883,7 +1897,7 @@
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
                 <td>
                   0
@@ -2107,7 +2121,7 @@
                   0
                 </td>
                 <td>
-                  11
+                  12
                 </td>
                 <td>
                   0
@@ -2199,20 +2213,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.view.TokenIntrospectionView.java">org/mitre/oauth2/view/TokenIntrospectionView.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.repository.impl.JpaSystemScopeRepository.java">org/mitre/oauth2/repository/impl/JpaSystemScopeRepository.java</a>
                 </td>
                 <td>
@@ -2233,7 +2233,7 @@
                   0
                 </td>
                 <td>
-                  43
+                  42
                 </td>
                 <td>
                   1
@@ -2368,6 +2368,20 @@
                           <tr>
                 <td>
                   <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.introspectingfilter.service.IntrospectionAuthorityGranter.java">org/mitre/oauth2/introspectingfilter/service/IntrospectionAuthorityGranter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/checkstyle.html#org.mitre.oauth2.service.IntrospectionResultAssembler.java">org/mitre/oauth2/service/IntrospectionResultAssembler.java</a>
                 </td>
                 <td>
                   0
