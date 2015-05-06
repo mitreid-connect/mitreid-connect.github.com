@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.344106463878327" branch-rate="0.2249269717624148" lines-covered="724" lines-valid="2104" branches-covered="231" branches-valid="1027" complexity="1.9352869352869353" version="1.9.4.1" timestamp="1430945893325">
+<coverage line-rate="0.344106463878327" branch-rate="0.2249269717624148" lines-covered="724" lines-valid="2104" branches-covered="231" branches-valid="1027" complexity="1.9352869352869353" version="1.9.4.1" timestamp="1430946492986">
 	<sources>
 		<source>--source</source>
 		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-common/src/main/java</source>
