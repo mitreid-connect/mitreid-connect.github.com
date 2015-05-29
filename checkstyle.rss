@@ -10,7 +10,7 @@
     <item>
       <title>File: 175,
              Errors: 19,
-             Warnings: 1126,
+             Warnings: 1128,
              Infos: 0
       </title>
             <link>https://github.com/mitreid-connect/checkstyle.html</link>
@@ -343,7 +343,7 @@
                   0
                 </td>
                 <td>
-                  9
+                  11
                 </td>
                 <td>
                   2
@@ -1141,7 +1141,7 @@
                   0
                 </td>
                 <td>
-                  92
+                  94
                 </td>
                 <td>
                   1
@@ -2471,7 +2471,7 @@
                   0
                 </td>
                 <td>
-                  6
+                  4
                 </td>
                 <td>
                   0

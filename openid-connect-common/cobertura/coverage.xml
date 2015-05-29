@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.344106463878327" branch-rate="0.2249269717624148" lines-covered="724" lines-valid="2104" branches-covered="231" branches-valid="1027" complexity="1.9352869352869353" version="1.9.4.1" timestamp="1431207260422">
+<coverage line-rate="0.34345351043643263" branch-rate="0.22362052274927396" lines-covered="724" lines-valid="2108" branches-covered="231" branches-valid="1033" complexity="1.9378048780487804" version="1.9.4.1" timestamp="1432906788041">
 	<sources>
 		<source>--source</source>
-		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server/openid-connect-common/src/main/java</source>
+		<source>/Users/jricher/Projects/OpenID-Connect-Java-Spring-Server-1.1/openid-connect-common/src/main/java</source>
 	</sources>
 	<packages>
 		<package name="org.mitre.discovery.util" line-rate="0.6062992125984252" branch-rate="0.5978260869565217" complexity="5.333333333333333">
@@ -11123,131 +11123,161 @@
 				</class>
 			</classes>
 		</package>
-		<package name="org.mitre.openid.connect.web" line-rate="0.0" branch-rate="0.0" complexity="6.5">
+		<package name="org.mitre.openid.connect.web" line-rate="0.0" branch-rate="0.0" complexity="5.666666666666667">
 			<classes>
-				<class name="org.mitre.openid.connect.web.UserInfoInterceptor" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="0.0" complexity="6.5">
+				<class name="org.mitre.openid.connect.web.UserInfoInterceptor" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="0.0" complexity="5.666666666666667">
 					<methods>
 						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="51" hits="0" branch="false"/>
 								<line number="53" hits="0" branch="false"/>
+								<line number="55" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="postHandle" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Ljava/lang/Object;Lorg/springframework/web/servlet/ModelAndView;)V" line-rate="0.0" branch-rate="0.0">
+						<method name="injectUserInfo" signature="(Lorg/springframework/web/servlet/ModelAndView;)V" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="68" hits="0" branch="true" condition-coverage="0% (0/4)">
+								<line number="95" hits="0" branch="false"/>
+								<line number="97" hits="0" branch="true" condition-coverage="0% (0/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 										<condition number="1" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="72" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="98" hits="0" branch="false"/>
+								<line number="101" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="75" hits="0" branch="false"/>
-								<line number="77" hits="0" branch="true" condition-coverage="0% (0/4)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-										<condition number="1" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="78" hits="0" branch="false"/>
-								<line number="79" hits="0" branch="false"/>
-								<line number="82" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="103" hits="0" branch="false"/>
+								<line number="104" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="84" hits="0" branch="false"/>
-								<line number="85" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="86" hits="0" branch="false"/>
-								<line number="87" hits="0" branch="false"/>
-								<line number="89" hits="0" branch="false"/>
-								<line number="90" hits="0" branch="false"/>
-								<line number="92" hits="0" branch="false"/>
-								<line number="94" hits="0" branch="true" condition-coverage="0% (0/6)">
+								<line number="105" hits="0" branch="false"/>
+								<line number="106" hits="0" branch="false"/>
+								<line number="108" hits="0" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
+								<line number="111" hits="0" branch="false"/>
+								<line number="113" hits="0" branch="true" condition-coverage="0% (0/6)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 										<condition number="1" type="jump" coverage="0%"/>
 										<condition number="2" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="97" hits="0" branch="false"/>
-								<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="116" hits="0" branch="false"/>
+								<line number="119" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="101" hits="0" branch="false"/>
-								<line number="102" hits="0" branch="false"/>
-								<line number="109" hits="0" branch="false"/>
+								<line number="120" hits="0" branch="false"/>
+								<line number="121" hits="0" branch="false"/>
+								<line number="125" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="postHandle" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Ljava/lang/Object;Lorg/springframework/web/servlet/ModelAndView;)V" line-rate="0.0" branch-rate="0.0">
+							<lines>
+								<line number="70" hits="0" branch="true" condition-coverage="0% (0/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+										<condition number="1" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="75" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="78" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="80" hits="0" branch="false"/>
+								<line number="82" hits="0" branch="true" condition-coverage="0% (0/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+										<condition number="1" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="87" hits="0" branch="false"/>
+								<line number="92" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="51" hits="0" branch="false"/>
 						<line number="53" hits="0" branch="false"/>
-						<line number="68" hits="0" branch="true" condition-coverage="0% (0/4)">
+						<line number="55" hits="0" branch="false"/>
+						<line number="70" hits="0" branch="true" condition-coverage="0% (0/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="72" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="75" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="75" hits="0" branch="false"/>
-						<line number="77" hits="0" branch="true" condition-coverage="0% (0/4)">
+						<line number="78" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="80" hits="0" branch="false"/>
+						<line number="82" hits="0" branch="true" condition-coverage="0% (0/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="78" hits="0" branch="false"/>
-						<line number="79" hits="0" branch="false"/>
-						<line number="82" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="84" hits="0" branch="false"/>
-						<line number="85" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="86" hits="0" branch="false"/>
 						<line number="87" hits="0" branch="false"/>
-						<line number="89" hits="0" branch="false"/>
-						<line number="90" hits="0" branch="false"/>
 						<line number="92" hits="0" branch="false"/>
-						<line number="94" hits="0" branch="true" condition-coverage="0% (0/6)">
+						<line number="95" hits="0" branch="false"/>
+						<line number="97" hits="0" branch="true" condition-coverage="0% (0/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+								<condition number="1" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="98" hits="0" branch="false"/>
+						<line number="101" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="103" hits="0" branch="false"/>
+						<line number="104" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="105" hits="0" branch="false"/>
+						<line number="106" hits="0" branch="false"/>
+						<line number="108" hits="0" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
+						<line number="111" hits="0" branch="false"/>
+						<line number="113" hits="0" branch="true" condition-coverage="0% (0/6)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 								<condition number="1" type="jump" coverage="0%"/>
 								<condition number="2" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="97" hits="0" branch="false"/>
-						<line number="100" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="116" hits="0" branch="false"/>
+						<line number="119" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="101" hits="0" branch="false"/>
-						<line number="102" hits="0" branch="false"/>
-						<line number="109" hits="0" branch="false"/>
+						<line number="120" hits="0" branch="false"/>
+						<line number="121" hits="0" branch="false"/>
+						<line number="125" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.mitre.openid.connect.web.UserInfoInterceptor$1" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="1.0" complexity="6.5">
+				<class name="org.mitre.openid.connect.web.UserInfoInterceptor$1" filename="org/mitre/openid/connect/web/UserInfoInterceptor.java" line-rate="0.0" branch-rate="1.0" complexity="5.666666666666667">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/mitre/openid/connect/web/UserInfoInterceptor;)V" line-rate="1.0" branch-rate="1.0">
 							<lines>
@@ -11255,18 +11285,18 @@
 						</method>
 						<method name="serialize" signature="(Ljava/lang/Object;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="54" hits="0" branch="false"/>
+								<line number="56" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="serialize" signature="(Lorg/springframework/security/core/GrantedAuthority;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="57" hits="0" branch="false"/>
+								<line number="59" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="54" hits="0" branch="false"/>
-						<line number="57" hits="0" branch="false"/>
+						<line number="56" hits="0" branch="false"/>
+						<line number="59" hits="0" branch="false"/>
 					</lines>
 				</class>
 			</classes>
