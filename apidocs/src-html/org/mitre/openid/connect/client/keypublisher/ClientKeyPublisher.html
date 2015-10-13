@@ -7,28 +7,28 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * <a name="line.4"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
 <span class="sourceLineNo">007</span> * You may obtain a copy of the License at<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * <a name="line.8"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
 <span class="sourceLineNo">009</span> *   http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * <a name="line.10"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
 <span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
 <span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
 <span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
 <span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
 <span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> ******************************************************************************/<a name="line.16"></a>
+<span class="sourceLineNo">016</span> *******************************************************************************/<a name="line.16"></a>
 <span class="sourceLineNo">017</span>package org.mitre.openid.connect.client.keypublisher;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
 <span class="sourceLineNo">019</span>import java.util.Map;<a name="line.19"></a>
 <span class="sourceLineNo">020</span>import java.util.UUID;<a name="line.20"></a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.mitre.jwt.signer.service.JwtSigningAndValidationService;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import org.mitre.openid.connect.view.JwkKeyListView;<a name="line.23"></a>
+<span class="sourceLineNo">022</span>import org.mitre.jwt.signer.service.JWTSigningAndValidationService;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.mitre.openid.connect.view.JWKSetView;<a name="line.23"></a>
 <span class="sourceLineNo">024</span>import org.springframework.beans.BeansException;<a name="line.24"></a>
 <span class="sourceLineNo">025</span>import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;<a name="line.25"></a>
 <span class="sourceLineNo">026</span>import org.springframework.beans.factory.support.BeanDefinitionBuilder;<a name="line.26"></a>
@@ -45,13 +45,13 @@
 <span class="sourceLineNo">037</span> */<a name="line.37"></a>
 <span class="sourceLineNo">038</span>public class ClientKeyPublisher implements BeanDefinitionRegistryPostProcessor {<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>        private JwtSigningAndValidationService signingAndValidationService;<a name="line.40"></a>
+<span class="sourceLineNo">040</span>        private JWTSigningAndValidationService signingAndValidationService;<a name="line.40"></a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
 <span class="sourceLineNo">042</span>        private String jwkPublishUrl;<a name="line.42"></a>
 <span class="sourceLineNo">043</span><a name="line.43"></a>
 <span class="sourceLineNo">044</span>        private BeanDefinitionRegistry registry;<a name="line.44"></a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span>        private String jwkViewName = JwkKeyListView.VIEWNAME;<a name="line.46"></a>
+<span class="sourceLineNo">046</span>        private String jwkViewName = JWKSetView.VIEWNAME;<a name="line.46"></a>
 <span class="sourceLineNo">047</span><a name="line.47"></a>
 <span class="sourceLineNo">048</span>        /**<a name="line.48"></a>
 <span class="sourceLineNo">049</span>         * If the jwkPublishUrl field is set on this bean, set up a listener on that URL to publish keys.<a name="line.49"></a>
@@ -69,13 +69,13 @@
 <span class="sourceLineNo">061</span>                                clientKeyMapping.addPropertyValue("jwkPublishUrl", getJwkPublishUrl());<a name="line.61"></a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
 <span class="sourceLineNo">063</span>                                // randomize view name to make sure it doesn't conflict with local views<a name="line.63"></a>
-<span class="sourceLineNo">064</span>                                jwkViewName = JwkKeyListView.VIEWNAME + "-" + UUID.randomUUID().toString();<a name="line.64"></a>
+<span class="sourceLineNo">064</span>                                jwkViewName = JWKSetView.VIEWNAME + "-" + UUID.randomUUID().toString();<a name="line.64"></a>
 <span class="sourceLineNo">065</span>                                viewResolver.addPropertyValue("jwkViewName", jwkViewName);<a name="line.65"></a>
 <span class="sourceLineNo">066</span><a name="line.66"></a>
 <span class="sourceLineNo">067</span>                                // view bean<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                                BeanDefinitionBuilder jwkView = BeanDefinitionBuilder.rootBeanDefinition(JwkKeyListView.class);<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                                registry.registerBeanDefinition(JwkKeyListView.VIEWNAME, jwkView.getBeanDefinition());<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                                viewResolver.addPropertyReference("jwk", "jwkKeyList");<a name="line.70"></a>
+<span class="sourceLineNo">068</span>                                BeanDefinitionBuilder jwkView = BeanDefinitionBuilder.rootBeanDefinition(JWKSetView.class);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                                registry.registerBeanDefinition(JWKSetView.VIEWNAME, jwkView.getBeanDefinition());<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                                viewResolver.addPropertyReference("jwk", JWKSetView.VIEWNAME);<a name="line.70"></a>
 <span class="sourceLineNo">071</span>                        }<a name="line.71"></a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
 <span class="sourceLineNo">073</span>                        registry.registerBeanDefinition("clientKeyMapping", clientKeyMapping.getBeanDefinition());<a name="line.73"></a>
@@ -122,14 +122,14 @@
 <span class="sourceLineNo">114</span>        /**<a name="line.114"></a>
 <span class="sourceLineNo">115</span>         * @return the signingAndValidationService<a name="line.115"></a>
 <span class="sourceLineNo">116</span>         */<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        public JwtSigningAndValidationService getSigningAndValidationService() {<a name="line.117"></a>
+<span class="sourceLineNo">117</span>        public JWTSigningAndValidationService getSigningAndValidationService() {<a name="line.117"></a>
 <span class="sourceLineNo">118</span>                return signingAndValidationService;<a name="line.118"></a>
 <span class="sourceLineNo">119</span>        }<a name="line.119"></a>
 <span class="sourceLineNo">120</span><a name="line.120"></a>
 <span class="sourceLineNo">121</span>        /**<a name="line.121"></a>
 <span class="sourceLineNo">122</span>         * @param signingAndValidationService the signingAndValidationService to set<a name="line.122"></a>
 <span class="sourceLineNo">123</span>         */<a name="line.123"></a>
-<span class="sourceLineNo">124</span>        public void setSigningAndValidationService(JwtSigningAndValidationService signingAndValidationService) {<a name="line.124"></a>
+<span class="sourceLineNo">124</span>        public void setSigningAndValidationService(JWTSigningAndValidationService signingAndValidationService) {<a name="line.124"></a>
 <span class="sourceLineNo">125</span>                this.signingAndValidationService = signingAndValidationService;<a name="line.125"></a>
 <span class="sourceLineNo">126</span>        }<a name="line.126"></a>
 <span class="sourceLineNo">127</span><a name="line.127"></a>

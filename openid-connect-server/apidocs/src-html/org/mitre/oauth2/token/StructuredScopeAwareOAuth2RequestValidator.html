@@ -7,7 +7,7 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2014 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
 <span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
@@ -57,7 +57,7 @@
 <span class="sourceLineNo">049</span>                if (requestedScopes != null &amp;&amp; !requestedScopes.isEmpty()) {<a name="line.49"></a>
 <span class="sourceLineNo">050</span>                        if (clientScopes != null &amp;&amp; !clientScopes.isEmpty()) {<a name="line.50"></a>
 <span class="sourceLineNo">051</span>                                if (!scopeService.scopesMatch(clientScopes, requestedScopes)) {<a name="line.51"></a>
-<span class="sourceLineNo">052</span>                                        throw new InvalidScopeException("Invalid scope", clientScopes);<a name="line.52"></a>
+<span class="sourceLineNo">052</span>                                        throw new InvalidScopeException("Invalid scope; requested:" + requestedScopes, clientScopes);<a name="line.52"></a>
 <span class="sourceLineNo">053</span>                                }<a name="line.53"></a>
 <span class="sourceLineNo">054</span>                        }<a name="line.54"></a>
 <span class="sourceLineNo">055</span>                }<a name="line.55"></a>

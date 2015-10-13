@@ -6,11 +6,12 @@ org.mitre.oauth2.service.impl
 org.mitre.oauth2.token
 org.mitre.oauth2.view
 org.mitre.oauth2.web
-org.mitre.openid.connect
 org.mitre.openid.connect.assertion
+org.mitre.openid.connect.config
 org.mitre.openid.connect.exception
 org.mitre.openid.connect.filter
 org.mitre.openid.connect.repository.impl
+org.mitre.openid.connect.request
 org.mitre.openid.connect.service.impl
 org.mitre.openid.connect.token
 org.mitre.openid.connect.util
