@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *   http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> *******************************************************************************/<a name="line.16"></a>
+<span class="sourceLineNo">017</span>/**<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * <a name="line.18"></a>
+<span class="sourceLineNo">019</span> */<a name="line.19"></a>
+<span class="sourceLineNo">020</span>package org.mitre.openid.connect.service.impl;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.junit.Before;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.junit.Test;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.junit.runner.RunWith;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.mitre.oauth2.model.ClientDetailsEntity.SubjectType;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.mitre.openid.connect.model.DefaultUserInfo;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.mitre.openid.connect.model.UserInfo;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.mitre.openid.connect.repository.UserInfoRepository;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.mitre.openid.connect.service.PairwiseIdentiferService;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.mockito.InjectMocks;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.mockito.Matchers;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.mockito.Mock;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.mockito.Mockito;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.mockito.invocation.InvocationOnMock;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.mockito.runners.MockitoJUnitRunner;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.mockito.stubbing.Answer;<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>import static org.junit.Assert.assertEquals;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import static org.junit.Assert.assertNull;<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>/**<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * @author jricher<a name="line.44"></a>
+<span class="sourceLineNo">045</span> *<a name="line.45"></a>
+<span class="sourceLineNo">046</span> */<a name="line.46"></a>
+<span class="sourceLineNo">047</span>@RunWith(MockitoJUnitRunner.class)<a name="line.47"></a>
+<span class="sourceLineNo">048</span>public class TestDefaultUserInfoService {<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        @InjectMocks<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        private DefaultUserInfoService service = new DefaultUserInfoService();<a name="line.50"></a>
+<span class="sourceLineNo">051</span><a name="line.51"></a>
+<span class="sourceLineNo">052</span>        @Mock<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        private UserInfoRepository userInfoRepository;<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>        @Mock<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        private ClientDetailsEntityService clientDetailsEntityService;<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>        @Mock<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        private PairwiseIdentiferService pairwiseIdentiferService;<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>        private UserInfo userInfoAdmin;<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        private UserInfo userInfoRegular;<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>        private ClientDetailsEntity publicClient1;<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        private ClientDetailsEntity publicClient2;<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        private ClientDetailsEntity pairwiseClient1;<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        private ClientDetailsEntity pairwiseClient2;<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        private ClientDetailsEntity pairwiseClient3;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        private ClientDetailsEntity pairwiseClient4;<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private String adminUsername = "username";<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        private String regularUsername = "regular";<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        private String adminSub = "adminSub12d3a1f34a2";<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        private String regularSub = "regularSub652ha23b";<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>        private String pairwiseSub12 = "regularPairwise-12-31ijoef";<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        private String pairwiseSub3 = "regularPairwise-3-1ojadsio";<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        private String pairwiseSub4 = "regularPairwise-4-1ojadsio";<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>        private String publicClientId1 = "publicClient-1-313124";<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        private String publicClientId2 = "publicClient-2-4109312";<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        private String pairwiseClientId1 = "pairwiseClient-1-2312";<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        private String pairwiseClientId2 = "pairwiseClient-2-324416";<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        private String pairwiseClientId3 = "pairwiseClient-3-154157";<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        private String pairwiseClientId4 = "pairwiseClient-4-4589723";<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        private String sectorIdentifier1 = "https://sector-identifier-12/url";<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        private String sectorIdentifier2 = "https://sector-identifier-12/url2";<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        private String sectorIdentifier3 = "https://sector-identifier-3/url";<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>        /**<a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * Initialize the service and the mocked repository.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         * Initialize 2 users, one of them an admin, for use in unit tests.<a name="line.96"></a>
+<span class="sourceLineNo">097</span>         */<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        @Before<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        public void prepare() {<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>                userInfoAdmin = new DefaultUserInfo();<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                userInfoAdmin.setPreferredUsername(adminUsername);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                userInfoAdmin.setSub(adminSub);<a name="line.104"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
+<span class="sourceLineNo">106</span>                userInfoRegular = new DefaultUserInfo();<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                userInfoRegular.setPreferredUsername(regularUsername);<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                userInfoRegular.setSub(regularSub);<a name="line.108"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
+<span class="sourceLineNo">110</span>                publicClient1 = new ClientDetailsEntity();<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                publicClient1.setClientId(publicClientId1);<a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>                publicClient2 = new ClientDetailsEntity();<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                publicClient2.setClientId(publicClientId2);<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                publicClient2.setSubjectType(SubjectType.PUBLIC);<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>                // pairwise set 1<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                pairwiseClient1 = new ClientDetailsEntity();<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                pairwiseClient1.setClientId(pairwiseClientId1);<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                pairwiseClient1.setSubjectType(SubjectType.PAIRWISE);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                pairwiseClient1.setSectorIdentifierUri(sectorIdentifier1);<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>                pairwiseClient2 = new ClientDetailsEntity();<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                pairwiseClient2.setClientId(pairwiseClientId2);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                pairwiseClient2.setSubjectType(SubjectType.PAIRWISE);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                pairwiseClient2.setSectorIdentifierUri(sectorIdentifier2);<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>                // pairwise set 2<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                pairwiseClient3 = new ClientDetailsEntity();<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                pairwiseClient3.setClientId(pairwiseClientId3);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                pairwiseClient3.setSubjectType(SubjectType.PAIRWISE);<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                pairwiseClient3.setSectorIdentifierUri(sectorIdentifier3);<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>                // pairwise with null sector<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                pairwiseClient4 = new ClientDetailsEntity();<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                pairwiseClient4.setClientId(pairwiseClientId4);<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                pairwiseClient4.setSubjectType(SubjectType.PAIRWISE);<a name="line.137"></a>
+<span class="sourceLineNo">138</span><a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>        }<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>        /**<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         * Test loading an admin user, ensuring that the UserDetails object returned<a name="line.145"></a>
+<span class="sourceLineNo">146</span>         * has both the ROLE_USER and ROLE_ADMIN authorities.<a name="line.146"></a>
+<span class="sourceLineNo">147</span>         */<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        @Test<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        public void loadByUsername_admin_success() {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                Mockito.when(userInfoRepository.getByUsername(adminUsername)).thenReturn(userInfoAdmin);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                UserInfo user = service.getByUsername(adminUsername);<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                assertEquals(user.getSub(), adminSub);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>        /**<a name="line.155"></a>
+<span class="sourceLineNo">156</span>         * Test loading a regular, non-admin user, ensuring that the returned UserDetails<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * object has ROLE_USER but *not* ROLE_ADMIN.<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         */<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        @Test<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        public void loadByUsername_regular_success() {<a name="line.160"></a>
+<span class="sourceLineNo">161</span><a name="line.161"></a>
+<span class="sourceLineNo">162</span>                Mockito.when(userInfoRepository.getByUsername(regularUsername)).thenReturn(userInfoRegular);<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                UserInfo user = service.getByUsername(regularUsername);<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                assertEquals(user.getSub(), regularSub);<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>        /**<a name="line.168"></a>
+<span class="sourceLineNo">169</span>         * If a user is not found, the loadByUsername method should throw an exception.<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         */<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        @Test()<a name="line.171"></a>
+<span class="sourceLineNo">172</span>        public void loadByUsername_nullUser() {<a name="line.172"></a>
+<span class="sourceLineNo">173</span><a name="line.173"></a>
+<span class="sourceLineNo">174</span>                Mockito.when(userInfoRepository.getByUsername(adminUsername)).thenReturn(null);<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                UserInfo user = service.getByUsername(adminUsername);<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>                assertNull(user);<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        }<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>        /**<a name="line.180"></a>
+<span class="sourceLineNo">181</span>         * Clients with public subs should always return the same sub<a name="line.181"></a>
+<span class="sourceLineNo">182</span>         */<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        @Test<a name="line.183"></a>
+<span class="sourceLineNo">184</span>        public void getByUsernameAndClientId_publicClients() {<a name="line.184"></a>
+<span class="sourceLineNo">185</span><a name="line.185"></a>
+<span class="sourceLineNo">186</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(publicClientId1)).thenReturn(publicClient1);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(publicClientId2)).thenReturn(publicClient2);<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>                Mockito.when(userInfoRepository.getByUsername(regularUsername)).thenReturn(userInfoRegular);<a name="line.189"></a>
+<span class="sourceLineNo">190</span><a name="line.190"></a>
+<span class="sourceLineNo">191</span>                Mockito.verify(pairwiseIdentiferService, Mockito.never()).getIdentifier(Matchers.any(UserInfo.class), Matchers.any(ClientDetailsEntity.class));<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>                UserInfo user1 = service.getByUsernameAndClientId(regularUsername, publicClientId1);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                UserInfo user2 = service.getByUsernameAndClientId(regularUsername, publicClientId2);<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>                assertEquals(regularSub, user1.getSub());<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                assertEquals(regularSub, user2.getSub());<a name="line.197"></a>
+<span class="sourceLineNo">198</span>        }<a name="line.198"></a>
+<span class="sourceLineNo">199</span><a name="line.199"></a>
+<span class="sourceLineNo">200</span>        /**<a name="line.200"></a>
+<span class="sourceLineNo">201</span>         * Clients with pairwise subs should be grouped by the sector URI<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         */<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        @Test<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        public void getByUsernameAndClientId_pairwiseClients() {<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(pairwiseClientId1)).thenReturn(pairwiseClient1);<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(pairwiseClientId2)).thenReturn(pairwiseClient2);<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(pairwiseClientId3)).thenReturn(pairwiseClient3);<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                Mockito.when(clientDetailsEntityService.loadClientByClientId(pairwiseClientId4)).thenReturn(pairwiseClient4);<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>                Mockito.when(userInfoRepository.getByUsername(regularUsername)).thenAnswer(new Answer&lt;UserInfo&gt;() {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                        @Override<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                        public UserInfo answer(InvocationOnMock invocation) throws Throwable {<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                                UserInfo userInfo = new DefaultUserInfo();<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                                userInfo.setPreferredUsername(regularUsername);<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                                userInfo.setSub(regularSub);<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>                                return userInfo;<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                        }<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                });<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>                Mockito.when(pairwiseIdentiferService.getIdentifier(userInfoRegular, pairwiseClient1)).thenReturn(pairwiseSub12);<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                Mockito.when(pairwiseIdentiferService.getIdentifier(userInfoRegular, pairwiseClient2)).thenReturn(pairwiseSub12);<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                Mockito.when(pairwiseIdentiferService.getIdentifier(userInfoRegular, pairwiseClient3)).thenReturn(pairwiseSub3);<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                Mockito.when(pairwiseIdentiferService.getIdentifier(userInfoRegular, pairwiseClient4)).thenReturn(pairwiseSub4);<a name="line.225"></a>
+<span class="sourceLineNo">226</span><a name="line.226"></a>
+<span class="sourceLineNo">227</span>                UserInfo user1 = service.getByUsernameAndClientId(regularUsername, pairwiseClientId1);<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                UserInfo user2 = service.getByUsernameAndClientId(regularUsername, pairwiseClientId2);<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                UserInfo user3 = service.getByUsernameAndClientId(regularUsername, pairwiseClientId3);<a name="line.229"></a>
+<span class="sourceLineNo">230</span>                UserInfo user4 = service.getByUsernameAndClientId(regularUsername, pairwiseClientId4);<a name="line.230"></a>
+<span class="sourceLineNo">231</span><a name="line.231"></a>
+<span class="sourceLineNo">232</span>                assertEquals(pairwiseSub12, user1.getSub());<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                assertEquals(pairwiseSub12, user2.getSub());<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                assertEquals(pairwiseSub3, user3.getSub());<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                assertEquals(pairwiseSub4, user4.getSub());<a name="line.235"></a>
+<span class="sourceLineNo">236</span><a name="line.236"></a>
+<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
+<span class="sourceLineNo">238</span><a name="line.238"></a>
+<span class="sourceLineNo">239</span><a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>}<a name="line.241"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

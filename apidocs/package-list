@@ -2,10 +2,14 @@ org.mitre.discovery.util
 org.mitre.discovery.view
 org.mitre.discovery.web
 org.mitre.jose.keystore
+org.mitre.jwt.assertion
+org.mitre.jwt.assertion.impl
 org.mitre.jwt.encryption.service
 org.mitre.jwt.encryption.service.impl
 org.mitre.jwt.signer.service
 org.mitre.jwt.signer.service.impl
+org.mitre.oauth2.assertion
+org.mitre.oauth2.assertion.impl
 org.mitre.oauth2.exception
 org.mitre.oauth2.introspectingfilter
 org.mitre.oauth2.introspectingfilter.service
