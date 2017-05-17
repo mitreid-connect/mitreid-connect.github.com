@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AbstractClientEntityView.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.view</a> &gt; <span class="el_source">AbstractClientEntityView.java</span></div><h1>AbstractClientEntityView.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.view;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.mitre.oauth2.model.PKCEAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.view.AbstractView;
+
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jwt.JWT;
+
+/**
+ *
+ * Abstract superclass for client entity view, used with the ClientApi.
+ *
+ * @see ClientEntityViewForUsers
+ * @see ClientEntityViewForAdmins
+ *
+ * @author jricher
+ *
+ */
+<span class="nc" id="L61">public abstract class AbstractClientEntityView extends AbstractView {</span>
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L65">	private static final Logger logger = LoggerFactory.getLogger(AbstractClientEntityView.class);</span>
+
+<span class="nc" id="L67">	private JsonParser parser = new JsonParser();</span>
+
+<span class="nc" id="L69">	private Gson gson = new GsonBuilder()</span>
+<span class="nc" id="L70">			.setExclusionStrategies(getExclusionStrategy())</span>
+<span class="nc" id="L71">			.registerTypeAdapter(JWSAlgorithm.class, new JsonSerializer&lt;JWSAlgorithm&gt;() {</span>
+				@Override
+				public JsonElement serialize(JWSAlgorithm src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L75">						return new JsonPrimitive(src.getName());</span>
+					} else {
+<span class="nc" id="L77">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L81">			.registerTypeAdapter(JWEAlgorithm.class, new JsonSerializer&lt;JWEAlgorithm&gt;() {</span>
+				@Override
+				public JsonElement serialize(JWEAlgorithm src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L85">						return new JsonPrimitive(src.getName());</span>
+					} else {
+<span class="nc" id="L87">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L91">			.registerTypeAdapter(EncryptionMethod.class, new JsonSerializer&lt;EncryptionMethod&gt;() {</span>
+				@Override
+				public JsonElement serialize(EncryptionMethod src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L95">						return new JsonPrimitive(src.getName());</span>
+					} else {
+<span class="nc" id="L97">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L101">			.registerTypeAdapter(JWKSet.class, new JsonSerializer&lt;JWKSet&gt;() {</span>
+				@Override
+				public JsonElement serialize(JWKSet src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L105">						return parser.parse(src.toString());</span>
+					} else {
+<span class="nc" id="L107">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L111">			.registerTypeAdapter(JWT.class, new JsonSerializer&lt;JWT&gt;() {</span>
+				@Override
+				public JsonElement serialize(JWT src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L114" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L115">						return new JsonPrimitive(src.serialize());</span>
+					} else {
+<span class="nc" id="L117">						return null;</span>
+					}
+				}
+
+			})
+<span class="nc" id="L122">			.registerTypeAdapter(PKCEAlgorithm.class, new JsonSerializer&lt;PKCEAlgorithm&gt;() {</span>
+				@Override
+				public JsonPrimitive serialize(PKCEAlgorithm src, Type typeOfSrc, JsonSerializationContext context) {
+<span class="nc bnc" id="L125" title="All 2 branches missed.">					if (src != null) {</span>
+<span class="nc" id="L126">						return new JsonPrimitive(src.getName());</span>
+					} else {
+<span class="nc" id="L128">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L132">			.serializeNulls()</span>
+<span class="nc" id="L133">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
+<span class="nc" id="L134">			.create();</span>
+
+
+	/**
+	 * @return
+	 */
+	protected abstract ExclusionStrategy getExclusionStrategy();
+
+
+	@Override
+	protected void renderMergedOutputModel(Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {
+
+<span class="nc" id="L146">		response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
+
+
+<span class="nc" id="L149">		HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (code == null) {</span>
+<span class="nc" id="L151">			code = HttpStatus.OK; // default to 200</span>
+		}
+
+<span class="nc" id="L154">		response.setStatus(code.value());</span>
+
+		try {
+
+<span class="nc" id="L158">			Writer out = response.getWriter();</span>
+<span class="nc" id="L159">			Object obj = model.get(JsonEntityView.ENTITY);</span>
+<span class="nc" id="L160">			gson.toJson(obj, out);</span>
+
+<span class="nc" id="L162">		} catch (IOException e) {</span>
+
+<span class="nc" id="L164">			logger.error(&quot;IOException in JsonEntityView.java: &quot;, e);</span>
+
+<span class="nc" id="L166">		}</span>
+<span class="nc" id="L167">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

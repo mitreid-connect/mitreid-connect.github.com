@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UmaDataServiceExtension_1_3.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.service.impl</a> &gt; <span class="el_source">UmaDataServiceExtension_1_3.java</span></div><h1>UmaDataServiceExtension_1_3.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.uma.service.impl;
+
+import static org.mitre.util.JsonUtils.readSet;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.oauth2.repository.OAuth2TokenRepository;
+import org.mitre.openid.connect.ClientDetailsEntityJsonProcessor;
+import org.mitre.openid.connect.service.MITREidDataService;
+import org.mitre.openid.connect.service.MITREidDataServiceExtension;
+import org.mitre.openid.connect.service.MITREidDataServiceMaps;
+import org.mitre.openid.connect.service.impl.MITREidDataServiceSupport;
+import org.mitre.uma.model.Claim;
+import org.mitre.uma.model.Permission;
+import org.mitre.uma.model.PermissionTicket;
+import org.mitre.uma.model.Policy;
+import org.mitre.uma.model.ResourceSet;
+import org.mitre.uma.model.SavedRegisteredClient;
+import org.mitre.uma.repository.PermissionRepository;
+import org.mitre.uma.repository.ResourceSetRepository;
+import org.mitre.uma.service.SavedRegisteredClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
+
+/**
+ * @author jricher
+ *
+ */
+@Service(&quot;umaDataExtension_1_3&quot;)
+<span class="nc" id="L61">public class UmaDataServiceExtension_1_3 extends MITREidDataServiceSupport implements MITREidDataServiceExtension {</span>
+
+	private static final String THIS_VERSION = MITREidDataService.MITREID_CONNECT_1_3;
+
+	private static final String REGISTERED_CLIENT = &quot;registeredClient&quot;;
+	private static final String URI = &quot;uri&quot;;
+	private static final String NAME = &quot;name&quot;;
+	private static final String TYPE = &quot;type&quot;;
+	private static final String VALUE = &quot;value&quot;;
+	private static final String CLIENT_ID = &quot;clientId&quot;;
+	private static final String EXPIRATION = &quot;expiration&quot;;
+	private static final String ID = &quot;id&quot;;
+	private static final String ICON_URI = &quot;iconUri&quot;;
+	private static final String OWNER = &quot;owner&quot;;
+	private static final String POLICIES = &quot;policies&quot;;
+	private static final String SCOPES = &quot;scopes&quot;;
+	private static final String CLAIMS_REQUIRED = &quot;claimsRequired&quot;;
+	private static final String ISSUER = &quot;issuer&quot;;
+	private static final String CLAIM_TOKEN_FORMAT = &quot;claimTokenFormat&quot;;
+	private static final String CLAIM_TYPE = &quot;claimType&quot;;
+	private static final String FRIENDLY_NAME = &quot;friendlyName&quot;;
+	private static final String PERMISSIONS = &quot;permissions&quot;;
+	private static final String RESOURCE_SET = &quot;resourceSet&quot;;
+	private static final String PERMISSION_TICKETS = &quot;permissionTickets&quot;;
+	private static final String PERMISSION = &quot;permission&quot;;
+	private static final String TICKET = &quot;ticket&quot;;
+	private static final String CLAIMS_SUPPLIED = &quot;claimsSupplied&quot;;
+	private static final String SAVED_REGISTERED_CLIENTS = &quot;savedRegisteredClients&quot;;
+	private static final String RESOURCE_SETS = &quot;resourceSets&quot;;
+	private static final String TOKEN_PERMISSIONS = &quot;tokenPermissions&quot;;
+	private static final String TOKEN_ID = &quot;tokenId&quot;;
+
+<span class="nc" id="L93">	private static final Logger logger = LoggerFactory.getLogger(UmaDataServiceExtension_1_3.class);</span>
+
+
+
+	@Autowired
+	private SavedRegisteredClientService registeredClientService;
+	@Autowired
+	private ResourceSetRepository resourceSetRepository;
+	@Autowired
+	private PermissionRepository permissionRepository;
+	@Autowired
+	private OAuth2TokenRepository tokenRepository;
+
+<span class="nc" id="L106">	private Map&lt;Long, Set&lt;Long&gt;&gt; tokenToPermissionRefs = new HashMap&lt;&gt;();</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.service.MITREidDataServiceExtension#supportsVersion(java.lang.String)
+	 */
+	@Override
+	public boolean supportsVersion(String version) {
+<span class="nc" id="L113">		return THIS_VERSION.equals(version);</span>
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.service.MITREidDataServiceExtension#exportExtensionData(com.google.gson.stream.JsonWriter)
+	 */
+	@Override
+	public void exportExtensionData(JsonWriter writer) throws IOException {
+<span class="nc" id="L122">		writer.name(SAVED_REGISTERED_CLIENTS);</span>
+<span class="nc" id="L123">		writer.beginArray();</span>
+<span class="nc" id="L124">		writeSavedRegisteredClients(writer);</span>
+<span class="nc" id="L125">		writer.endArray();</span>
+
+<span class="nc" id="L127">		writer.name(RESOURCE_SETS);</span>
+<span class="nc" id="L128">		writer.beginArray();</span>
+<span class="nc" id="L129">		writeResourceSets(writer);</span>
+<span class="nc" id="L130">		writer.endArray();</span>
+
+<span class="nc" id="L132">		writer.name(PERMISSION_TICKETS);</span>
+<span class="nc" id="L133">		writer.beginArray();</span>
+<span class="nc" id="L134">		writePermissionTickets(writer);</span>
+<span class="nc" id="L135">		writer.endArray();</span>
+
+<span class="nc" id="L137">		writer.name(TOKEN_PERMISSIONS);</span>
+<span class="nc" id="L138">		writer.beginArray();</span>
+<span class="nc" id="L139">		writeTokenPermissions(writer);</span>
+<span class="nc" id="L140">		writer.endArray();</span>
+<span class="nc" id="L141">	}</span>
+
+	/**
+	 * @param writer
+	 * @throws IOException
+	 */
+	private void writeTokenPermissions(JsonWriter writer) throws IOException {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : tokenRepository.getAllAccessTokens()) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">			if (!token.getPermissions().isEmpty()) { // skip tokens that don't have the permissions structure attached</span>
+<span class="nc" id="L150">				writer.beginObject();</span>
+<span class="nc" id="L151">				writer.name(TOKEN_ID).value(token.getId());</span>
+<span class="nc" id="L152">				writer.name(PERMISSIONS);</span>
+<span class="nc" id="L153">				writer.beginArray();</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">				for (Permission p : token.getPermissions()) {</span>
+<span class="nc" id="L155">					writer.beginObject();</span>
+<span class="nc" id="L156">					writer.name(RESOURCE_SET).value(p.getResourceSet().getId());</span>
+<span class="nc" id="L157">					writer.name(SCOPES);</span>
+<span class="nc" id="L158">					writer.beginArray();</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">					for (String s : p.getScopes()) {</span>
+<span class="nc" id="L160">						writer.value(s);</span>
+<span class="nc" id="L161">					}</span>
+<span class="nc" id="L162">					writer.endArray();</span>
+<span class="nc" id="L163">					writer.endObject();</span>
+<span class="nc" id="L164">				}</span>
+<span class="nc" id="L165">				writer.endArray();</span>
+
+<span class="nc" id="L167">				writer.endObject();</span>
+			}
+<span class="nc" id="L169">		}</span>
+<span class="nc" id="L170">	}</span>
+
+	/**
+	 * @param writer
+	 * @throws IOException
+	 */
+	private void writePermissionTickets(JsonWriter writer) throws IOException {
+<span class="nc bnc" id="L177" title="All 2 branches missed.">		for (PermissionTicket ticket : permissionRepository.getAll()) {</span>
+<span class="nc" id="L178">			writer.beginObject();</span>
+
+<span class="nc" id="L180">			writer.name(CLAIMS_SUPPLIED);</span>
+<span class="nc" id="L181">			writer.beginArray();</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">			for (Claim claim : ticket.getClaimsSupplied()) {</span>
+<span class="nc" id="L183">				writer.beginObject();</span>
+
+<span class="nc" id="L185">				writer.name(ISSUER);</span>
+<span class="nc" id="L186">				writer.beginArray();</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">				for (String issuer : claim.getIssuer()) {</span>
+<span class="nc" id="L188">					writer.value(issuer);</span>
+<span class="nc" id="L189">				}</span>
+<span class="nc" id="L190">				writer.endArray();</span>
+<span class="nc" id="L191">				writer.name(CLAIM_TOKEN_FORMAT);</span>
+<span class="nc" id="L192">				writer.beginArray();</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">				for (String format : claim.getClaimTokenFormat()) {</span>
+<span class="nc" id="L194">					writer.value(format);</span>
+<span class="nc" id="L195">				}</span>
+<span class="nc" id="L196">				writer.endArray();</span>
+<span class="nc" id="L197">				writer.name(CLAIM_TYPE).value(claim.getClaimType());</span>
+<span class="nc" id="L198">				writer.name(FRIENDLY_NAME).value(claim.getFriendlyName());</span>
+<span class="nc" id="L199">				writer.name(NAME).value(claim.getName());</span>
+<span class="nc" id="L200">				writer.name(VALUE).value(claim.getValue().toString());</span>
+<span class="nc" id="L201">				writer.endObject();</span>
+<span class="nc" id="L202">			}</span>
+<span class="nc" id="L203">			writer.endArray();</span>
+
+<span class="nc" id="L205">			writer.name(EXPIRATION).value(toUTCString(ticket.getExpiration()));</span>
+
+<span class="nc" id="L207">			writer.name(PERMISSION);</span>
+<span class="nc" id="L208">			writer.beginObject();</span>
+<span class="nc" id="L209">			Permission p = ticket.getPermission();</span>
+<span class="nc" id="L210">			writer.name(RESOURCE_SET).value(p.getResourceSet().getId());</span>
+<span class="nc" id="L211">			writer.name(SCOPES);</span>
+<span class="nc" id="L212">			writer.beginArray();</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">			for (String s : p.getScopes()) {</span>
+<span class="nc" id="L214">				writer.value(s);</span>
+<span class="nc" id="L215">			}</span>
+<span class="nc" id="L216">			writer.endArray();</span>
+<span class="nc" id="L217">			writer.endObject();</span>
+
+<span class="nc" id="L219">			writer.name(TICKET).value(ticket.getTicket());</span>
+
+<span class="nc" id="L221">			writer.endObject();</span>
+<span class="nc" id="L222">		}</span>
+
+
+<span class="nc" id="L225">	}</span>
+
+	/**
+	 * @param writer
+	 * @throws IOException
+	 */
+	private void writeResourceSets(JsonWriter writer) throws IOException {
+<span class="nc bnc" id="L232" title="All 2 branches missed.">		for (ResourceSet rs : resourceSetRepository.getAll()) {</span>
+<span class="nc" id="L233">			writer.beginObject();</span>
+<span class="nc" id="L234">			writer.name(ID).value(rs.getId());</span>
+<span class="nc" id="L235">			writer.name(CLIENT_ID).value(rs.getClientId());</span>
+<span class="nc" id="L236">			writer.name(ICON_URI).value(rs.getIconUri());</span>
+<span class="nc" id="L237">			writer.name(NAME).value(rs.getName());</span>
+<span class="nc" id="L238">			writer.name(TYPE).value(rs.getType());</span>
+<span class="nc" id="L239">			writer.name(URI).value(rs.getUri());</span>
+<span class="nc" id="L240">			writer.name(OWNER).value(rs.getOwner());</span>
+<span class="nc" id="L241">			writer.name(POLICIES);</span>
+<span class="nc" id="L242">			writer.beginArray();</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">			for (Policy policy : rs.getPolicies()) {</span>
+<span class="nc" id="L244">				writer.beginObject();</span>
+<span class="nc" id="L245">				writer.name(NAME).value(policy.getName());</span>
+<span class="nc" id="L246">				writer.name(SCOPES);</span>
+<span class="nc" id="L247">				writer.beginArray();</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">				for (String scope : policy.getScopes()) {</span>
+<span class="nc" id="L249">					writer.value(scope);</span>
+<span class="nc" id="L250">				}</span>
+<span class="nc" id="L251">				writer.endArray();</span>
+<span class="nc" id="L252">				writer.name(CLAIMS_REQUIRED);</span>
+<span class="nc" id="L253">				writer.beginArray();</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">				for (Claim claim : policy.getClaimsRequired()) {</span>
+<span class="nc" id="L255">					writer.beginObject();</span>
+
+<span class="nc" id="L257">					writer.name(ISSUER);</span>
+<span class="nc" id="L258">					writer.beginArray();</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">					for (String issuer : claim.getIssuer()) {</span>
+<span class="nc" id="L260">						writer.value(issuer);</span>
+<span class="nc" id="L261">					}</span>
+<span class="nc" id="L262">					writer.endArray();</span>
+<span class="nc" id="L263">					writer.name(CLAIM_TOKEN_FORMAT);</span>
+<span class="nc" id="L264">					writer.beginArray();</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">					for (String format : claim.getClaimTokenFormat()) {</span>
+<span class="nc" id="L266">						writer.value(format);</span>
+<span class="nc" id="L267">					}</span>
+<span class="nc" id="L268">					writer.endArray();</span>
+<span class="nc" id="L269">					writer.name(CLAIM_TYPE).value(claim.getClaimType());</span>
+<span class="nc" id="L270">					writer.name(FRIENDLY_NAME).value(claim.getFriendlyName());</span>
+<span class="nc" id="L271">					writer.name(NAME).value(claim.getName());</span>
+<span class="nc" id="L272">					writer.name(VALUE).value(claim.getValue().toString());</span>
+<span class="nc" id="L273">					writer.endObject();</span>
+<span class="nc" id="L274">				}</span>
+<span class="nc" id="L275">				writer.endArray();</span>
+<span class="nc" id="L276">				writer.endObject();</span>
+<span class="nc" id="L277">			}</span>
+<span class="nc" id="L278">			writer.endArray();</span>
+<span class="nc" id="L279">			writer.name(SCOPES);</span>
+<span class="nc" id="L280">			writer.beginArray();</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">			for (String scope : rs.getScopes()) {</span>
+<span class="nc" id="L282">				writer.value(scope);</span>
+<span class="nc" id="L283">			}</span>
+<span class="nc" id="L284">			writer.endArray();</span>
+<span class="nc" id="L285">			writer.endObject();</span>
+<span class="nc" id="L286">			logger.debug(&quot;Finished writing resource set {}&quot;, rs.getId());</span>
+<span class="nc" id="L287">		}</span>
+
+<span class="nc" id="L289">	}</span>
+
+	/**
+	 * @param writer
+	 */
+	private void writeSavedRegisteredClients(JsonWriter writer) throws IOException {
+<span class="nc bnc" id="L295" title="All 2 branches missed.">		for (SavedRegisteredClient src : registeredClientService.getAll()) {</span>
+<span class="nc" id="L296">			writer.beginObject();</span>
+<span class="nc" id="L297">			writer.name(ISSUER).value(src.getIssuer());</span>
+<span class="nc" id="L298">			writer.name(REGISTERED_CLIENT).value(src.getRegisteredClient().getSource().toString());</span>
+<span class="nc" id="L299">			writer.endObject();</span>
+<span class="nc" id="L300">			logger.debug(&quot;Wrote saved registered client {}&quot;, src.getId());</span>
+<span class="nc" id="L301">		}</span>
+<span class="nc" id="L302">		logger.info(&quot;Done writing saved registered clients&quot;);</span>
+<span class="nc" id="L303">	}</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.service.MITREidDataServiceExtension#importExtensionData(com.google.gson.stream.JsonReader)
+	 */
+	@Override
+	public boolean importExtensionData(String name, JsonReader reader) throws IOException {
+<span class="nc bnc" id="L310" title="All 2 branches missed.">		if (name.equals(SAVED_REGISTERED_CLIENTS)) {</span>
+<span class="nc" id="L311">			readSavedRegisteredClients(reader);</span>
+<span class="nc" id="L312">			return true;</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">		} else if (name.equals(RESOURCE_SETS)) {</span>
+<span class="nc" id="L314">			readResourceSets(reader);</span>
+<span class="nc" id="L315">			return true;</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">		} else if (name.equals(PERMISSION_TICKETS)) {</span>
+<span class="nc" id="L317">			readPermissionTickets(reader);</span>
+<span class="nc" id="L318">			return true;</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">		} else if (name.equals(TOKEN_PERMISSIONS)) {</span>
+<span class="nc" id="L320">			readTokenPermissions(reader);</span>
+<span class="nc" id="L321">			return true;</span>
+		} else {
+<span class="nc" id="L323">			return false;</span>
+		}
+	}
+
+	/**
+	 * @param reader
+	 */
+	private void readTokenPermissions(JsonReader reader) throws IOException {
+<span class="nc" id="L331">		reader.beginArray();</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">		while(reader.hasNext()) {</span>
+<span class="nc" id="L333">			reader.beginObject();</span>
+<span class="nc" id="L334">			Long tokenId = null;</span>
+<span class="nc" id="L335">			Set&lt;Long&gt; permissions = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">			while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L337" title="All 3 branches missed.">				switch(reader.peek()) {</span>
+					case END_OBJECT:
+<span class="nc" id="L339">						continue;</span>
+					case NAME:
+<span class="nc" id="L341">						String name = reader.nextName();</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">						if (name.equals(TOKEN_ID)) {</span>
+<span class="nc" id="L343">							tokenId = reader.nextLong();</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">						} else if (name.equals(PERMISSIONS)) {</span>
+<span class="nc" id="L345">							reader.beginArray();</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">							while (reader.hasNext()) {</span>
+<span class="nc" id="L347">								Permission p = new Permission();</span>
+<span class="nc" id="L348">								Long rsid = null;</span>
+<span class="nc" id="L349">								Set&lt;String&gt; scope = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L350">								reader.beginObject();</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">								while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L352" title="All 3 branches missed.">									switch (reader.peek()) {</span>
+										case END_OBJECT:
+<span class="nc" id="L354">											continue;</span>
+										case NAME:
+<span class="nc" id="L356">											String pname = reader.nextName();</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">											if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L358">												reader.skipValue();</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">											} else if (pname.equals(RESOURCE_SET)) {</span>
+<span class="nc" id="L360">												rsid = reader.nextLong();</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">											} else if (pname.equals(SCOPES)) {</span>
+<span class="nc" id="L362">												scope = readSet(reader);</span>
+											} else {
+<span class="nc" id="L364">												logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L365">												reader.skipValue();</span>
+											}
+<span class="nc" id="L367">											break;</span>
+										default:
+<span class="nc" id="L369">											logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L370">											reader.skipValue();</span>
+<span class="nc" id="L371">											continue;</span>
+									}
+								}
+<span class="nc" id="L374">								reader.endObject();</span>
+<span class="nc" id="L375">								p.setScopes(scope);</span>
+<span class="nc" id="L376">								Permission saved = permissionRepository.saveRawPermission(p);</span>
+<span class="nc" id="L377">								permissionToResourceRefs.put(saved.getId(), rsid);</span>
+<span class="nc" id="L378">								permissions.add(saved.getId());</span>
+<span class="nc" id="L379">							}</span>
+<span class="nc" id="L380">							reader.endArray();</span>
+						}
+						break;
+					default:
+<span class="nc" id="L384">						logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L385">						reader.skipValue();</span>
+<span class="nc" id="L386">						continue;</span>
+				}
+			}
+<span class="nc" id="L389">			reader.endObject();</span>
+<span class="nc" id="L390">			tokenToPermissionRefs.put(tokenId, permissions);</span>
+<span class="nc" id="L391">		}</span>
+<span class="nc" id="L392">		reader.endArray();</span>
+
+<span class="nc" id="L394">	}</span>
+
+<span class="nc" id="L396">	private Map&lt;Long, Long&gt; permissionToResourceRefs = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * @param reader
+	 */
+	private void readPermissionTickets(JsonReader reader) throws IOException {
+<span class="nc" id="L402">		JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L403">		reader.beginArray();</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">		while (reader.hasNext()) {</span>
+<span class="nc" id="L405">			PermissionTicket ticket = new PermissionTicket();</span>
+<span class="nc" id="L406">			reader.beginObject();</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">			while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L408" title="All 3 branches missed.">				switch (reader.peek()) {</span>
+					case END_OBJECT:
+<span class="nc" id="L410">						continue;</span>
+					case NAME:
+<span class="nc" id="L412">						String name = reader.nextName();</span>
+<span class="nc bnc" id="L413" title="All 2 branches missed.">						if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L414">							reader.skipValue();</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">						} else if (name.equals(CLAIMS_SUPPLIED)) {</span>
+<span class="nc" id="L416">							Set&lt;Claim&gt; claimsSupplied = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L417">							reader.beginArray();</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">							while (reader.hasNext()) {</span>
+<span class="nc" id="L419">								Claim c = new Claim();</span>
+<span class="nc" id="L420">								reader.beginObject();</span>
+<span class="nc bnc" id="L421" title="All 2 branches missed.">								while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L422" title="All 3 branches missed.">									switch (reader.peek()) {</span>
+										case END_OBJECT:
+<span class="nc" id="L424">											continue;</span>
+										case NAME:
+<span class="nc" id="L426">											String cname = reader.nextName();</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">											if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L428">												reader.skipValue();</span>
+<span class="nc bnc" id="L429" title="All 2 branches missed.">											} else if (cname.equals(ISSUER)) {</span>
+<span class="nc" id="L430">												c.setIssuer(readSet(reader));</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">											} else if (cname.equals(CLAIM_TOKEN_FORMAT)) {</span>
+<span class="nc" id="L432">												c.setClaimTokenFormat(readSet(reader));</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">											} else if (cname.equals(CLAIM_TYPE)) {</span>
+<span class="nc" id="L434">												c.setClaimType(reader.nextString());</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">											} else if (cname.equals(FRIENDLY_NAME)) {</span>
+<span class="nc" id="L436">												c.setFriendlyName(reader.nextString());</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">											} else if (cname.equals(NAME)) {</span>
+<span class="nc" id="L438">												c.setName(reader.nextString());</span>
+<span class="nc bnc" id="L439" title="All 2 branches missed.">											} else if (cname.equals(VALUE)) {</span>
+<span class="nc" id="L440">												JsonElement e = parser.parse(reader.nextString());</span>
+<span class="nc" id="L441">												c.setValue(e);</span>
+<span class="nc" id="L442">											} else {</span>
+<span class="nc" id="L443">												logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L444">												reader.skipValue();</span>
+											}
+<span class="nc" id="L446">											break;</span>
+										default:
+<span class="nc" id="L448">											logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L449">											reader.skipValue();</span>
+<span class="nc" id="L450">											continue;</span>
+									}
+								}
+<span class="nc" id="L453">								reader.endObject();</span>
+<span class="nc" id="L454">								claimsSupplied.add(c);</span>
+<span class="nc" id="L455">							}</span>
+<span class="nc" id="L456">							reader.endArray();</span>
+<span class="nc" id="L457">							ticket.setClaimsSupplied(claimsSupplied);</span>
+<span class="nc bnc" id="L458" title="All 2 branches missed.">						} else if (name.equals(EXPIRATION)) {</span>
+<span class="nc" id="L459">							ticket.setExpiration(utcToDate(reader.nextString()));</span>
+<span class="nc bnc" id="L460" title="All 2 branches missed.">						} else if (name.equals(PERMISSION)) {</span>
+<span class="nc" id="L461">							Permission p = new Permission();</span>
+<span class="nc" id="L462">							Long rsid = null;</span>
+<span class="nc" id="L463">							reader.beginObject();</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">							while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L465" title="All 3 branches missed.">								switch (reader.peek()) {</span>
+									case END_OBJECT:
+<span class="nc" id="L467">										continue;</span>
+									case NAME:
+<span class="nc" id="L469">										String pname = reader.nextName();</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">										if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L471">											reader.skipValue();</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">										} else if (pname.equals(RESOURCE_SET)) {</span>
+<span class="nc" id="L473">											rsid = reader.nextLong();</span>
+<span class="nc bnc" id="L474" title="All 2 branches missed.">										} else if (pname.equals(SCOPES)) {</span>
+<span class="nc" id="L475">											p.setScopes(readSet(reader));</span>
+										} else {
+<span class="nc" id="L477">											logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L478">											reader.skipValue();</span>
+										}
+<span class="nc" id="L480">										break;</span>
+									default:
+<span class="nc" id="L482">										logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L483">										reader.skipValue();</span>
+<span class="nc" id="L484">										continue;</span>
+								}
+							}
+<span class="nc" id="L487">							reader.endObject();</span>
+<span class="nc" id="L488">							Permission saved = permissionRepository.saveRawPermission(p);</span>
+<span class="nc" id="L489">							permissionToResourceRefs.put(saved.getId(), rsid);</span>
+<span class="nc" id="L490">							ticket.setPermission(saved);</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">						} else if (name.equals(TICKET)) {</span>
+<span class="nc" id="L492">							ticket.setTicket(reader.nextString());</span>
+						} else {
+<span class="nc" id="L494">							logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L495">							reader.skipValue();</span>
+						}
+<span class="nc" id="L497">						break;</span>
+					default:
+<span class="nc" id="L499">						logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L500">						reader.skipValue();</span>
+<span class="nc" id="L501">						continue;</span>
+				}
+			}
+<span class="nc" id="L504">			reader.endObject();</span>
+<span class="nc" id="L505">			permissionRepository.save(ticket);</span>
+<span class="nc" id="L506">		}</span>
+<span class="nc" id="L507">		reader.endArray();</span>
+<span class="nc" id="L508">	}</span>
+
+
+<span class="nc" id="L511">	private Map&lt;Long, Long&gt; resourceSetOldToNewIdMap = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * @param reader
+	 */
+	private void readResourceSets(JsonReader reader) throws IOException {
+<span class="nc" id="L517">		JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L518">		reader.beginArray();</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">		while (reader.hasNext()) {</span>
+<span class="nc" id="L520">			Long oldId = null;</span>
+<span class="nc" id="L521">			ResourceSet rs = new ResourceSet();</span>
+<span class="nc" id="L522">			reader.beginObject();</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">			while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L524" title="All 3 branches missed.">				switch (reader.peek()) {</span>
+					case END_OBJECT:
+<span class="nc" id="L526">						continue;</span>
+					case NAME:
+<span class="nc" id="L528">						String name = reader.nextName();</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">						if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L530">							reader.skipValue();</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">						} else if (name.equals(ID)) {</span>
+<span class="nc" id="L532">							oldId = reader.nextLong();</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">						} else if (name.equals(CLIENT_ID)) {</span>
+<span class="nc" id="L534">							rs.setClientId(reader.nextString());</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">						} else if (name.equals(ICON_URI)) {</span>
+<span class="nc" id="L536">							rs.setIconUri(reader.nextString());</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">						} else if (name.equals(NAME)) {</span>
+<span class="nc" id="L538">							rs.setName(reader.nextString());</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">						} else if (name.equals(TYPE)) {</span>
+<span class="nc" id="L540">							rs.setType(reader.nextString());</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">						} else if (name.equals(URI)) {</span>
+<span class="nc" id="L542">							rs.setUri(reader.nextString());</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">						} else if (name.equals(OWNER)) {</span>
+<span class="nc" id="L544">							rs.setOwner(reader.nextString());</span>
+<span class="nc bnc" id="L545" title="All 2 branches missed.">						} else if (name.equals(POLICIES)) {</span>
+<span class="nc" id="L546">							Set&lt;Policy&gt; policies = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L547">							reader.beginArray();</span>
+<span class="nc bnc" id="L548" title="All 2 branches missed.">							while (reader.hasNext()) {</span>
+<span class="nc" id="L549">								Policy p = new Policy();</span>
+<span class="nc" id="L550">								reader.beginObject();</span>
+<span class="nc bnc" id="L551" title="All 2 branches missed.">								while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L552" title="All 3 branches missed.">									switch (reader.peek()) {</span>
+										case END_OBJECT:
+<span class="nc" id="L554">											continue;</span>
+										case NAME:
+<span class="nc" id="L556">											String pname = reader.nextName();</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">											if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L558">												reader.skipValue();</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">											} else if (pname.equals(NAME)) {</span>
+<span class="nc" id="L560">												p.setName(reader.nextString());</span>
+<span class="nc bnc" id="L561" title="All 2 branches missed.">											} else if (pname.equals(SCOPES)) {</span>
+<span class="nc" id="L562">												p.setScopes(readSet(reader));</span>
+<span class="nc bnc" id="L563" title="All 2 branches missed.">											} else if (pname.equals(CLAIMS_REQUIRED)) {</span>
+<span class="nc" id="L564">												Set&lt;Claim&gt; claimsRequired = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L565">												reader.beginArray();</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">												while (reader.hasNext()) {</span>
+<span class="nc" id="L567">													Claim c = new Claim();</span>
+<span class="nc" id="L568">													reader.beginObject();</span>
+<span class="nc bnc" id="L569" title="All 2 branches missed.">													while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L570" title="All 3 branches missed.">														switch (reader.peek()) {</span>
+															case END_OBJECT:
+<span class="nc" id="L572">																continue;</span>
+															case NAME:
+<span class="nc" id="L574">																String cname = reader.nextName();</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">																if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L576">																	reader.skipValue();</span>
+<span class="nc bnc" id="L577" title="All 2 branches missed.">																} else if (cname.equals(ISSUER)) {</span>
+<span class="nc" id="L578">																	c.setIssuer(readSet(reader));</span>
+<span class="nc bnc" id="L579" title="All 2 branches missed.">																} else if (cname.equals(CLAIM_TOKEN_FORMAT)) {</span>
+<span class="nc" id="L580">																	c.setClaimTokenFormat(readSet(reader));</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">																} else if (cname.equals(CLAIM_TYPE)) {</span>
+<span class="nc" id="L582">																	c.setClaimType(reader.nextString());</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">																} else if (cname.equals(FRIENDLY_NAME)) {</span>
+<span class="nc" id="L584">																	c.setFriendlyName(reader.nextString());</span>
+<span class="nc bnc" id="L585" title="All 2 branches missed.">																} else if (cname.equals(NAME)) {</span>
+<span class="nc" id="L586">																	c.setName(reader.nextString());</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">																} else if (cname.equals(VALUE)) {</span>
+<span class="nc" id="L588">																	JsonElement e = parser.parse(reader.nextString());</span>
+<span class="nc" id="L589">																	c.setValue(e);</span>
+<span class="nc" id="L590">																} else {</span>
+<span class="nc" id="L591">																	logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L592">																	reader.skipValue();</span>
+																}
+<span class="nc" id="L594">																break;</span>
+															default:
+<span class="nc" id="L596">																logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L597">																reader.skipValue();</span>
+<span class="nc" id="L598">																continue;</span>
+														}
+													}
+<span class="nc" id="L601">													reader.endObject();</span>
+<span class="nc" id="L602">													claimsRequired.add(c);</span>
+<span class="nc" id="L603">												}</span>
+<span class="nc" id="L604">												reader.endArray();</span>
+<span class="nc" id="L605">												p.setClaimsRequired(claimsRequired);</span>
+<span class="nc" id="L606">											} else {</span>
+<span class="nc" id="L607">												logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L608">												reader.skipValue();</span>
+											}
+<span class="nc" id="L610">											break;</span>
+										default:
+<span class="nc" id="L612">											logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L613">											reader.skipValue();</span>
+<span class="nc" id="L614">											continue;</span>
+									}
+								}
+<span class="nc" id="L617">								reader.endObject();</span>
+<span class="nc" id="L618">								policies.add(p);</span>
+<span class="nc" id="L619">							}</span>
+<span class="nc" id="L620">							reader.endArray();</span>
+<span class="nc" id="L621">							rs.setPolicies(policies);</span>
+<span class="nc bnc" id="L622" title="All 2 branches missed.">						} else if (name.equals(SCOPES)) {</span>
+<span class="nc" id="L623">							rs.setScopes(readSet(reader));</span>
+						} else {
+<span class="nc" id="L625">							logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L626">							reader.skipValue();</span>
+						}
+<span class="nc" id="L628">						break;</span>
+					default:
+<span class="nc" id="L630">						logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L631">						reader.skipValue();</span>
+<span class="nc" id="L632">						continue;</span>
+				}
+			}
+<span class="nc" id="L635">			reader.endObject();</span>
+<span class="nc" id="L636">			Long newId = resourceSetRepository.save(rs).getId();</span>
+<span class="nc" id="L637">			resourceSetOldToNewIdMap.put(oldId, newId);</span>
+<span class="nc" id="L638">		}</span>
+<span class="nc" id="L639">		reader.endArray();</span>
+<span class="nc" id="L640">		logger.info(&quot;Done reading resource sets&quot;);</span>
+<span class="nc" id="L641">	}</span>
+
+	/**
+	 * @param reader
+	 */
+	private void readSavedRegisteredClients(JsonReader reader) throws IOException{
+<span class="nc" id="L647">		reader.beginArray();</span>
+<span class="nc bnc" id="L648" title="All 2 branches missed.">		while (reader.hasNext()) {</span>
+<span class="nc" id="L649">			String issuer = null;</span>
+<span class="nc" id="L650">			String clientString = null;</span>
+<span class="nc" id="L651">			reader.beginObject();</span>
+<span class="nc bnc" id="L652" title="All 2 branches missed.">			while (reader.hasNext()) {</span>
+<span class="nc bnc" id="L653" title="All 3 branches missed.">				switch (reader.peek()) {</span>
+					case END_OBJECT:
+<span class="nc" id="L655">						continue;</span>
+					case NAME:
+<span class="nc" id="L657">						String name = reader.nextName();</span>
+<span class="nc bnc" id="L658" title="All 2 branches missed.">						if (reader.peek() == JsonToken.NULL) {</span>
+<span class="nc" id="L659">							reader.skipValue();</span>
+<span class="nc bnc" id="L660" title="All 2 branches missed.">						} else if (name.equals(ISSUER)) {</span>
+<span class="nc" id="L661">							issuer = reader.nextString();</span>
+<span class="nc bnc" id="L662" title="All 2 branches missed.">						} else if (name.equals(REGISTERED_CLIENT)) {</span>
+<span class="nc" id="L663">							clientString = reader.nextString();</span>
+						} else {
+<span class="nc" id="L665">							logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L666">							reader.skipValue();</span>
+						}
+<span class="nc" id="L668">						break;</span>
+					default:
+<span class="nc" id="L670">						logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L671">						reader.skipValue();</span>
+<span class="nc" id="L672">						continue;</span>
+				}
+			}
+<span class="nc" id="L675">			reader.endObject();</span>
+<span class="nc" id="L676">			RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(clientString);</span>
+<span class="nc" id="L677">			registeredClientService.save(issuer, client);</span>
+<span class="nc" id="L678">			logger.debug(&quot;Saved registered client&quot;);</span>
+<span class="nc" id="L679">		}</span>
+<span class="nc" id="L680">		reader.endArray();</span>
+<span class="nc" id="L681">		logger.info(&quot;Done reading saved registered clients&quot;);</span>
+<span class="nc" id="L682">	}</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.service.MITREidDataServiceExtension#fixExtensionObjectReferences()
+	 */
+	@Override
+	public void fixExtensionObjectReferences(MITREidDataServiceMaps maps) {
+<span class="nc bnc" id="L689" title="All 2 branches missed.">		for (Long permissionId : permissionToResourceRefs.keySet()) {</span>
+<span class="nc" id="L690">			Long oldResourceId = permissionToResourceRefs.get(permissionId);</span>
+<span class="nc" id="L691">			Long newResourceId = resourceSetOldToNewIdMap.get(oldResourceId);</span>
+<span class="nc" id="L692">			Permission p = permissionRepository.getById(permissionId);</span>
+<span class="nc" id="L693">			ResourceSet rs = resourceSetRepository.getById(newResourceId);</span>
+<span class="nc" id="L694">			p.setResourceSet(rs);</span>
+<span class="nc" id="L695">			permissionRepository.saveRawPermission(p);</span>
+<span class="nc" id="L696">			logger.debug(&quot;Mapping rsid &quot; + oldResourceId + &quot; to &quot; + newResourceId + &quot; for permission &quot; + permissionId);</span>
+<span class="nc" id="L697">		}</span>
+<span class="nc bnc" id="L698" title="All 2 branches missed.">		for (Long tokenId : tokenToPermissionRefs.keySet()) {</span>
+<span class="nc" id="L699">			Long newTokenId = maps.getAccessTokenOldToNewIdMap().get(tokenId);</span>
+<span class="nc" id="L700">			OAuth2AccessTokenEntity token = tokenRepository.getAccessTokenById(newTokenId);</span>
+
+<span class="nc" id="L702">			Set&lt;Permission&gt; permissions = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L703" title="All 2 branches missed.">			for (Long permissionId : tokenToPermissionRefs.get(tokenId)) {</span>
+<span class="nc" id="L704">				Permission p = permissionRepository.getById(permissionId);</span>
+<span class="nc" id="L705">				permissions.add(p);</span>
+<span class="nc" id="L706">			}</span>
+
+<span class="nc" id="L708">			token.setPermissions(permissions);</span>
+<span class="nc" id="L709">			tokenRepository.saveAccessToken(token);</span>
+<span class="nc" id="L710">		}</span>
+<span class="nc" id="L711">		permissionToResourceRefs.clear();</span>
+<span class="nc" id="L712">		resourceSetOldToNewIdMap.clear();</span>
+<span class="nc" id="L713">		tokenToPermissionRefs.clear();</span>
+<span class="nc" id="L714">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

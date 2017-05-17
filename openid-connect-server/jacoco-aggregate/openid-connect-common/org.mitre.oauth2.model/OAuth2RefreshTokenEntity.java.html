@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OAuth2RefreshTokenEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">OAuth2RefreshTokenEntity.java</span></div><h1>OAuth2RefreshTokenEntity.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.model;
+
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
+
+import org.mitre.oauth2.model.convert.JWTStringConverter;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+
+import com.nimbusds.jwt.JWT;
+
+/**
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name = &quot;refresh_token&quot;)
+@NamedQueries({
+	@NamedQuery(name = OAuth2RefreshTokenEntity.QUERY_ALL, query = &quot;select r from OAuth2RefreshTokenEntity r&quot;),
+	@NamedQuery(name = OAuth2RefreshTokenEntity.QUERY_EXPIRED_BY_DATE, query = &quot;select r from OAuth2RefreshTokenEntity r where r.expiration &lt;= :&quot; + OAuth2RefreshTokenEntity.PARAM_DATE),
+	@NamedQuery(name = OAuth2RefreshTokenEntity.QUERY_BY_CLIENT, query = &quot;select r from OAuth2RefreshTokenEntity r where r.client = :&quot; + OAuth2RefreshTokenEntity.PARAM_CLIENT),
+	@NamedQuery(name = OAuth2RefreshTokenEntity.QUERY_BY_TOKEN_VALUE, query = &quot;select r from OAuth2RefreshTokenEntity r where r.jwt = :&quot; + OAuth2RefreshTokenEntity.PARAM_TOKEN_VALUE)
+})
+public class OAuth2RefreshTokenEntity implements OAuth2RefreshToken {
+
+	public static final String QUERY_BY_TOKEN_VALUE = &quot;OAuth2RefreshTokenEntity.getByTokenValue&quot;;
+	public static final String QUERY_BY_CLIENT = &quot;OAuth2RefreshTokenEntity.getByClient&quot;;
+	public static final String QUERY_EXPIRED_BY_DATE = &quot;OAuth2RefreshTokenEntity.getAllExpiredByDate&quot;;
+	public static final String QUERY_ALL = &quot;OAuth2RefreshTokenEntity.getAll&quot;;
+
+	public static final String PARAM_TOKEN_VALUE = &quot;tokenValue&quot;;
+	public static final String PARAM_CLIENT = &quot;client&quot;;
+	public static final String PARAM_DATE = &quot;date&quot;;
+
+	private Long id;
+
+	private AuthenticationHolderEntity authenticationHolder;
+
+	private ClientDetailsEntity client;
+
+	//JWT-encoded representation of this access token entity
+	private JWT jwt;
+
+	// our refresh tokens might expire
+	private Date expiration;
+
+	/**
+	 *
+	 */
+<span class="nc" id="L83">	public OAuth2RefreshTokenEntity() {</span>
+
+<span class="nc" id="L85">	}</span>
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L94">		return id;</span>
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L101">		this.id = id;</span>
+<span class="nc" id="L102">	}</span>
+
+	/**
+	 * The authentication in place when the original access token was
+	 * created
+	 *
+	 * @return the authentication
+	 */
+	@ManyToOne
+	@JoinColumn(name = &quot;auth_holder_id&quot;)
+	public AuthenticationHolderEntity getAuthenticationHolder() {
+<span class="nc" id="L113">		return authenticationHolder;</span>
+	}
+
+	/**
+	 * @param authentication the authentication to set
+	 */
+	public void setAuthenticationHolder(AuthenticationHolderEntity authenticationHolder) {
+<span class="nc" id="L120">		this.authenticationHolder = authenticationHolder;</span>
+<span class="nc" id="L121">	}</span>
+
+	/**
+	 * Get the JWT-encoded value of this token
+	 */
+	@Override
+	@Transient
+	public String getValue() {
+<span class="nc" id="L129">		return jwt.serialize();</span>
+	}
+
+	@Basic
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	@Column(name = &quot;expiration&quot;)
+	public Date getExpiration() {
+<span class="nc" id="L136">		return expiration;</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken#setExpiration(java.util.Date)
+	 */
+
+	public void setExpiration(Date expiration) {
+<span class="nc" id="L144">		this.expiration = expiration;</span>
+<span class="nc" id="L145">	}</span>
+
+	/**
+	 * Has this token expired?
+	 * @return true if it has a timeout set and the timeout has passed
+	 */
+	@Transient
+	public boolean isExpired() {
+<span class="nc bnc" id="L153" title="All 4 branches missed.">		return getExpiration() == null ? false : System.currentTimeMillis() &gt; getExpiration().getTime();</span>
+	}
+
+	/**
+	 * @return the client
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = &quot;client_id&quot;)
+	public ClientDetailsEntity getClient() {
+<span class="nc" id="L162">		return client;</span>
+	}
+
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(ClientDetailsEntity client) {
+<span class="nc" id="L169">		this.client = client;</span>
+<span class="nc" id="L170">	}</span>
+
+	/**
+	 * Get the JWT object directly
+	 * @return the jwt
+	 */
+	@Basic
+	@Column(name=&quot;token_value&quot;)
+	@Convert(converter = JWTStringConverter.class)
+	public JWT getJwt() {
+<span class="nc" id="L180">		return jwt;</span>
+	}
+
+	/**
+	 * @param jwt the jwt to set
+	 */
+	public void setJwt(JWT jwt) {
+<span class="nc" id="L187">		this.jwt = jwt;</span>
+<span class="nc" id="L188">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

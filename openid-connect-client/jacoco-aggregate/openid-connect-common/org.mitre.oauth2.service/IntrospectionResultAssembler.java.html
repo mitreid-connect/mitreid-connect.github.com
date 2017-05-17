@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IntrospectionResultAssembler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service</a> &gt; <span class="el_source">IntrospectionResultAssembler.java</span></div><h1>IntrospectionResultAssembler.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.oauth2.service;
+
+import java.text.SimpleDateFormat;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.text.DateFormatter;
+
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.mitre.oauth2.model.OAuth2RefreshTokenEntity;
+import org.mitre.openid.connect.model.UserInfo;
+
+/**
+ * Strategy interface for assembling a token introspection result.
+ */
+public interface IntrospectionResultAssembler {
+
+	public String TOKEN_TYPE = &quot;token_type&quot;;
+	public String CLIENT_ID = &quot;client_id&quot;;
+	public String USER_ID = &quot;user_id&quot;;
+	public String SUB = &quot;sub&quot;;
+	public String EXP = &quot;exp&quot;;
+	public String EXPIRES_AT = &quot;expires_at&quot;;
+	public String SCOPE_SEPARATOR = &quot; &quot;;
+	public String SCOPE = &quot;scope&quot;;
+	public String ACTIVE = &quot;active&quot;;
+<span class="nc" id="L43">	public DateFormatter dateFormat = new DateFormatter(new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;));</span>
+
+	/**
+	 * Assemble a token introspection result from the given access token and user info.
+	 *
+	 * @param accessToken the access token
+	 * @param userInfo the user info
+	 * @param authScopes the scopes the client is authorized for
+	 * @return the token introspection result
+	 */
+	Map&lt;String, Object&gt; assembleFrom(OAuth2AccessTokenEntity accessToken, UserInfo userInfo, Set&lt;String&gt; authScopes);
+
+	/**
+	 * Assemble a token introspection result from the given refresh token and user info.
+	 *
+	 * @param refreshToken the refresh token
+	 * @param userInfo the user info
+	 * @param authScopes the scopes the client is authorized for
+	 * @return the token introspection result
+	 */
+	Map&lt;String, Object&gt; assembleFrom(OAuth2RefreshTokenEntity refreshToken, UserInfo userInfo, Set&lt;String&gt; authScopes);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

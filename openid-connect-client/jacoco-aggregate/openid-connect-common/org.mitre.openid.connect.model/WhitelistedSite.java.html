@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WhitelistedSite.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">WhitelistedSite.java</span></div><h1>WhitelistedSite.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.openid.connect.model;
+
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+/**
+ * Indicator that login to a site should be automatically granted
+ * without user interaction.
+ * @author jricher, aanganes
+ *
+ */
+@Entity
+@Table(name=&quot;whitelisted_site&quot;)
+@NamedQueries({
+	@NamedQuery(name = WhitelistedSite.QUERY_ALL, query = &quot;select w from WhitelistedSite w&quot;),
+	@NamedQuery(name = WhitelistedSite.QUERY_BY_CLIENT_ID, query = &quot;select w from WhitelistedSite w where w.clientId = :&quot; + WhitelistedSite.PARAM_CLIENT_ID),
+	@NamedQuery(name = WhitelistedSite.QUERY_BY_CREATOR, query = &quot;select w from WhitelistedSite w where w.creatorUserId = :&quot; + WhitelistedSite.PARAM_USER_ID)
+})
+public class WhitelistedSite {
+
+	public static final String QUERY_BY_CREATOR = &quot;WhitelistedSite.getByCreatoruserId&quot;;
+	public static final String QUERY_BY_CLIENT_ID = &quot;WhitelistedSite.getByClientId&quot;;
+	public static final String QUERY_ALL = &quot;WhitelistedSite.getAll&quot;;
+
+	public static final String PARAM_USER_ID = &quot;userId&quot;;
+	public static final String PARAM_CLIENT_ID = &quot;clientId&quot;;
+
+	// unique id
+	private Long id;
+
+	// Reference to the admin user who created this entry
+	private String creatorUserId;
+
+	// which OAuth2 client is this tied to
+	private String clientId;
+
+	// what scopes be allowed by default
+	// this should include all information for what data to access
+	private Set&lt;String&gt; allowedScopes;
+
+	/**
+	 * Empty constructor
+	 */
+<span class="nc" id="L73">	public WhitelistedSite() {</span>
+
+<span class="nc" id="L75">	}</span>
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L84">		return id;</span>
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L91">		this.id = id;</span>
+<span class="nc" id="L92">	}</span>
+
+	/**
+	 * @return the clientId
+	 */
+	@Basic
+	@Column(name=&quot;client_id&quot;)
+	public String getClientId() {
+<span class="nc" id="L100">		return clientId;</span>
+	}
+
+	/**
+	 * @param clientId the clientId to set
+	 */
+	public void setClientId(String clientId) {
+<span class="nc" id="L107">		this.clientId = clientId;</span>
+<span class="nc" id="L108">	}</span>
+
+	/**
+	 * @return the allowedScopes
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;whitelisted_site_scope&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;scope&quot;)
+	public Set&lt;String&gt; getAllowedScopes() {
+<span class="nc" id="L120">		return allowedScopes;</span>
+	}
+
+	/**
+	 * @param allowedScopes the allowedScopes to set
+	 */
+	public void setAllowedScopes(Set&lt;String&gt; allowedScopes) {
+<span class="nc" id="L127">		this.allowedScopes = allowedScopes;</span>
+<span class="nc" id="L128">	}</span>
+
+	@Basic
+	@Column(name=&quot;creator_user_id&quot;)
+	public String getCreatorUserId() {
+<span class="nc" id="L133">		return creatorUserId;</span>
+	}
+
+	public void setCreatorUserId(String creatorUserId) {
+<span class="nc" id="L137">		this.creatorUserId = creatorUserId;</span>
+<span class="nc" id="L138">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

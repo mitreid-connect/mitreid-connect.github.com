@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OIDCAuthenticationToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">OIDCAuthenticationToken.java</span></div><h1>OIDCAuthenticationToken.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.openid.connect.model;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.text.ParseException;
+import java.util.Collection;
+
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+
+import com.google.common.collect.ImmutableMap;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+
+/**
+ *
+ * @author Michael Walsh, Justin Richer
+ *
+ */
+public class OIDCAuthenticationToken extends AbstractAuthenticationToken {
+
+	private static final long serialVersionUID = 22100073066377804L;
+
+	private final ImmutableMap&lt;String, String&gt; principal;
+	private final String accessTokenValue; // string representation of the access token
+	private final String refreshTokenValue; // string representation of the refresh token
+	private transient JWT idToken; // this needs a custom serializer
+	private final String issuer; // issuer URL (parsed from the id token)
+	private final String sub; // user id (parsed from the id token)
+
+	private final UserInfo userInfo; // user info container
+
+	/**
+	 * Constructs OIDCAuthenticationToken with a full set of authorities, marking this as authenticated.
+	 *
+	 * Set to authenticated.
+	 *
+	 * Constructs a Principal out of the subject and issuer.
+	 * @param subject
+	 * @param authorities
+	 * @param principal
+	 * @param idToken
+	 */
+	public OIDCAuthenticationToken(String subject, String issuer,
+			UserInfo userInfo, Collection&lt;? extends GrantedAuthority&gt; authorities,
+			JWT idToken, String accessTokenValue, String refreshTokenValue) {
+
+<span class="nc" id="L65">		super(authorities);</span>
+
+<span class="nc" id="L67">		this.principal = ImmutableMap.of(&quot;sub&quot;, subject, &quot;iss&quot;, issuer);</span>
+<span class="nc" id="L68">		this.userInfo = userInfo;</span>
+<span class="nc" id="L69">		this.sub = subject;</span>
+<span class="nc" id="L70">		this.issuer = issuer;</span>
+<span class="nc" id="L71">		this.idToken = idToken;</span>
+<span class="nc" id="L72">		this.accessTokenValue = accessTokenValue;</span>
+<span class="nc" id="L73">		this.refreshTokenValue = refreshTokenValue;</span>
+
+<span class="nc" id="L75">		setAuthenticated(true);</span>
+<span class="nc" id="L76">	}</span>
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.springframework.security.core.Authentication#getCredentials()
+	 */
+	@Override
+	public Object getCredentials() {
+<span class="nc" id="L86">		return accessTokenValue;</span>
+	}
+
+	/**
+	 * Get the principal of this object, an immutable map of the subject and issuer.
+	 */
+	@Override
+	public Object getPrincipal() {
+<span class="nc" id="L94">		return principal;</span>
+	}
+
+	public String getSub() {
+<span class="nc" id="L98">		return sub;</span>
+	}
+
+	/**
+	 * @return the idTokenValue
+	 */
+	public JWT getIdToken() {
+<span class="nc" id="L105">		return idToken;</span>
+	}
+
+	/**
+	 * @return the accessTokenValue
+	 */
+	public String getAccessTokenValue() {
+<span class="nc" id="L112">		return accessTokenValue;</span>
+	}
+
+	/**
+	 * @return the refreshTokenValue
+	 */
+	public String getRefreshTokenValue() {
+<span class="nc" id="L119">		return refreshTokenValue;</span>
+	}
+
+	/**
+	 * @return the issuer
+	 */
+	public String getIssuer() {
+<span class="nc" id="L126">		return issuer;</span>
+	}
+
+	/**
+	 * @return the userInfo
+	 */
+	public UserInfo getUserInfo() {
+<span class="nc" id="L133">		return userInfo;</span>
+	}
+
+	/*
+	 * Custom serialization to handle the JSON object
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+<span class="nc" id="L140">		out.defaultWriteObject();</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		if (idToken == null) {</span>
+<span class="nc" id="L142">			out.writeObject(null);</span>
+		} else {
+<span class="nc" id="L144">			out.writeObject(idToken.serialize());</span>
+		}
+<span class="nc" id="L146">	}</span>
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException, ParseException {
+<span class="nc" id="L148">		in.defaultReadObject();</span>
+<span class="nc" id="L149">		Object o = in.readObject();</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (o != null) {</span>
+<span class="nc" id="L151">			idToken = JWTParser.parse((String)o);</span>
+		}
+<span class="nc" id="L153">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

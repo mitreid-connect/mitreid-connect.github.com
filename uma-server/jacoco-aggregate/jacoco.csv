@@ -1,0 +1,187 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.request,ConnectOAuth2RequestFactory,667,0,106,0,139,0,58,0,5,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerClientAssertionTokenEndpointFilter.ClientAssertionRequestMatcher,33,0,6,0,10,0,5,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerClientAssertionTokenEndpointFilter,81,0,0,0,19,0,4,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerAuthenticationProvider,447,0,72,0,72,0,40,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerAssertionAuthenticationToken,57,0,0,0,24,0,7,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerClientAssertionTokenEndpointFilter.new AuthenticationSuccessHandler() {...},7,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.assertion,JWTBearerClientAssertionTokenEndpointFilter.new AuthenticationFailureHandler() {...},26,0,2,0,5,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultDeviceCodeService,118,0,8,0,29,0,11,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ClientDetailsEntityService.SectorIdentifierLoader,107,0,8,0,19,0,6,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ClientDetailsEntityService,688,0,120,0,136,0,75,0,15,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ProviderTokenService.new AbstractPageOperationTemplate() {...},20,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ProviderTokenService.new AbstractPageOperationTemplate() {...},20,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ProviderTokenService.new AbstractPageOperationTemplate() {...},21,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,BlacklistAwareRedirectResolver,49,0,6,0,14,0,8,0,5,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2AuthorizationCodeService,106,0,2,0,27,0,10,0,9,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2AuthorizationCodeService.new AbstractPageOperationTemplate() {...},18,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultDeviceCodeService.new AbstractPageOperationTemplate() {...},18,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultIntrospectionResultAssembler,236,0,18,0,50,0,13,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultOAuth2ProviderTokenService,832,0,94,0,177,0,72,0,25,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService.new Predicate() {...},15,0,4,0,2,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService.new Predicate() {...},15,0,4,0,2,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService.new Function() {...},13,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService.new Function() {...},25,0,4,0,7,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService.new Predicate() {...},18,0,4,0,2,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.service.impl,DefaultSystemScopeService,155,0,10,0,33,0,20,0,15,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.filter,MultiUrlRequestMatcher,63,0,6,0,13,0,5,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.filter,AuthorizationRequestFilter,326,0,46,0,83,0,29,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,JWKSetPublishingEndpoint,21,0,0,0,7,0,4,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ApprovedSiteAPI,180,0,8,0,34,0,9,0,5,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ServerConfigInterceptor,15,0,0,0,4,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI,1336,0,230,0,251,0,161,0,9,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,AuthenticationTimeStamper,51,0,2,0,11,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,UserInfoEndpoint,166,0,32,0,38,0,19,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,DataAPI,149,0,11,0,40,0,10,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},15,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},15,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},15,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},15,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},18,0,2,0,6,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ClientAPI.new JsonDeserializer() {...},18,0,2,0,6,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,RootController,29,0,0,0,11,0,8,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,DataAPI.new Object() {...},26,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,BlacklistAPI,286,0,6,0,63,0,10,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,EndSessionEndpoint,177,0,30,0,42,0,19,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,ProtectedResourceRegistrationEndpoint,802,0,44,0,187,0,31,0,9,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,DynamicClientRegistrationEndpoint,1799,0,278,0,316,0,189,0,13,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,WhitelistAPI,295,0,6,0,65,0,10,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.web,StatsAPI,30,0,0,0,8,0,4,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonEntityView,64,0,2,0,20,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},16,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},16,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,ClientEntityViewForUsers.new ExclusionStrategy() {...},25,0,4,0,7,0,5,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,HttpCodeView,17,0,2,0,6,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},17,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},16,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},16,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView.new JsonSerializer() {...},16,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,UserInfoView,191,0,20,0,44,0,16,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonEntityView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,UserInfoView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,ClientEntityViewForAdmins.new ExclusionStrategy() {...},25,0,4,0,7,0,5,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,ClientInformationResponseView,57,0,2,0,18,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,ClientEntityViewForAdmins,12,0,0,0,3,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonErrorView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonApprovedSiteView.new JsonSerializer() {...},12,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonApprovedSiteView.new JsonSerializer() {...},12,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonApprovedSiteView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,AbstractClientEntityView,100,0,2,0,26,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,ClientEntityViewForUsers,19,0,0,0,3,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonErrorView,84,0,4,0,25,0,5,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,UserInfoJWTView,201,0,22,0,46,0,14,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.view,JsonApprovedSiteView,73,0,2,0,21,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,AuthenticationUtilities,69,0,14,0,17,0,11,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,DeviceEndpoint,425,0,36,0,91,0,24,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,TokenAPI,496,0,26,0,93,0,24,0,11,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,OAuth2ExceptionHandler,29,0,0,0,4,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,OAuthConfirmationController,337,0,28,0,74,0,20,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,RevocationEndpoint,183,0,6,0,35,0,6,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,CorsFilter,29,0,4,0,7,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,IntrospectionEndpoint,237,0,14,0,64,0,11,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.web,ScopeAPI,318,0,16,0,54,0,15,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.discovery.web,DiscoveryEndpoint.new Function() {...},13,0,2,0,4,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.discovery.web,DiscoveryEndpoint,799,0,20,0,78,0,14,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.util,IdTokenHashUtils,111,0,26,0,23,0,18,0,5,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaApprovedSiteRepository,94,0,2,0,20,0,9,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaUserInfoRepository,35,0,0,0,7,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaPairwiseIdentifierRepository,32,0,0,0,7,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaBlacklistedSiteRepository,59,0,2,0,12,0,7,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaWhitelistedSiteRepository,89,0,2,0,18,0,9,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.repository.impl,JpaAddressRepository,10,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.exception,ValidationException,55,0,0,0,15,0,8,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.exception,AuthorizationPendingException,6,0,0,0,3,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.exception,DeviceCodeExpiredException,6,0,0,0,3,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.exception,DuplicateClientIdException,11,0,0,0,2,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.config,JsonMessageSource,251,0,30,0,59,0,23,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.token,ChainedTokenGranter,79,0,8,0,18,0,6,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.token,ScopeServiceAwareOAuth2RequestValidator,47,0,10,0,10,0,9,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.token,DeviceTokenGranter,98,0,8,0,15,0,6,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.token,JWTAssertionTokenGranter,50,0,2,0,12,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaOAuth2TokenRepository,519,0,18,0,107,0,33,0,24,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaSystemScopeRepository,58,0,2,0,12,0,7,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaAuthenticationHolderRepository,72,0,2,0,14,0,8,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaDeviceCodeRepository,78,0,2,0,16,0,8,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaOAuth2ClientRepository,84,0,2,0,19,0,9,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.repository.impl,JpaAuthorizationCodeRepository,77,0,2,0,16,0,7,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.token,TofuUserApprovalHandler,281,0,36,0,68,0,24,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.token,ConnectTokenEnhancer,164,0,8,0,44,0,13,0,9,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.assertion.impl,DirectCopyRequestFactory,34,0,0,0,7,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultStatsService.new Supplier() {...},10,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_0,2231,0,336,0,607,0,190,0,16,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_1,2278,0,344,0,618,0,194,0,16,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_2,2105,0,310,0,566,0,175,0,15,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,UUIDPairwiseIdentiferService,69,0,6,0,20,0,6,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultWhitelistedSiteService,58,0,6,0,12,0,10,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_3,3649,0,414,0,883,0,235,0,23,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataServiceSupport,44,0,4,0,14,0,6,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_0.new Object() {...},19,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,InMemoryClientLogoLoadingService,40,0,4,0,13,0,5,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultScopeClaimTranslationService,163,0,4,0,31,0,5,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultStatsService,101,0,2,0,22,0,7,0,6,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DummyResourceSetService,27,0,0,0,8,0,8,0,8,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultApprovedSiteService.new Predicate() {...},15,0,4,0,2,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,InMemoryClientLogoLoadingService.ClientLogoFetcher,54,0,0,0,14,0,3,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,PassAllLoginHints,5,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_3.new Object() {...},19,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,RemoveLoginHintsWithHTTP,16,0,4,0,6,0,4,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_2.new Object() {...},19,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultApprovedSiteService,190,0,14,0,46,0,21,0,14,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MatchLoginHintsAgainstUsers,30,0,6,0,10,0,5,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultUserInfoService,44,0,6,0,11,0,7,0,4,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultOIDCTokenService,503,0,46,0,102,0,36,0,13,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,MITREidDataService_1_1.new Object() {...},19,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-server,org.mitre.openid.connect.service.impl,DefaultBlacklistedSiteService,57,0,6,0,15,0,10,0,7,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.view,TokenApiView,73,0,2,0,21,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.view,TokenApiView.new JsonSerializer() {...},52,0,0,0,9,0,2,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.view,TokenApiView.new JsonSerializer() {...},60,0,2,0,10,0,3,0,2,0
+UMA Server Library/openid-connect-server,org.mitre.oauth2.view,TokenApiView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.discovery.view,WebfingerView,98,0,2,0,28,0,4,0,3,0
+UMA Server Library/openid-connect-server,org.mitre.discovery.view,WebfingerView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter,1340,0,122,0,273,0,95,0,34,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher,50,0,0,0,14,0,5,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,SubjectIssuerGrantedAuthority,127,0,26,0,33,0,20,0,7,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter.new RestTemplate() {...},49,0,0,0,7,0,2,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,StaticPrefixTargetLinkURIChecker,26,0,4,0,10,0,6,0,4,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationProvider,109,0,10,0,23,0,12,0,7,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher.UserInfoLoader.new RestTemplate() {...},31,0,0,0,4,0,2,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,AuthorizationEndpointException,59,0,0,0,9,0,5,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher.UserInfoLoader,144,0,14,0,29,0,9,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,NamedAdminAuthoritiesMapper,68,0,2,0,19,0,6,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter.TargetLinkURIAuthenticationSuccessHandler,40,0,4,0,10,0,4,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridServerConfigurationService,54,0,2,0,16,0,9,0,8,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,SignedAuthRequestUrlBuilder,124,0,6,0,26,0,7,0,4,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticClientConfigurationService,30,0,4,0,8,0,7,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.WebfingerIssuerFetcher,257,0,32,0,45,0,18,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticAuthRequestOptionsService,33,0,0,0,11,0,7,0,7,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridClientConfigurationService,72,0,2,0,22,0,13,0,12,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.LoadingResult,12,0,0,0,4,0,1,0,1,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicRegistrationClientConfigurationService.DynamicClientRegistrationLoader,161,0,4,0,32,0,5,0,3,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,EncryptedAuthRequestUrlBuilder,136,0,4,0,30,0,10,0,8,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new TypeToken() {...},6,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new TypeToken() {...},6,0,0,0,1,0,1,0,1,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new JsonSerializer() {...},9,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new JsonDeserializer() {...},9,0,0,0,2,0,2,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicRegistrationClientConfigurationService,132,0,8,0,34,0,16,0,12,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService,107,0,6,0,22,0,11,0,8,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticSingleIssuerService,28,0,2,0,8,0,6,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridIssuerService,102,0,2,0,28,0,15,0,14,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,PlainAuthRequestUrlBuilder,84,0,4,0,16,0,4,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService,142,0,4,0,35,0,8,0,6,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,ThirdPartyIssuerService,129,0,10,0,28,0,14,0,9,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService.OpenIDConnectServiceConfigurationFetcher,278,0,6,0,52,0,5,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticServerConfigurationService,29,0,4,0,8,0,7,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,InMemoryRegisteredClientService,21,0,0,0,5,0,3,0,3,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService,175,0,8,0,38,0,18,0,14,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.keypublisher,JwkViewResolver,44,0,4,0,17,0,10,0,8,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.keypublisher,ClientKeyPublisher,100,0,4,0,25,0,10,0,8,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.keypublisher,ClientKeyPublisherMapping,50,0,4,0,9,0,7,0,5,0
+UMA Server Library/openid-connect-client,org.mitre.openid.connect.client.model,IssuerServiceResponse,53,0,2,0,21,0,12,0,11,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,ScopeBasedIntrospectionAuthoritiesGranter,69,0,6,0,13,0,7,0,4,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,JWTParsingIntrospectionConfigurationService,125,0,12,0,30,0,13,0,7,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,StaticIntrospectionConfigurationService,23,0,0,0,9,0,7,0,7,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,SimpleIntrospectionAuthorityGranter,22,0,0,0,6,0,4,0,4,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.new RestTemplate() {...},46,0,0,0,5,0,2,0,2,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.TokenCacheObject,50,0,8,0,9,0,5,0,1,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService,418,0,42,0,105,0,43,0,22,0
+UMA Server Library/openid-connect-client,org.mitre.oauth2.introspectingfilter,OAuth2AccessTokenImpl,96,0,10,0,24,0,16,0,11,0

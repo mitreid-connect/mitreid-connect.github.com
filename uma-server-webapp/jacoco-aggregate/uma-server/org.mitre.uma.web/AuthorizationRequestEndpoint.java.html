@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AuthorizationRequestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.web</a> &gt; <span class="el_source">AuthorizationRequestEndpoint.java</span></div><h1>AuthorizationRequestEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.uma.web;
+
+import java.util.Map;
+
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.mitre.oauth2.service.OAuth2TokenEntityService;
+import org.mitre.oauth2.service.SystemScopeService;
+import org.mitre.oauth2.web.AuthenticationUtilities;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonEntityView;
+import org.mitre.openid.connect.view.JsonErrorView;
+import org.mitre.uma.model.Claim;
+import org.mitre.uma.model.ClaimProcessingResult;
+import org.mitre.uma.model.PermissionTicket;
+import org.mitre.uma.model.ResourceSet;
+import org.mitre.uma.service.ClaimsProcessingService;
+import org.mitre.uma.service.PermissionService;
+import org.mitre.uma.service.UmaTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+
+/**
+ * @author jricher
+ *
+ */
+@Controller
+@RequestMapping(&quot;/&quot; + AuthorizationRequestEndpoint.URL)
+<span class="nc" id="L62">public class AuthorizationRequestEndpoint {</span>
+	// Logger for this class
+<span class="nc" id="L64">	private static final Logger logger = LoggerFactory.getLogger(AuthorizationRequestEndpoint.class);</span>
+
+	public static final String RPT = &quot;rpt&quot;;
+	public static final String TICKET = &quot;ticket&quot;;
+	public static final String URL = &quot;authz_request&quot;;
+
+	@Autowired
+	private PermissionService permissionService;
+
+	@Autowired
+	private OAuth2TokenEntityService tokenService;
+
+	@Autowired
+	private ClaimsProcessingService claimsProcessingService;
+
+	@Autowired
+	private UmaTokenService umaTokenService;
+
+	@RequestMapping(method = RequestMethod.POST, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+	public String authorizationRequest(@RequestBody String jsonString, Model m, Authentication auth) {
+
+<span class="nc" id="L85">		AuthenticationUtilities.ensureOAuthScope(auth, SystemScopeService.UMA_AUTHORIZATION_SCOPE);</span>
+
+<span class="nc" id="L87">		JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L88">		JsonElement e = parser.parse(jsonString);</span>
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (e.isJsonObject()) {</span>
+<span class="nc" id="L91">			JsonObject o = e.getAsJsonObject();</span>
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">			if (o.has(TICKET)) {</span>
+
+<span class="nc" id="L95">				OAuth2AccessTokenEntity incomingRpt = null;</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">				if (o.has(RPT)) {</span>
+<span class="nc" id="L97">					String rptValue = o.get(RPT).getAsString();</span>
+<span class="nc" id="L98">					incomingRpt = tokenService.readAccessToken(rptValue);</span>
+				}
+
+<span class="nc" id="L101">				String ticketValue = o.get(TICKET).getAsString();</span>
+
+<span class="nc" id="L103">				PermissionTicket ticket = permissionService.getByTicket(ticketValue);</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">				if (ticket != null) {</span>
+					// found the ticket, see if it's any good
+
+<span class="nc" id="L108">					ResourceSet rs = ticket.getPermission().getResourceSet();</span>
+
+<span class="nc bnc" id="L110" title="All 4 branches missed.">					if (rs.getPolicies() == null || rs.getPolicies().isEmpty()) {</span>
+						// the required claims are empty, this resource has no way to be authorized
+
+<span class="nc" id="L113">						m.addAttribute(JsonErrorView.ERROR, &quot;not_authorized&quot;);</span>
+<span class="nc" id="L114">						m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;This resource set can not be accessed.&quot;);</span>
+<span class="nc" id="L115">						m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L116">						return JsonErrorView.VIEWNAME;</span>
+					} else {
+						// claims weren't empty or missing, we need to check against what we have
+
+<span class="nc" id="L120">						ClaimProcessingResult result = claimsProcessingService.claimsAreSatisfied(rs, ticket);</span>
+
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">						if (result.isSatisfied()) {</span>
+							// the service found what it was looking for, issue a token
+
+							// we need to downscope this based on the required set that was matched if it was matched
+<span class="nc" id="L127">							OAuth2Authentication o2auth = (OAuth2Authentication) auth;</span>
+
+<span class="nc" id="L129">							OAuth2AccessTokenEntity token = umaTokenService.createRequestingPartyToken(o2auth, ticket, result.getMatched());</span>
+
+							// if we have an inbound RPT, throw it out because we're replacing it
+<span class="nc bnc" id="L132" title="All 2 branches missed.">							if (incomingRpt != null) {</span>
+<span class="nc" id="L133">								tokenService.revokeAccessToken(incomingRpt);</span>
+							}
+
+<span class="nc" id="L136">							Map&lt;String, String&gt; entity = ImmutableMap.of(&quot;rpt&quot;, token.getValue());</span>
+
+<span class="nc" id="L138">							m.addAttribute(JsonEntityView.ENTITY, entity);</span>
+
+<span class="nc" id="L140">							return JsonEntityView.VIEWNAME;</span>
+
+						} else {
+
+							// if we got here, the claim didn't match, forward the user to the claim gathering endpoint
+<span class="nc" id="L145">							JsonObject entity = new JsonObject();</span>
+
+<span class="nc" id="L147">							entity.addProperty(JsonErrorView.ERROR, &quot;need_info&quot;);</span>
+<span class="nc" id="L148">							JsonObject details = new JsonObject();</span>
+
+<span class="nc" id="L150">							JsonObject rpClaims = new JsonObject();</span>
+<span class="nc" id="L151">							rpClaims.addProperty(&quot;redirect_user&quot;, true);</span>
+<span class="nc" id="L152">							rpClaims.addProperty(&quot;ticket&quot;, ticketValue);</span>
+<span class="nc" id="L153">							JsonArray req = new JsonArray();</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">							for (Claim claim : result.getUnmatched()) {</span>
+<span class="nc" id="L155">								JsonObject c = new JsonObject();</span>
+<span class="nc" id="L156">								c.addProperty(&quot;name&quot;, claim.getName());</span>
+<span class="nc" id="L157">								c.addProperty(&quot;friendly_name&quot;, claim.getFriendlyName());</span>
+<span class="nc" id="L158">								c.addProperty(&quot;claim_type&quot;, claim.getClaimType());</span>
+<span class="nc" id="L159">								JsonArray f = new JsonArray();</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">								for (String format : claim.getClaimTokenFormat()) {</span>
+<span class="nc" id="L161">									f.add(new JsonPrimitive(format));</span>
+<span class="nc" id="L162">								}</span>
+<span class="nc" id="L163">								c.add(&quot;claim_token_format&quot;, f);</span>
+<span class="nc" id="L164">								JsonArray i = new JsonArray();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">								for (String issuer : claim.getIssuer()) {</span>
+<span class="nc" id="L166">									i.add(new JsonPrimitive(issuer));</span>
+<span class="nc" id="L167">								}</span>
+<span class="nc" id="L168">								c.add(&quot;issuer&quot;, i);</span>
+<span class="nc" id="L169">								req.add(c);</span>
+<span class="nc" id="L170">							}</span>
+<span class="nc" id="L171">							rpClaims.add(&quot;required_claims&quot;, req);</span>
+<span class="nc" id="L172">							details.add(&quot;requesting_party_claims&quot;, rpClaims);</span>
+<span class="nc" id="L173">							entity.add(&quot;error_details&quot;, details);</span>
+
+<span class="nc" id="L175">							m.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc" id="L176">							return JsonEntityView.VIEWNAME;</span>
+						}
+
+
+					}
+				} else {
+					// ticket wasn't found, return an error
+<span class="nc" id="L183">					m.addAttribute(HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L184">					m.addAttribute(JsonErrorView.ERROR, &quot;invalid_ticket&quot;);</span>
+<span class="nc" id="L185">					return JsonErrorView.VIEWNAME;</span>
+				}
+
+			} else {
+<span class="nc" id="L189">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L190">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Missing JSON elements.&quot;);</span>
+<span class="nc" id="L191">				return JsonErrorView.VIEWNAME;</span>
+			}
+
+
+		} else {
+<span class="nc" id="L196">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L197">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Malformed JSON request.&quot;);</span>
+<span class="nc" id="L198">			return JsonErrorView.VIEWNAME;</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

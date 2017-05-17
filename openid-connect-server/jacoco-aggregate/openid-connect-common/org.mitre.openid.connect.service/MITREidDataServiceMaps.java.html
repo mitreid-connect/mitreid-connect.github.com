@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MITREidDataServiceMaps.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service</a> &gt; <span class="el_source">MITREidDataServiceMaps.java</span></div><h1>MITREidDataServiceMaps.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.openid.connect.service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author jricher
+ *
+ */
+<span class="nc" id="L28">public class MITREidDataServiceMaps {</span>
+
+<span class="nc" id="L30">	private Map&lt;Long, Long&gt; accessTokenOldToNewIdMap = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L31">	private Map&lt;Long, Long&gt; accessTokenToAuthHolderRefs = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L32">	private Map&lt;Long, String&gt; accessTokenToClientRefs = new HashMap&lt;Long, String&gt;();</span>
+<span class="nc" id="L33">	private Map&lt;Long, Long&gt; accessTokenToRefreshTokenRefs = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L34">	private Map&lt;Long, Long&gt; authHolderOldToNewIdMap = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L35">	private Map&lt;Long, Long&gt; grantOldToNewIdMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L36">	private Map&lt;Long, Set&lt;Long&gt;&gt; grantToAccessTokensRefs = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L37">	private Map&lt;Long, Long&gt; refreshTokenOldToNewIdMap = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L38">	private Map&lt;Long, Long&gt; refreshTokenToAuthHolderRefs = new HashMap&lt;Long, Long&gt;();</span>
+<span class="nc" id="L39">	private Map&lt;Long, String&gt; refreshTokenToClientRefs = new HashMap&lt;Long, String&gt;();</span>
+<span class="nc" id="L40">	private Map&lt;Long, Long&gt; whitelistedSiteOldToNewIdMap = new HashMap&lt;Long, Long&gt;();</span>
+	/**
+	 * @return the accessTokenOldToNewIdMap
+	 */
+	public Map&lt;Long, Long&gt; getAccessTokenOldToNewIdMap() {
+<span class="nc" id="L45">		return accessTokenOldToNewIdMap;</span>
+	}
+	/**
+	 * @return the accessTokenToAuthHolderRefs
+	 */
+	public Map&lt;Long, Long&gt; getAccessTokenToAuthHolderRefs() {
+<span class="nc" id="L51">		return accessTokenToAuthHolderRefs;</span>
+	}
+	/**
+	 * @return the accessTokenToClientRefs
+	 */
+	public Map&lt;Long, String&gt; getAccessTokenToClientRefs() {
+<span class="nc" id="L57">		return accessTokenToClientRefs;</span>
+	}
+	/**
+	 * @return the accessTokenToRefreshTokenRefs
+	 */
+	public Map&lt;Long, Long&gt; getAccessTokenToRefreshTokenRefs() {
+<span class="nc" id="L63">		return accessTokenToRefreshTokenRefs;</span>
+	}
+	/**
+	 * @return the authHolderOldToNewIdMap
+	 */
+	public Map&lt;Long, Long&gt; getAuthHolderOldToNewIdMap() {
+<span class="nc" id="L69">		return authHolderOldToNewIdMap;</span>
+	}
+	/**
+	 * @return the grantOldToNewIdMap
+	 */
+	public Map&lt;Long, Long&gt; getGrantOldToNewIdMap() {
+<span class="nc" id="L75">		return grantOldToNewIdMap;</span>
+	}
+	/**
+	 * @return the grantToAccessTokensRefs
+	 */
+	public Map&lt;Long, Set&lt;Long&gt;&gt; getGrantToAccessTokensRefs() {
+<span class="nc" id="L81">		return grantToAccessTokensRefs;</span>
+	}
+	/**
+	 * @return the refreshTokenOldToNewIdMap
+	 */
+	public Map&lt;Long, Long&gt; getRefreshTokenOldToNewIdMap() {
+<span class="nc" id="L87">		return refreshTokenOldToNewIdMap;</span>
+	}
+	/**
+	 * @return the refreshTokenToAuthHolderRefs
+	 */
+	public Map&lt;Long, Long&gt; getRefreshTokenToAuthHolderRefs() {
+<span class="nc" id="L93">		return refreshTokenToAuthHolderRefs;</span>
+	}
+	/**
+	 * @return the refreshTokenToClientRefs
+	 */
+	public Map&lt;Long, String&gt; getRefreshTokenToClientRefs() {
+<span class="nc" id="L99">		return refreshTokenToClientRefs;</span>
+	}
+	/**
+	 * @return the whitelistedSiteOldToNewIdMap
+	 */
+	public Map&lt;Long, Long&gt; getWhitelistedSiteOldToNewIdMap() {
+<span class="nc" id="L105">		return whitelistedSiteOldToNewIdMap;</span>
+	}
+
+	public void clearAll() {
+<span class="nc" id="L109">		refreshTokenToClientRefs.clear();</span>
+<span class="nc" id="L110">		refreshTokenToAuthHolderRefs.clear();</span>
+<span class="nc" id="L111">		accessTokenToClientRefs.clear();</span>
+<span class="nc" id="L112">		accessTokenToAuthHolderRefs.clear();</span>
+<span class="nc" id="L113">		accessTokenToRefreshTokenRefs.clear();</span>
+<span class="nc" id="L114">		refreshTokenOldToNewIdMap.clear();</span>
+<span class="nc" id="L115">		accessTokenOldToNewIdMap.clear();</span>
+<span class="nc" id="L116">		grantOldToNewIdMap.clear();</span>
+<span class="nc" id="L117">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

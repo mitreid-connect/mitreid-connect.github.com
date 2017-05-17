@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BlacklistAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">BlacklistAPI.java</span></div><h1>BlacklistAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.web;
+
+import java.security.Principal;
+import java.util.Collection;
+
+import org.mitre.openid.connect.model.BlacklistedSite;
+import org.mitre.openid.connect.service.BlacklistedSiteService;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonEntityView;
+import org.mitre.openid.connect.view.JsonErrorView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
+/**
+ * @author jricher
+ *
+ */
+@Controller
+@RequestMapping(&quot;/&quot; + BlacklistAPI.URL)
+@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+<span class="nc" id="L55">public class BlacklistAPI {</span>
+
+	public static final String URL = RootController.API_URL + &quot;/blacklist&quot;;
+
+	@Autowired
+	private BlacklistedSiteService blacklistService;
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L65">	private static final Logger logger = LoggerFactory.getLogger(BlacklistAPI.class);</span>
+
+<span class="nc" id="L67">	private Gson gson = new Gson();</span>
+<span class="nc" id="L68">	private JsonParser parser = new JsonParser();</span>
+
+	/**
+	 * Get a list of all blacklisted sites
+	 * @param m
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String getAllBlacklistedSites(ModelMap m) {
+
+<span class="nc" id="L78">		Collection&lt;BlacklistedSite&gt; all = blacklistService.getAll();</span>
+
+<span class="nc" id="L80">		m.put(JsonEntityView.ENTITY, all);</span>
+
+<span class="nc" id="L82">		return JsonEntityView.VIEWNAME;</span>
+	}
+
+	/**
+	 * Create a new blacklisted site
+	 * @param jsonString
+	 * @param m
+	 * @param p
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String addNewBlacklistedSite(@RequestBody String jsonString, ModelMap m, Principal p) {
+
+		JsonObject json;
+
+<span class="nc" id="L97">		BlacklistedSite blacklist = null;</span>
+
+		try {
+
+<span class="nc" id="L101">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L102">			blacklist = gson.fromJson(json, BlacklistedSite.class);</span>
+<span class="nc" id="L103">			BlacklistedSite newBlacklist = blacklistService.saveNew(blacklist);</span>
+<span class="nc" id="L104">			m.put(JsonEntityView.ENTITY, newBlacklist);</span>
+
+		}
+<span class="nc" id="L107">		catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L108">			logger.error(&quot;addNewBlacklistedSite failed due to JsonSyntaxException: &quot;, e);</span>
+<span class="nc" id="L109">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L110">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new blacklisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L111">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L112">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L113">			logger.error(&quot;addNewBlacklistedSite failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L114">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L115">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new blacklisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L116">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L117">		}</span>
+
+<span class="nc" id="L119">		return JsonEntityView.VIEWNAME;</span>
+
+	}
+
+	/**
+	 * Update an existing blacklisted site
+	 */
+	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String updateBlacklistedSite(@PathVariable(&quot;id&quot;) Long id, @RequestBody String jsonString, ModelMap m, Principal p) {
+
+		JsonObject json;
+
+<span class="nc" id="L131">		BlacklistedSite blacklist = null;</span>
+
+		try {
+
+<span class="nc" id="L135">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L136">			blacklist = gson.fromJson(json, BlacklistedSite.class);</span>
+
+		}
+<span class="nc" id="L139">		catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L140">			logger.error(&quot;updateBlacklistedSite failed due to JsonSyntaxException&quot;, e);</span>
+<span class="nc" id="L141">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L142">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update blacklisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L143">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L144">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L145">			logger.error(&quot;updateBlacklistedSite failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L146">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L147">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update blacklisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L148">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L149">		}</span>
+
+
+<span class="nc" id="L152">		BlacklistedSite oldBlacklist = blacklistService.getById(id);</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		if (oldBlacklist == null) {</span>
+<span class="nc" id="L155">			logger.error(&quot;updateBlacklistedSite failed; blacklist with id &quot; + id + &quot; could not be found&quot;);</span>
+<span class="nc" id="L156">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L157">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update blacklisted site. The requested blacklist with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L158">			return JsonErrorView.VIEWNAME;</span>
+		} else {
+
+<span class="nc" id="L161">			BlacklistedSite newBlacklist = blacklistService.update(oldBlacklist, blacklist);</span>
+
+<span class="nc" id="L163">			m.put(JsonEntityView.ENTITY, newBlacklist);</span>
+
+<span class="nc" id="L165">			return JsonEntityView.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Delete a blacklisted site
+	 *
+	 */
+	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.DELETE)
+	public String deleteBlacklistedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
+<span class="nc" id="L175">		BlacklistedSite blacklist = blacklistService.getById(id);</span>
+
+<span class="nc bnc" id="L177" title="All 2 branches missed.">		if (blacklist == null) {</span>
+<span class="nc" id="L178">			logger.error(&quot;deleteBlacklistedSite failed; blacklist with id &quot; + id + &quot; could not be found&quot;);</span>
+<span class="nc" id="L179">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete bladklist. The requested bladklist with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L180">			return JsonErrorView.VIEWNAME;</span>
+		} else {
+<span class="nc" id="L182">			m.put(HttpCodeView.CODE, HttpStatus.OK);</span>
+<span class="nc" id="L183">			blacklistService.remove(blacklist);</span>
+		}
+
+<span class="nc" id="L186">		return HttpCodeView.VIEWNAME;</span>
+	}
+
+	/**
+	 * Get a single blacklisted site
+	 */
+	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String getBlacklistedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
+<span class="nc" id="L194">		BlacklistedSite blacklist = blacklistService.getById(id);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">		if (blacklist == null) {</span>
+<span class="nc" id="L196">			logger.error(&quot;getBlacklistedSite failed; blacklist with id &quot; + id + &quot; could not be found&quot;);</span>
+<span class="nc" id="L197">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L198">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete bladklist. The requested bladklist with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L199">			return JsonErrorView.VIEWNAME;</span>
+		} else {
+
+<span class="nc" id="L202">			m.put(JsonEntityView.ENTITY, blacklist);</span>
+
+<span class="nc" id="L204">			return JsonEntityView.VIEWNAME;</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

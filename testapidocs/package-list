@@ -1,0 +1,15 @@
+org.mitre.data
+org.mitre.discovery.util
+org.mitre.jose
+org.mitre.jwt.encryption.service.impl
+org.mitre.oauth2.introspectingfilter
+org.mitre.oauth2.introspectingfilter.service.impl
+org.mitre.oauth2.model
+org.mitre.oauth2.service.impl
+org.mitre.openid.connect
+org.mitre.openid.connect.client
+org.mitre.openid.connect.client.service.impl
+org.mitre.openid.connect.config
+org.mitre.openid.connect.service.impl
+org.mitre.openid.connect.util
+org.mitre.uma.service.impl

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOIDCTokenService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service.impl</a> &gt; <span class="el_source">DefaultOIDCTokenService.java</span></div><h1>DefaultOIDCTokenService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.openid.connect.service.impl;
+
+import static org.mitre.openid.connect.request.ConnectRequestParameters.MAX_AGE;
+import static org.mitre.openid.connect.request.ConnectRequestParameters.NONCE;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.mitre.jwt.encryption.service.JWTEncryptionAndDecryptionService;
+import org.mitre.jwt.signer.service.JWTSigningAndValidationService;
+import org.mitre.jwt.signer.service.impl.ClientKeyCacheService;
+import org.mitre.jwt.signer.service.impl.SymmetricKeyJWTValidatorCacheService;
+import org.mitre.oauth2.model.AuthenticationHolderEntity;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.mitre.oauth2.repository.AuthenticationHolderRepository;
+import org.mitre.oauth2.service.OAuth2TokenEntityService;
+import org.mitre.oauth2.service.SystemScopeService;
+import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
+import org.mitre.openid.connect.service.OIDCTokenService;
+import org.mitre.openid.connect.util.IdTokenHashUtils;
+import org.mitre.openid.connect.web.AuthenticationTimeStamper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.stereotype.Service;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.nimbusds.jose.Algorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.util.Base64URL;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
+/**
+ * Default implementation of service to create specialty OpenID Connect tokens.
+ *
+ * @author Amanda Anganes
+ *
+ */
+@Service
+<span class="nc" id="L72">public class DefaultOIDCTokenService implements OIDCTokenService {</span>
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L77">	private static final Logger logger = LoggerFactory.getLogger(DefaultOIDCTokenService.class);</span>
+
+	@Autowired
+	private JWTSigningAndValidationService jwtService;
+
+	@Autowired
+	private AuthenticationHolderRepository authenticationHolderRepository;
+
+	@Autowired
+	private ConfigurationPropertiesBean configBean;
+
+	@Autowired
+	private ClientKeyCacheService encrypters;
+
+	@Autowired
+	private SymmetricKeyJWTValidatorCacheService symmetricCacheService;
+
+	@Autowired
+	private OAuth2TokenEntityService tokenService;
+
+	@Override
+	public JWT createIdToken(ClientDetailsEntity client, OAuth2Request request, Date issueTime, String sub, OAuth2AccessTokenEntity accessToken) {
+
+<span class="nc" id="L100">		JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm();</span>
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		if (client.getIdTokenSignedResponseAlg() != null) {</span>
+<span class="nc" id="L103">			signingAlg = client.getIdTokenSignedResponseAlg();</span>
+		}
+
+
+<span class="nc" id="L107">		JWT idToken = null;</span>
+
+<span class="nc" id="L109">		JWTClaimsSet.Builder idClaims = new JWTClaimsSet.Builder();</span>
+
+		// if the auth time claim was explicitly requested OR if the client always wants the auth time, put it in
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (request.getExtensions().containsKey(MAX_AGE)</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">				|| (request.getExtensions().containsKey(&quot;idtoken&quot;)) // TODO: parse the ID Token claims (#473) -- for now assume it could be in there</span>
+<span class="nc bnc" id="L114" title="All 4 branches missed.">				|| (client.getRequireAuthTime() != null &amp;&amp; client.getRequireAuthTime())) {</span>
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">			if (request.getExtensions().get(AuthenticationTimeStamper.AUTH_TIMESTAMP) != null) {</span>
+
+<span class="nc" id="L118">				Long authTimestamp = Long.parseLong((String) request.getExtensions().get(AuthenticationTimeStamper.AUTH_TIMESTAMP));</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">				if (authTimestamp != null) {</span>
+<span class="nc" id="L120">					idClaims.claim(&quot;auth_time&quot;, authTimestamp / 1000L);</span>
+				}
+<span class="nc" id="L122">			} else {</span>
+				// we couldn't find the timestamp!
+<span class="nc" id="L124">				logger.warn(&quot;Unable to find authentication timestamp! There is likely something wrong with the configuration.&quot;);</span>
+			}
+		}
+
+<span class="nc" id="L128">		idClaims.issueTime(issueTime);</span>
+
+<span class="nc bnc" id="L130" title="All 2 branches missed.">		if (client.getIdTokenValiditySeconds() != null) {</span>
+<span class="nc" id="L131">			Date expiration = new Date(System.currentTimeMillis() + (client.getIdTokenValiditySeconds() * 1000L));</span>
+<span class="nc" id="L132">			idClaims.expirationTime(expiration);</span>
+		}
+
+<span class="nc" id="L135">		idClaims.issuer(configBean.getIssuer());</span>
+<span class="nc" id="L136">		idClaims.subject(sub);</span>
+<span class="nc" id="L137">		idClaims.audience(Lists.newArrayList(client.getClientId()));</span>
+<span class="nc" id="L138">		idClaims.jwtID(UUID.randomUUID().toString()); // set a random NONCE in the middle of it</span>
+
+<span class="nc" id="L140">		String nonce = (String)request.getExtensions().get(NONCE);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(nonce)) {</span>
+<span class="nc" id="L142">			idClaims.claim(&quot;nonce&quot;, nonce);</span>
+		}
+
+<span class="nc" id="L145">		Set&lt;String&gt; responseTypes = request.getResponseTypes();</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">		if (responseTypes.contains(&quot;token&quot;)) {</span>
+			// calculate the token hash
+<span class="nc" id="L149">			Base64URL at_hash = IdTokenHashUtils.getAccessTokenHash(signingAlg, accessToken);</span>
+<span class="nc" id="L150">			idClaims.claim(&quot;at_hash&quot;, at_hash);</span>
+		}
+
+<span class="nc bnc" id="L153" title="All 4 branches missed.">		if (client.getIdTokenEncryptedResponseAlg() != null &amp;&amp; !client.getIdTokenEncryptedResponseAlg().equals(Algorithm.NONE)</span>
+<span class="nc bnc" id="L154" title="All 4 branches missed.">				&amp;&amp; client.getIdTokenEncryptedResponseEnc() != null &amp;&amp; !client.getIdTokenEncryptedResponseEnc().equals(Algorithm.NONE)</span>
+<span class="nc bnc" id="L155" title="All 4 branches missed.">				&amp;&amp; (!Strings.isNullOrEmpty(client.getJwksUri()) || client.getJwks() != null)) {</span>
+
+<span class="nc" id="L157">			JWTEncryptionAndDecryptionService encrypter = encrypters.getEncrypter(client);</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">			if (encrypter != null) {</span>
+
+<span class="nc" id="L161">				idToken = new EncryptedJWT(new JWEHeader(client.getIdTokenEncryptedResponseAlg(), client.getIdTokenEncryptedResponseEnc()), idClaims.build());</span>
+
+<span class="nc" id="L163">				encrypter.encryptJwt((JWEObject) idToken);</span>
+
+			} else {
+<span class="nc" id="L166">				logger.error(&quot;Couldn't find encrypter for client: &quot; + client.getClientId());</span>
+			}
+
+<span class="nc" id="L169">		} else {</span>
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">			if (signingAlg.equals(Algorithm.NONE)) {</span>
+				// unsigned ID token
+<span class="nc" id="L173">				idToken = new PlainJWT(idClaims.build());</span>
+
+			} else {
+
+				// signed ID token
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">				if (signingAlg.equals(JWSAlgorithm.HS256)</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS384)</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS512)) {</span>
+
+<span class="nc" id="L183">					JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L184">							jwtService.getDefaultSignerKeyId(),</span>
+							null, null);
+<span class="nc" id="L186">					idToken = new SignedJWT(header, idClaims.build());</span>
+
+<span class="nc" id="L188">					JWTSigningAndValidationService signer = symmetricCacheService.getSymmetricValidtor(client);</span>
+
+					// sign it with the client's secret
+<span class="nc" id="L191">					signer.signJwt((SignedJWT) idToken);</span>
+<span class="nc" id="L192">				} else {</span>
+<span class="nc" id="L193">					idClaims.claim(&quot;kid&quot;, jwtService.getDefaultSignerKeyId());</span>
+
+<span class="nc" id="L195">					JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L196">							jwtService.getDefaultSignerKeyId(),</span>
+							null, null);
+
+<span class="nc" id="L199">					idToken = new SignedJWT(header, idClaims.build());</span>
+
+					// sign it with the server's key
+<span class="nc" id="L202">					jwtService.signJwt((SignedJWT) idToken);</span>
+				}
+			}
+
+		}
+
+<span class="nc" id="L208">		return idToken;</span>
+	}
+
+	/**
+	 * @param client
+	 * @return
+	 * @throws AuthenticationException
+	 */
+	@Override
+	public OAuth2AccessTokenEntity createRegistrationAccessToken(ClientDetailsEntity client) {
+
+<span class="nc" id="L219">		return createAssociatedToken(client, Sets.newHashSet(SystemScopeService.REGISTRATION_TOKEN_SCOPE));</span>
+
+	}
+
+	/**
+	 * @param client
+	 * @return
+	 */
+	@Override
+	public OAuth2AccessTokenEntity createResourceAccessToken(ClientDetailsEntity client) {
+
+<span class="nc" id="L230">		return createAssociatedToken(client, Sets.newHashSet(SystemScopeService.RESOURCE_TOKEN_SCOPE));</span>
+
+	}
+
+	@Override
+	public OAuth2AccessTokenEntity rotateRegistrationAccessTokenForClient(ClientDetailsEntity client) {
+		// revoke any previous tokens
+<span class="nc" id="L237">		OAuth2AccessTokenEntity oldToken = tokenService.getRegistrationAccessTokenForClient(client);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">		if (oldToken != null) {</span>
+<span class="nc" id="L239">			Set&lt;String&gt; scope = oldToken.getScope();</span>
+<span class="nc" id="L240">			tokenService.revokeAccessToken(oldToken);</span>
+<span class="nc" id="L241">			return createAssociatedToken(client, scope);</span>
+		} else {
+<span class="nc" id="L243">			return null;</span>
+		}
+
+	}
+
+	private OAuth2AccessTokenEntity createAssociatedToken(ClientDetailsEntity client, Set&lt;String&gt; scope) {
+
+		// revoke any previous tokens that might exist, just to be sure
+<span class="nc" id="L251">		OAuth2AccessTokenEntity oldToken = tokenService.getRegistrationAccessTokenForClient(client);</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">		if (oldToken != null) {</span>
+<span class="nc" id="L253">			tokenService.revokeAccessToken(oldToken);</span>
+		}
+
+		// create a new token
+
+<span class="nc" id="L258">		Map&lt;String, String&gt; authorizationParameters = Maps.newHashMap();</span>
+<span class="nc" id="L259">		OAuth2Request clientAuth = new OAuth2Request(authorizationParameters, client.getClientId(),</span>
+<span class="nc" id="L260">				Sets.newHashSet(new SimpleGrantedAuthority(&quot;ROLE_CLIENT&quot;)), true,</span>
+				scope, null, null, null, null);
+<span class="nc" id="L262">		OAuth2Authentication authentication = new OAuth2Authentication(clientAuth, null);</span>
+
+<span class="nc" id="L264">		OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();</span>
+<span class="nc" id="L265">		token.setClient(client);</span>
+<span class="nc" id="L266">		token.setScope(scope);</span>
+
+<span class="nc" id="L268">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L269">		authHolder.setAuthentication(authentication);</span>
+<span class="nc" id="L270">		authHolder = authenticationHolderRepository.save(authHolder);</span>
+<span class="nc" id="L271">		token.setAuthenticationHolder(authHolder);</span>
+
+<span class="nc" id="L273">		JWTClaimsSet claims = new JWTClaimsSet.Builder()</span>
+<span class="nc" id="L274">				.audience(Lists.newArrayList(client.getClientId()))</span>
+<span class="nc" id="L275">				.issuer(configBean.getIssuer())</span>
+<span class="nc" id="L276">				.issueTime(new Date())</span>
+<span class="nc" id="L277">				.expirationTime(token.getExpiration())</span>
+<span class="nc" id="L278">				.jwtID(UUID.randomUUID().toString()) // set a random NONCE in the middle of it</span>
+<span class="nc" id="L279">				.build();</span>
+
+<span class="nc" id="L281">		JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm();</span>
+<span class="nc" id="L282">		JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L283">				jwtService.getDefaultSignerKeyId(),</span>
+				null, null);
+<span class="nc" id="L285">		SignedJWT signed = new SignedJWT(header, claims);</span>
+
+<span class="nc" id="L287">		jwtService.signJwt(signed);</span>
+
+<span class="nc" id="L289">		token.setJwt(signed);</span>
+
+<span class="nc" id="L291">		return token;</span>
+	}
+
+	/**
+	 * @return the configBean
+	 */
+	public ConfigurationPropertiesBean getConfigBean() {
+<span class="nc" id="L298">		return configBean;</span>
+	}
+
+	/**
+	 * @param configBean the configBean to set
+	 */
+	public void setConfigBean(ConfigurationPropertiesBean configBean) {
+<span class="nc" id="L305">		this.configBean = configBean;</span>
+<span class="nc" id="L306">	}</span>
+
+	/**
+	 * @return the jwtService
+	 */
+	public JWTSigningAndValidationService getJwtService() {
+<span class="nc" id="L312">		return jwtService;</span>
+	}
+
+	/**
+	 * @param jwtService the jwtService to set
+	 */
+	public void setJwtService(JWTSigningAndValidationService jwtService) {
+<span class="nc" id="L319">		this.jwtService = jwtService;</span>
+<span class="nc" id="L320">	}</span>
+
+	/**
+	 * @return the authenticationHolderRepository
+	 */
+	public AuthenticationHolderRepository getAuthenticationHolderRepository() {
+<span class="nc" id="L326">		return authenticationHolderRepository;</span>
+	}
+
+	/**
+	 * @param authenticationHolderRepository the authenticationHolderRepository to set
+	 */
+	public void setAuthenticationHolderRepository(
+			AuthenticationHolderRepository authenticationHolderRepository) {
+<span class="nc" id="L334">		this.authenticationHolderRepository = authenticationHolderRepository;</span>
+<span class="nc" id="L335">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

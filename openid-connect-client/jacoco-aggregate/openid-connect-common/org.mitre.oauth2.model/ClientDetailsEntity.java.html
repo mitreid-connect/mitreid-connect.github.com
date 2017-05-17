@@ -1,0 +1,1086 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientDetailsEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">ClientDetailsEntity.java</span></div><h1>ClientDetailsEntity.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.model;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.mitre.oauth2.model.convert.JWEAlgorithmStringConverter;
+import org.mitre.oauth2.model.convert.JWEEncryptionMethodStringConverter;
+import org.mitre.oauth2.model.convert.JWKSetStringConverter;
+import org.mitre.oauth2.model.convert.JWSAlgorithmStringConverter;
+import org.mitre.oauth2.model.convert.JWTStringConverter;
+import org.mitre.oauth2.model.convert.PKCEAlgorithmStringConverter;
+import org.mitre.oauth2.model.convert.SimpleGrantedAuthorityStringConverter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.provider.ClientDetails;
+
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jwt.JWT;
+
+/**
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name = &quot;client_details&quot;)
+@NamedQueries({
+	@NamedQuery(name = ClientDetailsEntity.QUERY_ALL, query = &quot;SELECT c FROM ClientDetailsEntity c&quot;),
+	@NamedQuery(name = ClientDetailsEntity.QUERY_BY_CLIENT_ID, query = &quot;select c from ClientDetailsEntity c where c.clientId = :&quot; + ClientDetailsEntity.PARAM_CLIENT_ID)
+})
+public class ClientDetailsEntity implements ClientDetails {
+
+	public static final String QUERY_BY_CLIENT_ID = &quot;ClientDetailsEntity.getByClientId&quot;;
+	public static final String QUERY_ALL = &quot;ClientDetailsEntity.findAll&quot;;
+
+	public static final String PARAM_CLIENT_ID = &quot;clientId&quot;;
+
+	private static final int DEFAULT_ID_TOKEN_VALIDITY_SECONDS = 600;
+
+	private static final long serialVersionUID = -1617727085733786296L;
+
+	private Long id;
+
+	/** Fields from the OAuth2 Dynamic Registration Specification */
+<span class="nc" id="L90">	private String clientId = null; // client_id</span>
+<span class="nc" id="L91">	private String clientSecret = null; // client_secret</span>
+<span class="nc" id="L92">	private Set&lt;String&gt; redirectUris = new HashSet&lt;&gt;(); // redirect_uris</span>
+	private String clientName; // client_name
+	private String clientUri; // client_uri
+	private String logoUri; // logo_uri
+	private Set&lt;String&gt; contacts; // contacts
+	private String tosUri; // tos_uri
+<span class="nc" id="L98">	private AuthMethod tokenEndpointAuthMethod = AuthMethod.SECRET_BASIC; // token_endpoint_auth_method</span>
+<span class="nc" id="L99">	private Set&lt;String&gt; scope = new HashSet&lt;&gt;(); // scope</span>
+<span class="nc" id="L100">	private Set&lt;String&gt; grantTypes = new HashSet&lt;&gt;(); // grant_types</span>
+<span class="nc" id="L101">	private Set&lt;String&gt; responseTypes = new HashSet&lt;&gt;(); // response_types</span>
+	private String policyUri;
+	private String jwksUri; // URI pointer to keys
+	private JWKSet jwks; // public key stored by value
+	private String softwareId;
+	private String softwareVersion;
+
+	/** Fields from OIDC Client Registration Specification **/
+	private AppType applicationType; // application_type
+	private String sectorIdentifierUri; // sector_identifier_uri
+	private SubjectType subjectType; // subject_type
+
+<span class="nc" id="L113">	private JWSAlgorithm requestObjectSigningAlg = null; // request_object_signing_alg</span>
+
+<span class="nc" id="L115">	private JWSAlgorithm userInfoSignedResponseAlg = null; // user_info_signed_response_alg</span>
+<span class="nc" id="L116">	private JWEAlgorithm userInfoEncryptedResponseAlg = null; // user_info_encrypted_response_alg</span>
+<span class="nc" id="L117">	private EncryptionMethod userInfoEncryptedResponseEnc = null; // user_info_encrypted_response_enc</span>
+
+<span class="nc" id="L119">	private JWSAlgorithm idTokenSignedResponseAlg = null; // id_token_signed_response_alg</span>
+<span class="nc" id="L120">	private JWEAlgorithm idTokenEncryptedResponseAlg = null; // id_token_encrypted_response_alg</span>
+<span class="nc" id="L121">	private EncryptionMethod idTokenEncryptedResponseEnc = null; // id_token_encrypted_response_enc</span>
+
+<span class="nc" id="L123">	private JWSAlgorithm tokenEndpointAuthSigningAlg = null; // token_endpoint_auth_signing_alg</span>
+
+	private Integer defaultMaxAge; // default_max_age
+	private Boolean requireAuthTime; // require_auth_time
+	private Set&lt;String&gt; defaultACRvalues; // default_acr_values
+
+	private String initiateLoginUri; // initiate_login_uri
+	private Set&lt;String&gt; postLogoutRedirectUris; // post_logout_redirect_uris
+
+	private Set&lt;String&gt; requestUris; // request_uris
+
+	/** Fields to support the ClientDetails interface **/
+<span class="nc" id="L135">	private Set&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L136">	private Integer accessTokenValiditySeconds = 0; // in seconds</span>
+<span class="nc" id="L137">	private Integer refreshTokenValiditySeconds = 0; // in seconds</span>
+<span class="nc" id="L138">	private Set&lt;String&gt; resourceIds = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L139">	private Map&lt;String, Object&gt; additionalInformation = new HashMap&lt;&gt;();</span>
+
+	/** Our own fields **/
+<span class="nc" id="L142">	private String clientDescription = &quot;&quot;; // human-readable description</span>
+<span class="nc" id="L143">	private boolean reuseRefreshToken = true; // do we let someone reuse a refresh token?</span>
+<span class="nc" id="L144">	private boolean dynamicallyRegistered = false; // was this client dynamically registered?</span>
+<span class="nc" id="L145">	private boolean allowIntrospection = false; // do we let this client call the introspection endpoint?</span>
+	private Integer idTokenValiditySeconds; //timeout for id tokens
+	private Date createdAt; // time the client was created
+<span class="nc" id="L148">	private boolean clearAccessTokensOnRefresh = true; // do we clear access tokens on refresh?</span>
+	private Integer deviceCodeValiditySeconds; // timeout for device codes
+
+	/** fields for UMA */
+	private Set&lt;String&gt; claimsRedirectUris;
+
+	/** Software statement **/
+	private JWT softwareStatement;
+
+	/** PKCE **/
+	private PKCEAlgorithm codeChallengeMethod;
+
+<span class="nc" id="L160">	public enum AuthMethod {</span>
+<span class="nc" id="L161">		SECRET_POST(&quot;client_secret_post&quot;),</span>
+<span class="nc" id="L162">		SECRET_BASIC(&quot;client_secret_basic&quot;),</span>
+<span class="nc" id="L163">		SECRET_JWT(&quot;client_secret_jwt&quot;),</span>
+<span class="nc" id="L164">		PRIVATE_KEY(&quot;private_key_jwt&quot;),</span>
+<span class="nc" id="L165">		NONE(&quot;none&quot;);</span>
+
+		private final String value;
+
+		// map to aid reverse lookup
+<span class="nc" id="L170">		private static final Map&lt;String, AuthMethod&gt; lookup = new HashMap&lt;&gt;();</span>
+		static {
+<span class="nc bnc" id="L172" title="All 2 branches missed.">			for (AuthMethod a : AuthMethod.values()) {</span>
+<span class="nc" id="L173">				lookup.put(a.getValue(), a);</span>
+			}
+<span class="nc" id="L175">		}</span>
+
+<span class="nc" id="L177">		AuthMethod(String value) {</span>
+<span class="nc" id="L178">			this.value = value;</span>
+<span class="nc" id="L179">		}</span>
+
+		public String getValue() {
+<span class="nc" id="L182">			return value;</span>
+		}
+
+		public static AuthMethod getByValue(String value) {
+<span class="nc" id="L186">			return lookup.get(value);</span>
+		}
+	}
+
+<span class="nc" id="L190">	public enum AppType {</span>
+<span class="nc" id="L191">		WEB(&quot;web&quot;), NATIVE(&quot;native&quot;);</span>
+
+		private final String value;
+
+		// map to aid reverse lookup
+<span class="nc" id="L196">		private static final Map&lt;String, AppType&gt; lookup = new HashMap&lt;&gt;();</span>
+		static {
+<span class="nc bnc" id="L198" title="All 2 branches missed.">			for (AppType a : AppType.values()) {</span>
+<span class="nc" id="L199">				lookup.put(a.getValue(), a);</span>
+			}
+<span class="nc" id="L201">		}</span>
+
+<span class="nc" id="L203">		AppType(String value) {</span>
+<span class="nc" id="L204">			this.value = value;</span>
+<span class="nc" id="L205">		}</span>
+
+		public String getValue() {
+<span class="nc" id="L208">			return value;</span>
+		}
+
+		public static AppType getByValue(String value) {
+<span class="nc" id="L212">			return lookup.get(value);</span>
+		}
+	}
+
+<span class="nc" id="L216">	public enum SubjectType {</span>
+<span class="nc" id="L217">		PAIRWISE(&quot;pairwise&quot;), PUBLIC(&quot;public&quot;);</span>
+
+		private final String value;
+
+		// map to aid reverse lookup
+<span class="nc" id="L222">		private static final Map&lt;String, SubjectType&gt; lookup = new HashMap&lt;&gt;();</span>
+		static {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">			for (SubjectType u : SubjectType.values()) {</span>
+<span class="nc" id="L225">				lookup.put(u.getValue(), u);</span>
+			}
+<span class="nc" id="L227">		}</span>
+
+<span class="nc" id="L229">		SubjectType(String value) {</span>
+<span class="nc" id="L230">			this.value = value;</span>
+<span class="nc" id="L231">		}</span>
+
+		public String getValue() {
+<span class="nc" id="L234">			return value;</span>
+		}
+
+		public static SubjectType getByValue(String value) {
+<span class="nc" id="L238">			return lookup.get(value);</span>
+		}
+	}
+
+	/**
+	 * Create a blank ClientDetailsEntity
+	 */
+<span class="nc" id="L245">	public ClientDetailsEntity() {</span>
+
+<span class="nc" id="L247">	}</span>
+
+	@PrePersist
+	@PreUpdate
+	private void prePersist() {
+		// make sure that ID tokens always time out, default to 5 minutes
+<span class="nc bnc" id="L253" title="All 2 branches missed.">		if (getIdTokenValiditySeconds() == null) {</span>
+<span class="nc" id="L254">			setIdTokenValiditySeconds(DEFAULT_ID_TOKEN_VALIDITY_SECONDS);</span>
+		}
+<span class="nc" id="L256">	}</span>
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L265">		return id;</span>
+	}
+
+	/**
+	 *
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L273">		this.id = id;</span>
+<span class="nc" id="L274">	}</span>
+
+	/**
+	 * @return the clientDescription
+	 */
+	@Basic
+	@Column(name=&quot;client_description&quot;)
+	public String getClientDescription() {
+<span class="nc" id="L282">		return clientDescription;</span>
+	}
+
+	/**
+	 * @param clientDescription Human-readable long description of the client (optional)
+	 */
+	public void setClientDescription(String clientDescription) {
+<span class="nc" id="L289">		this.clientDescription = clientDescription;</span>
+<span class="nc" id="L290">	}</span>
+
+	/**
+	 * @return the allowRefresh
+	 */
+	@Transient
+	public boolean isAllowRefresh() {
+<span class="nc bnc" id="L297" title="All 2 branches missed.">		if (grantTypes != null) {</span>
+<span class="nc" id="L298">			return getAuthorizedGrantTypes().contains(&quot;refresh_token&quot;);</span>
+		} else {
+<span class="nc" id="L300">			return false; // if there are no grants, we can't be refreshing them, can we?</span>
+		}
+	}
+
+	@Basic
+	@Column(name=&quot;reuse_refresh_tokens&quot;)
+	public boolean isReuseRefreshToken() {
+<span class="nc" id="L307">		return reuseRefreshToken;</span>
+	}
+
+	public void setReuseRefreshToken(boolean reuseRefreshToken) {
+<span class="nc" id="L311">		this.reuseRefreshToken = reuseRefreshToken;</span>
+<span class="nc" id="L312">	}</span>
+
+	/**
+	 * Number of seconds ID token is valid for. MUST be a positive integer, can not be null.
+	 *
+	 * @return the idTokenValiditySeconds
+	 */
+	@Basic
+	@Column(name=&quot;id_token_validity_seconds&quot;)
+	public Integer getIdTokenValiditySeconds() {
+<span class="nc" id="L322">		return idTokenValiditySeconds;</span>
+	}
+
+	/**
+	 * @param idTokenValiditySeconds the idTokenValiditySeconds to set
+	 */
+	public void setIdTokenValiditySeconds(Integer idTokenValiditySeconds) {
+<span class="nc" id="L329">		this.idTokenValiditySeconds = idTokenValiditySeconds;</span>
+<span class="nc" id="L330">	}</span>
+
+	/**
+	 * @return the dynamicallyRegistered
+	 */
+	@Basic
+	@Column(name=&quot;dynamically_registered&quot;)
+	public boolean isDynamicallyRegistered() {
+<span class="nc" id="L338">		return dynamicallyRegistered;</span>
+	}
+
+	/**
+	 * @param dynamicallyRegistered the dynamicallyRegistered to set
+	 */
+	public void setDynamicallyRegistered(boolean dynamicallyRegistered) {
+<span class="nc" id="L345">		this.dynamicallyRegistered = dynamicallyRegistered;</span>
+<span class="nc" id="L346">	}</span>
+
+
+
+
+
+	/**
+	 * @return the allowIntrospection
+	 */
+	@Basic
+	@Column(name=&quot;allow_introspection&quot;)
+	public boolean isAllowIntrospection() {
+<span class="nc" id="L358">		return allowIntrospection;</span>
+	}
+
+	/**
+	 * @param allowIntrospection the allowIntrospection to set
+	 */
+	public void setAllowIntrospection(boolean allowIntrospection) {
+<span class="nc" id="L365">		this.allowIntrospection = allowIntrospection;</span>
+<span class="nc" id="L366">	}</span>
+
+	/**
+	 *
+	 */
+	@Override
+	@Transient
+	public boolean isSecretRequired() {
+<span class="nc bnc" id="L374" title="All 2 branches missed.">		if (getTokenEndpointAuthMethod() != null &amp;&amp;</span>
+<span class="nc bnc" id="L375" title="All 2 branches missed.">				(getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_BASIC) ||</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">						getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_POST) ||</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">						getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT))) {</span>
+<span class="nc" id="L378">			return true;</span>
+		} else {
+<span class="nc" id="L380">			return false;</span>
+		}
+
+	}
+
+	/**
+	 * If the scope list is not null or empty, then this client has been scoped.
+	 */
+	@Override
+	@Transient
+	public boolean isScoped() {
+<span class="nc bnc" id="L391" title="All 4 branches missed.">		return getScope() != null &amp;&amp; !getScope().isEmpty();</span>
+	}
+
+	/**
+	 * @return the clientId
+	 */
+	@Basic
+	@Override
+	@Column(name=&quot;client_id&quot;)
+	public String getClientId() {
+<span class="nc" id="L401">		return clientId;</span>
+	}
+
+	/**
+	 * @param clientId The OAuth2 client_id, must be unique to this client
+	 */
+	public void setClientId(String clientId) {
+<span class="nc" id="L408">		this.clientId = clientId;</span>
+<span class="nc" id="L409">	}</span>
+
+	/**
+	 * @return the clientSecret
+	 */
+	@Basic
+	@Override
+	@Column(name=&quot;client_secret&quot;)
+	public String getClientSecret() {
+<span class="nc" id="L418">		return clientSecret;</span>
+	}
+
+	/**
+	 * @param clientSecret the OAuth2 client_secret (optional)
+	 */
+	public void setClientSecret(String clientSecret) {
+<span class="nc" id="L425">		this.clientSecret = clientSecret;</span>
+<span class="nc" id="L426">	}</span>
+
+	/**
+	 * @return the scope
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_scope&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Override
+	@Column(name=&quot;scope&quot;)
+	public Set&lt;String&gt; getScope() {
+<span class="nc" id="L439">		return scope;</span>
+	}
+
+	/**
+	 * @param scope the set of scopes allowed to be issued to this client
+	 */
+	public void setScope(Set&lt;String&gt; scope) {
+<span class="nc" id="L446">		this.scope = scope;</span>
+<span class="nc" id="L447">	}</span>
+
+	/**
+	 * @return the authorizedGrantTypes
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_grant_type&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;grant_type&quot;)
+	public Set&lt;String&gt; getGrantTypes() {
+<span class="nc" id="L459">		return grantTypes;</span>
+	}
+
+	/**
+	 * @param authorizedGrantTypes the OAuth2 grant types that this client is allowed to use
+	 */
+	public void setGrantTypes(Set&lt;String&gt; grantTypes) {
+<span class="nc" id="L466">		this.grantTypes = grantTypes;</span>
+<span class="nc" id="L467">	}</span>
+
+	/**
+	 * passthrough for SECOAUTH api
+	 */
+	@Override
+	@Transient
+	public Set&lt;String&gt; getAuthorizedGrantTypes() {
+<span class="nc" id="L475">		return getGrantTypes();</span>
+	}
+
+	/**
+	 * @return the authorities
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_authority&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Override
+	@Convert(converter = SimpleGrantedAuthorityStringConverter.class)
+	@Column(name=&quot;authority&quot;)
+	public Set&lt;GrantedAuthority&gt; getAuthorities() {
+<span class="nc" id="L490">		return authorities;</span>
+	}
+
+	/**
+	 * @param authorities the Spring Security authorities this client is given
+	 */
+	public void setAuthorities(Set&lt;GrantedAuthority&gt; authorities) {
+<span class="nc" id="L497">		this.authorities = authorities;</span>
+<span class="nc" id="L498">	}</span>
+
+	@Override
+	@Basic
+	@Column(name=&quot;access_token_validity_seconds&quot;)
+	public Integer getAccessTokenValiditySeconds() {
+<span class="nc" id="L504">		return accessTokenValiditySeconds;</span>
+	}
+
+	/**
+	 * @param accessTokenTimeout the accessTokenTimeout to set
+	 */
+	public void setAccessTokenValiditySeconds(Integer accessTokenValiditySeconds) {
+<span class="nc" id="L511">		this.accessTokenValiditySeconds = accessTokenValiditySeconds;</span>
+<span class="nc" id="L512">	}</span>
+
+	@Override
+	@Basic
+	@Column(name=&quot;refresh_token_validity_seconds&quot;)
+	public Integer getRefreshTokenValiditySeconds() {
+<span class="nc" id="L518">		return refreshTokenValiditySeconds;</span>
+	}
+
+	/**
+	 * @param refreshTokenTimeout Lifetime of refresh tokens, in seconds (optional - leave null for no timeout)
+	 */
+	public void setRefreshTokenValiditySeconds(Integer refreshTokenValiditySeconds) {
+<span class="nc" id="L525">		this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;</span>
+<span class="nc" id="L526">	}</span>
+
+	/**
+	 * @return the registeredRedirectUri
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_redirect_uri&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;redirect_uri&quot;)
+	public Set&lt;String&gt; getRedirectUris() {
+<span class="nc" id="L538">		return redirectUris;</span>
+	}
+
+	/**
+	 * @param registeredRedirectUri the registeredRedirectUri to set
+	 */
+	public void setRedirectUris(Set&lt;String&gt; redirectUris) {
+<span class="nc" id="L545">		this.redirectUris = redirectUris;</span>
+<span class="nc" id="L546">	}</span>
+
+	/**
+	 * Pass-through method to fulfill the ClientDetails interface with a bad name
+	 */
+	@Override
+	@Transient
+	public Set&lt;String&gt; getRegisteredRedirectUri() {
+<span class="nc" id="L554">		return getRedirectUris();</span>
+	}
+
+	/**
+	 * @return the resourceIds
+	 */
+	@Override
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_resource&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;resource_id&quot;)
+	public Set&lt;String&gt; getResourceIds() {
+<span class="nc" id="L568">		return resourceIds;</span>
+	}
+
+	/**
+	 * @param resourceIds the resourceIds to set
+	 */
+	public void setResourceIds(Set&lt;String&gt; resourceIds) {
+<span class="nc" id="L575">		this.resourceIds = resourceIds;</span>
+<span class="nc" id="L576">	}</span>
+
+
+	/**
+	 * This library does not make use of this field, so it is not
+	 * stored using our persistence layer.
+	 *
+	 * However, it's somehow required by SECOUATH.
+	 *
+	 * @return an empty map
+	 */
+	@Override
+	@Transient
+	public Map&lt;String, Object&gt; getAdditionalInformation() {
+<span class="nc" id="L590">		return this.additionalInformation;</span>
+	}
+
+
+
+
+	@Enumerated(EnumType.STRING)
+	@Column(name=&quot;application_type&quot;)
+	public AppType getApplicationType() {
+<span class="nc" id="L599">		return applicationType;</span>
+	}
+
+	public void setApplicationType(AppType applicationType) {
+<span class="nc" id="L603">		this.applicationType = applicationType;</span>
+<span class="nc" id="L604">	}</span>
+
+	@Basic
+	@Column(name=&quot;client_name&quot;)
+	public String getClientName() {
+<span class="nc" id="L609">		return clientName;</span>
+	}
+
+	public void setClientName(String clientName) {
+<span class="nc" id="L613">		this.clientName = clientName;</span>
+<span class="nc" id="L614">	}</span>
+
+	@Enumerated(EnumType.STRING)
+	@Column(name=&quot;token_endpoint_auth_method&quot;)
+	public AuthMethod getTokenEndpointAuthMethod() {
+<span class="nc" id="L619">		return tokenEndpointAuthMethod;</span>
+	}
+
+	public void setTokenEndpointAuthMethod(AuthMethod tokenEndpointAuthMethod) {
+<span class="nc" id="L623">		this.tokenEndpointAuthMethod = tokenEndpointAuthMethod;</span>
+<span class="nc" id="L624">	}</span>
+
+	@Enumerated(EnumType.STRING)
+	@Column(name=&quot;subject_type&quot;)
+	public SubjectType getSubjectType() {
+<span class="nc" id="L629">		return subjectType;</span>
+	}
+
+	public void setSubjectType(SubjectType subjectType) {
+<span class="nc" id="L633">		this.subjectType = subjectType;</span>
+<span class="nc" id="L634">	}</span>
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_contact&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;contact&quot;)
+	public Set&lt;String&gt; getContacts() {
+<span class="nc" id="L643">		return contacts;</span>
+	}
+
+	public void setContacts(Set&lt;String&gt; contacts) {
+<span class="nc" id="L647">		this.contacts = contacts;</span>
+<span class="nc" id="L648">	}</span>
+
+	@Basic
+	@Column(name=&quot;logo_uri&quot;)
+	public String getLogoUri() {
+<span class="nc" id="L653">		return logoUri;</span>
+	}
+
+	public void setLogoUri(String logoUri) {
+<span class="nc" id="L657">		this.logoUri = logoUri;</span>
+<span class="nc" id="L658">	}</span>
+
+	@Basic
+	@Column(name=&quot;policy_uri&quot;)
+	public String getPolicyUri() {
+<span class="nc" id="L663">		return policyUri;</span>
+	}
+
+	public void setPolicyUri(String policyUri) {
+<span class="nc" id="L667">		this.policyUri = policyUri;</span>
+<span class="nc" id="L668">	}</span>
+
+	/**
+	 * @return the clientUrl
+	 */
+	@Basic
+	@Column(name=&quot;client_uri&quot;)
+	public String getClientUri() {
+<span class="nc" id="L676">		return clientUri;</span>
+	}
+
+	/**
+	 * @param clientUrl the clientUrl to set
+	 */
+	public void setClientUri(String clientUri) {
+<span class="nc" id="L683">		this.clientUri = clientUri;</span>
+<span class="nc" id="L684">	}</span>
+
+	/**
+	 * @return the tosUrl
+	 */
+	@Basic
+	@Column(name=&quot;tos_uri&quot;)
+	public String getTosUri() {
+<span class="nc" id="L692">		return tosUri;</span>
+	}
+
+	/**
+	 * @param tosUrl the tosUrl to set
+	 */
+	public void setTosUri(String tosUri) {
+<span class="nc" id="L699">		this.tosUri = tosUri;</span>
+<span class="nc" id="L700">	}</span>
+
+	@Basic
+	@Column(name=&quot;jwks_uri&quot;)
+	public String getJwksUri() {
+<span class="nc" id="L705">		return jwksUri;</span>
+	}
+
+	public void setJwksUri(String jwksUri) {
+<span class="nc" id="L709">		this.jwksUri = jwksUri;</span>
+<span class="nc" id="L710">	}</span>
+
+	/**
+	 * @return the jwks
+	 */
+	@Basic
+	@Column(name=&quot;jwks&quot;)
+	@Convert(converter = JWKSetStringConverter.class)
+	public JWKSet getJwks() {
+<span class="nc" id="L719">		return jwks;</span>
+	}
+
+	/**
+	 * @param jwks the jwks to set
+	 */
+	public void setJwks(JWKSet jwks) {
+<span class="nc" id="L726">		this.jwks = jwks;</span>
+<span class="nc" id="L727">	}</span>
+
+	@Basic
+	@Column(name=&quot;sector_identifier_uri&quot;)
+	public String getSectorIdentifierUri() {
+<span class="nc" id="L732">		return sectorIdentifierUri;</span>
+	}
+
+	public void setSectorIdentifierUri(String sectorIdentifierUri) {
+<span class="nc" id="L736">		this.sectorIdentifierUri = sectorIdentifierUri;</span>
+<span class="nc" id="L737">	}</span>
+
+	@Basic
+	@Column(name = &quot;request_object_signing_alg&quot;)
+	@Convert(converter = JWSAlgorithmStringConverter.class)
+	public JWSAlgorithm getRequestObjectSigningAlg() {
+<span class="nc" id="L743">		return requestObjectSigningAlg;</span>
+	}
+
+	public void setRequestObjectSigningAlg(JWSAlgorithm requestObjectSigningAlg) {
+<span class="nc" id="L747">		this.requestObjectSigningAlg = requestObjectSigningAlg;</span>
+<span class="nc" id="L748">	}</span>
+
+	@Basic
+	@Column(name = &quot;user_info_signed_response_alg&quot;)
+	@Convert(converter = JWSAlgorithmStringConverter.class)
+	public JWSAlgorithm getUserInfoSignedResponseAlg() {
+<span class="nc" id="L754">		return userInfoSignedResponseAlg;</span>
+	}
+
+	public void setUserInfoSignedResponseAlg(JWSAlgorithm userInfoSignedResponseAlg) {
+<span class="nc" id="L758">		this.userInfoSignedResponseAlg = userInfoSignedResponseAlg;</span>
+<span class="nc" id="L759">	}</span>
+
+	@Basic
+	@Column(name = &quot;user_info_encrypted_response_alg&quot;)
+	@Convert(converter = JWEAlgorithmStringConverter.class)
+	public JWEAlgorithm getUserInfoEncryptedResponseAlg() {
+<span class="nc" id="L765">		return userInfoEncryptedResponseAlg;</span>
+	}
+
+	public void setUserInfoEncryptedResponseAlg(JWEAlgorithm userInfoEncryptedResponseAlg) {
+<span class="nc" id="L769">		this.userInfoEncryptedResponseAlg = userInfoEncryptedResponseAlg;</span>
+<span class="nc" id="L770">	}</span>
+
+	@Basic
+	@Column(name = &quot;user_info_encrypted_response_enc&quot;)
+	@Convert(converter = JWEEncryptionMethodStringConverter.class)
+	public EncryptionMethod getUserInfoEncryptedResponseEnc() {
+<span class="nc" id="L776">		return userInfoEncryptedResponseEnc;</span>
+	}
+
+	public void setUserInfoEncryptedResponseEnc(EncryptionMethod userInfoEncryptedResponseEnc) {
+<span class="nc" id="L780">		this.userInfoEncryptedResponseEnc = userInfoEncryptedResponseEnc;</span>
+<span class="nc" id="L781">	}</span>
+
+	@Basic
+	@Column(name=&quot;id_token_signed_response_alg&quot;)
+	@Convert(converter = JWSAlgorithmStringConverter.class)
+	public JWSAlgorithm getIdTokenSignedResponseAlg() {
+<span class="nc" id="L787">		return idTokenSignedResponseAlg;</span>
+	}
+
+	public void setIdTokenSignedResponseAlg(JWSAlgorithm idTokenSignedResponseAlg) {
+<span class="nc" id="L791">		this.idTokenSignedResponseAlg = idTokenSignedResponseAlg;</span>
+<span class="nc" id="L792">	}</span>
+
+	@Basic
+	@Column(name = &quot;id_token_encrypted_response_alg&quot;)
+	@Convert(converter = JWEAlgorithmStringConverter.class)
+	public JWEAlgorithm getIdTokenEncryptedResponseAlg() {
+<span class="nc" id="L798">		return idTokenEncryptedResponseAlg;</span>
+	}
+
+	public void setIdTokenEncryptedResponseAlg(JWEAlgorithm idTokenEncryptedResponseAlg) {
+<span class="nc" id="L802">		this.idTokenEncryptedResponseAlg = idTokenEncryptedResponseAlg;</span>
+<span class="nc" id="L803">	}</span>
+
+	@Basic
+	@Column(name = &quot;id_token_encrypted_response_enc&quot;)
+	@Convert(converter = JWEEncryptionMethodStringConverter.class)
+	public EncryptionMethod getIdTokenEncryptedResponseEnc() {
+<span class="nc" id="L809">		return idTokenEncryptedResponseEnc;</span>
+	}
+
+	public void setIdTokenEncryptedResponseEnc(EncryptionMethod idTokenEncryptedResponseEnc) {
+<span class="nc" id="L813">		this.idTokenEncryptedResponseEnc = idTokenEncryptedResponseEnc;</span>
+<span class="nc" id="L814">	}</span>
+
+	@Basic
+	@Column(name=&quot;token_endpoint_auth_signing_alg&quot;)
+	@Convert(converter = JWSAlgorithmStringConverter.class)
+	public JWSAlgorithm getTokenEndpointAuthSigningAlg() {
+<span class="nc" id="L820">		return tokenEndpointAuthSigningAlg;</span>
+	}
+
+	public void setTokenEndpointAuthSigningAlg(JWSAlgorithm tokenEndpointAuthSigningAlg) {
+<span class="nc" id="L824">		this.tokenEndpointAuthSigningAlg = tokenEndpointAuthSigningAlg;</span>
+<span class="nc" id="L825">	}</span>
+
+	@Basic
+	@Column(name=&quot;default_max_age&quot;)
+	public Integer getDefaultMaxAge() {
+<span class="nc" id="L830">		return defaultMaxAge;</span>
+	}
+
+	public void setDefaultMaxAge(Integer defaultMaxAge) {
+<span class="nc" id="L834">		this.defaultMaxAge = defaultMaxAge;</span>
+<span class="nc" id="L835">	}</span>
+
+	@Basic
+	@Column(name=&quot;require_auth_time&quot;)
+	public Boolean getRequireAuthTime() {
+<span class="nc" id="L840">		return requireAuthTime;</span>
+	}
+
+	public void setRequireAuthTime(Boolean requireAuthTime) {
+<span class="nc" id="L844">		this.requireAuthTime = requireAuthTime;</span>
+<span class="nc" id="L845">	}</span>
+
+	/**
+	 * @return the responseTypes
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_response_type&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;response_type&quot;)
+	public Set&lt;String&gt; getResponseTypes() {
+<span class="nc" id="L857">		return responseTypes;</span>
+	}
+
+	/**
+	 * @param responseTypes the responseTypes to set
+	 */
+	public void setResponseTypes(Set&lt;String&gt; responseTypes) {
+<span class="nc" id="L864">		this.responseTypes = responseTypes;</span>
+<span class="nc" id="L865">	}</span>
+
+	/**
+	 * @return the defaultACRvalues
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_default_acr_value&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;default_acr_value&quot;)
+	public Set&lt;String&gt; getDefaultACRvalues() {
+<span class="nc" id="L877">		return defaultACRvalues;</span>
+	}
+
+	/**
+	 * @param defaultACRvalues the defaultACRvalues to set
+	 */
+	public void setDefaultACRvalues(Set&lt;String&gt; defaultACRvalues) {
+<span class="nc" id="L884">		this.defaultACRvalues = defaultACRvalues;</span>
+<span class="nc" id="L885">	}</span>
+
+	/**
+	 * @return the initiateLoginUri
+	 */
+	@Basic
+	@Column(name=&quot;initiate_login_uri&quot;)
+	public String getInitiateLoginUri() {
+<span class="nc" id="L893">		return initiateLoginUri;</span>
+	}
+
+	/**
+	 * @param initiateLoginUri the initiateLoginUri to set
+	 */
+	public void setInitiateLoginUri(String initiateLoginUri) {
+<span class="nc" id="L900">		this.initiateLoginUri = initiateLoginUri;</span>
+<span class="nc" id="L901">	}</span>
+
+	/**
+	 * @return the postLogoutRedirectUri
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_post_logout_redirect_uri&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;post_logout_redirect_uri&quot;)
+	public Set&lt;String&gt; getPostLogoutRedirectUris() {
+<span class="nc" id="L913">		return postLogoutRedirectUris;</span>
+	}
+
+	/**
+	 * @param postLogoutRedirectUri the postLogoutRedirectUri to set
+	 */
+	public void setPostLogoutRedirectUris(Set&lt;String&gt; postLogoutRedirectUri) {
+<span class="nc" id="L920">		this.postLogoutRedirectUris = postLogoutRedirectUri;</span>
+<span class="nc" id="L921">	}</span>
+
+	/**
+	 * @return the requestUris
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_request_uri&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;request_uri&quot;)
+	public Set&lt;String&gt; getRequestUris() {
+<span class="nc" id="L933">		return requestUris;</span>
+	}
+
+	/**
+	 * @param requestUris the requestUris to set
+	 */
+	public void setRequestUris(Set&lt;String&gt; requestUris) {
+<span class="nc" id="L940">		this.requestUris = requestUris;</span>
+<span class="nc" id="L941">	}</span>
+
+	/**
+	 * @return the createdAt
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name=&quot;created_at&quot;)
+	public Date getCreatedAt() {
+<span class="nc" id="L949">		return createdAt;</span>
+	}
+
+	/**
+	 * @param createdAt the createdAt to set
+	 */
+	public void setCreatedAt(Date createdAt) {
+<span class="nc" id="L956">		this.createdAt = createdAt;</span>
+<span class="nc" id="L957">	}</span>
+
+	/**
+	 * Our framework doesn't use this construct, we use WhitelistedSites and ApprovedSites instead.
+	 */
+	@Override
+	public boolean isAutoApprove(String scope) {
+<span class="nc" id="L964">		return false;</span>
+	}
+
+	/**
+	 * @return the clearAccessTokensOnRefresh
+	 */
+	@Basic
+	@Column(name = &quot;clear_access_tokens_on_refresh&quot;)
+	public boolean isClearAccessTokensOnRefresh() {
+<span class="nc" id="L973">		return clearAccessTokensOnRefresh;</span>
+	}
+
+	/**
+	 * @param clearAccessTokensOnRefresh the clearAccessTokensOnRefresh to set
+	 */
+	public void setClearAccessTokensOnRefresh(boolean clearAccessTokensOnRefresh) {
+<span class="nc" id="L980">		this.clearAccessTokensOnRefresh = clearAccessTokensOnRefresh;</span>
+<span class="nc" id="L981">	}</span>
+
+	/**
+	 * @return the claimsRedirectUris
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;client_claims_redirect_uri&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Column(name=&quot;redirect_uri&quot;)
+	public Set&lt;String&gt; getClaimsRedirectUris() {
+<span class="nc" id="L993">		return claimsRedirectUris;</span>
+	}
+
+	/**
+	 * @param claimsRedirectUris the claimsRedirectUris to set
+	 */
+	public void setClaimsRedirectUris(Set&lt;String&gt; claimsRedirectUris) {
+<span class="nc" id="L1000">		this.claimsRedirectUris = claimsRedirectUris;</span>
+<span class="nc" id="L1001">	}</span>
+
+	/**
+	 * @return the softwareStatement
+	 */
+	@Basic
+	@Column(name = &quot;software_statement&quot;)
+	@Convert(converter = JWTStringConverter.class)
+	public JWT getSoftwareStatement() {
+<span class="nc" id="L1010">		return softwareStatement;</span>
+	}
+
+	/**
+	 * @param softwareStatement the softwareStatement to set
+	 */
+	public void setSoftwareStatement(JWT softwareStatement) {
+<span class="nc" id="L1017">		this.softwareStatement = softwareStatement;</span>
+<span class="nc" id="L1018">	}</span>
+
+	/**
+	 * @return the codeChallengeMethod
+	 */
+	@Basic
+	@Column(name = &quot;code_challenge_method&quot;)
+	@Convert(converter = PKCEAlgorithmStringConverter.class)
+	public PKCEAlgorithm getCodeChallengeMethod() {
+<span class="nc" id="L1027">		return codeChallengeMethod;</span>
+	}
+
+	/**
+	 * @param codeChallengeMethod the codeChallengeMethod to set
+	 */
+	public void setCodeChallengeMethod(PKCEAlgorithm codeChallengeMethod) {
+<span class="nc" id="L1034">		this.codeChallengeMethod = codeChallengeMethod;</span>
+<span class="nc" id="L1035">	}</span>
+
+	/**
+	 * @return the deviceCodeValiditySeconds
+	 */
+	@Basic
+	@Column(name=&quot;device_code_validity_seconds&quot;)
+	public Integer getDeviceCodeValiditySeconds() {
+<span class="nc" id="L1043">		return deviceCodeValiditySeconds;</span>
+	}
+
+	/**
+	 * @param deviceCodeValiditySeconds the deviceCodeValiditySeconds to set
+	 */
+	public void setDeviceCodeValiditySeconds(Integer deviceCodeValiditySeconds) {
+<span class="nc" id="L1050">		this.deviceCodeValiditySeconds = deviceCodeValiditySeconds;</span>
+<span class="nc" id="L1051">	}</span>
+
+	/**
+	 * @return the softwareId
+	 */
+	@Basic
+	@Column(name=&quot;software_id&quot;)
+	public String getSoftwareId() {
+<span class="nc" id="L1059">		return softwareId;</span>
+	}
+
+	/**
+	 * @param softwareId the softwareId to set
+	 */
+	public void setSoftwareId(String softwareId) {
+<span class="nc" id="L1066">		this.softwareId = softwareId;</span>
+<span class="nc" id="L1067">	}</span>
+
+	/**
+	 * @return the softwareVersion
+	 */
+	@Basic
+	@Column(name=&quot;software_version&quot;)
+	public String getSoftwareVersion() {
+<span class="nc" id="L1075">		return softwareVersion;</span>
+	}
+
+	/**
+	 * @param softwareVersion the softwareVersion to set
+	 */
+	public void setSoftwareVersion(String softwareVersion) {
+<span class="nc" id="L1082">		this.softwareVersion = softwareVersion;</span>
+<span class="nc" id="L1083">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

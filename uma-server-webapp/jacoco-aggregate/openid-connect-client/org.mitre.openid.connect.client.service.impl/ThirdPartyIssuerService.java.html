@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ThirdPartyIssuerService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">ThirdPartyIssuerService.java</span></div><h1>ThirdPartyIssuerService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.service.impl;
+
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.mitre.openid.connect.client.model.IssuerServiceResponse;
+import org.mitre.openid.connect.client.service.IssuerService;
+import org.springframework.security.authentication.AuthenticationServiceException;
+
+import com.google.common.base.Strings;
+
+/**
+ *
+ * Determines the issuer using an account chooser or other third-party-initiated login
+ *
+ * @author jricher
+ *
+ */
+<span class="nc" id="L43">public class ThirdPartyIssuerService implements IssuerService {</span>
+
+	private String accountChooserUrl;
+
+<span class="nc" id="L47">	private Set&lt;String&gt; whitelist = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L48">	private Set&lt;String&gt; blacklist = new HashSet&lt;&gt;();</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.client.service.IssuerService#getIssuer(javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	public IssuerServiceResponse getIssuer(HttpServletRequest request) {
+
+		// if the issuer is passed in, return that
+<span class="nc" id="L57">		String iss = request.getParameter(&quot;iss&quot;);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(iss)) {</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">			if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(iss)) {</span>
+<span class="nc" id="L60">				throw new AuthenticationServiceException(&quot;Whitelist was nonempty, issuer was not in whitelist: &quot; + iss);</span>
+			}
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">			if (blacklist.contains(iss)) {</span>
+<span class="nc" id="L64">				throw new AuthenticationServiceException(&quot;Issuer was in blacklist: &quot; + iss);</span>
+			}
+
+<span class="nc" id="L67">			return new IssuerServiceResponse(iss, request.getParameter(&quot;login_hint&quot;), request.getParameter(&quot;target_link_uri&quot;));</span>
+		} else {
+
+			try {
+				// otherwise, need to forward to the account chooser
+<span class="nc" id="L72">				String redirectUri = request.getRequestURL().toString();</span>
+<span class="nc" id="L73">				URIBuilder builder = new URIBuilder(accountChooserUrl);</span>
+
+<span class="nc" id="L75">				builder.addParameter(&quot;redirect_uri&quot;, redirectUri);</span>
+
+<span class="nc" id="L77">				return new IssuerServiceResponse(builder.build().toString());</span>
+
+<span class="nc" id="L79">			} catch (URISyntaxException e) {</span>
+<span class="nc" id="L80">				throw new AuthenticationServiceException(&quot;Account Chooser URL is not valid&quot;, e);</span>
+			}
+
+
+		}
+
+	}
+
+	/**
+	 * @return the accountChooserUrl
+	 */
+	public String getAccountChooserUrl() {
+<span class="nc" id="L92">		return accountChooserUrl;</span>
+	}
+
+	/**
+	 * @param accountChooserUrl the accountChooserUrl to set
+	 */
+	public void setAccountChooserUrl(String accountChooserUrl) {
+<span class="nc" id="L99">		this.accountChooserUrl = accountChooserUrl;</span>
+<span class="nc" id="L100">	}</span>
+
+	/**
+	 * @return the whitelist
+	 */
+	public Set&lt;String&gt; getWhitelist() {
+<span class="nc" id="L106">		return whitelist;</span>
+	}
+
+	/**
+	 * @param whitelist the whitelist to set
+	 */
+	public void setWhitelist(Set&lt;String&gt; whitelist) {
+<span class="nc" id="L113">		this.whitelist = whitelist;</span>
+<span class="nc" id="L114">	}</span>
+
+	/**
+	 * @return the blacklist
+	 */
+	public Set&lt;String&gt; getBlacklist() {
+<span class="nc" id="L120">		return blacklist;</span>
+	}
+
+	/**
+	 * @param blacklist the blacklist to set
+	 */
+	public void setBlacklist(Set&lt;String&gt; blacklist) {
+<span class="nc" id="L127">		this.blacklist = blacklist;</span>
+<span class="nc" id="L128">	}</span>
+
+	@PostConstruct
+	public void afterPropertiesSet() {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(this.accountChooserUrl)) {</span>
+<span class="nc" id="L133">			throw new IllegalArgumentException(&quot;Account Chooser URL cannot be null or empty&quot;);</span>
+		}
+
+<span class="nc" id="L136">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IdTokenHashUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.util</a> &gt; <span class="el_source">IdTokenHashUtils.java</span></div><h1>IdTokenHashUtils.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.openid.connect.util;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.util.Base64URL;
+
+/**
+ * Utility class for generating hashes for access tokens and authorization codes
+ * to be included in an ID Token.
+ *
+ * @author Amanda Anganes
+ *
+ */
+<span class="nc" id="L38">public class IdTokenHashUtils {</span>
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L43">	private static final Logger logger = LoggerFactory.getLogger(IdTokenHashUtils.class);</span>
+
+	/**
+	 * Compute the SHA hash of an authorization code
+	 *
+	 * @param signingAlg
+	 * @param code
+	 * @return
+	 */
+	public static Base64URL getCodeHash(JWSAlgorithm signingAlg, String code) {
+<span class="nc" id="L53">		return getHash(signingAlg, code.getBytes());</span>
+	}
+
+	/**
+	 * Compute the SHA hash of a token
+	 *
+	 * @param signingAlg
+	 * @param token
+	 * @return
+	 */
+	public static Base64URL getAccessTokenHash(JWSAlgorithm signingAlg, OAuth2AccessTokenEntity token) {
+
+<span class="nc" id="L65">		byte[] tokenBytes = token.getJwt().serialize().getBytes();</span>
+
+<span class="nc" id="L67">		return getHash(signingAlg, tokenBytes);</span>
+
+	}
+
+	public static Base64URL getHash(JWSAlgorithm signingAlg, byte[] bytes) {
+
+		//Switch based on the given signing algorithm - use SHA-xxx with the same 'xxx' bitnumber
+		//as the JWSAlgorithm to hash the token.
+<span class="nc" id="L75">		String hashAlg = null;</span>
+
+<span class="nc bnc" id="L77" title="All 8 branches missed.">		if (signingAlg.equals(JWSAlgorithm.HS256) || signingAlg.equals(JWSAlgorithm.ES256) || signingAlg.equals(JWSAlgorithm.RS256) || signingAlg.equals(JWSAlgorithm.PS256)) {</span>
+<span class="nc" id="L78">			hashAlg = &quot;SHA-256&quot;;</span>
+		}
+
+<span class="nc bnc" id="L81" title="All 8 branches missed.">		else if (signingAlg.equals(JWSAlgorithm.ES384) || signingAlg.equals(JWSAlgorithm.HS384) || signingAlg.equals(JWSAlgorithm.RS384) || signingAlg.equals(JWSAlgorithm.PS384)) {</span>
+<span class="nc" id="L82">			hashAlg = &quot;SHA-384&quot;;</span>
+		}
+
+<span class="nc bnc" id="L85" title="All 8 branches missed.">		else if (signingAlg.equals(JWSAlgorithm.ES512) || signingAlg.equals(JWSAlgorithm.HS512) || signingAlg.equals(JWSAlgorithm.RS512) || signingAlg.equals(JWSAlgorithm.PS512)) {</span>
+<span class="nc" id="L86">			hashAlg = &quot;SHA-512&quot;;</span>
+		}
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">		if (hashAlg != null) {</span>
+
+			try {
+<span class="nc" id="L92">				MessageDigest hasher = MessageDigest.getInstance(hashAlg);</span>
+<span class="nc" id="L93">				hasher.reset();</span>
+<span class="nc" id="L94">				hasher.update(bytes);</span>
+
+<span class="nc" id="L96">				byte[] hashBytes = hasher.digest();</span>
+<span class="nc" id="L97">				byte[] hashBytesLeftHalf = Arrays.copyOf(hashBytes, hashBytes.length / 2);</span>
+<span class="nc" id="L98">				Base64URL encodedHash = Base64URL.encode(hashBytesLeftHalf);</span>
+
+<span class="nc" id="L100">				return encodedHash;</span>
+
+<span class="nc" id="L102">			} catch (NoSuchAlgorithmException e) {</span>
+
+<span class="nc" id="L104">				logger.error(&quot;No such algorithm error: &quot;, e);</span>
+
+			}
+
+		}
+
+<span class="nc" id="L110">		return null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

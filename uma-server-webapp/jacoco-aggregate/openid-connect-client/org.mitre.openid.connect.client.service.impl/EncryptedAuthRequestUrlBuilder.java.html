@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EncryptedAuthRequestUrlBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">EncryptedAuthRequestUrlBuilder.java</span></div><h1>EncryptedAuthRequestUrlBuilder.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.service.impl;
+
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.mitre.jwt.encryption.service.JWTEncryptionAndDecryptionService;
+import org.mitre.jwt.signer.service.impl.JWKSetCacheService;
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.openid.connect.client.service.AuthRequestUrlBuilder;
+import org.mitre.openid.connect.config.ServerConfiguration;
+import org.springframework.security.authentication.AuthenticationServiceException;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+
+/**
+ * @author jricher
+ *
+ */
+<span class="nc" id="L46">public class EncryptedAuthRequestUrlBuilder implements AuthRequestUrlBuilder {</span>
+
+	private JWKSetCacheService encrypterService;
+
+	private JWEAlgorithm alg;
+	private EncryptionMethod enc;
+
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.client.service.AuthRequestUrlBuilder#buildAuthRequestUrl(org.mitre.openid.connect.config.ServerConfiguration, org.mitre.oauth2.model.RegisteredClient, java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+	 */
+	@Override
+	public String buildAuthRequestUrl(ServerConfiguration serverConfig, RegisteredClient clientConfig, String redirectUri, String nonce, String state, Map&lt;String, String&gt; options, String loginHint) {
+
+		// create our signed JWT for the request object
+<span class="nc" id="L61">		JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder();</span>
+
+		//set parameters to JwtClaims
+<span class="nc" id="L64">		claims.claim(&quot;response_type&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L65">		claims.claim(&quot;client_id&quot;, clientConfig.getClientId());</span>
+<span class="nc" id="L66">		claims.claim(&quot;scope&quot;, Joiner.on(&quot; &quot;).join(clientConfig.getScope()));</span>
+
+		// build our redirect URI
+<span class="nc" id="L69">		claims.claim(&quot;redirect_uri&quot;, redirectUri);</span>
+
+		// this comes back in the id token
+<span class="nc" id="L72">		claims.claim(&quot;nonce&quot;, nonce);</span>
+
+		// this comes back in the auth request return
+<span class="nc" id="L75">		claims.claim(&quot;state&quot;, state);</span>
+
+		// Optional parameters
+<span class="nc bnc" id="L78" title="All 2 branches missed.">		for (Entry&lt;String, String&gt; option : options.entrySet()) {</span>
+<span class="nc" id="L79">			claims.claim(option.getKey(), option.getValue());</span>
+<span class="nc" id="L80">		}</span>
+
+		// if there's a login hint, send it
+<span class="nc bnc" id="L83" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(loginHint)) {</span>
+<span class="nc" id="L84">			claims.claim(&quot;login_hint&quot;, loginHint);</span>
+		}
+
+<span class="nc" id="L87">		EncryptedJWT jwt = new EncryptedJWT(new JWEHeader(alg, enc), claims.build());</span>
+
+<span class="nc" id="L89">		JWTEncryptionAndDecryptionService encryptor = encrypterService.getEncrypter(serverConfig.getJwksUri());</span>
+
+<span class="nc" id="L91">		encryptor.encryptJwt(jwt);</span>
+
+		try {
+<span class="nc" id="L94">			URIBuilder uriBuilder = new URIBuilder(serverConfig.getAuthorizationEndpointUri());</span>
+<span class="nc" id="L95">			uriBuilder.addParameter(&quot;request&quot;, jwt.serialize());</span>
+
+			// build out the URI
+<span class="nc" id="L98">			return uriBuilder.build().toString();</span>
+<span class="nc" id="L99">		} catch (URISyntaxException e) {</span>
+<span class="nc" id="L100">			throw new AuthenticationServiceException(&quot;Malformed Authorization Endpoint Uri&quot;, e);</span>
+		}
+	}
+
+	/**
+	 * @return the encrypterService
+	 */
+	public JWKSetCacheService getEncrypterService() {
+<span class="nc" id="L108">		return encrypterService;</span>
+	}
+
+	/**
+	 * @param encrypterService the encrypterService to set
+	 */
+	public void setEncrypterService(JWKSetCacheService encrypterService) {
+<span class="nc" id="L115">		this.encrypterService = encrypterService;</span>
+<span class="nc" id="L116">	}</span>
+
+	/**
+	 * @return the alg
+	 */
+	public JWEAlgorithm getAlg() {
+<span class="nc" id="L122">		return alg;</span>
+	}
+
+	/**
+	 * @param alg the alg to set
+	 */
+	public void setAlg(JWEAlgorithm alg) {
+<span class="nc" id="L129">		this.alg = alg;</span>
+<span class="nc" id="L130">	}</span>
+
+	/**
+	 * @return the enc
+	 */
+	public EncryptionMethod getEnc() {
+<span class="nc" id="L136">		return enc;</span>
+	}
+
+	/**
+	 * @param enc the enc to set
+	 */
+	public void setEnc(EncryptionMethod enc) {
+<span class="nc" id="L143">		this.enc = enc;</span>
+<span class="nc" id="L144">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ScopeServiceAwareOAuth2RequestValidator.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.token</a> &gt; <span class="el_source">ScopeServiceAwareOAuth2RequestValidator.java</span></div><h1>ScopeServiceAwareOAuth2RequestValidator.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.token;
+
+import java.util.Set;
+
+import org.mitre.oauth2.service.SystemScopeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
+import org.springframework.security.oauth2.provider.TokenRequest;
+
+/**
+ *
+ * Validates the scopes on a request by comparing them against a client's
+ * allowed scopes, but allow custom scopes to function through the system scopes
+ *
+ * @author jricher
+ *
+ */
+<span class="nc" id="L40">public class ScopeServiceAwareOAuth2RequestValidator implements OAuth2RequestValidator {</span>
+
+	@Autowired
+	private SystemScopeService scopeService;
+
+	/* (non-Javadoc)
+	 * @see org.springframework.security.oauth2.provider.OAuth2RequestValidator#validateScope(java.util.Map, java.util.Set)
+	 */
+	private void validateScope(Set&lt;String&gt; requestedScopes, Set&lt;String&gt; clientScopes) throws InvalidScopeException {
+<span class="nc bnc" id="L49" title="All 4 branches missed.">		if (requestedScopes != null &amp;&amp; !requestedScopes.isEmpty()) {</span>
+<span class="nc bnc" id="L50" title="All 4 branches missed.">			if (clientScopes != null &amp;&amp; !clientScopes.isEmpty()) {</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">				if (!scopeService.scopesMatch(clientScopes, requestedScopes)) {</span>
+<span class="nc" id="L52">					throw new InvalidScopeException(&quot;Invalid scope; requested:&quot; + requestedScopes, clientScopes);</span>
+				}
+			}
+		}
+<span class="nc" id="L56">	}</span>
+
+	@Override
+	public void validateScope(AuthorizationRequest authorizationRequest, ClientDetails client) throws InvalidScopeException {
+<span class="nc" id="L60">		validateScope(authorizationRequest.getScope(), client.getScope());</span>
+<span class="nc" id="L61">	}</span>
+
+	@Override
+	public void validateScope(TokenRequest tokenRequest, ClientDetails client) throws InvalidScopeException {
+<span class="nc" id="L65">		validateScope(tokenRequest.getScope(), client.getScope());</span>
+<span class="nc" id="L66">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

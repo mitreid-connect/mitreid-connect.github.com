@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JWTAssertionTokenGranter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.token</a> &gt; <span class="el_source">JWTAssertionTokenGranter.java</span></div><h1>JWTAssertionTokenGranter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.token;
+
+import java.text.ParseException;
+
+import org.mitre.jwt.assertion.AssertionValidator;
+import org.mitre.oauth2.assertion.AssertionOAuth2RequestFactory;
+import org.mitre.oauth2.service.ClientDetailsEntityService;
+import org.mitre.oauth2.service.OAuth2TokenEntityService;
+import org.mitre.openid.connect.assertion.JWTBearerAssertionAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.TokenRequest;
+import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;
+import org.springframework.stereotype.Component;
+
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+
+/**
+ * @author jricher
+ *
+ */
+@Component(&quot;jwtAssertionTokenGranter&quot;)
+public class JWTAssertionTokenGranter extends AbstractTokenGranter {
+
+	private static final String grantType = &quot;urn:ietf:params:oauth:grant-type:jwt-bearer&quot;;
+
+	@Autowired
+	@Qualifier(&quot;jwtAssertionValidator&quot;)
+	private AssertionValidator validator;
+
+	@Autowired
+	private AssertionOAuth2RequestFactory assertionFactory;
+
+	@Autowired
+	public JWTAssertionTokenGranter(OAuth2TokenEntityService tokenServices, ClientDetailsEntityService clientDetailsService, OAuth2RequestFactory requestFactory) {
+<span class="nc" id="L61">		super(tokenServices, clientDetailsService, requestFactory, grantType);</span>
+<span class="nc" id="L62">	}</span>
+
+	/* (non-Javadoc)
+	 * @see org.springframework.security.oauth2.provider.token.AbstractTokenGranter#getOAuth2Authentication(org.springframework.security.oauth2.provider.AuthorizationRequest)
+	 */
+	@Override
+	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) throws AuthenticationException, InvalidTokenException {
+		// read and load up the existing token
+		try {
+<span class="nc" id="L71">			String incomingAssertionValue = tokenRequest.getRequestParameters().get(&quot;assertion&quot;);</span>
+<span class="nc" id="L72">			JWT assertion = JWTParser.parse(incomingAssertionValue);</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">			if (validator.isValid(assertion)) {</span>
+
+				// our validator says it's OK, time to make a token from it
+				// the real work happens in the assertion factory and the token services
+<span class="nc" id="L78">				return new OAuth2Authentication(assertionFactory.createOAuth2Request(client, tokenRequest, assertion),</span>
+<span class="nc" id="L79">						new JWTBearerAssertionAuthenticationToken(assertion, client.getAuthorities()));</span>
+
+			} else {
+<span class="nc" id="L82">				logger.warn(&quot;Incoming assertion did not pass validator, rejecting&quot;);</span>
+<span class="nc" id="L83">				return null;</span>
+			}
+
+<span class="nc" id="L86">		} catch (ParseException e) {</span>
+<span class="nc" id="L87">			logger.warn(&quot;Unable to parse incoming assertion&quot;);</span>
+		}
+
+		// if we had made a token, we'd have returned it by now, so return null here to close out with no created token
+<span class="nc" id="L91">		return null;</span>
+
+	}
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

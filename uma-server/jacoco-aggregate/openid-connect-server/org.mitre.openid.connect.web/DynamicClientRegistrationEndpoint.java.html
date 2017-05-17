@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DynamicClientRegistrationEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">DynamicClientRegistrationEndpoint.java</span></div><h1>DynamicClientRegistrationEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.openid.connect.web;
+
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.mitre.jwt.assertion.AssertionValidator;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.ClientDetailsEntity.AppType;
+import org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod;
+import org.mitre.oauth2.model.ClientDetailsEntity.SubjectType;
+import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.oauth2.model.SystemScope;
+import org.mitre.oauth2.service.ClientDetailsEntityService;
+import org.mitre.oauth2.service.OAuth2TokenEntityService;
+import org.mitre.oauth2.service.SystemScopeService;
+import org.mitre.openid.connect.ClientDetailsEntityJsonProcessor;
+import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
+import org.mitre.openid.connect.exception.ValidationException;
+import org.mitre.openid.connect.service.BlacklistedSiteService;
+import org.mitre.openid.connect.service.OIDCTokenService;
+import org.mitre.openid.connect.view.ClientInformationResponseView;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonErrorView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.common.util.OAuth2Utils;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriUtils;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonSyntaxException;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jwt.JWTClaimsSet;
+
+import static org.mitre.oauth2.model.RegisteredClientFields.APPLICATION_TYPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLAIMS_REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_ID;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_ID_ISSUED_AT;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_NAME;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_SECRET;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_SECRET_EXPIRES_AT;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.CONTACTS;
+import static org.mitre.oauth2.model.RegisteredClientFields.DEFAULT_ACR_VALUES;
+import static org.mitre.oauth2.model.RegisteredClientFields.DEFAULT_MAX_AGE;
+import static org.mitre.oauth2.model.RegisteredClientFields.GRANT_TYPES;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_ENCRYPTED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_ENCRYPTED_RESPONSE_ENC;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_SIGNED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.INITIATE_LOGIN_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.JWKS;
+import static org.mitre.oauth2.model.RegisteredClientFields.JWKS_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.LOGO_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.POLICY_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.POST_LOGOUT_REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REGISTRATION_ACCESS_TOKEN;
+import static org.mitre.oauth2.model.RegisteredClientFields.REGISTRATION_CLIENT_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUEST_OBJECT_SIGNING_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUEST_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUIRE_AUTH_TIME;
+import static org.mitre.oauth2.model.RegisteredClientFields.RESPONSE_TYPES;
+import static org.mitre.oauth2.model.RegisteredClientFields.SCOPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.SECTOR_IDENTIFIER_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.SOFTWARE_STATEMENT;
+import static org.mitre.oauth2.model.RegisteredClientFields.SUBJECT_TYPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOKEN_ENDPOINT_AUTH_METHOD;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOKEN_ENDPOINT_AUTH_SIGNING_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOS_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_ENCRYPTED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_ENCRYPTED_RESPONSE_ENC;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_SIGNED_RESPONSE_ALG;
+
+@Controller
+@RequestMapping(value = DynamicClientRegistrationEndpoint.URL)
+<span class="nc" id="L114">public class DynamicClientRegistrationEndpoint {</span>
+
+	public static final String URL = &quot;register&quot;;
+
+	@Autowired
+	private ClientDetailsEntityService clientService;
+
+	@Autowired
+	private OAuth2TokenEntityService tokenService;
+
+	@Autowired
+	private SystemScopeService scopeService;
+
+	@Autowired
+	private BlacklistedSiteService blacklistService;
+
+	@Autowired
+	private ConfigurationPropertiesBean config;
+
+	@Autowired
+	private OIDCTokenService connectTokenService;
+
+	@Autowired
+	@Qualifier(&quot;clientAssertionValidator&quot;)
+	private AssertionValidator assertionValidator;
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L143">	private static final Logger logger = LoggerFactory.getLogger(DynamicClientRegistrationEndpoint.class);</span>
+
+	/**
+	 * Create a new Client, issue a client ID, and create a registration access token.
+	 * @param jsonString
+	 * @param m
+	 * @param p
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String registerNewClient(@RequestBody String jsonString, Model m) {
+
+<span class="nc" id="L155">		ClientDetailsEntity newClient = null;</span>
+		try {
+<span class="nc" id="L157">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
+<span class="nc" id="L158">		} catch (JsonSyntaxException e) {</span>
+			// bad parse
+			// didn't parse, this is a bad request
+<span class="nc" id="L161">			logger.error(&quot;registerNewClient failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L162">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L163">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L164">		}</span>
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">		if (newClient != null) {</span>
+			// it parsed!
+
+			//
+			// Now do some post-processing consistency checks on it
+			//
+
+			// clear out any spurious id/secret (clients don't get to pick)
+<span class="nc" id="L174">			newClient.setClientId(null);</span>
+<span class="nc" id="L175">			newClient.setClientSecret(null);</span>
+
+			// do validation on the fields
+			try {
+<span class="nc" id="L179">				newClient = validateSoftwareStatement(newClient); // need to handle the software statement first because it might override requested values</span>
+<span class="nc" id="L180">				newClient = validateScopes(newClient);</span>
+<span class="nc" id="L181">				newClient = validateResponseTypes(newClient);</span>
+<span class="nc" id="L182">				newClient = validateGrantTypes(newClient);</span>
+<span class="nc" id="L183">				newClient = validateRedirectUris(newClient);</span>
+<span class="nc" id="L184">				newClient = validateAuth(newClient);</span>
+<span class="nc" id="L185">			} catch (ValidationException ve) {</span>
+				// validation failed, return an error
+<span class="nc" id="L187">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
+<span class="nc" id="L188">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
+<span class="nc" id="L189">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
+<span class="nc" id="L190">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L191">			}</span>
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">			if (newClient.getTokenEndpointAuthMethod() == null) {</span>
+<span class="nc" id="L194">				newClient.setTokenEndpointAuthMethod(AuthMethod.SECRET_BASIC);</span>
+			}
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">			if (newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_BASIC ||</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">					newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_JWT ||</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">					newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_POST) {</span>
+
+				// we need to generate a secret
+<span class="nc" id="L202">				newClient = clientService.generateClientSecret(newClient);</span>
+			}
+
+			// set some defaults for token timeouts
+<span class="nc bnc" id="L206" title="All 2 branches missed.">			if (config.isHeartMode()) {</span>
+				// heart mode has different defaults depending on primary grant type
+<span class="nc bnc" id="L208" title="All 2 branches missed.">				if (newClient.getGrantTypes().contains(&quot;authorization_code&quot;)) {</span>
+<span class="nc" id="L209">					newClient.setAccessTokenValiditySeconds((int)TimeUnit.HOURS.toSeconds(1)); // access tokens good for 1hr</span>
+<span class="nc" id="L210">					newClient.setIdTokenValiditySeconds((int)TimeUnit.MINUTES.toSeconds(5)); // id tokens good for 5min</span>
+<span class="nc" id="L211">					newClient.setRefreshTokenValiditySeconds((int)TimeUnit.HOURS.toSeconds(24)); // refresh tokens good for 24hr</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">				} else if (newClient.getGrantTypes().contains(&quot;implicit&quot;)) {</span>
+<span class="nc" id="L213">					newClient.setAccessTokenValiditySeconds((int)TimeUnit.MINUTES.toSeconds(15)); // access tokens good for 15min</span>
+<span class="nc" id="L214">					newClient.setIdTokenValiditySeconds((int)TimeUnit.MINUTES.toSeconds(5)); // id tokens good for 5min</span>
+<span class="nc" id="L215">					newClient.setRefreshTokenValiditySeconds(0); // no refresh tokens</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">				} else if (newClient.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
+<span class="nc" id="L217">					newClient.setAccessTokenValiditySeconds((int)TimeUnit.HOURS.toSeconds(6)); // access tokens good for 6hr</span>
+<span class="nc" id="L218">					newClient.setIdTokenValiditySeconds(0); // no id tokens</span>
+<span class="nc" id="L219">					newClient.setRefreshTokenValiditySeconds(0); // no refresh tokens</span>
+				}
+			} else {
+<span class="nc" id="L222">				newClient.setAccessTokenValiditySeconds((int)TimeUnit.HOURS.toSeconds(1)); // access tokens good for 1hr</span>
+<span class="nc" id="L223">				newClient.setIdTokenValiditySeconds((int)TimeUnit.MINUTES.toSeconds(10)); // id tokens good for 10min</span>
+<span class="nc" id="L224">				newClient.setRefreshTokenValiditySeconds(null); // refresh tokens good until revoked</span>
+			}
+
+			// this client has been dynamically registered (obviously)
+<span class="nc" id="L228">			newClient.setDynamicallyRegistered(true);</span>
+
+			// this client can't do token introspection
+<span class="nc" id="L231">			newClient.setAllowIntrospection(false);</span>
+
+			// now save it
+			try {
+<span class="nc" id="L235">				ClientDetailsEntity savedClient = clientService.saveNewClient(newClient);</span>
+
+				// generate the registration access token
+<span class="nc" id="L238">				OAuth2AccessTokenEntity token = connectTokenService.createRegistrationAccessToken(savedClient);</span>
+<span class="nc" id="L239">				token = tokenService.saveAccessToken(token);</span>
+
+				// send it all out to the view
+
+<span class="nc" id="L243">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;register/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L244">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L245">				m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED); // http 201</span>
+
+<span class="nc" id="L247">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L248">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L249">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L250">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L251">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L252">			} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L253">				logger.error(&quot;Couldn't save client&quot;, e);</span>
+
+<span class="nc" id="L255">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
+<span class="nc" id="L256">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
+<span class="nc" id="L257">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+
+<span class="nc" id="L259">				return JsonErrorView.VIEWNAME;</span>
+			}
+		} else {
+			// didn't parse, this is a bad request
+<span class="nc" id="L263">			logger.error(&quot;registerNewClient failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L264">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+
+<span class="nc" id="L266">			return HttpCodeView.VIEWNAME;</span>
+		}
+
+	}
+
+	/**
+	 * Get the meta information for a client.
+	 * @param clientId
+	 * @param m
+	 * @param auth
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_CLIENT') and #oauth2.hasScope('&quot; + SystemScopeService.REGISTRATION_TOKEN_SCOPE + &quot;')&quot;)
+	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String readClientConfiguration(@PathVariable(&quot;id&quot;) String clientId, Model m, OAuth2Authentication auth) {
+
+<span class="nc" id="L282">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+
+<span class="nc bnc" id="L284" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
+
+			try {
+<span class="nc" id="L287">				OAuth2AccessTokenEntity token = rotateRegistrationTokenIfNecessary(auth, client);</span>
+<span class="nc" id="L288">				RegisteredClient registered = new RegisteredClient(client, token.getValue(), config.getIssuer() + &quot;register/&quot; +  UriUtils.encodePathSegment(client.getClientId(), &quot;UTF-8&quot;));</span>
+
+				// send it all out to the view
+<span class="nc" id="L291">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L292">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
+
+<span class="nc" id="L294">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L295">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L296">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L297">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L298">				return HttpCodeView.VIEWNAME;</span>
+			}
+
+		} else {
+			// client mismatch
+<span class="nc" id="L303">			logger.error(&quot;readClientConfiguration failed, client ID mismatch: &quot;</span>
+<span class="nc" id="L304">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L305">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+
+<span class="nc" id="L307">			return HttpCodeView.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Update the metainformation for a given client.
+	 * @param clientId
+	 * @param jsonString
+	 * @param m
+	 * @param auth
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_CLIENT') and #oauth2.hasScope('&quot; + SystemScopeService.REGISTRATION_TOKEN_SCOPE + &quot;')&quot;)
+	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String updateClient(@PathVariable(&quot;id&quot;) String clientId, @RequestBody String jsonString, Model m, OAuth2Authentication auth) {
+
+
+<span class="nc" id="L324">		ClientDetailsEntity newClient = null;</span>
+		try {
+<span class="nc" id="L326">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
+<span class="nc" id="L327">		} catch (JsonSyntaxException e) {</span>
+			// bad parse
+			// didn't parse, this is a bad request
+<span class="nc" id="L330">			logger.error(&quot;updateClient failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L331">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L332">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L333">		}</span>
+<span class="nc" id="L334">		ClientDetailsEntity oldClient = clientService.loadClientByClientId(clientId);</span>
+
+<span class="nc bnc" id="L336" title="All 4 branches missed.">		if (newClient != null &amp;&amp; oldClient != null  // we have an existing client and the new one parsed</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(auth.getOAuth2Request().getClientId()) // the client passed in the URI matches the one in the auth</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(newClient.getClientId()) // the client passed in the body matches the one in the URI</span>
+				) {
+
+			// a client can't ask to update its own client secret to any particular value
+<span class="nc" id="L342">			newClient.setClientSecret(oldClient.getClientSecret());</span>
+
+			// we need to copy over all of the local and SECOAUTH fields
+<span class="nc" id="L345">			newClient.setAccessTokenValiditySeconds(oldClient.getAccessTokenValiditySeconds());</span>
+<span class="nc" id="L346">			newClient.setIdTokenValiditySeconds(oldClient.getIdTokenValiditySeconds());</span>
+<span class="nc" id="L347">			newClient.setRefreshTokenValiditySeconds(oldClient.getRefreshTokenValiditySeconds());</span>
+<span class="nc" id="L348">			newClient.setDynamicallyRegistered(true); // it's still dynamically registered</span>
+<span class="nc" id="L349">			newClient.setAllowIntrospection(false); // dynamically registered clients can't do introspection -- use the resource registration instead</span>
+<span class="nc" id="L350">			newClient.setAuthorities(oldClient.getAuthorities());</span>
+<span class="nc" id="L351">			newClient.setClientDescription(oldClient.getClientDescription());</span>
+<span class="nc" id="L352">			newClient.setCreatedAt(oldClient.getCreatedAt());</span>
+<span class="nc" id="L353">			newClient.setReuseRefreshToken(oldClient.isReuseRefreshToken());</span>
+
+			// do validation on the fields
+			try {
+<span class="nc" id="L357">				newClient = validateSoftwareStatement(newClient); // need to handle the software statement first because it might override requested values</span>
+<span class="nc" id="L358">				newClient = validateScopes(newClient);</span>
+<span class="nc" id="L359">				newClient = validateResponseTypes(newClient);</span>
+<span class="nc" id="L360">				newClient = validateGrantTypes(newClient);</span>
+<span class="nc" id="L361">				newClient = validateRedirectUris(newClient);</span>
+<span class="nc" id="L362">				newClient = validateAuth(newClient);</span>
+<span class="nc" id="L363">			} catch (ValidationException ve) {</span>
+				// validation failed, return an error
+<span class="nc" id="L365">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
+<span class="nc" id="L366">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
+<span class="nc" id="L367">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
+<span class="nc" id="L368">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L369">			}</span>
+
+			try {
+				// save the client
+<span class="nc" id="L373">				ClientDetailsEntity savedClient = clientService.updateClient(oldClient, newClient);</span>
+
+<span class="nc" id="L375">				OAuth2AccessTokenEntity token = rotateRegistrationTokenIfNecessary(auth, savedClient);</span>
+
+<span class="nc" id="L377">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;register/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
+
+				// send it all out to the view
+<span class="nc" id="L380">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L381">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
+
+<span class="nc" id="L383">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L384">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L385">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L386">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L387">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L388">			} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L389">				logger.error(&quot;Couldn't save client&quot;, e);</span>
+
+<span class="nc" id="L391">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
+<span class="nc" id="L392">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
+<span class="nc" id="L393">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+
+<span class="nc" id="L395">				return JsonErrorView.VIEWNAME;</span>
+			}
+		} else {
+			// client mismatch
+<span class="nc" id="L399">			logger.error(&quot;updateClient failed, client ID mismatch: &quot;</span>
+<span class="nc" id="L400">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L401">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+
+<span class="nc" id="L403">			return HttpCodeView.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Delete the indicated client from the system.
+	 * @param clientId
+	 * @param m
+	 * @param auth
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_CLIENT') and #oauth2.hasScope('&quot; + SystemScopeService.REGISTRATION_TOKEN_SCOPE + &quot;')&quot;)
+	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String deleteClient(@PathVariable(&quot;id&quot;) String clientId, Model m, OAuth2Authentication auth) {
+
+<span class="nc" id="L418">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+
+<span class="nc bnc" id="L420" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
+
+<span class="nc" id="L422">			clientService.deleteClient(client);</span>
+
+<span class="nc" id="L424">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT); // http 204</span>
+
+<span class="nc" id="L426">			return HttpCodeView.VIEWNAME;</span>
+		} else {
+			// client mismatch
+<span class="nc" id="L429">			logger.error(&quot;readClientConfiguration failed, client ID mismatch: &quot;</span>
+<span class="nc" id="L430">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L431">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+
+<span class="nc" id="L433">			return HttpCodeView.VIEWNAME;</span>
+		}
+	}
+
+	private ClientDetailsEntity validateScopes(ClientDetailsEntity newClient) throws ValidationException {
+		// scopes that the client is asking for
+<span class="nc" id="L439">		Set&lt;SystemScope&gt; requestedScopes = scopeService.fromStrings(newClient.getScope());</span>
+
+		// the scopes that the client can have must be a subset of the dynamically allowed scopes
+<span class="nc" id="L442">		Set&lt;SystemScope&gt; allowedScopes = scopeService.removeRestrictedAndReservedScopes(requestedScopes);</span>
+
+		// if the client didn't ask for any, give them the defaults
+<span class="nc bnc" id="L445" title="All 4 branches missed.">		if (allowedScopes == null || allowedScopes.isEmpty()) {</span>
+<span class="nc" id="L446">			allowedScopes = scopeService.getDefaults();</span>
+		}
+
+<span class="nc" id="L449">		newClient.setScope(scopeService.toStrings(allowedScopes));</span>
+
+<span class="nc" id="L451">		return newClient;</span>
+	}
+
+	private ClientDetailsEntity validateResponseTypes(ClientDetailsEntity newClient) throws ValidationException {
+<span class="nc bnc" id="L455" title="All 2 branches missed.">		if (newClient.getResponseTypes() == null) {</span>
+<span class="nc" id="L456">			newClient.setResponseTypes(new HashSet&lt;String&gt;());</span>
+		}
+<span class="nc" id="L458">		return newClient;</span>
+	}
+
+	private ClientDetailsEntity validateGrantTypes(ClientDetailsEntity newClient) throws ValidationException {
+		// set default grant types if needed
+<span class="nc bnc" id="L463" title="All 4 branches missed.">		if (newClient.getGrantTypes() == null || newClient.getGrantTypes().isEmpty()) {</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">			if (newClient.getScope().contains(&quot;offline_access&quot;)) { // client asked for offline access</span>
+<span class="nc" id="L465">				newClient.setGrantTypes(Sets.newHashSet(&quot;authorization_code&quot;, &quot;refresh_token&quot;)); // allow authorization code and refresh token grant types by default</span>
+			} else {
+<span class="nc" id="L467">				newClient.setGrantTypes(Sets.newHashSet(&quot;authorization_code&quot;)); // allow authorization code grant type by default</span>
+			}
+<span class="nc bnc" id="L469" title="All 2 branches missed.">			if (config.isDualClient()) {</span>
+<span class="nc" id="L470">				Set&lt;String&gt; extendedGrandTypes = newClient.getGrantTypes();</span>
+<span class="nc" id="L471">				extendedGrandTypes.add(&quot;client_credentials&quot;);</span>
+<span class="nc" id="L472">				newClient.setGrantTypes(extendedGrandTypes);</span>
+			}
+		}
+
+		// filter out unknown grant types
+		// TODO: make this a pluggable service
+<span class="nc" id="L478">		Set&lt;String&gt; requestedGrantTypes = new HashSet&lt;&gt;(newClient.getGrantTypes());</span>
+<span class="nc" id="L479">		requestedGrantTypes.retainAll(</span>
+<span class="nc" id="L480">				ImmutableSet.of(&quot;authorization_code&quot;, &quot;implicit&quot;,</span>
+						&quot;password&quot;, &quot;client_credentials&quot;, &quot;refresh_token&quot;,
+						&quot;urn:ietf:params:oauth:grant_type:redelegate&quot;));
+
+		// don't allow &quot;password&quot; grant type for dynamic registration
+<span class="nc bnc" id="L485" title="All 2 branches missed.">		if (newClient.getGrantTypes().contains(&quot;password&quot;)) {</span>
+			// return an error, you can't dynamically register for the password grant
+<span class="nc" id="L487">			throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;The password grant type is not allowed in dynamic registration on this server.&quot;, HttpStatus.BAD_REQUEST);</span>
+		}
+
+		// don't allow clients to have multiple incompatible grant types and scopes
+<span class="nc bnc" id="L491" title="All 2 branches missed.">		if (newClient.getGrantTypes().contains(&quot;authorization_code&quot;)) {</span>
+
+			// check for incompatible grants
+<span class="nc bnc" id="L494" title="All 2 branches missed.">			if (newClient.getGrantTypes().contains(&quot;implicit&quot;) ||</span>
+<span class="nc bnc" id="L495" title="All 4 branches missed.">					(!config.isDualClient() &amp;&amp; newClient.getGrantTypes().contains(&quot;client_credentials&quot;))) {</span>
+				// return an error, you can't have these grant types together
+<span class="nc" id="L497">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible grant types requested: &quot; + newClient.getGrantTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc bnc" id="L500" title="All 2 branches missed.">			if (newClient.getResponseTypes().contains(&quot;token&quot;)) {</span>
+				// return an error, you can't have this grant type and response type together
+<span class="nc" id="L502">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible response types requested: &quot; + newClient.getGrantTypes() + &quot; / &quot; + newClient.getResponseTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc" id="L505">			newClient.getResponseTypes().add(&quot;code&quot;);</span>
+		}
+
+<span class="nc bnc" id="L508" title="All 2 branches missed.">		if (newClient.getGrantTypes().contains(&quot;implicit&quot;)) {</span>
+
+			// check for incompatible grants
+<span class="nc bnc" id="L511" title="All 2 branches missed.">			if (newClient.getGrantTypes().contains(&quot;authorization_code&quot;) ||</span>
+<span class="nc bnc" id="L512" title="All 4 branches missed.">					(!config.isDualClient() &amp;&amp; newClient.getGrantTypes().contains(&quot;client_credentials&quot;))) {</span>
+				// return an error, you can't have these grant types together
+<span class="nc" id="L514">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible grant types requested: &quot; + newClient.getGrantTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc bnc" id="L517" title="All 2 branches missed.">			if (newClient.getResponseTypes().contains(&quot;code&quot;)) {</span>
+				// return an error, you can't have this grant type and response type together
+<span class="nc" id="L519">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible response types requested: &quot; + newClient.getGrantTypes() + &quot; / &quot; + newClient.getResponseTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc" id="L522">			newClient.getResponseTypes().add(&quot;token&quot;);</span>
+
+			// don't allow refresh tokens in implicit clients
+<span class="nc" id="L525">			newClient.getGrantTypes().remove(&quot;refresh_token&quot;);</span>
+<span class="nc" id="L526">			newClient.getScope().remove(SystemScopeService.OFFLINE_ACCESS);</span>
+		}
+
+<span class="nc bnc" id="L529" title="All 2 branches missed.">		if (newClient.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
+
+			// check for incompatible grants
+<span class="nc bnc" id="L532" title="All 2 branches missed.">			if (!config.isDualClient() &amp;&amp;</span>
+<span class="nc bnc" id="L533" title="All 4 branches missed.">					(newClient.getGrantTypes().contains(&quot;authorization_code&quot;) || newClient.getGrantTypes().contains(&quot;implicit&quot;))) {</span>
+				// return an error, you can't have these grant types together
+<span class="nc" id="L535">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible grant types requested: &quot; + newClient.getGrantTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc bnc" id="L538" title="All 2 branches missed.">			if (!newClient.getResponseTypes().isEmpty()) {</span>
+				// return an error, you can't have this grant type and response type together
+<span class="nc" id="L540">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Incompatible response types requested: &quot; + newClient.getGrantTypes() + &quot; / &quot; + newClient.getResponseTypes(), HttpStatus.BAD_REQUEST);</span>
+			}
+
+			// don't allow refresh tokens or id tokens in client_credentials clients
+<span class="nc" id="L544">			newClient.getGrantTypes().remove(&quot;refresh_token&quot;);</span>
+<span class="nc" id="L545">			newClient.getScope().remove(SystemScopeService.OFFLINE_ACCESS);</span>
+<span class="nc" id="L546">			newClient.getScope().remove(SystemScopeService.OPENID_SCOPE);</span>
+		}
+
+<span class="nc bnc" id="L549" title="All 2 branches missed.">		if (newClient.getGrantTypes().isEmpty()) {</span>
+			// return an error, you need at least one grant type selected
+<span class="nc" id="L551">			throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Clients must register at least one grant type.&quot;, HttpStatus.BAD_REQUEST);</span>
+		}
+<span class="nc" id="L553">		return newClient;</span>
+	}
+
+	private ClientDetailsEntity validateRedirectUris(ClientDetailsEntity newClient) throws ValidationException {
+		// check to make sure this client registered a redirect URI if using a redirect flow
+<span class="nc bnc" id="L558" title="All 4 branches missed.">		if (newClient.getGrantTypes().contains(&quot;authorization_code&quot;) || newClient.getGrantTypes().contains(&quot;implicit&quot;)) {</span>
+<span class="nc bnc" id="L559" title="All 4 branches missed.">			if (newClient.getRedirectUris() == null || newClient.getRedirectUris().isEmpty()) {</span>
+				// return an error
+<span class="nc" id="L561">				throw new ValidationException(&quot;invalid_redirect_uri&quot;, &quot;Clients using a redirect-based grant type must register at least one redirect URI.&quot;, HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc bnc" id="L564" title="All 2 branches missed.">			for (String uri : newClient.getRedirectUris()) {</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">				if (blacklistService.isBlacklisted(uri)) {</span>
+					// return an error
+<span class="nc" id="L567">					throw new ValidationException(&quot;invalid_redirect_uri&quot;, &quot;Redirect URI is not allowed: &quot; + uri, HttpStatus.BAD_REQUEST);</span>
+				}
+
+<span class="nc bnc" id="L570" title="All 2 branches missed.">				if (uri.contains(&quot;#&quot;)) {</span>
+					// if it contains the hash symbol then it has a fragment, which isn't allowed
+<span class="nc" id="L572">					throw new ValidationException(&quot;invalid_redirect_uri&quot;, &quot;Redirect URI can not have a fragment&quot;, HttpStatus.BAD_REQUEST);</span>
+				}
+<span class="nc" id="L574">			}</span>
+		}
+
+<span class="nc" id="L577">		return newClient;</span>
+	}
+
+	private ClientDetailsEntity validateAuth(ClientDetailsEntity newClient) throws ValidationException {
+<span class="nc bnc" id="L581" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == null) {</span>
+<span class="nc" id="L582">			newClient.setTokenEndpointAuthMethod(AuthMethod.SECRET_BASIC);</span>
+		}
+
+<span class="nc bnc" id="L585" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_BASIC ||</span>
+<span class="nc bnc" id="L586" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_JWT ||</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_POST) {</span>
+
+<span class="nc bnc" id="L589" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(newClient.getClientSecret())) {</span>
+				// no secret yet, we need to generate a secret
+<span class="nc" id="L591">				newClient = clientService.generateClientSecret(newClient);</span>
+			}
+<span class="nc bnc" id="L593" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.PRIVATE_KEY) {</span>
+<span class="nc bnc" id="L594" title="All 4 branches missed.">			if (Strings.isNullOrEmpty(newClient.getJwksUri()) &amp;&amp; newClient.getJwks() == null) {</span>
+<span class="nc" id="L595">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;JWK Set URI required when using private key authentication&quot;, HttpStatus.BAD_REQUEST);</span>
+			}
+
+<span class="nc" id="L598">			newClient.setClientSecret(null);</span>
+<span class="nc bnc" id="L599" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.NONE) {</span>
+<span class="nc" id="L600">			newClient.setClientSecret(null);</span>
+		} else {
+<span class="nc" id="L602">			throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Unknown authentication method&quot;, HttpStatus.BAD_REQUEST);</span>
+		}
+<span class="nc" id="L604">		return newClient;</span>
+	}
+
+
+	/**
+	 * @param newClient
+	 * @return
+	 * @throws ValidationException
+	 */
+	private ClientDetailsEntity validateSoftwareStatement(ClientDetailsEntity newClient) throws ValidationException {
+<span class="nc bnc" id="L614" title="All 2 branches missed.">		if (newClient.getSoftwareStatement() != null) {</span>
+<span class="nc bnc" id="L615" title="All 2 branches missed.">			if (assertionValidator.isValid(newClient.getSoftwareStatement())) {</span>
+				// we have a software statement and its envelope passed all the checks from our validator
+
+				// swap out all of the client's fields for the associated parts of the software statement
+				try {
+<span class="nc" id="L620">					JWTClaimsSet claimSet = newClient.getSoftwareStatement().getJWTClaimsSet();</span>
+<span class="nc bnc" id="L621" title="All 2 branches missed.">					for (String claim : claimSet.getClaims().keySet()) {</span>
+<span class="nc bnc" id="L622" title="All 154 branches missed.">						switch (claim) {</span>
+							case SOFTWARE_STATEMENT:
+<span class="nc" id="L624">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include another software statement&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLAIMS_REDIRECT_URIS:
+<span class="nc" id="L626">								newClient.setClaimsRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L627">								break;</span>
+							case CLIENT_SECRET_EXPIRES_AT:
+<span class="nc" id="L629">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client secret expiration time&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLIENT_ID_ISSUED_AT:
+<span class="nc" id="L631">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client ID issuance time&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REGISTRATION_CLIENT_URI:
+<span class="nc" id="L633">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client configuration endpoint&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REGISTRATION_ACCESS_TOKEN:
+<span class="nc" id="L635">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client registration access token&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REQUEST_URIS:
+<span class="nc" id="L637">								newClient.setRequestUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L638">								break;</span>
+							case POST_LOGOUT_REDIRECT_URIS:
+<span class="nc" id="L640">								newClient.setPostLogoutRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L641">								break;</span>
+							case INITIATE_LOGIN_URI:
+<span class="nc" id="L643">								newClient.setInitiateLoginUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L644">								break;</span>
+							case DEFAULT_ACR_VALUES:
+<span class="nc" id="L646">								newClient.setDefaultACRvalues(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L647">								break;</span>
+							case REQUIRE_AUTH_TIME:
+<span class="nc" id="L649">								newClient.setRequireAuthTime(claimSet.getBooleanClaim(claim));</span>
+<span class="nc" id="L650">								break;</span>
+							case DEFAULT_MAX_AGE:
+<span class="nc" id="L652">								newClient.setDefaultMaxAge(claimSet.getIntegerClaim(claim));</span>
+<span class="nc" id="L653">								break;</span>
+							case TOKEN_ENDPOINT_AUTH_SIGNING_ALG:
+<span class="nc" id="L655">								newClient.setTokenEndpointAuthSigningAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L656">								break;</span>
+							case ID_TOKEN_ENCRYPTED_RESPONSE_ENC:
+<span class="nc" id="L658">								newClient.setIdTokenEncryptedResponseEnc(EncryptionMethod.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L659">								break;</span>
+							case ID_TOKEN_ENCRYPTED_RESPONSE_ALG:
+<span class="nc" id="L661">								newClient.setIdTokenEncryptedResponseAlg(JWEAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L662">								break;</span>
+							case ID_TOKEN_SIGNED_RESPONSE_ALG:
+<span class="nc" id="L664">								newClient.setIdTokenSignedResponseAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L665">								break;</span>
+							case USERINFO_ENCRYPTED_RESPONSE_ENC:
+<span class="nc" id="L667">								newClient.setUserInfoEncryptedResponseEnc(EncryptionMethod.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L668">								break;</span>
+							case USERINFO_ENCRYPTED_RESPONSE_ALG:
+<span class="nc" id="L670">								newClient.setUserInfoEncryptedResponseAlg(JWEAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L671">								break;</span>
+							case USERINFO_SIGNED_RESPONSE_ALG:
+<span class="nc" id="L673">								newClient.setUserInfoSignedResponseAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L674">								break;</span>
+							case REQUEST_OBJECT_SIGNING_ALG:
+<span class="nc" id="L676">								newClient.setRequestObjectSigningAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L677">								break;</span>
+							case SUBJECT_TYPE:
+<span class="nc" id="L679">								newClient.setSubjectType(SubjectType.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L680">								break;</span>
+							case SECTOR_IDENTIFIER_URI:
+<span class="nc" id="L682">								newClient.setSectorIdentifierUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L683">								break;</span>
+							case APPLICATION_TYPE:
+<span class="nc" id="L685">								newClient.setApplicationType(AppType.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L686">								break;</span>
+							case JWKS_URI:
+<span class="nc" id="L688">								newClient.setJwksUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L689">								break;</span>
+							case JWKS:
+<span class="nc" id="L691">								newClient.setJwks(JWKSet.parse(claimSet.getJSONObjectClaim(claim).toJSONString()));</span>
+<span class="nc" id="L692">								break;</span>
+							case POLICY_URI:
+<span class="nc" id="L694">								newClient.setPolicyUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L695">								break;</span>
+							case RESPONSE_TYPES:
+<span class="nc" id="L697">								newClient.setResponseTypes(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L698">								break;</span>
+							case GRANT_TYPES:
+<span class="nc" id="L700">								newClient.setGrantTypes(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L701">								break;</span>
+							case SCOPE:
+<span class="nc" id="L703">								newClient.setScope(OAuth2Utils.parseParameterList(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L704">								break;</span>
+							case TOKEN_ENDPOINT_AUTH_METHOD:
+<span class="nc" id="L706">								newClient.setTokenEndpointAuthMethod(AuthMethod.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L707">								break;</span>
+							case TOS_URI:
+<span class="nc" id="L709">								newClient.setTosUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L710">								break;</span>
+							case CONTACTS:
+<span class="nc" id="L712">								newClient.setContacts(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L713">								break;</span>
+							case LOGO_URI:
+<span class="nc" id="L715">								newClient.setLogoUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L716">								break;</span>
+							case CLIENT_URI:
+<span class="nc" id="L718">								newClient.setClientUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L719">								break;</span>
+							case CLIENT_NAME:
+<span class="nc" id="L721">								newClient.setClientName(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L722">								break;</span>
+							case REDIRECT_URIS:
+<span class="nc" id="L724">								newClient.setRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L725">								break;</span>
+							case CLIENT_SECRET:
+<span class="nc" id="L727">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't contain client secret&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLIENT_ID:
+<span class="nc" id="L729">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't contain client ID&quot;, HttpStatus.BAD_REQUEST);</span>
+
+							default:
+<span class="nc" id="L732">								logger.warn(&quot;Software statement contained unknown field: &quot; + claim + &quot; with value &quot; + claimSet.getClaim(claim));</span>
+								break;
+						}
+<span class="nc" id="L735">					}</span>
+
+<span class="nc" id="L737">					return newClient;</span>
+<span class="nc" id="L738">				} catch (ParseException e) {</span>
+<span class="nc" id="L739">					throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement claims didn't parse&quot;, HttpStatus.BAD_REQUEST);</span>
+				}
+			} else {
+<span class="nc" id="L742">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement rejected by validator&quot;, HttpStatus.BAD_REQUEST);</span>
+			}
+		} else {
+			// nothing to see here, carry on
+<span class="nc" id="L746">			return newClient;</span>
+		}
+
+	}
+
+
+	/*
+	 * Rotates the registration token if it's expired, otherwise returns it
+	 */
+	private OAuth2AccessTokenEntity rotateRegistrationTokenIfNecessary(OAuth2Authentication auth, ClientDetailsEntity client) {
+
+<span class="nc" id="L757">		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();</span>
+<span class="nc" id="L758">		OAuth2AccessTokenEntity token = tokenService.readAccessToken(details.getTokenValue());</span>
+
+<span class="nc bnc" id="L760" title="All 2 branches missed.">		if (config.getRegTokenLifeTime() != null) {</span>
+
+			try {
+				// Re-issue the token if it has been issued before [currentTime - validity]
+<span class="nc" id="L764">				Date validToDate = new Date(System.currentTimeMillis() - config.getRegTokenLifeTime() * 1000);</span>
+<span class="nc bnc" id="L765" title="All 2 branches missed.">				if(token.getJwt().getJWTClaimsSet().getIssueTime().before(validToDate)) {</span>
+<span class="nc" id="L766">					logger.info(&quot;Rotating the registration access token for &quot; + client.getClientId());</span>
+<span class="nc" id="L767">					tokenService.revokeAccessToken(token);</span>
+<span class="nc" id="L768">					OAuth2AccessTokenEntity newToken = connectTokenService.createRegistrationAccessToken(client);</span>
+<span class="nc" id="L769">					tokenService.saveAccessToken(newToken);</span>
+<span class="nc" id="L770">					return newToken;</span>
+				} else {
+					// it's not expired, keep going
+<span class="nc" id="L773">					return token;</span>
+				}
+<span class="nc" id="L775">			} catch (ParseException e) {</span>
+<span class="nc" id="L776">				logger.error(&quot;Couldn't parse a known-valid token?&quot;, e);</span>
+<span class="nc" id="L777">				return token;</span>
+			}
+		} else {
+			// tokens don't expire, just return it
+<span class="nc" id="L781">			return token;</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OAuth2AccessTokenEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">OAuth2AccessTokenEntity.java</span></div><h1>OAuth2AccessTokenEntity.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.model;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
+
+import org.mitre.oauth2.model.convert.JWTStringConverter;
+import org.mitre.openid.connect.model.ApprovedSite;
+import org.mitre.uma.model.Permission;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson1Deserializer;
+import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson1Serializer;
+import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson2Deserializer;
+import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson2Serializer;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+
+import com.nimbusds.jwt.JWT;
+
+/**
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name = &quot;access_token&quot;)
+@NamedQueries({
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_ALL, query = &quot;select a from OAuth2AccessTokenEntity a&quot;),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_EXPIRED_BY_DATE, query = &quot;select a from OAuth2AccessTokenEntity a where a.expiration &lt;= :&quot; + OAuth2AccessTokenEntity.PARAM_DATE),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_BY_REFRESH_TOKEN, query = &quot;select a from OAuth2AccessTokenEntity a where a.refreshToken = :&quot; + OAuth2AccessTokenEntity.PARAM_REFERSH_TOKEN),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_BY_CLIENT, query = &quot;select a from OAuth2AccessTokenEntity a where a.client = :&quot; + OAuth2AccessTokenEntity.PARAM_CLIENT),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_BY_TOKEN_VALUE, query = &quot;select a from OAuth2AccessTokenEntity a where a.jwt = :&quot; + OAuth2AccessTokenEntity.PARAM_TOKEN_VALUE),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_BY_APPROVED_SITE, query = &quot;select a from OAuth2AccessTokenEntity a where a.approvedSite = :&quot; + OAuth2AccessTokenEntity.PARAM_APPROVED_SITE),
+	@NamedQuery(name = OAuth2AccessTokenEntity.QUERY_BY_RESOURCE_SET, query = &quot;select a from OAuth2AccessTokenEntity a join a.permissions p where p.resourceSet.id = :&quot; + OAuth2AccessTokenEntity.PARAM_RESOURCE_SET_ID)
+})
+@org.codehaus.jackson.map.annotate.JsonSerialize(using = OAuth2AccessTokenJackson1Serializer.class)
+@org.codehaus.jackson.map.annotate.JsonDeserialize(using = OAuth2AccessTokenJackson1Deserializer.class)
+@com.fasterxml.jackson.databind.annotation.JsonSerialize(using = OAuth2AccessTokenJackson2Serializer.class)
+@com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = OAuth2AccessTokenJackson2Deserializer.class)
+public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
+
+	public static final String QUERY_BY_APPROVED_SITE = &quot;OAuth2AccessTokenEntity.getByApprovedSite&quot;;
+	public static final String QUERY_BY_TOKEN_VALUE = &quot;OAuth2AccessTokenEntity.getByTokenValue&quot;;
+	public static final String QUERY_BY_CLIENT = &quot;OAuth2AccessTokenEntity.getByClient&quot;;
+	public static final String QUERY_BY_REFRESH_TOKEN = &quot;OAuth2AccessTokenEntity.getByRefreshToken&quot;;
+	public static final String QUERY_EXPIRED_BY_DATE = &quot;OAuth2AccessTokenEntity.getAllExpiredByDate&quot;;
+	public static final String QUERY_ALL = &quot;OAuth2AccessTokenEntity.getAll&quot;;
+	public static final String QUERY_BY_RESOURCE_SET = &quot;OAuth2AccessTokenEntity.getByResourceSet&quot;;
+
+	public static final String PARAM_TOKEN_VALUE = &quot;tokenValue&quot;;
+	public static final String PARAM_CLIENT = &quot;client&quot;;
+	public static final String PARAM_REFERSH_TOKEN = &quot;refreshToken&quot;;
+	public static final String PARAM_DATE = &quot;date&quot;;
+	public static final String PARAM_RESOURCE_SET_ID = &quot;rsid&quot;;
+	public static final String PARAM_APPROVED_SITE = &quot;approvedSite&quot;;
+
+	public static final String ID_TOKEN_FIELD_NAME = &quot;id_token&quot;;
+
+	private Long id;
+
+	private ClientDetailsEntity client;
+
+	private AuthenticationHolderEntity authenticationHolder; // the authentication that made this access
+
+	private JWT jwtValue; // JWT-encoded access token value
+
+	private Date expiration;
+
+<span class="nc" id="L108">	private String tokenType = OAuth2AccessToken.BEARER_TYPE;</span>
+
+	private OAuth2RefreshTokenEntity refreshToken;
+
+	private Set&lt;String&gt; scope;
+
+	private Set&lt;Permission&gt; permissions;
+
+	private ApprovedSite approvedSite;
+
+<span class="nc" id="L118">	private Map&lt;String, Object&gt; additionalInformation = new HashMap&lt;&gt;(); // ephemeral map of items to be added to the OAuth token response</span>
+
+	/**
+	 * Create a new, blank access token
+	 */
+<span class="nc" id="L123">	public OAuth2AccessTokenEntity() {</span>
+
+<span class="nc" id="L125">	}</span>
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L134">		return id;</span>
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L141">		this.id = id;</span>
+<span class="nc" id="L142">	}</span>
+
+	/**
+	 * Get all additional information to be sent to the serializer as part of the token response.
+	 * This map is not persisted to the database.
+	 */
+	@Override
+	@Transient
+	public Map&lt;String, Object&gt; getAdditionalInformation() {
+<span class="nc" id="L151">		return additionalInformation;</span>
+	}
+
+	/**
+	 * The authentication in place when this token was created.
+	 * @return the authentication
+	 */
+	@ManyToOne
+	@JoinColumn(name = &quot;auth_holder_id&quot;)
+	public AuthenticationHolderEntity getAuthenticationHolder() {
+<span class="nc" id="L161">		return authenticationHolder;</span>
+	}
+
+	/**
+	 * @param authentication the authentication to set
+	 */
+	public void setAuthenticationHolder(AuthenticationHolderEntity authenticationHolder) {
+<span class="nc" id="L168">		this.authenticationHolder = authenticationHolder;</span>
+<span class="nc" id="L169">	}</span>
+
+	/**
+	 * @return the client
+	 */
+	@ManyToOne
+	@JoinColumn(name = &quot;client_id&quot;)
+	public ClientDetailsEntity getClient() {
+<span class="nc" id="L177">		return client;</span>
+	}
+
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(ClientDetailsEntity client) {
+<span class="nc" id="L184">		this.client = client;</span>
+<span class="nc" id="L185">	}</span>
+
+	/**
+	 * Get the string-encoded value of this access token.
+	 */
+	@Override
+	@Transient
+	public String getValue() {
+<span class="nc" id="L193">		return jwtValue.serialize();</span>
+	}
+
+	@Override
+	@Basic
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	@Column(name = &quot;expiration&quot;)
+	public Date getExpiration() {
+<span class="nc" id="L201">		return expiration;</span>
+	}
+
+	public void setExpiration(Date expiration) {
+<span class="nc" id="L205">		this.expiration = expiration;</span>
+<span class="nc" id="L206">	}</span>
+
+	@Override
+	@Basic
+	@Column(name=&quot;token_type&quot;)
+	public String getTokenType() {
+<span class="nc" id="L212">		return tokenType;</span>
+	}
+
+	public void setTokenType(String tokenType) {
+<span class="nc" id="L216">		this.tokenType = tokenType;</span>
+<span class="nc" id="L217">	}</span>
+
+	@Override
+	@ManyToOne
+	@JoinColumn(name=&quot;refresh_token_id&quot;)
+	public OAuth2RefreshTokenEntity getRefreshToken() {
+<span class="nc" id="L223">		return refreshToken;</span>
+	}
+
+	public void setRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
+<span class="nc" id="L227">		this.refreshToken = refreshToken;</span>
+<span class="nc" id="L228">	}</span>
+
+	public void setRefreshToken(OAuth2RefreshToken refreshToken) {
+<span class="nc bnc" id="L231" title="All 2 branches missed.">		if (!(refreshToken instanceof OAuth2RefreshTokenEntity)) {</span>
+<span class="nc" id="L232">			throw new IllegalArgumentException(&quot;Not a storable refresh token entity!&quot;);</span>
+		}
+		// force a pass through to the entity version
+<span class="nc" id="L235">		setRefreshToken((OAuth2RefreshTokenEntity)refreshToken);</span>
+<span class="nc" id="L236">	}</span>
+
+	@Override
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;),
+			name=&quot;token_scope&quot;
+			)
+	public Set&lt;String&gt; getScope() {
+<span class="nc" id="L245">		return scope;</span>
+	}
+
+	public void setScope(Set&lt;String&gt; scope) {
+<span class="nc" id="L249">		this.scope = scope;</span>
+<span class="nc" id="L250">	}</span>
+
+	@Override
+	@Transient
+	public boolean isExpired() {
+<span class="nc bnc" id="L255" title="All 4 branches missed.">		return getExpiration() == null ? false : System.currentTimeMillis() &gt; getExpiration().getTime();</span>
+	}
+
+	/**
+	 * @return the jwtValue
+	 */
+	@Basic
+	@Column(name=&quot;token_value&quot;)
+	@Convert(converter = JWTStringConverter.class)
+	public JWT getJwt() {
+<span class="nc" id="L265">		return jwtValue;</span>
+	}
+
+	/**
+	 * @param jwtValue the jwtValue to set
+	 */
+	public void setJwt(JWT jwt) {
+<span class="nc" id="L272">		this.jwtValue = jwt;</span>
+<span class="nc" id="L273">	}</span>
+
+	@Override
+	@Transient
+	public int getExpiresIn() {
+
+<span class="nc bnc" id="L279" title="All 2 branches missed.">		if (getExpiration() == null) {</span>
+<span class="nc" id="L280">			return -1; // no expiration time</span>
+		} else {
+<span class="nc" id="L282">			int secondsRemaining = (int) ((getExpiration().getTime() - System.currentTimeMillis()) / 1000);</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">			if (isExpired()) {</span>
+<span class="nc" id="L284">				return 0; // has an expiration time and expired</span>
+			} else { // has an expiration time and not expired
+<span class="nc" id="L286">				return secondsRemaining;</span>
+			}
+		}
+	}
+
+	/**
+	 * @return the permissions
+	 */
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(
+			name = &quot;access_token_permissions&quot;,
+			joinColumns = @JoinColumn(name = &quot;access_token_id&quot;),
+			inverseJoinColumns = @JoinColumn(name = &quot;permission_id&quot;)
+			)
+	public Set&lt;Permission&gt; getPermissions() {
+<span class="nc" id="L301">		return permissions;</span>
+	}
+
+	/**
+	 * @param permissions the permissions to set
+	 */
+	public void setPermissions(Set&lt;Permission&gt; permissions) {
+<span class="nc" id="L308">		this.permissions = permissions;</span>
+<span class="nc" id="L309">	}</span>
+
+	@ManyToOne
+	@JoinColumn(name=&quot;approved_site_id&quot;)
+	public ApprovedSite getApprovedSite() {
+<span class="nc" id="L314">		return approvedSite;</span>
+	}
+
+	public void setApprovedSite(ApprovedSite approvedSite) {
+<span class="nc" id="L318">		this.approvedSite = approvedSite;</span>
+<span class="nc" id="L319">	}</span>
+
+	/**
+	 * Add the ID Token to the additionalInformation map for a token response.
+	 * @param idToken
+	 */
+	@Transient
+	public void setIdToken(JWT idToken) {
+<span class="nc bnc" id="L327" title="All 2 branches missed.">		if (idToken != null) {</span>
+<span class="nc" id="L328">			additionalInformation.put(ID_TOKEN_FIELD_NAME, idToken.serialize());</span>
+		}
+<span class="nc" id="L330">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

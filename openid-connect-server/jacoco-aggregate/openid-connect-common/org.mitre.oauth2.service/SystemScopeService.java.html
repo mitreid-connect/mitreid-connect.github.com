@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SystemScopeService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service</a> &gt; <span class="el_source">SystemScopeService.java</span></div><h1>SystemScopeService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.service;
+
+import java.util.Set;
+
+import org.mitre.oauth2.model.SystemScope;
+
+import com.google.common.collect.Sets;
+
+/**
+ * @author jricher
+ *
+ */
+public interface SystemScopeService {
+
+	public static final String OFFLINE_ACCESS = &quot;offline_access&quot;;
+	public static final String OPENID_SCOPE = &quot;openid&quot;;
+	public static final String REGISTRATION_TOKEN_SCOPE = &quot;registration-token&quot;; // this scope manages dynamic client registrations
+	public static final String RESOURCE_TOKEN_SCOPE = &quot;resource-token&quot;; // this scope manages client-style protected resources
+	public static final String UMA_PROTECTION_SCOPE = &quot;uma_protection&quot;;
+	public static final String UMA_AUTHORIZATION_SCOPE = &quot;uma_authorization&quot;;
+
+<span class="nc" id="L41">	public static final Set&lt;SystemScope&gt; reservedScopes =</span>
+<span class="nc" id="L42">			Sets.newHashSet(</span>
+					new SystemScope(REGISTRATION_TOKEN_SCOPE),
+					new SystemScope(RESOURCE_TOKEN_SCOPE)
+					);
+
+	public Set&lt;SystemScope&gt; getAll();
+
+	/**
+	 * Get all scopes that are defaulted to new clients on this system
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; getDefaults();
+
+	/**
+	 * Get all the reserved system scopes. These can't be used
+	 * by clients directly, but are instead tied to special system
+	 * tokens like id tokens and registration access tokens.
+	 *
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; getReserved();
+
+	/**
+	 * Get all the registered scopes that are restricted.
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; getRestricted();
+
+	/**
+	 * Get all the registered scopes that aren't restricted.
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; getUnrestricted();
+
+	public SystemScope getById(Long id);
+
+	public SystemScope getByValue(String value);
+
+	public void remove(SystemScope scope);
+
+	public SystemScope save(SystemScope scope);
+
+	/**
+	 * Translate the set of scope strings into a set of SystemScope objects.
+	 * @param scope
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; fromStrings(Set&lt;String&gt; scope);
+
+	/**
+	 * Pluck the scope values from the set of SystemScope objects and return a list of strings
+	 * @param scope
+	 * @return
+	 */
+	public Set&lt;String&gt; toStrings(Set&lt;SystemScope&gt; scope);
+
+	/**
+	 * Test whether the scopes in both sets are compatible. All scopes in &quot;actual&quot; must exist in &quot;expected&quot;.
+	 */
+	public boolean scopesMatch(Set&lt;String&gt; expected, Set&lt;String&gt; actual);
+
+	/**
+	 * Remove any system-reserved or registered restricted scopes from the
+	 * set and return the result.
+	 * @param scopes
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; removeRestrictedAndReservedScopes(Set&lt;SystemScope&gt; scopes);
+
+	/**
+	 * Remove any system-reserved scopes from the set and return the result.
+	 * @param scopes
+	 * @return
+	 */
+	public Set&lt;SystemScope&gt; removeReservedScopes(Set&lt;SystemScope&gt; scopes);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

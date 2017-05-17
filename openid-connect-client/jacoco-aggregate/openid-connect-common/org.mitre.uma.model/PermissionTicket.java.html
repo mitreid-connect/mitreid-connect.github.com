@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PermissionTicket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.model</a> &gt; <span class="el_source">PermissionTicket.java</span></div><h1>PermissionTicket.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.uma.model;
+
+import java.util.Collection;
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+/**
+ *
+ * An UMA permission, used in the protection API.
+ *
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name = &quot;permission_ticket&quot;)
+@NamedQueries({
+	@NamedQuery(name = PermissionTicket.QUERY_TICKET, query = &quot;select p from PermissionTicket p where p.ticket = :&quot; + PermissionTicket.PARAM_TICKET),
+	@NamedQuery(name = PermissionTicket.QUERY_ALL, query = &quot;select p from PermissionTicket p&quot;),
+	@NamedQuery(name = PermissionTicket.QUERY_BY_RESOURCE_SET, query = &quot;select p from PermissionTicket p where p.permission.resourceSet.id = :&quot; + PermissionTicket.PARAM_RESOURCE_SET_ID)
+})
+<span class="nc" id="L55">public class PermissionTicket {</span>
+
+	public static final String QUERY_TICKET = &quot;PermissionTicket.queryByTicket&quot;;
+	public static final String QUERY_ALL = &quot;PermissionTicket.queryAll&quot;;
+	public static final String QUERY_BY_RESOURCE_SET = &quot;PermissionTicket.queryByResourceSet&quot;;
+
+	public static final String PARAM_TICKET = &quot;ticket&quot;;
+	public static final String PARAM_RESOURCE_SET_ID = &quot;rsid&quot;;
+
+	private Long id;
+	private Permission permission;
+	private String ticket;
+	private Date expiration;
+	private Collection&lt;Claim&gt; claimsSupplied;
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L77">		return id;</span>
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L84">		this.id = id;</span>
+<span class="nc" id="L85">	}</span>
+
+	/**
+	 * @return the permission
+	 */
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = &quot;permission_id&quot;)
+	public Permission getPermission() {
+<span class="nc" id="L93">		return permission;</span>
+	}
+
+	/**
+	 * @param permission the permission to set
+	 */
+	public void setPermission(Permission permission) {
+<span class="nc" id="L100">		this.permission = permission;</span>
+<span class="nc" id="L101">	}</span>
+
+	/**
+	 * @return the ticket
+	 */
+	@Basic
+	@Column(name = &quot;ticket&quot;)
+	public String getTicket() {
+<span class="nc" id="L109">		return ticket;</span>
+	}
+
+	/**
+	 * @param ticket the ticket to set
+	 */
+	public void setTicket(String ticket) {
+<span class="nc" id="L116">		this.ticket = ticket;</span>
+<span class="nc" id="L117">	}</span>
+
+	/**
+	 * @return the expiration
+	 */
+	@Basic
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = &quot;expiration&quot;)
+	public Date getExpiration() {
+<span class="nc" id="L126">		return expiration;</span>
+	}
+
+	/**
+	 * @param expiration the expiration to set
+	 */
+	public void setExpiration(Date expiration) {
+<span class="nc" id="L133">		this.expiration = expiration;</span>
+<span class="nc" id="L134">	}</span>
+
+	/**
+	 * @return the claimsSupplied
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(
+			name = &quot;claim_to_permission_ticket&quot;,
+			joinColumns = @JoinColumn(name = &quot;permission_ticket_id&quot;),
+			inverseJoinColumns = @JoinColumn(name = &quot;claim_id&quot;)
+			)
+	public Collection&lt;Claim&gt; getClaimsSupplied() {
+<span class="nc" id="L146">		return claimsSupplied;</span>
+	}
+
+	/**
+	 * @param claimsSupplied the claimsSupplied to set
+	 */
+	public void setClaimsSupplied(Collection&lt;Claim&gt; claimsSupplied) {
+<span class="nc" id="L153">		this.claimsSupplied = claimsSupplied;</span>
+<span class="nc" id="L154">	}</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

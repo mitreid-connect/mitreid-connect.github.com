@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultJWTSigningAndValidationService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.jwt.signer.service.impl</a> &gt; <span class="el_source">DefaultJWTSigningAndValidationService.java</span></div><h1>DefaultJWTSigningAndValidationService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.jwt.signer.service.impl;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.mitre.jose.keystore.JWKSetKeyStore;
+import org.mitre.jwt.signer.service.JWTSigningAndValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.ECDSASigner;
+import com.nimbusds.jose.crypto.ECDSAVerifier;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.SignedJWT;
+
+public class DefaultJWTSigningAndValidationService implements JWTSigningAndValidationService {
+
+	// map of identifier to signer
+<span class="nc" id="L53">	private Map&lt;String, JWSSigner&gt; signers = new HashMap&lt;&gt;();</span>
+
+	// map of identifier to verifier
+<span class="nc" id="L56">	private Map&lt;String, JWSVerifier&gt; verifiers = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(DefaultJWTSigningAndValidationService.class);</span>
+
+	private String defaultSignerKeyId;
+
+	private JWSAlgorithm defaultAlgorithm;
+
+	// map of identifier to key
+<span class="nc" id="L68">	private Map&lt;String, JWK&gt; keys = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * Build this service based on the keys given. All public keys will be used
+	 * to make verifiers, all private keys will be used to make signers.
+	 *
+	 * @param keys
+	 *            A map of key identifier to key
+	 *
+	 * @throws InvalidKeySpecException
+	 *             If the keys in the JWKs are not valid
+	 * @throws NoSuchAlgorithmException
+	 *             If there is no appropriate algorithm to tie the keys to.
+	 */
+<span class="nc" id="L82">	public DefaultJWTSigningAndValidationService(Map&lt;String, JWK&gt; keys) throws NoSuchAlgorithmException, InvalidKeySpecException {</span>
+<span class="nc" id="L83">		this.keys = keys;</span>
+<span class="nc" id="L84">		buildSignersAndVerifiers();</span>
+<span class="nc" id="L85">	}</span>
+
+	/**
+	 * Build this service based on the given keystore. All keys must have a key
+	 * id ({@code kid}) field in order to be used.
+	 *
+	 * @param keyStore
+	 *            the keystore to load all keys from
+	 *
+	 * @throws InvalidKeySpecException
+	 *             If the keys in the JWKs are not valid
+	 * @throws NoSuchAlgorithmException
+	 *             If there is no appropriate algorithm to tie the keys to.
+	 */
+<span class="nc" id="L99">	public DefaultJWTSigningAndValidationService(JWKSetKeyStore keyStore) throws NoSuchAlgorithmException, InvalidKeySpecException {</span>
+		// convert all keys in the keystore to a map based on key id
+<span class="nc bnc" id="L101" title="All 4 branches missed.">		if (keyStore!= null &amp;&amp; keyStore.getJwkSet() != null) {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			for (JWK key : keyStore.getKeys()) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">				if (!Strings.isNullOrEmpty(key.getKeyID())) {</span>
+					// use the key ID that's built into the key itself
+<span class="nc" id="L105">					this.keys.put(key.getKeyID(), key);</span>
+				} else {
+					// create a random key id
+<span class="nc" id="L108">					String fakeKid = UUID.randomUUID().toString();</span>
+<span class="nc" id="L109">					this.keys.put(fakeKid, key);</span>
+				}
+<span class="nc" id="L111">			}</span>
+		}
+<span class="nc" id="L113">		buildSignersAndVerifiers();</span>
+<span class="nc" id="L114">	}</span>
+
+
+	/**
+	 * @return the defaultSignerKeyId
+	 */
+	@Override
+	public String getDefaultSignerKeyId() {
+<span class="nc" id="L122">		return defaultSignerKeyId;</span>
+	}
+
+	/**
+	 * @param defaultSignerKeyId the defaultSignerKeyId to set
+	 */
+	public void setDefaultSignerKeyId(String defaultSignerId) {
+<span class="nc" id="L129">		this.defaultSignerKeyId = defaultSignerId;</span>
+<span class="nc" id="L130">	}</span>
+
+	/**
+	 * @return
+	 */
+	@Override
+	public JWSAlgorithm getDefaultSigningAlgorithm() {
+<span class="nc" id="L137">		return defaultAlgorithm;</span>
+	}
+
+	public void setDefaultSigningAlgorithmName(String algName) {
+<span class="nc" id="L141">		defaultAlgorithm = JWSAlgorithm.parse(algName);</span>
+<span class="nc" id="L142">	}</span>
+
+	public String getDefaultSigningAlgorithmName() {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">		if (defaultAlgorithm != null) {</span>
+<span class="nc" id="L146">			return defaultAlgorithm.getName();</span>
+		} else {
+<span class="nc" id="L148">			return null;</span>
+		}
+	}
+
+	/**
+	 * Build all of the signers and verifiers for this based on the key map.
+	 * @throws InvalidKeySpecException If the keys in the JWKs are not valid
+	 * @throws NoSuchAlgorithmException If there is no appropriate algorithm to tie the keys to.
+	 */
+	private void buildSignersAndVerifiers() throws NoSuchAlgorithmException, InvalidKeySpecException {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">		for (Map.Entry&lt;String, JWK&gt; jwkEntry : keys.entrySet()) {</span>
+
+<span class="nc" id="L160">			String id = jwkEntry.getKey();</span>
+<span class="nc" id="L161">			JWK jwk = jwkEntry.getValue();</span>
+
+			try {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">				if (jwk instanceof RSAKey) {</span>
+					// build RSA signers &amp; verifiers
+
+<span class="nc bnc" id="L167" title="All 2 branches missed.">					if (jwk.isPrivate()) { // only add the signer if there's a private key</span>
+<span class="nc" id="L168">						RSASSASigner signer = new RSASSASigner((RSAKey) jwk);</span>
+<span class="nc" id="L169">						signers.put(id, signer);</span>
+					}
+
+<span class="nc" id="L172">					RSASSAVerifier verifier = new RSASSAVerifier((RSAKey) jwk);</span>
+<span class="nc" id="L173">					verifiers.put(id, verifier);</span>
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">				} else if (jwk instanceof ECKey) {</span>
+					// build EC signers &amp; verifiers
+
+<span class="nc bnc" id="L178" title="All 2 branches missed.">					if (jwk.isPrivate()) {</span>
+<span class="nc" id="L179">						ECDSASigner signer = new ECDSASigner((ECKey) jwk);</span>
+<span class="nc" id="L180">						signers.put(id, signer);</span>
+					}
+
+<span class="nc" id="L183">					ECDSAVerifier verifier = new ECDSAVerifier((ECKey) jwk);</span>
+<span class="nc" id="L184">					verifiers.put(id, verifier);</span>
+
+<span class="nc bnc" id="L186" title="All 2 branches missed.">				} else if (jwk instanceof OctetSequenceKey) {</span>
+					// build HMAC signers &amp; verifiers
+
+<span class="nc bnc" id="L189" title="All 2 branches missed.">					if (jwk.isPrivate()) { // technically redundant check because all HMAC keys are private</span>
+<span class="nc" id="L190">						MACSigner signer = new MACSigner((OctetSequenceKey) jwk);</span>
+<span class="nc" id="L191">						signers.put(id, signer);</span>
+					}
+
+<span class="nc" id="L194">					MACVerifier verifier = new MACVerifier((OctetSequenceKey) jwk);</span>
+<span class="nc" id="L195">					verifiers.put(id, verifier);</span>
+
+<span class="nc" id="L197">				} else {</span>
+<span class="nc" id="L198">					logger.warn(&quot;Unknown key type: &quot; + jwk);</span>
+				}
+<span class="nc" id="L200">			} catch (JOSEException e) {</span>
+<span class="nc" id="L201">				logger.warn(&quot;Exception loading signer/verifier&quot;, e);</span>
+<span class="nc" id="L202">			}</span>
+<span class="nc" id="L203">		}</span>
+
+<span class="nc bnc" id="L205" title="All 4 branches missed.">		if (defaultSignerKeyId == null &amp;&amp; keys.size() == 1) {</span>
+			// if there's only one key, it's the default
+<span class="nc" id="L207">			setDefaultSignerKeyId(keys.keySet().iterator().next());</span>
+		}
+<span class="nc" id="L209">	}</span>
+
+	/**
+	 * Sign a jwt in place using the configured default signer.
+	 */
+	@Override
+	public void signJwt(SignedJWT jwt) {
+<span class="nc bnc" id="L216" title="All 2 branches missed.">		if (getDefaultSignerKeyId() == null) {</span>
+<span class="nc" id="L217">			throw new IllegalStateException(&quot;Tried to call default signing with no default signer ID set&quot;);</span>
+		}
+
+<span class="nc" id="L220">		JWSSigner signer = signers.get(getDefaultSignerKeyId());</span>
+
+		try {
+<span class="nc" id="L223">			jwt.sign(signer);</span>
+<span class="nc" id="L224">		} catch (JOSEException e) {</span>
+
+<span class="nc" id="L226">			logger.error(&quot;Failed to sign JWT, error was: &quot;, e);</span>
+<span class="nc" id="L227">		}</span>
+
+<span class="nc" id="L229">	}</span>
+
+	@Override
+	public void signJwt(SignedJWT jwt, JWSAlgorithm alg) {
+
+<span class="nc" id="L234">		JWSSigner signer = null;</span>
+
+<span class="nc bnc" id="L236" title="All 2 branches missed.">		for (JWSSigner s : signers.values()) {</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">			if (s.supportedJWSAlgorithms().contains(alg)) {</span>
+<span class="nc" id="L238">				signer = s;</span>
+<span class="nc" id="L239">				break;</span>
+			}
+<span class="nc" id="L241">		}</span>
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">		if (signer == null) {</span>
+			//If we can't find an algorithm that matches, we can't sign
+<span class="nc" id="L245">			logger.error(&quot;No matching algirthm found for alg=&quot; + alg);</span>
+
+		}
+
+		try {
+<span class="nc" id="L250">			jwt.sign(signer);</span>
+<span class="nc" id="L251">		} catch (JOSEException e) {</span>
+
+<span class="nc" id="L253">			logger.error(&quot;Failed to sign JWT, error was: &quot;, e);</span>
+<span class="nc" id="L254">		}</span>
+
+<span class="nc" id="L256">	}</span>
+
+	@Override
+	public boolean validateSignature(SignedJWT jwt) {
+
+<span class="nc bnc" id="L261" title="All 2 branches missed.">		for (JWSVerifier verifier : verifiers.values()) {</span>
+			try {
+<span class="nc bnc" id="L263" title="All 2 branches missed.">				if (jwt.verify(verifier)) {</span>
+<span class="nc" id="L264">					return true;</span>
+				}
+<span class="nc" id="L266">			} catch (JOSEException e) {</span>
+
+<span class="nc" id="L268">				logger.error(&quot;Failed to validate signature with &quot; + verifier + &quot; error message: &quot; + e.getMessage());</span>
+<span class="nc" id="L269">			}</span>
+<span class="nc" id="L270">		}</span>
+<span class="nc" id="L271">		return false;</span>
+	}
+
+	@Override
+	public Map&lt;String, JWK&gt; getAllPublicKeys() {
+<span class="nc" id="L276">		Map&lt;String, JWK&gt; pubKeys = new HashMap&lt;&gt;();</span>
+
+		// pull all keys out of the verifiers if we know how
+<span class="nc bnc" id="L279" title="All 2 branches missed.">		for (String keyId : keys.keySet()) {</span>
+<span class="nc" id="L280">			JWK key = keys.get(keyId);</span>
+<span class="nc" id="L281">			JWK pub = key.toPublicJWK();</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">			if (pub != null) {</span>
+<span class="nc" id="L283">				pubKeys.put(keyId, pub);</span>
+			}
+<span class="nc" id="L285">		}</span>
+
+<span class="nc" id="L287">		return pubKeys;</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.jwt.signer.service.JwtSigningAndValidationService#getAllSigningAlgsSupported()
+	 */
+	@Override
+	public Collection&lt;JWSAlgorithm&gt; getAllSigningAlgsSupported() {
+
+<span class="nc" id="L296">		Set&lt;JWSAlgorithm&gt; algs = new HashSet&lt;&gt;();</span>
+
+<span class="nc bnc" id="L298" title="All 2 branches missed.">		for (JWSSigner signer : signers.values()) {</span>
+<span class="nc" id="L299">			algs.addAll(signer.supportedJWSAlgorithms());</span>
+<span class="nc" id="L300">		}</span>
+
+<span class="nc bnc" id="L302" title="All 2 branches missed.">		for (JWSVerifier verifier : verifiers.values()) {</span>
+<span class="nc" id="L303">			algs.addAll(verifier.supportedJWSAlgorithms());</span>
+<span class="nc" id="L304">		}</span>
+
+<span class="nc" id="L306">		return algs;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DynamicRegistrationClientConfigurationService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">DynamicRegistrationClientConfigurationService.java</span></div><h1>DynamicRegistrationClientConfigurationService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.service.impl;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.openid.connect.ClientDetailsEntityJsonProcessor;
+import org.mitre.openid.connect.client.service.ClientConfigurationService;
+import org.mitre.openid.connect.client.service.RegisteredClientService;
+import org.mitre.openid.connect.config.ServerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+/**
+ * @author jricher
+ *
+ */
+public class DynamicRegistrationClientConfigurationService implements ClientConfigurationService {
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L63">	private static final Logger logger = LoggerFactory.getLogger(DynamicRegistrationClientConfigurationService.class);</span>
+
+	private LoadingCache&lt;ServerConfiguration, RegisteredClient&gt; clients;
+
+<span class="nc" id="L67">	private RegisteredClientService registeredClientService = new InMemoryRegisteredClientService();</span>
+
+	private RegisteredClient template;
+
+<span class="nc" id="L71">	private Set&lt;String&gt; whitelist = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L72">	private Set&lt;String&gt; blacklist = new HashSet&lt;&gt;();</span>
+
+	public DynamicRegistrationClientConfigurationService() {
+<span class="nc" id="L75">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L76">	}</span>
+
+<span class="nc" id="L78">	public DynamicRegistrationClientConfigurationService(HttpClient httpClient) {</span>
+<span class="nc" id="L79">		clients = CacheBuilder.newBuilder().build(new DynamicClientRegistrationLoader(httpClient));</span>
+<span class="nc" id="L80">	}</span>
+
+	@Override
+	public RegisteredClient getClientConfiguration(ServerConfiguration issuer) {
+		try {
+<span class="nc bnc" id="L85" title="All 4 branches missed.">			if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(issuer.getIssuer())) {</span>
+<span class="nc" id="L86">				throw new AuthenticationServiceException(&quot;Whitelist was nonempty, issuer was not in whitelist: &quot; + issuer);</span>
+			}
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">			if (blacklist.contains(issuer.getIssuer())) {</span>
+<span class="nc" id="L90">				throw new AuthenticationServiceException(&quot;Issuer was in blacklist: &quot; + issuer);</span>
+			}
+
+<span class="nc" id="L93">			return clients.get(issuer);</span>
+<span class="nc" id="L94">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L95">			logger.warn(&quot;Unable to get client configuration&quot;, e);</span>
+<span class="nc" id="L96">			return null;</span>
+		}
+	}
+
+	/**
+	 * @return the template
+	 */
+	public RegisteredClient getTemplate() {
+<span class="nc" id="L104">		return template;</span>
+	}
+
+	/**
+	 * @param template the template to set
+	 */
+	public void setTemplate(RegisteredClient template) {
+		// make sure the template doesn't have unwanted fields set on it
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (template != null) {</span>
+<span class="nc" id="L113">			template.setClientId(null);</span>
+<span class="nc" id="L114">			template.setClientSecret(null);</span>
+<span class="nc" id="L115">			template.setRegistrationClientUri(null);</span>
+<span class="nc" id="L116">			template.setRegistrationAccessToken(null);</span>
+		}
+<span class="nc" id="L118">		this.template = template;</span>
+<span class="nc" id="L119">	}</span>
+
+	/**
+	 * @return the registeredClientService
+	 */
+	public RegisteredClientService getRegisteredClientService() {
+<span class="nc" id="L125">		return registeredClientService;</span>
+	}
+
+	/**
+	 * @param registeredClientService the registeredClientService to set
+	 */
+	public void setRegisteredClientService(RegisteredClientService registeredClientService) {
+<span class="nc" id="L132">		this.registeredClientService = registeredClientService;</span>
+<span class="nc" id="L133">	}</span>
+
+
+	/**
+	 * @return the whitelist
+	 */
+	public Set&lt;String&gt; getWhitelist() {
+<span class="nc" id="L140">		return whitelist;</span>
+	}
+
+	/**
+	 * @param whitelist the whitelist to set
+	 */
+	public void setWhitelist(Set&lt;String&gt; whitelist) {
+<span class="nc" id="L147">		this.whitelist = whitelist;</span>
+<span class="nc" id="L148">	}</span>
+
+	/**
+	 * @return the blacklist
+	 */
+	public Set&lt;String&gt; getBlacklist() {
+<span class="nc" id="L154">		return blacklist;</span>
+	}
+
+	/**
+	 * @param blacklist the blacklist to set
+	 */
+	public void setBlacklist(Set&lt;String&gt; blacklist) {
+<span class="nc" id="L161">		this.blacklist = blacklist;</span>
+<span class="nc" id="L162">	}</span>
+
+
+	/**
+	 * Loader class that fetches the client information.
+	 *
+	 * If a client has been registered (ie, it's known to the RegisteredClientService), then this
+	 * will fetch the client's configuration from the server.
+	 *
+	 * @author jricher
+	 *
+	 */
+	public class DynamicClientRegistrationLoader extends CacheLoader&lt;ServerConfiguration, RegisteredClient&gt; {
+		private HttpComponentsClientHttpRequestFactory httpFactory;
+<span class="nc" id="L176">		private Gson gson = new Gson(); // note that this doesn't serialize nulls by default</span>
+
+		public DynamicClientRegistrationLoader() {
+<span class="nc" id="L179">			this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L180">		}</span>
+
+<span class="nc" id="L182">		public DynamicClientRegistrationLoader(HttpClient httpClient) {</span>
+<span class="nc" id="L183">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L184">		}</span>
+
+		@Override
+		public RegisteredClient load(ServerConfiguration serverConfig) throws Exception {
+<span class="nc" id="L188">			RestTemplate restTemplate = new RestTemplate(httpFactory);</span>
+
+
+<span class="nc" id="L191">			RegisteredClient knownClient = registeredClientService.getByIssuer(serverConfig.getIssuer());</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">			if (knownClient == null) {</span>
+
+				// dynamically register this client
+<span class="nc" id="L195">				JsonObject jsonRequest = ClientDetailsEntityJsonProcessor.serialize(template);</span>
+<span class="nc" id="L196">				String serializedClient = gson.toJson(jsonRequest);</span>
+
+<span class="nc" id="L198">				HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L199">				headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L200">				headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));</span>
+
+<span class="nc" id="L202">				HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(serializedClient, headers);</span>
+
+				try {
+<span class="nc" id="L205">					String registered = restTemplate.postForObject(serverConfig.getRegistrationEndpointUri(), entity, String.class);</span>
+
+<span class="nc" id="L207">					RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);</span>
+
+					// save this client for later
+<span class="nc" id="L210">					registeredClientService.save(serverConfig.getIssuer(), client);</span>
+
+<span class="nc" id="L212">					return client;</span>
+<span class="nc" id="L213">				} catch (RestClientException rce) {</span>
+<span class="nc" id="L214">					throw new InvalidClientException(&quot;Error registering client with server&quot;);</span>
+				}
+			} else {
+
+<span class="nc bnc" id="L218" title="All 2 branches missed.">				if (knownClient.getClientId() == null) {</span>
+
+					// load this client's information from the server
+<span class="nc" id="L221">					HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L222">					headers.set(&quot;Authorization&quot;, String.format(&quot;%s %s&quot;, OAuth2AccessToken.BEARER_TYPE, knownClient.getRegistrationAccessToken()));</span>
+<span class="nc" id="L223">					headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));</span>
+
+<span class="nc" id="L225">					HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+
+					try {
+<span class="nc" id="L228">						String registered = restTemplate.exchange(knownClient.getRegistrationClientUri(), HttpMethod.GET, entity, String.class).getBody();</span>
+						// TODO: handle HTTP errors
+
+<span class="nc" id="L231">						RegisteredClient client = ClientDetailsEntityJsonProcessor.parseRegistered(registered);</span>
+
+<span class="nc" id="L233">						return client;</span>
+<span class="nc" id="L234">					} catch (RestClientException rce) {</span>
+<span class="nc" id="L235">						throw new InvalidClientException(&quot;Error loading previously registered client information from server&quot;);</span>
+					}
+				} else {
+					// it's got a client ID from the store, don't bother trying to load it
+<span class="nc" id="L239">					return knownClient;</span>
+				}
+			}
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DiscoveryEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.discovery.web</a> &gt; <span class="el_source">DiscoveryEndpoint.java</span></div><h1>DiscoveryEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.discovery.web;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mitre.discovery.util.WebfingerURLNormalizer;
+import org.mitre.jwt.encryption.service.JWTEncryptionAndDecryptionService;
+import org.mitre.jwt.signer.service.JWTSigningAndValidationService;
+import org.mitre.oauth2.model.PKCEAlgorithm;
+import org.mitre.oauth2.service.SystemScopeService;
+import org.mitre.oauth2.web.DeviceEndpoint;
+import org.mitre.oauth2.web.IntrospectionEndpoint;
+import org.mitre.oauth2.web.RevocationEndpoint;
+import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
+import org.mitre.openid.connect.model.UserInfo;
+import org.mitre.openid.connect.service.UserInfoService;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonEntityView;
+import org.mitre.openid.connect.web.DynamicClientRegistrationEndpoint;
+import org.mitre.openid.connect.web.EndSessionEndpoint;
+import org.mitre.openid.connect.web.JWKSetPublishingEndpoint;
+import org.mitre.openid.connect.web.UserInfoEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.nimbusds.jose.Algorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+
+/**
+ *
+ * Handle OpenID Connect Discovery.
+ *
+ * @author jricher
+ *
+ */
+@Controller
+<span class="nc" id="L68">public class DiscoveryEndpoint {</span>
+
+	public static final String WELL_KNOWN_URL = &quot;.well-known&quot;;
+	public static final String OPENID_CONFIGURATION_URL = WELL_KNOWN_URL + &quot;/openid-configuration&quot;;
+	public static final String WEBFINGER_URL = WELL_KNOWN_URL + &quot;/webfinger&quot;;
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L77">	private static final Logger logger = LoggerFactory.getLogger(DiscoveryEndpoint.class);</span>
+
+	@Autowired
+	private ConfigurationPropertiesBean config;
+
+	@Autowired
+	private SystemScopeService scopeService;
+
+	@Autowired
+	private JWTSigningAndValidationService signService;
+
+	@Autowired
+	private JWTEncryptionAndDecryptionService encService;
+
+	@Autowired
+	private UserInfoService userService;
+
+
+	// used to map JWA algorithms objects to strings
+<span class="nc" id="L96">	private Function&lt;Algorithm, String&gt; toAlgorithmName = new Function&lt;Algorithm, String&gt;() {</span>
+		@Override
+		public String apply(Algorithm alg) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">			if (alg == null) {</span>
+<span class="nc" id="L100">				return null;</span>
+			} else {
+<span class="nc" id="L102">				return alg.getName();</span>
+			}
+		}
+	};
+
+	@RequestMapping(value={&quot;/&quot; + WEBFINGER_URL}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String webfinger(@RequestParam(&quot;resource&quot;) String resource, @RequestParam(value = &quot;rel&quot;, required = false) String rel, Model model) {
+
+<span class="nc bnc" id="L110" title="All 4 branches missed.">		if (!Strings.isNullOrEmpty(rel) &amp;&amp; !rel.equals(&quot;http://openid.net/specs/connect/1.0/issuer&quot;)) {</span>
+<span class="nc" id="L111">			logger.warn(&quot;Responding to webfinger request for non-OIDC relation: &quot; + rel);</span>
+		}
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (!resource.equals(config.getIssuer())) {</span>
+			// it's not the issuer directly, need to check other methods
+
+<span class="nc" id="L117">			UriComponents resourceUri = WebfingerURLNormalizer.normalizeResource(resource);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">			if (resourceUri != null</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme() != null</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme().equals(&quot;acct&quot;)) {</span>
+				// acct: URI (email address format)
+
+				// check on email addresses first
+<span class="nc" id="L124">				UserInfo user = userService.getByEmailAddress(resourceUri.getUserInfo() + &quot;@&quot; + resourceUri.getHost());</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">				if (user == null) {</span>
+					// user wasn't found, see if the local part of the username matches, plus our issuer host
+
+<span class="nc" id="L129">					user = userService.getByUsername(resourceUri.getUserInfo()); // first part is the username</span>
+
+<span class="nc bnc" id="L131" title="All 2 branches missed.">					if (user != null) {</span>
+						// username matched, check the host component
+<span class="nc" id="L133">						UriComponents issuerComponents = UriComponentsBuilder.fromHttpUrl(config.getIssuer()).build();</span>
+<span class="nc" id="L134">						if (!Strings.nullToEmpty(issuerComponents.getHost())</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">								.equals(Strings.nullToEmpty(resourceUri.getHost()))) {</span>
+<span class="nc" id="L136">							logger.info(&quot;Host mismatch, expected &quot; + issuerComponents.getHost() + &quot; got &quot; + resourceUri.getHost());</span>
+<span class="nc" id="L137">							model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L138">							return HttpCodeView.VIEWNAME;</span>
+						}
+
+<span class="nc" id="L141">					} else {</span>
+
+						// if the user's still null, punt and say we didn't find them
+
+<span class="nc" id="L145">						logger.info(&quot;User not found: &quot; + resource);</span>
+<span class="nc" id="L146">						model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L147">						return HttpCodeView.VIEWNAME;</span>
+					}
+
+				}
+
+<span class="nc" id="L152">			} else {</span>
+<span class="nc" id="L153">				logger.info(&quot;Unknown URI format: &quot; + resource);</span>
+<span class="nc" id="L154">				model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L155">				return HttpCodeView.VIEWNAME;</span>
+			}
+		}
+
+		// if we got here, then we're good, return ourselves
+<span class="nc" id="L160">		model.addAttribute(&quot;resource&quot;, resource);</span>
+<span class="nc" id="L161">		model.addAttribute(&quot;issuer&quot;, config.getIssuer());</span>
+
+<span class="nc" id="L163">		return &quot;webfingerView&quot;;</span>
+	}
+
+	@RequestMapping(&quot;/&quot; + OPENID_CONFIGURATION_URL)
+	public String providerConfiguration(Model model) {
+
+		/*
+		    issuer
+		        REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier.
+		    authorization_endpoint
+		        OPTIONAL. URL of the OP's Authentication and Authorization Endpoint [OpenID.Messages].
+		    token_endpoint
+		        OPTIONAL. URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Messages].
+		    userinfo_endpoint
+		        RECOMMENDED. URL of the OP's UserInfo Endpoint [OpenID.Messages]. This URL MUST use the https scheme
+		        and MAY contain port, path, and query parameter components.
+		    check_session_iframe
+		        OPTIONAL. URL of an OP endpoint that provides a page to support cross-origin communications for session state information with
+		        the RP Client, using the HTML5 postMessage API. The page is loaded from an invisible iframe embedded in an RP page so that
+		        it can run in the OP's security context. See [OpenID.Session].
+		    end_session_endpoint
+		        OPTIONAL. URL of the OP's endpoint that initiates logging out the End-User. See [OpenID.Session].
+		    jwks_uri
+		        REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the Client uses to
+		        validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s),
+		        which are used by Clients to encrypt requests to the Server. When both signing and encryption keys are made available,
+		        a use (Key Use) parameter value is REQUIRED for all keys in the document to indicate each key's intended usage.
+		    registration_endpoint
+		        RECOMMENDED. URL of the OP's Dynamic Client Registration Endpoint [OpenID.Registration].
+		    scopes_supported
+		        RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports.
+		        The server MUST support the openid scope value.
+		    response_types_supported
+		        REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this server supports.
+		        The server MUST support the code, id_token, and the token id_token response type values.
+		    grant_types_supported
+		        OPTIONAL. JSON array containing a list of the OAuth 2.0 grant type values that this server supports.
+		        The server MUST support the authorization_code and implicit grant type values
+		        and MAY support the urn:ietf:params:oauth:grant-type:jwt-bearer grant type defined in OAuth JWT Bearer Token Profiles [OAuth.JWT].
+		        If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;].
+		    acr_values_supported
+		        OPTIONAL. JSON array containing a list of the Authentication Context Class References that this server supports.
+		    subject_types_supported
+		        REQUIRED. JSON array containing a list of the subject identifier types that this server supports. Valid types include pairwise and public.
+		    userinfo_signing_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWS [JWS] signing algorithms (alg values) [JWA] supported by the UserInfo Endpoint to
+		        encode the Claims in a JWT [JWT].
+		    userinfo_encryption_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE [JWE] encryption algorithms (alg values) [JWA] supported by the UserInfo Endpoint to
+		        encode the Claims in a JWT [JWT].
+		    userinfo_encryption_enc_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) [JWA] supported by the UserInfo Endpoint to
+		        encode the Claims in a JWT [JWT].
+		    id_token_signing_alg_values_supported
+		        REQUIRED. JSON array containing a list of the JWS signing algorithms (alg values) supported by the Authorization Server for the
+		        ID Token to encode the Claims in a JWT [JWT].
+		    id_token_encryption_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE encryption algorithms (alg values) supported by the Authorization Server for the
+		        ID Token to encode the Claims in a JWT [JWT].
+		    id_token_encryption_enc_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the Authorization Server for the
+		        ID Token to encode the Claims in a JWT [JWT].
+		    request_object_signing_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWS signing algorithms (alg values) supported by the Authorization Server for
+		        the Request Object described in Section 2.9 of OpenID Connect Messages 1.0 [OpenID.Messages]. These algorithms are used both when
+		        the Request Object is passed by value (using the request parameter) and when it is passed by reference (using the request_uri parameter).
+		        Servers SHOULD support none and RS256.
+		    request_object_encryption_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE encryption algorithms (alg values) supported by the Authorization Server for
+		        the Request Object described in Section 2.9 of OpenID Connect Messages 1.0 [OpenID.Messages]. These algorithms are used both when
+		        the Request Object is passed by value and when it is passed by reference.
+		    request_object_encryption_enc_values_supported
+		        OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the Authorization Server for
+		        the Request Object described in Section 2.9 of OpenID Connect Messages 1.0 [OpenID.Messages]. These algorithms are used both when
+		        the Request Object is passed by value and when it is passed by reference.
+		    token_endpoint_auth_methods_supported
+		        OPTIONAL. JSON array containing a list of authentication methods supported by this Token Endpoint.
+		        The options are client_secret_post, client_secret_basic, client_secret_jwt, and private_key_jwt,
+		        as described in Section 2.2.1 of OpenID Connect Messages 1.0 [OpenID.Messages].
+		        Other authentication methods MAY be defined by extensions.
+		        If omitted, the default is client_secret_basic -- the HTTP Basic Authentication Scheme as specified in
+		        Section 2.3.1 of OAuth 2.0 [RFC6749].
+		    token_endpoint_auth_signing_alg_values_supported
+		        OPTIONAL. JSON array containing a list of the JWS signing algorithms (alg values) supported by the Token Endpoint for
+		        the private_key_jwt and client_secret_jwt methods to encode the JWT [JWT]. Servers SHOULD support RS256.
+		    display_values_supported
+		        OPTIONAL. JSON array containing a list of the display parameter values that the OpenID Provider supports.
+		        These values are described in Section 2.1.1 of OpenID Connect Messages 1.0 [OpenID.Messages].
+		    claim_types_supported
+		        OPTIONAL. JSON array containing a list of the Claim Types that the OpenID Provider supports.
+		        These Claim Types are described in Section 2.6 of OpenID Connect Messages 1.0 [OpenID.Messages].
+		        Values defined by this specification are normal, aggregated, and distributed.
+		        If not specified, the implementation supports only normal Claims.
+		    claims_supported
+		        RECOMMENDED. JSON array containing a list of the Claim Names of the Claims that the OpenID Provider MAY be able to supply values for.
+		        Note that for privacy or other reasons, this might not be an exhaustive list.
+		    service_documentation
+		        OPTIONAL. URL of a page containing human-readable information that developers might want or need to know when using the OpenID Provider.
+		        In particular, if the OpenID Provider does not support Dynamic Client Registration, then information on how to register Clients needs
+		        to be provided in this documentation.
+		    claims_locales_supported
+		        OPTIONAL. Languages and scripts supported for values in Claims being returned, represented as a JSON array of
+		        BCP47 [RFC5646] language tag values. Not all languages and scripts are necessarily supported for all Claim values.
+		    ui_locales_supported
+		        OPTIONAL. Languages and scripts supported for the user interface, represented as a JSON array of BCP47 [RFC5646] language tag values.
+		    claims_parameter_supported
+		        OPTIONAL. Boolean value specifying whether the OP supports use of the claims parameter, with true indicating support.
+		        If omitted, the default value is false.
+		    request_parameter_supported
+		        OPTIONAL. Boolean value specifying whether the OP supports use of the request parameter, with true indicating support.
+		        If omitted, the default value is false.
+		    request_uri_parameter_supported
+		        OPTIONAL. Boolean value specifying whether the OP supports use of the request_uri parameter, with true indicating support.
+		        If omitted, the default value is true.
+		    require_request_uri_registration
+		        OPTIONAL. Boolean value specifying whether the OP requires any request_uri values used to be pre-registered using
+		        the request_uris registration parameter. Pre-registration is REQUIRED when the value is true. If omitted, the default value is false.
+		    op_policy_uri
+		        OPTIONAL. URL that the OpenID Provider provides to the person registering the Client to read about the OP's requirements on
+		        how the Relying Party can use the data provided by the OP. The registration process SHOULD display this URL to the person registering
+		        the Client if it is given.
+		    op_tos_uri
+		        OPTIONAL. URL that the OpenID Provider provides to the person registering the Client to read about OpenID Provider's terms of service.
+		        The registration process SHOULD display this URL to the person registering the Client if it is given.
+		 */
+<span class="nc" id="L288">		String baseUrl = config.getIssuer();</span>
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">		if (!baseUrl.endsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L291">			logger.debug(&quot;Configured issuer doesn't end in /, adding for discovery: {}&quot;, baseUrl);</span>
+<span class="nc" id="L292">			baseUrl = baseUrl.concat(&quot;/&quot;);</span>
+		}
+
+<span class="nc" id="L295">		signService.getAllSigningAlgsSupported();</span>
+<span class="nc" id="L296">		Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512);</span>
+<span class="nc" id="L297">		Collection&lt;JWSAlgorithm&gt; clientSymmetricAndAsymmetricSigningAlgs = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
+				JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512,
+				JWSAlgorithm.ES256, JWSAlgorithm.ES384, JWSAlgorithm.ES512,
+				JWSAlgorithm.PS256, JWSAlgorithm.PS384, JWSAlgorithm.PS512);
+<span class="nc" id="L301">		Collection&lt;Algorithm&gt; clientSymmetricAndAsymmetricSigningAlgsWithNone = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
+				JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512,
+				JWSAlgorithm.ES256, JWSAlgorithm.ES384, JWSAlgorithm.ES512,
+				JWSAlgorithm.PS256, JWSAlgorithm.PS384, JWSAlgorithm.PS512,
+				Algorithm.NONE);
+<span class="nc" id="L306">		ArrayList&lt;String&gt; grantTypes = Lists.newArrayList(&quot;authorization_code&quot;, &quot;implicit&quot;, &quot;urn:ietf:params:oauth:grant-type:jwt-bearer&quot;, &quot;client_credentials&quot;, &quot;urn:ietf:params:oauth:grant_type:redelegate&quot;, &quot;urn:ietf:params:oauth:grant-type:device_code&quot;);</span>
+
+<span class="nc" id="L308">		Map&lt;String, Object&gt; m = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L309">		m.put(&quot;issuer&quot;, config.getIssuer());</span>
+<span class="nc" id="L310">		m.put(&quot;authorization_endpoint&quot;, baseUrl + &quot;authorize&quot;);</span>
+<span class="nc" id="L311">		m.put(&quot;token_endpoint&quot;, baseUrl + &quot;token&quot;);</span>
+<span class="nc" id="L312">		m.put(&quot;userinfo_endpoint&quot;, baseUrl + UserInfoEndpoint.URL);</span>
+		//check_session_iframe
+<span class="nc" id="L314">		m.put(&quot;end_session_endpoint&quot;, baseUrl + EndSessionEndpoint.URL);</span>
+<span class="nc" id="L315">		m.put(&quot;jwks_uri&quot;, baseUrl + JWKSetPublishingEndpoint.URL);</span>
+<span class="nc" id="L316">		m.put(&quot;registration_endpoint&quot;, baseUrl + DynamicClientRegistrationEndpoint.URL);</span>
+<span class="nc" id="L317">		m.put(&quot;scopes_supported&quot;, scopeService.toStrings(scopeService.getUnrestricted())); // these are the scopes that you can dynamically register for, which is what matters for discovery</span>
+<span class="nc" id="L318">		m.put(&quot;response_types_supported&quot;, Lists.newArrayList(&quot;code&quot;, &quot;token&quot;)); // we don't support these yet: , &quot;id_token&quot;, &quot;id_token token&quot;));</span>
+<span class="nc" id="L319">		m.put(&quot;grant_types_supported&quot;, grantTypes);</span>
+		//acr_values_supported
+<span class="nc" id="L321">		m.put(&quot;subject_types_supported&quot;, Lists.newArrayList(&quot;public&quot;, &quot;pairwise&quot;));</span>
+<span class="nc" id="L322">		m.put(&quot;userinfo_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+<span class="nc" id="L323">		m.put(&quot;userinfo_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L324">		m.put(&quot;userinfo_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L325">		m.put(&quot;id_token_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgsWithNone, toAlgorithmName));</span>
+<span class="nc" id="L326">		m.put(&quot;id_token_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L327">		m.put(&quot;id_token_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L328">		m.put(&quot;request_object_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+<span class="nc" id="L329">		m.put(&quot;request_object_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L330">		m.put(&quot;request_object_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L331">		m.put(&quot;token_endpoint_auth_methods_supported&quot;, Lists.newArrayList(&quot;client_secret_post&quot;, &quot;client_secret_basic&quot;, &quot;client_secret_jwt&quot;, &quot;private_key_jwt&quot;, &quot;none&quot;));</span>
+<span class="nc" id="L332">		m.put(&quot;token_endpoint_auth_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+		//display_types_supported
+<span class="nc" id="L334">		m.put(&quot;claim_types_supported&quot;, Lists.newArrayList(&quot;normal&quot; /*, &quot;aggregated&quot;, &quot;distributed&quot;*/));</span>
+<span class="nc" id="L335">		m.put(&quot;claims_supported&quot;, Lists.newArrayList(</span>
+				&quot;sub&quot;,
+				&quot;name&quot;,
+				&quot;preferred_username&quot;,
+				&quot;given_name&quot;,
+				&quot;family_name&quot;,
+				&quot;middle_name&quot;,
+				&quot;nickname&quot;,
+				&quot;profile&quot;,
+				&quot;picture&quot;,
+				&quot;website&quot;,
+				&quot;gender&quot;,
+				&quot;zoneinfo&quot;,
+				&quot;locale&quot;,
+				&quot;updated_at&quot;,
+				&quot;birthdate&quot;,
+				&quot;email&quot;,
+				&quot;email_verified&quot;,
+				&quot;phone_number&quot;,
+				&quot;phone_number_verified&quot;,
+				&quot;address&quot;
+				));
+<span class="nc" id="L357">		m.put(&quot;service_documentation&quot;, baseUrl + &quot;about&quot;);</span>
+		//claims_locales_supported
+		//ui_locales_supported
+<span class="nc" id="L360">		m.put(&quot;claims_parameter_supported&quot;, false);</span>
+<span class="nc" id="L361">		m.put(&quot;request_parameter_supported&quot;, true);</span>
+<span class="nc" id="L362">		m.put(&quot;request_uri_parameter_supported&quot;, false);</span>
+<span class="nc" id="L363">		m.put(&quot;require_request_uri_registration&quot;, false);</span>
+<span class="nc" id="L364">		m.put(&quot;op_policy_uri&quot;, baseUrl + &quot;about&quot;);</span>
+<span class="nc" id="L365">		m.put(&quot;op_tos_uri&quot;, baseUrl + &quot;about&quot;);</span>
+
+<span class="nc" id="L367">		m.put(&quot;introspection_endpoint&quot;, baseUrl + IntrospectionEndpoint.URL); // token introspection endpoint for verifying tokens</span>
+<span class="nc" id="L368">		m.put(&quot;revocation_endpoint&quot;, baseUrl + RevocationEndpoint.URL); // token revocation endpoint</span>
+
+<span class="nc" id="L370">		m.put(&quot;code_challenge_methods_supported&quot;, Lists.newArrayList(PKCEAlgorithm.plain.getName(), PKCEAlgorithm.S256.getName()));</span>
+
+<span class="nc" id="L372">		m.put(&quot;device_authorization_endpoint&quot;, baseUrl + DeviceEndpoint.URL);</span>
+
+<span class="nc" id="L374">		model.addAttribute(JsonEntityView.ENTITY, m);</span>
+
+<span class="nc" id="L376">		return JsonEntityView.VIEWNAME;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

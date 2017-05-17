@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JWTBearerAuthenticationProvider.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.assertion</a> &gt; <span class="el_source">JWTBearerAuthenticationProvider.java</span></div><h1>JWTBearerAuthenticationProvider.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.assertion;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.mitre.jwt.signer.service.JWTSigningAndValidationService;
+import org.mitre.jwt.signer.service.impl.ClientKeyCacheService;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod;
+import org.mitre.oauth2.service.ClientDetailsEntityService;
+import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+
+/**
+ * @author jricher
+ *
+ */
+<span class="nc" id="L54">public class JWTBearerAuthenticationProvider implements AuthenticationProvider {</span>
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L59">	private static final Logger logger = LoggerFactory.getLogger(JWTBearerAuthenticationProvider.class);</span>
+
+<span class="nc" id="L61">	private static final GrantedAuthority ROLE_CLIENT = new SimpleGrantedAuthority(&quot;ROLE_CLIENT&quot;);</span>
+
+	// map of verifiers, load keys for clients
+	@Autowired
+	private ClientKeyCacheService validators;
+
+	// Allow for time sync issues by having a window of X seconds.
+<span class="nc" id="L68">	private int timeSkewAllowance = 300;</span>
+
+	// to load clients
+	@Autowired
+	private ClientDetailsEntityService clientService;
+
+	// to get our server's issuer url
+	@Autowired
+	private ConfigurationPropertiesBean config;
+
+	/**
+	 * Try to validate the client credentials by parsing and validating the JWT.
+	 */
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+<span class="nc" id="L84">		JWTBearerAssertionAuthenticationToken jwtAuth = (JWTBearerAssertionAuthenticationToken)authentication;</span>
+
+
+		try {
+<span class="nc" id="L88">			ClientDetailsEntity client = clientService.loadClientByClientId(jwtAuth.getName());</span>
+
+<span class="nc" id="L90">			JWT jwt = jwtAuth.getJwt();</span>
+<span class="nc" id="L91">			JWTClaimsSet jwtClaims = jwt.getJWTClaimsSet();</span>
+
+			// check the signature with nimbus
+<span class="nc bnc" id="L94" title="All 2 branches missed.">			if (jwt instanceof SignedJWT) {</span>
+<span class="nc" id="L95">				SignedJWT jws = (SignedJWT)jwt;</span>
+
+<span class="nc" id="L97">				JWSAlgorithm alg = jws.getHeader().getAlgorithm();</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">				if (client.getTokenEndpointAuthSigningAlg() != null &amp;&amp;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">						!client.getTokenEndpointAuthSigningAlg().equals(alg)) {</span>
+<span class="nc" id="L101">					throw new InvalidClientException(&quot;Client's registered request object signing algorithm (&quot; + client.getRequestObjectSigningAlg() + &quot;) does not match request object's actual algorithm (&quot; + alg.getName() + &quot;)&quot;);</span>
+				}
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">				if (client.getTokenEndpointAuthMethod() == null ||</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">						client.getTokenEndpointAuthMethod().equals(AuthMethod.NONE) ||</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">						client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_BASIC) ||</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">						client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_POST)) {</span>
+
+					// this client doesn't support this type of authentication
+<span class="nc" id="L110">					throw new AuthenticationServiceException(&quot;Client does not support this authentication method.&quot;);</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">				} else if ((client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY) &amp;&amp;</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">						(alg.equals(JWSAlgorithm.RS256)</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.RS384)</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.RS512)</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.ES256)</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.ES384)</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.ES512)</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.PS256)</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.PS384)</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">								|| alg.equals(JWSAlgorithm.PS512)))</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">						|| (client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT) &amp;&amp;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">								(alg.equals(JWSAlgorithm.HS256)</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">										|| alg.equals(JWSAlgorithm.HS384)</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">										|| alg.equals(JWSAlgorithm.HS512)))) {</span>
+
+					// double-check the method is asymmetrical if we're in HEART mode
+<span class="nc bnc" id="L128" title="All 4 branches missed.">					if (config.isHeartMode() &amp;&amp; !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
+<span class="nc" id="L129">						throw new AuthenticationServiceException(&quot;[HEART mode] Invalid authentication method&quot;);</span>
+					}
+
+<span class="nc" id="L132">					JWTSigningAndValidationService validator = validators.getValidator(client, alg);</span>
+
+<span class="nc bnc" id="L134" title="All 2 branches missed.">					if (validator == null) {</span>
+<span class="nc" id="L135">						throw new AuthenticationServiceException(&quot;Unable to create signature validator for client &quot; + client + &quot; and algorithm &quot; + alg);</span>
+					}
+
+<span class="nc bnc" id="L138" title="All 2 branches missed.">					if (!validator.validateSignature(jws)) {</span>
+<span class="nc" id="L139">						throw new AuthenticationServiceException(&quot;Signature did not validate for presented JWT authentication.&quot;);</span>
+					}
+<span class="nc" id="L141">				} else {</span>
+<span class="nc" id="L142">					throw new AuthenticationServiceException(&quot;Unable to create signature validator for method &quot; + client.getTokenEndpointAuthMethod() + &quot; and algorithm &quot; + alg);</span>
+				}
+			}
+
+			// check the issuer
+<span class="nc bnc" id="L147" title="All 2 branches missed.">			if (jwtClaims.getIssuer() == null) {</span>
+<span class="nc" id="L148">				throw new AuthenticationServiceException(&quot;Assertion Token Issuer is null&quot;);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">			} else if (!jwtClaims.getIssuer().equals(client.getClientId())){</span>
+<span class="nc" id="L150">				throw new AuthenticationServiceException(&quot;Issuers do not match, expected &quot; + client.getClientId() + &quot; got &quot; + jwtClaims.getIssuer());</span>
+			}
+
+			// check expiration
+<span class="nc bnc" id="L154" title="All 2 branches missed.">			if (jwtClaims.getExpirationTime() == null) {</span>
+<span class="nc" id="L155">				throw new AuthenticationServiceException(&quot;Assertion Token does not have required expiration claim&quot;);</span>
+			} else {
+				// it's not null, see if it's expired
+<span class="nc" id="L158">				Date now = new Date(System.currentTimeMillis() - (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">				if (now.after(jwtClaims.getExpirationTime())) {</span>
+<span class="nc" id="L160">					throw new AuthenticationServiceException(&quot;Assertion Token is expired: &quot; + jwtClaims.getExpirationTime());</span>
+				}
+			}
+
+			// check not before
+<span class="nc bnc" id="L165" title="All 2 branches missed.">			if (jwtClaims.getNotBeforeTime() != null) {</span>
+<span class="nc" id="L166">				Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">				if (now.before(jwtClaims.getNotBeforeTime())){</span>
+<span class="nc" id="L168">					throw new AuthenticationServiceException(&quot;Assertion Token not valid untill: &quot; + jwtClaims.getNotBeforeTime());</span>
+				}
+			}
+
+			// check issued at
+<span class="nc bnc" id="L173" title="All 2 branches missed.">			if (jwtClaims.getIssueTime() != null) {</span>
+				// since it's not null, see if it was issued in the future
+<span class="nc" id="L175">				Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">				if (now.before(jwtClaims.getIssueTime())) {</span>
+<span class="nc" id="L177">					throw new AuthenticationServiceException(&quot;Assertion Token was issued in the future: &quot; + jwtClaims.getIssueTime());</span>
+				}
+			}
+
+			// check audience
+<span class="nc bnc" id="L182" title="All 2 branches missed.">			if (jwtClaims.getAudience() == null) {</span>
+<span class="nc" id="L183">				throw new AuthenticationServiceException(&quot;Assertion token audience is null&quot;);</span>
+<span class="nc bnc" id="L184" title="All 4 branches missed.">			} else if (!(jwtClaims.getAudience().contains(config.getIssuer()) || jwtClaims.getAudience().contains(config.getIssuer() + &quot;token&quot;))) {</span>
+<span class="nc" id="L185">				throw new AuthenticationServiceException(&quot;Audience does not match, expected &quot; + config.getIssuer() + &quot; or &quot; + (config.getIssuer() + &quot;token&quot;) + &quot; got &quot; + jwtClaims.getAudience());</span>
+			}
+
+			// IFF we managed to get all the way down here, the token is valid
+
+			// add in the ROLE_CLIENT authority
+<span class="nc" id="L191">			Set&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;(client.getAuthorities());</span>
+<span class="nc" id="L192">			authorities.add(ROLE_CLIENT);</span>
+
+<span class="nc" id="L194">			return new JWTBearerAssertionAuthenticationToken(jwt, authorities);</span>
+
+<span class="nc" id="L196">		} catch (InvalidClientException e) {</span>
+<span class="nc" id="L197">			throw new UsernameNotFoundException(&quot;Could not find client: &quot; + jwtAuth.getName());</span>
+<span class="nc" id="L198">		} catch (ParseException e) {</span>
+
+<span class="nc" id="L200">			logger.error(&quot;Failure during authentication, error was: &quot;, e);</span>
+
+<span class="nc" id="L202">			throw new AuthenticationServiceException(&quot;Invalid JWT format&quot;);</span>
+		}
+	}
+
+	/**
+	 * We support {@link JWTBearerAssertionAuthenticationToken}s only.
+	 */
+	@Override
+	public boolean supports(Class&lt;?&gt; authentication) {
+<span class="nc" id="L211">		return (JWTBearerAssertionAuthenticationToken.class.isAssignableFrom(authentication));</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

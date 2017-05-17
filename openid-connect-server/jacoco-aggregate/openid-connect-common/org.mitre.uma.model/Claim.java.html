@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Claim.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.model</a> &gt; <span class="el_source">Claim.java</span></div><h1>Claim.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.uma.model;
+
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
+import org.mitre.oauth2.model.convert.JsonElementStringConverter;
+
+import com.google.gson.JsonElement;
+
+/**
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name = &quot;claim&quot;)
+<span class="nc" id="L45">public class Claim {</span>
+
+	private Long id;
+	private String name;
+	private String friendlyName;
+	private String claimType;
+	private JsonElement value;
+	private Set&lt;String&gt; claimTokenFormat;
+	private Set&lt;String&gt; issuer;
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L62">		return id;</span>
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L68">		this.id = id;</span>
+<span class="nc" id="L69">	}</span>
+	/**
+	 * @return the name
+	 */
+	@Basic
+	@Column(name = &quot;name&quot;)
+	public String getName() {
+<span class="nc" id="L76">		return name;</span>
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+<span class="nc" id="L82">		this.name = name;</span>
+<span class="nc" id="L83">	}</span>
+
+	/**
+	 * @return the friendlyName
+	 */
+	@Basic
+	@Column(name = &quot;friendly_name&quot;)
+	public String getFriendlyName() {
+<span class="nc" id="L91">		return friendlyName;</span>
+	}
+	/**
+	 * @param friendlyName the friendlyName to set
+	 */
+	public void setFriendlyName(String friendlyName) {
+<span class="nc" id="L97">		this.friendlyName = friendlyName;</span>
+<span class="nc" id="L98">	}</span>
+
+	/**
+	 * @return the claimType
+	 */
+	@Basic
+	@Column(name = &quot;claim_type&quot;)
+	public String getClaimType() {
+<span class="nc" id="L106">		return claimType;</span>
+	}
+	/**
+	 * @param claimType the claimType to set
+	 */
+	public void setClaimType(String claimType) {
+<span class="nc" id="L112">		this.claimType = claimType;</span>
+<span class="nc" id="L113">	}</span>
+
+	/**
+	 * @return the claimTokenFormat
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Column(name = &quot;claim_token_format&quot;)
+	@CollectionTable(
+			name = &quot;claim_token_format&quot;,
+			joinColumns = @JoinColumn(name = &quot;owner_id&quot;)
+			)
+	public Set&lt;String&gt; getClaimTokenFormat() {
+<span class="nc" id="L125">		return claimTokenFormat;</span>
+	}
+	/**
+	 * @param claimTokenFormat the claimTokenFormat to set
+	 */
+	public void setClaimTokenFormat(Set&lt;String&gt; claimTokenFormat) {
+<span class="nc" id="L131">		this.claimTokenFormat = claimTokenFormat;</span>
+<span class="nc" id="L132">	}</span>
+
+	/**
+	 * @return the issuer
+	 */
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Column(name = &quot;issuer&quot;)
+	@CollectionTable(
+			name = &quot;claim_issuer&quot;,
+			joinColumns = @JoinColumn(name = &quot;owner_id&quot;)
+			)
+	public Set&lt;String&gt; getIssuer() {
+<span class="nc" id="L144">		return issuer;</span>
+	}
+	/**
+	 * @param issuer the issuer to set
+	 */
+	public void setIssuer(Set&lt;String&gt; issuer) {
+<span class="nc" id="L150">		this.issuer = issuer;</span>
+<span class="nc" id="L151">	}</span>
+
+	/**
+	 * @return the value
+	 */
+	@Basic
+	@Column(name = &quot;claim_value&quot;)
+	@Convert(converter = JsonElementStringConverter.class)
+	public JsonElement getValue() {
+<span class="nc" id="L160">		return value;</span>
+	}
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(JsonElement value) {
+<span class="nc" id="L166">		this.value = value;</span>
+<span class="nc" id="L167">	}</span>
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+<span class="nc" id="L173">		return &quot;Claim [id=&quot; + id + &quot;, name=&quot; + name + &quot;, friendlyName=&quot; + friendlyName + &quot;, claimType=&quot; + claimType + &quot;, value=&quot; + value + &quot;, claimTokenFormat=&quot; + claimTokenFormat + &quot;, issuer=&quot; + issuer + &quot;]&quot;;</span>
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+<span class="nc" id="L180">		final int prime = 31;</span>
+<span class="nc" id="L181">		int result = 1;</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">		result = prime * result + ((claimTokenFormat == null) ? 0 : claimTokenFormat.hashCode());</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">		result = prime * result + ((claimType == null) ? 0 : claimType.hashCode());</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">		result = prime * result + ((friendlyName == null) ? 0 : friendlyName.hashCode());</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">		result = prime * result + ((id == null) ? 0 : id.hashCode());</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">		result = prime * result + ((issuer == null) ? 0 : issuer.hashCode());</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">		result = prime * result + ((name == null) ? 0 : name.hashCode());</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">		result = prime * result + ((value == null) ? 0 : value.hashCode());</span>
+<span class="nc" id="L189">		return result;</span>
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+<span class="nc bnc" id="L196" title="All 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L197">			return true;</span>
+		}
+<span class="nc bnc" id="L199" title="All 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L200">			return false;</span>
+		}
+<span class="nc bnc" id="L202" title="All 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L203">			return false;</span>
+		}
+<span class="nc" id="L205">		Claim other = (Claim) obj;</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">		if (claimTokenFormat == null) {</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">			if (other.claimTokenFormat != null) {</span>
+<span class="nc" id="L208">				return false;</span>
+			}
+<span class="nc bnc" id="L210" title="All 2 branches missed.">		} else if (!claimTokenFormat.equals(other.claimTokenFormat)) {</span>
+<span class="nc" id="L211">			return false;</span>
+		}
+<span class="nc bnc" id="L213" title="All 2 branches missed.">		if (claimType == null) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			if (other.claimType != null) {</span>
+<span class="nc" id="L215">				return false;</span>
+			}
+<span class="nc bnc" id="L217" title="All 2 branches missed.">		} else if (!claimType.equals(other.claimType)) {</span>
+<span class="nc" id="L218">			return false;</span>
+		}
+<span class="nc bnc" id="L220" title="All 2 branches missed.">		if (friendlyName == null) {</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">			if (other.friendlyName != null) {</span>
+<span class="nc" id="L222">				return false;</span>
+			}
+<span class="nc bnc" id="L224" title="All 2 branches missed.">		} else if (!friendlyName.equals(other.friendlyName)) {</span>
+<span class="nc" id="L225">			return false;</span>
+		}
+<span class="nc bnc" id="L227" title="All 2 branches missed.">		if (id == null) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">			if (other.id != null) {</span>
+<span class="nc" id="L229">				return false;</span>
+			}
+<span class="nc bnc" id="L231" title="All 2 branches missed.">		} else if (!id.equals(other.id)) {</span>
+<span class="nc" id="L232">			return false;</span>
+		}
+<span class="nc bnc" id="L234" title="All 2 branches missed.">		if (issuer == null) {</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">			if (other.issuer != null) {</span>
+<span class="nc" id="L236">				return false;</span>
+			}
+<span class="nc bnc" id="L238" title="All 2 branches missed.">		} else if (!issuer.equals(other.issuer)) {</span>
+<span class="nc" id="L239">			return false;</span>
+		}
+<span class="nc bnc" id="L241" title="All 2 branches missed.">		if (name == null) {</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">			if (other.name != null) {</span>
+<span class="nc" id="L243">				return false;</span>
+			}
+<span class="nc bnc" id="L245" title="All 2 branches missed.">		} else if (!name.equals(other.name)) {</span>
+<span class="nc" id="L246">			return false;</span>
+		}
+<span class="nc bnc" id="L248" title="All 2 branches missed.">		if (value == null) {</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">			if (other.value != null) {</span>
+<span class="nc" id="L250">				return false;</span>
+			}
+<span class="nc bnc" id="L252" title="All 2 branches missed.">		} else if (!value.equals(other.value)) {</span>
+<span class="nc" id="L253">			return false;</span>
+		}
+<span class="nc" id="L255">		return true;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

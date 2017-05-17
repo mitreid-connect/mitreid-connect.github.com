@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SymmetricKeyJWTValidatorCacheService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.jwt.signer.service.impl</a> &gt; <span class="el_source">SymmetricKeyJWTValidatorCacheService.java</span></div><h1>SymmetricKeyJWTValidatorCacheService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.jwt.signer.service.impl;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import org.mitre.jwt.signer.service.JWTSigningAndValidationService;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.google.common.base.Strings;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.util.Base64URL;
+
+/**
+ * Creates and caches symmetrical validators for clients based on client secrets.
+ *
+ * @author jricher
+ *
+ */
+@Service
+public class SymmetricKeyJWTValidatorCacheService {
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L54">	private static final Logger logger = LoggerFactory.getLogger(SymmetricKeyJWTValidatorCacheService.class);</span>
+
+	private LoadingCache&lt;String, JWTSigningAndValidationService&gt; validators;
+
+
+<span class="nc" id="L59">	public SymmetricKeyJWTValidatorCacheService() {</span>
+<span class="nc" id="L60">		validators = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L61">				.expireAfterAccess(24, TimeUnit.HOURS)</span>
+<span class="nc" id="L62">				.maximumSize(100)</span>
+<span class="nc" id="L63">				.build(new SymmetricValidatorBuilder());</span>
+<span class="nc" id="L64">	}</span>
+
+
+	/**
+	 * Create a symmetric signing and validation service for the given client
+	 *
+	 * @param client
+	 * @return
+	 */
+	public JWTSigningAndValidationService getSymmetricValidtor(ClientDetailsEntity client) {
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L76">			logger.error(&quot;Couldn't create symmetric validator for null client&quot;);</span>
+<span class="nc" id="L77">			return null;</span>
+		}
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(client.getClientSecret())) {</span>
+<span class="nc" id="L81">			logger.error(&quot;Couldn't create symmetric validator for client &quot; + client.getClientId() + &quot; without a client secret&quot;);</span>
+<span class="nc" id="L82">			return null;</span>
+		}
+
+		try {
+<span class="nc" id="L86">			return validators.get(client.getClientSecret());</span>
+<span class="nc" id="L87">		} catch (UncheckedExecutionException ue) {</span>
+<span class="nc" id="L88">			logger.error(&quot;Problem loading client validator&quot;, ue);</span>
+<span class="nc" id="L89">			return null;</span>
+<span class="nc" id="L90">		} catch (ExecutionException e) {</span>
+<span class="nc" id="L91">			logger.error(&quot;Problem loading client validator&quot;, e);</span>
+<span class="nc" id="L92">			return null;</span>
+		}
+
+	}
+
+<span class="nc" id="L97">	public class SymmetricValidatorBuilder extends CacheLoader&lt;String, JWTSigningAndValidationService&gt; {</span>
+		@Override
+		public JWTSigningAndValidationService load(String key) throws Exception {
+			try {
+
+<span class="nc" id="L102">				String id = &quot;SYMMETRIC-KEY&quot;;</span>
+
+<span class="nc" id="L104">				JWK jwk = new OctetSequenceKey(Base64URL.encode(key), KeyUse.SIGNATURE, null, null, id, null, null, null, null);</span>
+<span class="nc" id="L105">				Map&lt;String, JWK&gt; keys = ImmutableMap.of(id, jwk);</span>
+<span class="nc" id="L106">				JWTSigningAndValidationService service = new DefaultJWTSigningAndValidationService(keys);</span>
+
+<span class="nc" id="L108">				return service;</span>
+
+<span class="nc" id="L110">			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {</span>
+<span class="nc" id="L111">				logger.error(&quot;Couldn't create symmetric validator for client&quot;, e);</span>
+			}
+
+<span class="nc" id="L114">			throw new IllegalArgumentException(&quot;Couldn't create symmetric validator for client&quot;);</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

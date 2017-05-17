@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">ClientAPI.java</span></div><h1>ClientAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.openid.connect.web;
+
+import java.lang.reflect.Type;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.ParseException;
+import java.util.Collection;
+
+import javax.persistence.PersistenceException;
+
+import org.eclipse.persistence.exceptions.DatabaseException;
+import org.mitre.jwt.assertion.AssertionValidator;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.ClientDetailsEntity.AppType;
+import org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod;
+import org.mitre.oauth2.model.ClientDetailsEntity.SubjectType;
+import org.mitre.oauth2.model.PKCEAlgorithm;
+import org.mitre.oauth2.service.ClientDetailsEntityService;
+import org.mitre.oauth2.web.AuthenticationUtilities;
+import org.mitre.openid.connect.exception.ValidationException;
+import org.mitre.openid.connect.model.CachedImage;
+import org.mitre.openid.connect.service.ClientLogoLoadingService;
+import org.mitre.openid.connect.view.ClientEntityViewForAdmins;
+import org.mitre.openid.connect.view.ClientEntityViewForUsers;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonEntityView;
+import org.mitre.openid.connect.view.JsonErrorView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.common.util.OAuth2Utils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.nimbusds.jose.Algorithm;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+
+import static org.mitre.oauth2.model.RegisteredClientFields.APPLICATION_TYPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLAIMS_REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_ID;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_ID_ISSUED_AT;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_NAME;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_SECRET;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_SECRET_EXPIRES_AT;
+import static org.mitre.oauth2.model.RegisteredClientFields.CLIENT_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.CONTACTS;
+import static org.mitre.oauth2.model.RegisteredClientFields.DEFAULT_ACR_VALUES;
+import static org.mitre.oauth2.model.RegisteredClientFields.DEFAULT_MAX_AGE;
+import static org.mitre.oauth2.model.RegisteredClientFields.GRANT_TYPES;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_ENCRYPTED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_ENCRYPTED_RESPONSE_ENC;
+import static org.mitre.oauth2.model.RegisteredClientFields.ID_TOKEN_SIGNED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.INITIATE_LOGIN_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.JWKS;
+import static org.mitre.oauth2.model.RegisteredClientFields.JWKS_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.LOGO_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.POLICY_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.POST_LOGOUT_REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REDIRECT_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REGISTRATION_ACCESS_TOKEN;
+import static org.mitre.oauth2.model.RegisteredClientFields.REGISTRATION_CLIENT_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUEST_OBJECT_SIGNING_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUEST_URIS;
+import static org.mitre.oauth2.model.RegisteredClientFields.REQUIRE_AUTH_TIME;
+import static org.mitre.oauth2.model.RegisteredClientFields.RESPONSE_TYPES;
+import static org.mitre.oauth2.model.RegisteredClientFields.SCOPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.SECTOR_IDENTIFIER_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.SOFTWARE_STATEMENT;
+import static org.mitre.oauth2.model.RegisteredClientFields.SUBJECT_TYPE;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOKEN_ENDPOINT_AUTH_METHOD;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOKEN_ENDPOINT_AUTH_SIGNING_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.TOS_URI;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_ENCRYPTED_RESPONSE_ALG;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_ENCRYPTED_RESPONSE_ENC;
+import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_SIGNED_RESPONSE_ALG;
+
+/**
+ * @author Michael Jett &lt;mjett@mitre.org&gt;
+ */
+
+@Controller
+@RequestMapping(&quot;/&quot; + ClientAPI.URL)
+@PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+<span class="nc" id="L128">public class ClientAPI {</span>
+
+	public static final String URL = RootController.API_URL + &quot;/clients&quot;;
+
+	@Autowired
+	private ClientDetailsEntityService clientService;
+
+	@Autowired
+	private ClientLogoLoadingService clientLogoLoadingService;
+
+	@Autowired
+	@Qualifier(&quot;clientAssertionValidator&quot;)
+	private AssertionValidator assertionValidator;
+
+<span class="nc" id="L142">	private JsonParser parser = new JsonParser();</span>
+
+<span class="nc" id="L144">	private Gson gson = new GsonBuilder()</span>
+<span class="nc" id="L145">			.serializeNulls()</span>
+<span class="nc" id="L146">			.registerTypeAdapter(JWSAlgorithm.class, new JsonDeserializer&lt;Algorithm&gt;() {</span>
+				@Override
+				public JWSAlgorithm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">					if (json.isJsonPrimitive()) {</span>
+<span class="nc" id="L150">						return JWSAlgorithm.parse(json.getAsString());</span>
+					} else {
+<span class="nc" id="L152">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L156">			.registerTypeAdapter(JWEAlgorithm.class, new JsonDeserializer&lt;Algorithm&gt;() {</span>
+				@Override
+				public JWEAlgorithm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L159" title="All 2 branches missed.">					if (json.isJsonPrimitive()) {</span>
+<span class="nc" id="L160">						return JWEAlgorithm.parse(json.getAsString());</span>
+					} else {
+<span class="nc" id="L162">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L166">			.registerTypeAdapter(EncryptionMethod.class, new JsonDeserializer&lt;Algorithm&gt;() {</span>
+				@Override
+				public EncryptionMethod deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L169" title="All 2 branches missed.">					if (json.isJsonPrimitive()) {</span>
+<span class="nc" id="L170">						return EncryptionMethod.parse(json.getAsString());</span>
+					} else {
+<span class="nc" id="L172">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L176">			.registerTypeAdapter(JWKSet.class, new JsonDeserializer&lt;JWKSet&gt;() {</span>
+				@Override
+				public JWKSet deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L179" title="All 2 branches missed.">					if (json.isJsonObject()) {</span>
+						try {
+<span class="nc" id="L181">							return JWKSet.parse(json.toString());</span>
+<span class="nc" id="L182">						} catch (ParseException e) {</span>
+<span class="nc" id="L183">							return null;</span>
+						}
+					} else {
+<span class="nc" id="L186">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L190">			.registerTypeAdapter(JWT.class, new JsonDeserializer&lt;JWT&gt;() {</span>
+				@Override
+				public JWT deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L193" title="All 2 branches missed.">					if (json.isJsonPrimitive()) {</span>
+						try {
+<span class="nc" id="L195">							return JWTParser.parse(json.getAsString());</span>
+<span class="nc" id="L196">						} catch (ParseException e) {</span>
+<span class="nc" id="L197">							return null;</span>
+						}
+					} else {
+<span class="nc" id="L200">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L204">			.registerTypeAdapter(PKCEAlgorithm.class, new JsonDeserializer&lt;Algorithm&gt;() {</span>
+				@Override
+				public PKCEAlgorithm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">					if (json.isJsonPrimitive()) {</span>
+<span class="nc" id="L208">						return PKCEAlgorithm.parse(json.getAsString());</span>
+					} else {
+<span class="nc" id="L210">						return null;</span>
+					}
+				}
+			})
+<span class="nc" id="L214">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
+<span class="nc" id="L215">			.create();</span>
+
+	/**
+	 * Logger for this class
+	 */
+<span class="nc" id="L220">	private static final Logger logger = LoggerFactory.getLogger(ClientAPI.class);</span>
+
+	/**
+	 * Get a list of all clients
+	 * @param modelAndView
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String apiGetAllClients(Model model, Authentication auth) {
+
+<span class="nc" id="L230">		Collection&lt;ClientDetailsEntity&gt; clients = clientService.getAllClients();</span>
+<span class="nc" id="L231">		model.addAttribute(JsonEntityView.ENTITY, clients);</span>
+
+<span class="nc bnc" id="L233" title="All 2 branches missed.">		if (AuthenticationUtilities.isAdmin(auth)) {</span>
+<span class="nc" id="L234">			return ClientEntityViewForAdmins.VIEWNAME;</span>
+		} else {
+<span class="nc" id="L236">			return ClientEntityViewForUsers.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Create a new client
+	 * @param json
+	 * @param m
+	 * @param principal
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String apiAddClient(@RequestBody String jsonString, Model m, Authentication auth) {
+
+<span class="nc" id="L251">		JsonObject json = null;</span>
+<span class="nc" id="L252">		ClientDetailsEntity client = null;</span>
+
+		try {
+<span class="nc" id="L255">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L256">			client = gson.fromJson(json, ClientDetailsEntity.class);</span>
+<span class="nc" id="L257">			client = validateSoftwareStatement(client);</span>
+<span class="nc" id="L258">		} catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L259">			logger.error(&quot;apiAddClient failed due to JsonSyntaxException&quot;, e);</span>
+<span class="nc" id="L260">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L261">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new client. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L262">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L263">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L264">			logger.error(&quot;apiAddClient failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L265">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L266">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new client. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L267">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L268">		} catch (ValidationException e) {</span>
+<span class="nc" id="L269">			logger.error(&quot;apiUpdateClient failed due to ValidationException&quot;, e);</span>
+<span class="nc" id="L270">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L271">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not update client. The server encountered a ValidationException.&quot;);</span>
+<span class="nc" id="L272">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L273">		}</span>
+
+		// if they leave the client identifier empty, force it to be generated
+<span class="nc bnc" id="L276" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(client.getClientId())) {</span>
+<span class="nc" id="L277">			client = clientService.generateClientId(client);</span>
+		}
+
+<span class="nc bnc" id="L280" title="All 2 branches missed.">		if (client.getTokenEndpointAuthMethod() == null ||</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">				client.getTokenEndpointAuthMethod().equals(AuthMethod.NONE)) {</span>
+			// we shouldn't have a secret for this client
+
+<span class="nc" id="L284">			client.setClientSecret(null);</span>
+
+<span class="nc bnc" id="L286" title="All 2 branches missed.">		} else if (client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_BASIC)</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">				|| client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_POST)</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">				|| client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT)) {</span>
+
+			// if they've asked for us to generate a client secret (or they left it blank but require one), do so here
+<span class="nc bnc" id="L291" title="All 4 branches missed.">			if (json.has(&quot;generateClientSecret&quot;) &amp;&amp; json.get(&quot;generateClientSecret&quot;).getAsBoolean()</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">					|| Strings.isNullOrEmpty(client.getClientSecret())) {</span>
+<span class="nc" id="L293">				client = clientService.generateClientSecret(client);</span>
+			}
+
+<span class="nc bnc" id="L296" title="All 2 branches missed.">		} else if (client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
+
+<span class="nc bnc" id="L298" title="All 4 branches missed.">			if (Strings.isNullOrEmpty(client.getJwksUri()) &amp;&amp; client.getJwks() == null) {</span>
+<span class="nc" id="L299">				logger.error(&quot;tried to create client with private key auth but no private key&quot;);</span>
+<span class="nc" id="L300">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L301">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Can not create a client with private key authentication without registering a key via the JWK Set URI or JWK Set Value.&quot;);</span>
+<span class="nc" id="L302">				return JsonErrorView.VIEWNAME;</span>
+			}
+
+			// otherwise we shouldn't have a secret for this client
+<span class="nc" id="L306">			client.setClientSecret(null);</span>
+
+		} else {
+
+<span class="nc" id="L310">			logger.error(&quot;unknown auth method&quot;);</span>
+<span class="nc" id="L311">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L312">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unknown auth method requested&quot;);</span>
+<span class="nc" id="L313">			return JsonErrorView.VIEWNAME;</span>
+
+
+		}
+
+<span class="nc" id="L318">		client.setDynamicallyRegistered(false);</span>
+
+		try {
+<span class="nc" id="L321">			ClientDetailsEntity newClient = clientService.saveNewClient(client);</span>
+<span class="nc" id="L322">			m.addAttribute(JsonEntityView.ENTITY, newClient);</span>
+
+<span class="nc bnc" id="L324" title="All 2 branches missed.">			if (AuthenticationUtilities.isAdmin(auth)) {</span>
+<span class="nc" id="L325">				return ClientEntityViewForAdmins.VIEWNAME;</span>
+			} else {
+<span class="nc" id="L327">				return ClientEntityViewForUsers.VIEWNAME;</span>
+			}
+<span class="nc" id="L329">		} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L330">			logger.error(&quot;Unable to save client: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L331">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L332">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client: &quot; + e.getMessage());</span>
+<span class="nc" id="L333">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L334">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L335">			Throwable cause = e.getCause();</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">			if (cause instanceof DatabaseException) {</span>
+<span class="nc" id="L337">				Throwable databaseExceptionCause = cause.getCause();</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">				if(databaseExceptionCause instanceof SQLIntegrityConstraintViolationException) {</span>
+<span class="nc" id="L339">					logger.error(&quot;apiAddClient failed; duplicate client id entry found: {}&quot;, client.getClientId());</span>
+<span class="nc" id="L340">					m.addAttribute(HttpCodeView.CODE, HttpStatus.CONFLICT);</span>
+<span class="nc" id="L341">					m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client. Duplicate client id entry found: &quot; + client.getClientId());</span>
+<span class="nc" id="L342">					return JsonErrorView.VIEWNAME;</span>
+				}
+			}
+<span class="nc" id="L345">			throw e;</span>
+		}
+	}
+
+	/**
+	 * Update an existing client
+	 * @param id
+	 * @param jsonString
+	 * @param m
+	 * @param principal
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String apiUpdateClient(@PathVariable(&quot;id&quot;) Long id, @RequestBody String jsonString, Model m, Authentication auth) {
+
+<span class="nc" id="L361">		JsonObject json = null;</span>
+<span class="nc" id="L362">		ClientDetailsEntity client = null;</span>
+
+		try {
+			// parse the client passed in (from JSON) and fetch the old client from the store
+<span class="nc" id="L366">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L367">			client = gson.fromJson(json, ClientDetailsEntity.class);</span>
+<span class="nc" id="L368">			client = validateSoftwareStatement(client);</span>
+<span class="nc" id="L369">		} catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L370">			logger.error(&quot;apiUpdateClient failed due to JsonSyntaxException&quot;, e);</span>
+<span class="nc" id="L371">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L372">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not update client. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L373">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L374">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L375">			logger.error(&quot;apiUpdateClient failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L376">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L377">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not update client. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L378">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L379">		} catch (ValidationException e) {</span>
+<span class="nc" id="L380">			logger.error(&quot;apiUpdateClient failed due to ValidationException&quot;, e);</span>
+<span class="nc" id="L381">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L382">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not update client. The server encountered a ValidationException.&quot;);</span>
+<span class="nc" id="L383">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L384">		}</span>
+
+<span class="nc" id="L386">		ClientDetailsEntity oldClient = clientService.getClientById(id);</span>
+
+<span class="nc bnc" id="L388" title="All 2 branches missed.">		if (oldClient == null) {</span>
+<span class="nc" id="L389">			logger.error(&quot;apiUpdateClient failed; client with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L390">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L391">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not update client. The requested client with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L392">			return JsonErrorView.VIEWNAME;</span>
+		}
+
+		// if they leave the client identifier empty, force it to be generated
+<span class="nc bnc" id="L396" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(client.getClientId())) {</span>
+<span class="nc" id="L397">			client = clientService.generateClientId(client);</span>
+		}
+
+<span class="nc bnc" id="L400" title="All 2 branches missed.">		if (client.getTokenEndpointAuthMethod() == null ||</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">				client.getTokenEndpointAuthMethod().equals(AuthMethod.NONE)) {</span>
+			// we shouldn't have a secret for this client
+
+<span class="nc" id="L404">			client.setClientSecret(null);</span>
+
+<span class="nc bnc" id="L406" title="All 2 branches missed.">		} else if (client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_BASIC)</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">				|| client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_POST)</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">				|| client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT)) {</span>
+
+			// if they've asked for us to generate a client secret (or they left it blank but require one), do so here
+<span class="nc bnc" id="L411" title="All 4 branches missed.">			if (json.has(&quot;generateClientSecret&quot;) &amp;&amp; json.get(&quot;generateClientSecret&quot;).getAsBoolean()</span>
+<span class="nc bnc" id="L412" title="All 2 branches missed.">					|| Strings.isNullOrEmpty(client.getClientSecret())) {</span>
+<span class="nc" id="L413">				client = clientService.generateClientSecret(client);</span>
+			}
+
+<span class="nc bnc" id="L416" title="All 2 branches missed.">		} else if (client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
+
+<span class="nc bnc" id="L418" title="All 4 branches missed.">			if (Strings.isNullOrEmpty(client.getJwksUri()) &amp;&amp; client.getJwks() == null) {</span>
+<span class="nc" id="L419">				logger.error(&quot;tried to create client with private key auth but no private key&quot;);</span>
+<span class="nc" id="L420">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L421">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Can not create a client with private key authentication without registering a key via the JWK Set URI or JWK Set Value.&quot;);</span>
+<span class="nc" id="L422">				return JsonErrorView.VIEWNAME;</span>
+			}
+
+			// otherwise we shouldn't have a secret for this client
+<span class="nc" id="L426">			client.setClientSecret(null);</span>
+
+		} else {
+
+<span class="nc" id="L430">			logger.error(&quot;unknown auth method&quot;);</span>
+<span class="nc" id="L431">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L432">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unknown auth method requested&quot;);</span>
+<span class="nc" id="L433">			return JsonErrorView.VIEWNAME;</span>
+
+
+		}
+
+		try {
+<span class="nc" id="L439">			ClientDetailsEntity newClient = clientService.updateClient(oldClient, client);</span>
+<span class="nc" id="L440">			m.addAttribute(JsonEntityView.ENTITY, newClient);</span>
+
+<span class="nc bnc" id="L442" title="All 2 branches missed.">			if (AuthenticationUtilities.isAdmin(auth)) {</span>
+<span class="nc" id="L443">				return ClientEntityViewForAdmins.VIEWNAME;</span>
+			} else {
+<span class="nc" id="L445">				return ClientEntityViewForUsers.VIEWNAME;</span>
+			}
+<span class="nc" id="L447">		} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L448">			logger.error(&quot;Unable to save client: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L449">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L450">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client: &quot; + e.getMessage());</span>
+<span class="nc" id="L451">			return JsonErrorView.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Delete a client
+	 * @param id
+	 * @param modelAndView
+	 * @return
+	 */
+	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+	@RequestMapping(value=&quot;/{id}&quot;, method=RequestMethod.DELETE)
+	public String apiDeleteClient(@PathVariable(&quot;id&quot;) Long id, ModelAndView modelAndView) {
+
+<span class="nc" id="L465">		ClientDetailsEntity client = clientService.getClientById(id);</span>
+
+<span class="nc bnc" id="L467" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L468">			logger.error(&quot;apiDeleteClient failed; client with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L469">			modelAndView.getModelMap().put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L470">			modelAndView.getModelMap().put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete client. The requested client with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L471">			return JsonErrorView.VIEWNAME;</span>
+		} else {
+<span class="nc" id="L473">			modelAndView.getModelMap().put(HttpCodeView.CODE, HttpStatus.OK);</span>
+<span class="nc" id="L474">			clientService.deleteClient(client);</span>
+		}
+
+<span class="nc" id="L477">		return HttpCodeView.VIEWNAME;</span>
+	}
+
+
+	/**
+	 * Get an individual client
+	 * @param id
+	 * @param modelAndView
+	 * @return
+	 */
+	@RequestMapping(value=&quot;/{id}&quot;, method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String apiShowClient(@PathVariable(&quot;id&quot;) Long id, Model model, Authentication auth) {
+
+<span class="nc" id="L490">		ClientDetailsEntity client = clientService.getClientById(id);</span>
+
+<span class="nc bnc" id="L492" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L493">			logger.error(&quot;apiShowClient failed; client with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L494">			model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L495">			model.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L496">			return JsonErrorView.VIEWNAME;</span>
+		}
+
+<span class="nc" id="L499">		model.addAttribute(JsonEntityView.ENTITY, client);</span>
+
+<span class="nc bnc" id="L501" title="All 2 branches missed.">		if (AuthenticationUtilities.isAdmin(auth)) {</span>
+<span class="nc" id="L502">			return ClientEntityViewForAdmins.VIEWNAME;</span>
+		} else {
+<span class="nc" id="L504">			return ClientEntityViewForUsers.VIEWNAME;</span>
+		}
+	}
+
+	/**
+	 * Get the logo image for a client
+	 * @param id
+	 */
+	@RequestMapping(value = &quot;/{id}/logo&quot;, method=RequestMethod.GET, produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	public ResponseEntity&lt;byte[]&gt; getClientLogo(@PathVariable(&quot;id&quot;) Long id, Model model) {
+
+<span class="nc" id="L515">		ClientDetailsEntity client = clientService.getClientById(id);</span>
+
+<span class="nc bnc" id="L517" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L518">			return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">		} else if (Strings.isNullOrEmpty(client.getLogoUri())) {</span>
+<span class="nc" id="L520">			return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+		} else {
+			// get the image from cache
+<span class="nc" id="L523">			CachedImage image = clientLogoLoadingService.getLogo(client);</span>
+
+<span class="nc" id="L525">			HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L526">			headers.setContentType(MediaType.parseMediaType(image.getContentType()));</span>
+<span class="nc" id="L527">			headers.setContentLength(image.getLength());</span>
+
+<span class="nc" id="L529">			return new ResponseEntity&lt;&gt;(image.getData(), headers, HttpStatus.OK);</span>
+		}
+	}
+
+	private ClientDetailsEntity validateSoftwareStatement(ClientDetailsEntity newClient) throws ValidationException {
+<span class="nc bnc" id="L534" title="All 2 branches missed.">		if (newClient.getSoftwareStatement() != null) {</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">			if (assertionValidator.isValid(newClient.getSoftwareStatement())) {</span>
+				// we have a software statement and its envelope passed all the checks from our validator
+
+				// swap out all of the client's fields for the associated parts of the software statement
+				try {
+<span class="nc" id="L540">					JWTClaimsSet claimSet = newClient.getSoftwareStatement().getJWTClaimsSet();</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">					for (String claim : claimSet.getClaims().keySet()) {</span>
+<span class="nc bnc" id="L542" title="All 154 branches missed.">						switch (claim) {</span>
+							case SOFTWARE_STATEMENT:
+<span class="nc" id="L544">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include another software statement&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLAIMS_REDIRECT_URIS:
+<span class="nc" id="L546">								newClient.setClaimsRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L547">								break;</span>
+							case CLIENT_SECRET_EXPIRES_AT:
+<span class="nc" id="L549">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client secret expiration time&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLIENT_ID_ISSUED_AT:
+<span class="nc" id="L551">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client ID issuance time&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REGISTRATION_CLIENT_URI:
+<span class="nc" id="L553">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client configuration endpoint&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REGISTRATION_ACCESS_TOKEN:
+<span class="nc" id="L555">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't include a client registration access token&quot;, HttpStatus.BAD_REQUEST);</span>
+							case REQUEST_URIS:
+<span class="nc" id="L557">								newClient.setRequestUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L558">								break;</span>
+							case POST_LOGOUT_REDIRECT_URIS:
+<span class="nc" id="L560">								newClient.setPostLogoutRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L561">								break;</span>
+							case INITIATE_LOGIN_URI:
+<span class="nc" id="L563">								newClient.setInitiateLoginUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L564">								break;</span>
+							case DEFAULT_ACR_VALUES:
+<span class="nc" id="L566">								newClient.setDefaultACRvalues(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L567">								break;</span>
+							case REQUIRE_AUTH_TIME:
+<span class="nc" id="L569">								newClient.setRequireAuthTime(claimSet.getBooleanClaim(claim));</span>
+<span class="nc" id="L570">								break;</span>
+							case DEFAULT_MAX_AGE:
+<span class="nc" id="L572">								newClient.setDefaultMaxAge(claimSet.getIntegerClaim(claim));</span>
+<span class="nc" id="L573">								break;</span>
+							case TOKEN_ENDPOINT_AUTH_SIGNING_ALG:
+<span class="nc" id="L575">								newClient.setTokenEndpointAuthSigningAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L576">								break;</span>
+							case ID_TOKEN_ENCRYPTED_RESPONSE_ENC:
+<span class="nc" id="L578">								newClient.setIdTokenEncryptedResponseEnc(EncryptionMethod.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L579">								break;</span>
+							case ID_TOKEN_ENCRYPTED_RESPONSE_ALG:
+<span class="nc" id="L581">								newClient.setIdTokenEncryptedResponseAlg(JWEAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L582">								break;</span>
+							case ID_TOKEN_SIGNED_RESPONSE_ALG:
+<span class="nc" id="L584">								newClient.setIdTokenSignedResponseAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L585">								break;</span>
+							case USERINFO_ENCRYPTED_RESPONSE_ENC:
+<span class="nc" id="L587">								newClient.setUserInfoEncryptedResponseEnc(EncryptionMethod.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L588">								break;</span>
+							case USERINFO_ENCRYPTED_RESPONSE_ALG:
+<span class="nc" id="L590">								newClient.setUserInfoEncryptedResponseAlg(JWEAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L591">								break;</span>
+							case USERINFO_SIGNED_RESPONSE_ALG:
+<span class="nc" id="L593">								newClient.setUserInfoSignedResponseAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L594">								break;</span>
+							case REQUEST_OBJECT_SIGNING_ALG:
+<span class="nc" id="L596">								newClient.setRequestObjectSigningAlg(JWSAlgorithm.parse(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L597">								break;</span>
+							case SUBJECT_TYPE:
+<span class="nc" id="L599">								newClient.setSubjectType(SubjectType.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L600">								break;</span>
+							case SECTOR_IDENTIFIER_URI:
+<span class="nc" id="L602">								newClient.setSectorIdentifierUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L603">								break;</span>
+							case APPLICATION_TYPE:
+<span class="nc" id="L605">								newClient.setApplicationType(AppType.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L606">								break;</span>
+							case JWKS_URI:
+<span class="nc" id="L608">								newClient.setJwksUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L609">								break;</span>
+							case JWKS:
+<span class="nc" id="L611">								newClient.setJwks(JWKSet.parse(claimSet.getJSONObjectClaim(claim).toJSONString()));</span>
+<span class="nc" id="L612">								break;</span>
+							case POLICY_URI:
+<span class="nc" id="L614">								newClient.setPolicyUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L615">								break;</span>
+							case RESPONSE_TYPES:
+<span class="nc" id="L617">								newClient.setResponseTypes(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L618">								break;</span>
+							case GRANT_TYPES:
+<span class="nc" id="L620">								newClient.setGrantTypes(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L621">								break;</span>
+							case SCOPE:
+<span class="nc" id="L623">								newClient.setScope(OAuth2Utils.parseParameterList(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L624">								break;</span>
+							case TOKEN_ENDPOINT_AUTH_METHOD:
+<span class="nc" id="L626">								newClient.setTokenEndpointAuthMethod(AuthMethod.getByValue(claimSet.getStringClaim(claim)));</span>
+<span class="nc" id="L627">								break;</span>
+							case TOS_URI:
+<span class="nc" id="L629">								newClient.setTosUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L630">								break;</span>
+							case CONTACTS:
+<span class="nc" id="L632">								newClient.setContacts(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L633">								break;</span>
+							case LOGO_URI:
+<span class="nc" id="L635">								newClient.setLogoUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L636">								break;</span>
+							case CLIENT_URI:
+<span class="nc" id="L638">								newClient.setClientUri(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L639">								break;</span>
+							case CLIENT_NAME:
+<span class="nc" id="L641">								newClient.setClientName(claimSet.getStringClaim(claim));</span>
+<span class="nc" id="L642">								break;</span>
+							case REDIRECT_URIS:
+<span class="nc" id="L644">								newClient.setRedirectUris(Sets.newHashSet(claimSet.getStringListClaim(claim)));</span>
+<span class="nc" id="L645">								break;</span>
+							case CLIENT_SECRET:
+<span class="nc" id="L647">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't contain client secret&quot;, HttpStatus.BAD_REQUEST);</span>
+							case CLIENT_ID:
+<span class="nc" id="L649">								throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement can't contain client ID&quot;, HttpStatus.BAD_REQUEST);</span>
+
+							default:
+<span class="nc" id="L652">								logger.warn(&quot;Software statement contained unknown field: &quot; + claim + &quot; with value &quot; + claimSet.getClaim(claim));</span>
+								break;
+						}
+<span class="nc" id="L655">					}</span>
+
+<span class="nc" id="L657">					return newClient;</span>
+<span class="nc" id="L658">				} catch (ParseException e) {</span>
+<span class="nc" id="L659">					throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement claims didn't parse&quot;, HttpStatus.BAD_REQUEST);</span>
+				}
+			} else {
+<span class="nc" id="L662">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Software statement rejected by validator&quot;, HttpStatus.BAD_REQUEST);</span>
+			}
+		} else {
+			// nothing to see here, carry on
+<span class="nc" id="L666">			return newClient;</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

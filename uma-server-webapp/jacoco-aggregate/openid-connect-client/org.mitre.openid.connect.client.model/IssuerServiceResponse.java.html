@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IssuerServiceResponse.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.model</a> &gt; <span class="el_source">IssuerServiceResponse.java</span></div><h1>IssuerServiceResponse.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.model;
+
+/**
+ *
+ * Data container to facilitate returns from the IssuerService API.
+ *
+ * @author jricher
+ *
+ */
+public class IssuerServiceResponse {
+
+	private String issuer;
+	private String loginHint;
+	private String targetLinkUri;
+	private String redirectUrl;
+
+	/**
+	 * @param issuer
+	 * @param loginHint
+	 * @param targetLinkUri
+	 */
+<span class="nc" id="L41">	public IssuerServiceResponse(String issuer, String loginHint, String targetLinkUri) {</span>
+<span class="nc" id="L42">		this.issuer = issuer;</span>
+<span class="nc" id="L43">		this.loginHint = loginHint;</span>
+<span class="nc" id="L44">		this.targetLinkUri = targetLinkUri;</span>
+<span class="nc" id="L45">	}</span>
+
+	/**
+	 * @param redirectUrl
+	 */
+<span class="nc" id="L50">	public IssuerServiceResponse(String redirectUrl) {</span>
+<span class="nc" id="L51">		this.redirectUrl = redirectUrl;</span>
+<span class="nc" id="L52">	}</span>
+	/**
+	 * @return the issuer
+	 */
+	public String getIssuer() {
+<span class="nc" id="L57">		return issuer;</span>
+	}
+	/**
+	 * @param issuer the issuer to set
+	 */
+	public void setIssuer(String issuer) {
+<span class="nc" id="L63">		this.issuer = issuer;</span>
+<span class="nc" id="L64">	}</span>
+	/**
+	 * @return the loginHint
+	 */
+	public String getLoginHint() {
+<span class="nc" id="L69">		return loginHint;</span>
+	}
+	/**
+	 * @param loginHint the loginHint to set
+	 */
+	public void setLoginHint(String loginHint) {
+<span class="nc" id="L75">		this.loginHint = loginHint;</span>
+<span class="nc" id="L76">	}</span>
+	/**
+	 * @return the targetLinkUri
+	 */
+	public String getTargetLinkUri() {
+<span class="nc" id="L81">		return targetLinkUri;</span>
+	}
+	/**
+	 * @param targetLinkUri the targetLinkUri to set
+	 */
+	public void setTargetLinkUri(String targetLinkUri) {
+<span class="nc" id="L87">		this.targetLinkUri = targetLinkUri;</span>
+<span class="nc" id="L88">	}</span>
+	/**
+	 * @return the redirectUrl
+	 */
+	public String getRedirectUrl() {
+<span class="nc" id="L93">		return redirectUrl;</span>
+	}
+	/**
+	 * @param redirectUrl the redirectUrl to set
+	 */
+	public void setRedirectUrl(String redirectUrl) {
+<span class="nc" id="L99">		this.redirectUrl = redirectUrl;</span>
+<span class="nc" id="L100">	}</span>
+
+	/**
+	 * If the redirect url has been set, then we should send a redirect using it instead of processing things.
+	 */
+	public boolean shouldRedirect() {
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		return this.redirectUrl != null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

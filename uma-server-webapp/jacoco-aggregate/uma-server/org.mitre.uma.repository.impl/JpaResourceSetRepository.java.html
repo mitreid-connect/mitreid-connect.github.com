@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JpaResourceSetRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.repository.impl</a> &gt; <span class="el_source">JpaResourceSetRepository.java</span></div><h1>JpaResourceSetRepository.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.uma.repository.impl;
+
+import java.util.Collection;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.mitre.uma.model.ResourceSet;
+import org.mitre.uma.repository.ResourceSetRepository;
+import org.mitre.util.jpa.JpaUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @author jricher
+ *
+ */
+@Repository
+<span class="nc" id="L39">public class JpaResourceSetRepository implements ResourceSetRepository {</span>
+
+	@PersistenceContext(unitName=&quot;defaultPersistenceUnit&quot;)
+	private EntityManager em;
+<span class="nc" id="L43">	private static Logger logger = LoggerFactory.getLogger(JpaResourceSetRepository.class);</span>
+
+	@Override
+	@Transactional(value=&quot;defaultTransactionManager&quot;)
+	public ResourceSet save(ResourceSet rs) {
+<span class="nc" id="L48">		return JpaUtil.saveOrUpdate(rs.getId(), em, rs);</span>
+	}
+
+	@Override
+	public ResourceSet getById(Long id) {
+<span class="nc" id="L53">		return em.find(ResourceSet.class, id);</span>
+	}
+
+	@Override
+	@Transactional(value=&quot;defaultTransactionManager&quot;)
+	public void remove(ResourceSet rs) {
+<span class="nc" id="L59">		ResourceSet found = getById(rs.getId());</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc" id="L61">			em.remove(found);</span>
+		} else {
+<span class="nc" id="L63">			logger.info(&quot;Tried to remove unknown resource set: &quot; + rs.getId());</span>
+		}
+<span class="nc" id="L65">	}</span>
+
+	@Override
+	public Collection&lt;ResourceSet&gt; getAllForOwner(String owner) {
+<span class="nc" id="L69">		TypedQuery&lt;ResourceSet&gt; query = em.createNamedQuery(ResourceSet.QUERY_BY_OWNER, ResourceSet.class);</span>
+<span class="nc" id="L70">		query.setParameter(ResourceSet.PARAM_OWNER, owner);</span>
+<span class="nc" id="L71">		return query.getResultList();</span>
+	}
+
+	@Override
+	public Collection&lt;ResourceSet&gt; getAllForOwnerAndClient(String owner, String clientId) {
+<span class="nc" id="L76">		TypedQuery&lt;ResourceSet&gt; query = em.createNamedQuery(ResourceSet.QUERY_BY_OWNER_AND_CLIENT, ResourceSet.class);</span>
+<span class="nc" id="L77">		query.setParameter(ResourceSet.PARAM_OWNER, owner);</span>
+<span class="nc" id="L78">		query.setParameter(ResourceSet.PARAM_CLIENTID, clientId);</span>
+<span class="nc" id="L79">		return query.getResultList();</span>
+	}
+
+	@Override
+	public Collection&lt;ResourceSet&gt; getAll() {
+<span class="nc" id="L84">		TypedQuery&lt;ResourceSet&gt; query = em.createNamedQuery(ResourceSet.QUERY_ALL, ResourceSet.class);</span>
+<span class="nc" id="L85">		return query.getResultList();</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.uma.repository.ResourceSetRepository#getAllForClient(org.mitre.oauth2.model.ClientDetailsEntity)
+	 */
+	@Override
+	public Collection&lt;ResourceSet&gt; getAllForClient(String clientId) {
+<span class="nc" id="L93">		TypedQuery&lt;ResourceSet&gt; query = em.createNamedQuery(ResourceSet.QUERY_BY_CLIENT, ResourceSet.class);</span>
+<span class="nc" id="L94">		query.setParameter(ResourceSet.PARAM_CLIENTID, clientId);</span>
+<span class="nc" id="L95">		return query.getResultList();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

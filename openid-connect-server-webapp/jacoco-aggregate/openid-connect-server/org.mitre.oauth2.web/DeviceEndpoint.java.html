@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DeviceEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.web</a> &gt; <span class="el_source">DeviceEndpoint.java</span></div><h1>DeviceEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.oauth2.web;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.servlet.http.HttpSession;
+
+import org.mitre.oauth2.exception.DeviceCodeCreationException;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.DeviceCode;
+import org.mitre.oauth2.model.SystemScope;
+import org.mitre.oauth2.service.ClientDetailsEntityService;
+import org.mitre.oauth2.service.DeviceCodeService;
+import org.mitre.oauth2.service.SystemScopeService;
+import org.mitre.oauth2.token.DeviceTokenGranter;
+import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
+import org.mitre.openid.connect.view.HttpCodeView;
+import org.mitre.openid.connect.view.JsonEntityView;
+import org.mitre.openid.connect.view.JsonErrorView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
+import org.springframework.security.oauth2.common.util.OAuth2Utils;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.google.common.collect.Sets;
+
+/**
+ * Implements https://tools.ietf.org/html/draft-ietf-oauth-device-flow
+ *
+ * @see DeviceTokenGranter
+ *
+ * @author jricher
+ *
+ */
+@Controller
+<span class="nc" id="L73">public class DeviceEndpoint {</span>
+
+	public static final String URL = &quot;devicecode&quot;;
+	public static final String USER_URL = &quot;device&quot;;
+
+<span class="nc" id="L78">	public static final Logger logger = LoggerFactory.getLogger(DeviceEndpoint.class);</span>
+
+	@Autowired
+	private ClientDetailsEntityService clientService;
+
+	@Autowired
+	private SystemScopeService scopeService;
+
+	@Autowired
+	private ConfigurationPropertiesBean config;
+
+	@Autowired
+	private DeviceCodeService deviceCodeService;
+
+	@Autowired
+	private OAuth2RequestFactory oAuth2RequestFactory;
+
+	@RequestMapping(value = &quot;/&quot; + URL, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String requestDeviceCode(@RequestParam(&quot;client_id&quot;) String clientId, @RequestParam(name=&quot;scope&quot;, required=false) String scope, Map&lt;String, String&gt; parameters, ModelMap model) {
+
+		ClientDetailsEntity client;
+		try {
+<span class="nc" id="L100">			client = clientService.loadClientByClientId(clientId);</span>
+
+			// make sure this client can do the device flow
+
+<span class="nc" id="L104">			Collection&lt;String&gt; authorizedGrantTypes = client.getAuthorizedGrantTypes();</span>
+<span class="nc bnc" id="L105" title="All 4 branches missed.">			if (authorizedGrantTypes != null &amp;&amp; !authorizedGrantTypes.isEmpty()</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">					&amp;&amp; !authorizedGrantTypes.contains(DeviceTokenGranter.GRANT_TYPE)) {</span>
+<span class="nc" id="L107">				throw new InvalidClientException(&quot;Unauthorized grant type: &quot; + DeviceTokenGranter.GRANT_TYPE);</span>
+			}
+
+<span class="nc" id="L110">		} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L111">			logger.error(&quot;IllegalArgumentException was thrown when attempting to load client&quot;, e);</span>
+<span class="nc" id="L112">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L113">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L114">		}</span>
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L117">			logger.error(&quot;could not find client &quot; + clientId);</span>
+<span class="nc" id="L118">			model.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L119">			return HttpCodeView.VIEWNAME;</span>
+		}
+
+		// make sure the client is allowed to ask for those scopes
+<span class="nc" id="L123">		Set&lt;String&gt; requestedScopes = OAuth2Utils.parseParameterList(scope);</span>
+<span class="nc" id="L124">		Set&lt;String&gt; allowedScopes = client.getScope();</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">		if (!scopeService.scopesMatch(allowedScopes, requestedScopes)) {</span>
+			// client asked for scopes it can't have
+<span class="nc" id="L128">			logger.error(&quot;Client asked for &quot; + requestedScopes + &quot; but is allowed &quot; + allowedScopes);</span>
+<span class="nc" id="L129">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L130">			model.put(JsonErrorView.ERROR, &quot;invalid_scope&quot;);</span>
+<span class="nc" id="L131">			return JsonErrorView.VIEWNAME;</span>
+		}
+
+		// if we got here the request is legit
+
+		try {
+<span class="nc" id="L137">			DeviceCode dc = deviceCodeService.createNewDeviceCode(requestedScopes, client, parameters);</span>
+	
+<span class="nc" id="L139">			Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L140">			response.put(&quot;device_code&quot;, dc.getDeviceCode());</span>
+<span class="nc" id="L141">			response.put(&quot;user_code&quot;, dc.getUserCode());</span>
+<span class="nc" id="L142">			response.put(&quot;verification_uri&quot;, config.getIssuer() + USER_URL);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">			if (client.getDeviceCodeValiditySeconds() != null) {</span>
+<span class="nc" id="L144">				response.put(&quot;expires_in&quot;, client.getDeviceCodeValiditySeconds());</span>
+			}
+	
+<span class="nc" id="L147">			model.put(JsonEntityView.ENTITY, response);</span>
+	
+	
+<span class="nc" id="L150">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L151">		} catch (DeviceCodeCreationException dcce) {</span>
+			
+<span class="nc" id="L153">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L154">			model.put(JsonErrorView.ERROR, dcce.getError());</span>
+<span class="nc" id="L155">			model.put(JsonErrorView.ERROR_MESSAGE, dcce.getMessage());</span>
+			
+<span class="nc" id="L157">			return JsonErrorView.VIEWNAME;</span>
+		}
+
+	}
+
+	@PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+	@RequestMapping(value = &quot;/&quot; + USER_URL, method = RequestMethod.GET)
+	public String requestUserCode(ModelMap model) {
+
+		// print out a page that asks the user to enter their user code
+		// user must be logged in
+
+<span class="nc" id="L169">		return &quot;requestUserCode&quot;;</span>
+	}
+
+	@PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+	@RequestMapping(value = &quot;/&quot; + USER_URL + &quot;/verify&quot;, method = RequestMethod.POST)
+	public String readUserCode(@RequestParam(&quot;user_code&quot;) String userCode, ModelMap model, HttpSession session) {
+
+		// look up the request based on the user code
+<span class="nc" id="L177">		DeviceCode dc = deviceCodeService.lookUpByUserCode(userCode);</span>
+
+		// we couldn't find the device code
+<span class="nc bnc" id="L180" title="All 2 branches missed.">		if (dc == null) {</span>
+<span class="nc" id="L181">			model.addAttribute(&quot;error&quot;, &quot;noUserCode&quot;);</span>
+<span class="nc" id="L182">			return &quot;requestUserCode&quot;;</span>
+		}
+
+		// make sure the code hasn't expired yet
+<span class="nc bnc" id="L186" title="All 4 branches missed.">		if (dc.getExpiration() != null &amp;&amp; dc.getExpiration().before(new Date())) {</span>
+<span class="nc" id="L187">			model.addAttribute(&quot;error&quot;, &quot;expiredUserCode&quot;);</span>
+<span class="nc" id="L188">			return &quot;requestUserCode&quot;;</span>
+		}
+
+		// make sure the device code hasn't already been approved
+<span class="nc bnc" id="L192" title="All 2 branches missed.">		if (dc.isApproved()) {</span>
+<span class="nc" id="L193">			model.addAttribute(&quot;error&quot;, &quot;userCodeAlreadyApproved&quot;);</span>
+<span class="nc" id="L194">			return &quot;requestUserCode&quot;;</span>
+		}
+
+<span class="nc" id="L197">		ClientDetailsEntity client = clientService.loadClientByClientId(dc.getClientId());</span>
+
+<span class="nc" id="L199">		model.put(&quot;client&quot;, client);</span>
+<span class="nc" id="L200">		model.put(&quot;dc&quot;, dc);</span>
+
+		// pre-process the scopes
+<span class="nc" id="L203">		Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(dc.getScope());</span>
+
+<span class="nc" id="L205">		Set&lt;SystemScope&gt; sortedScopes = new LinkedHashSet&lt;&gt;(scopes.size());</span>
+<span class="nc" id="L206">		Set&lt;SystemScope&gt; systemScopes = scopeService.getAll();</span>
+
+		// sort scopes for display based on the inherent order of system scopes
+<span class="nc bnc" id="L209" title="All 2 branches missed.">		for (SystemScope s : systemScopes) {</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">			if (scopes.contains(s)) {</span>
+<span class="nc" id="L211">				sortedScopes.add(s);</span>
+			}
+<span class="nc" id="L213">		}</span>
+
+		// add in any scopes that aren't system scopes to the end of the list
+<span class="nc" id="L216">		sortedScopes.addAll(Sets.difference(scopes, systemScopes));</span>
+
+<span class="nc" id="L218">		model.put(&quot;scopes&quot;, sortedScopes);</span>
+
+<span class="nc" id="L220">		AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(dc.getRequestParameters());</span>
+
+<span class="nc" id="L222">		session.setAttribute(&quot;authorizationRequest&quot;, authorizationRequest);</span>
+<span class="nc" id="L223">		session.setAttribute(&quot;deviceCode&quot;, dc);</span>
+
+<span class="nc" id="L225">		return &quot;approveDevice&quot;;</span>
+	}
+
+	@PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+	@RequestMapping(value = &quot;/&quot; + USER_URL + &quot;/approve&quot;, method = RequestMethod.POST)
+	public String approveDevice(@RequestParam(&quot;user_code&quot;) String userCode, @RequestParam(value = &quot;user_oauth_approval&quot;) Boolean approve, ModelMap model, Authentication auth, HttpSession session) {
+
+<span class="nc" id="L232">		AuthorizationRequest authorizationRequest = (AuthorizationRequest) session.getAttribute(&quot;authorizationRequest&quot;);</span>
+<span class="nc" id="L233">		DeviceCode dc = (DeviceCode) session.getAttribute(&quot;deviceCode&quot;);</span>
+
+		// make sure the form that was submitted is the one that we were expecting
+<span class="nc bnc" id="L236" title="All 2 branches missed.">		if (!dc.getUserCode().equals(userCode)) {</span>
+<span class="nc" id="L237">			model.addAttribute(&quot;error&quot;, &quot;userCodeMismatch&quot;);</span>
+<span class="nc" id="L238">			return &quot;requestUserCode&quot;;</span>
+		}
+
+		// make sure the code hasn't expired yet
+<span class="nc bnc" id="L242" title="All 4 branches missed.">		if (dc.getExpiration() != null &amp;&amp; dc.getExpiration().before(new Date())) {</span>
+<span class="nc" id="L243">			model.addAttribute(&quot;error&quot;, &quot;expiredUserCode&quot;);</span>
+<span class="nc" id="L244">			return &quot;requestUserCode&quot;;</span>
+		}
+
+<span class="nc" id="L247">		ClientDetailsEntity client = clientService.loadClientByClientId(dc.getClientId());</span>
+
+<span class="nc" id="L249">		model.put(&quot;client&quot;, client);</span>
+
+		// user did not approve
+<span class="nc bnc" id="L252" title="All 2 branches missed.">		if (!approve) {</span>
+<span class="nc" id="L253">			model.addAttribute(&quot;approved&quot;, false);</span>
+<span class="nc" id="L254">			return &quot;deviceApproved&quot;;</span>
+		}
+
+		// create an OAuth request for storage
+<span class="nc" id="L258">		OAuth2Request o2req = oAuth2RequestFactory.createOAuth2Request(authorizationRequest);</span>
+<span class="nc" id="L259">		OAuth2Authentication o2Auth = new OAuth2Authentication(o2req, auth);</span>
+		
+<span class="nc" id="L261">		DeviceCode approvedCode = deviceCodeService.approveDeviceCode(dc, o2Auth);</span>
+		
+		// pre-process the scopes
+<span class="nc" id="L264">		Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(dc.getScope());</span>
+
+<span class="nc" id="L266">		Set&lt;SystemScope&gt; sortedScopes = new LinkedHashSet&lt;&gt;(scopes.size());</span>
+<span class="nc" id="L267">		Set&lt;SystemScope&gt; systemScopes = scopeService.getAll();</span>
+
+		// sort scopes for display based on the inherent order of system scopes
+<span class="nc bnc" id="L270" title="All 2 branches missed.">		for (SystemScope s : systemScopes) {</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">			if (scopes.contains(s)) {</span>
+<span class="nc" id="L272">				sortedScopes.add(s);</span>
+			}
+<span class="nc" id="L274">		}</span>
+
+		// add in any scopes that aren't system scopes to the end of the list
+<span class="nc" id="L277">		sortedScopes.addAll(Sets.difference(scopes, systemScopes));</span>
+
+<span class="nc" id="L279">		model.put(&quot;scopes&quot;, sortedScopes);</span>
+<span class="nc" id="L280">		model.put(&quot;approved&quot;, true);</span>
+
+<span class="nc" id="L282">		return &quot;deviceApproved&quot;;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

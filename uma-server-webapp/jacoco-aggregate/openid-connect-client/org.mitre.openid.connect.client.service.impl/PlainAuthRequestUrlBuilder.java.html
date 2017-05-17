@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PlainAuthRequestUrlBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">PlainAuthRequestUrlBuilder.java</span></div><h1>PlainAuthRequestUrlBuilder.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.service.impl;
+
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.openid.connect.client.service.AuthRequestUrlBuilder;
+import org.mitre.openid.connect.config.ServerConfiguration;
+import org.springframework.security.authentication.AuthenticationServiceException;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+
+/**
+ *
+ * Builds an auth request redirect URI with normal query parameters.
+ *
+ * @author jricher
+ *
+ */
+<span class="nc" id="L42">public class PlainAuthRequestUrlBuilder implements AuthRequestUrlBuilder {</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.client.service.AuthRequestUrlBuilder#buildAuthRequest(javax.servlet.http.HttpServletRequest, org.mitre.openid.connect.config.ServerConfiguration, org.springframework.security.oauth2.provider.ClientDetails)
+	 */
+	@Override
+	public String buildAuthRequestUrl(ServerConfiguration serverConfig, RegisteredClient clientConfig, String redirectUri, String nonce, String state, Map&lt;String, String&gt; options, String loginHint) {
+		try {
+
+<span class="nc" id="L51">			URIBuilder uriBuilder = new URIBuilder(serverConfig.getAuthorizationEndpointUri());</span>
+<span class="nc" id="L52">			uriBuilder.addParameter(&quot;response_type&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L53">			uriBuilder.addParameter(&quot;client_id&quot;, clientConfig.getClientId());</span>
+<span class="nc" id="L54">			uriBuilder.addParameter(&quot;scope&quot;, Joiner.on(&quot; &quot;).join(clientConfig.getScope()));</span>
+
+<span class="nc" id="L56">			uriBuilder.addParameter(&quot;redirect_uri&quot;, redirectUri);</span>
+
+<span class="nc" id="L58">			uriBuilder.addParameter(&quot;nonce&quot;, nonce);</span>
+
+<span class="nc" id="L60">			uriBuilder.addParameter(&quot;state&quot;, state);</span>
+
+			// Optional parameters:
+<span class="nc bnc" id="L63" title="All 2 branches missed.">			for (Entry&lt;String, String&gt; option : options.entrySet()) {</span>
+<span class="nc" id="L64">				uriBuilder.addParameter(option.getKey(), option.getValue());</span>
+<span class="nc" id="L65">			}</span>
+
+			// if there's a login hint, send it
+<span class="nc bnc" id="L68" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(loginHint)) {</span>
+<span class="nc" id="L69">				uriBuilder.addParameter(&quot;login_hint&quot;, loginHint);</span>
+			}
+
+<span class="nc" id="L72">			return uriBuilder.build().toString();</span>
+
+<span class="nc" id="L74">		} catch (URISyntaxException e) {</span>
+<span class="nc" id="L75">			throw new AuthenticationServiceException(&quot;Malformed Authorization Endpoint Uri&quot;, e);</span>
+
+		}
+
+
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

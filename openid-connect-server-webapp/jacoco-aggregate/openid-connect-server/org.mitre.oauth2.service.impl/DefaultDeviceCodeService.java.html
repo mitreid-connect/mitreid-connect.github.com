@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultDeviceCodeService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultDeviceCodeService.java</span></div><h1>DefaultDeviceCodeService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.oauth2.service.impl;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.mitre.data.AbstractPageOperationTemplate;
+import org.mitre.oauth2.model.AuthenticationHolderEntity;
+import org.mitre.oauth2.model.ClientDetailsEntity;
+import org.mitre.oauth2.model.DeviceCode;
+import org.mitre.oauth2.repository.impl.DeviceCodeRepository;
+import org.mitre.oauth2.service.DeviceCodeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @author jricher
+ *
+ */
+@Service(&quot;defaultDeviceCodeService&quot;)
+<span class="nc" id="L44">public class DefaultDeviceCodeService implements DeviceCodeService {</span>
+
+	@Autowired
+	private DeviceCodeRepository repository;
+
+<span class="nc" id="L49">	private RandomValueStringGenerator randomGenerator = new RandomValueStringGenerator();</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#save(org.mitre.oauth2.model.DeviceCode)
+	 */
+	@Override
+	public DeviceCode createNewDeviceCode(Set&lt;String&gt; requestedScopes, ClientDetailsEntity client, Map&lt;String, String&gt; parameters) {
+
+		// create a device code, should be big and random
+<span class="nc" id="L58">		String deviceCode = UUID.randomUUID().toString();</span>
+
+		// create a user code, should be random but small and typable, and always uppercase (lookup is case insensitive)
+<span class="nc" id="L61">		String userCode = randomGenerator.generate().toUpperCase();</span>
+
+<span class="nc" id="L63">		DeviceCode dc = new DeviceCode(deviceCode, userCode, requestedScopes, client.getClientId(), parameters);</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">		if (client.getDeviceCodeValiditySeconds() != null) {</span>
+<span class="nc" id="L66">			dc.setExpiration(new Date(System.currentTimeMillis() + client.getDeviceCodeValiditySeconds() * 1000L));</span>
+		}
+
+<span class="nc" id="L69">		dc.setApproved(false);</span>
+
+<span class="nc" id="L71">		return repository.save(dc);</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#lookUpByUserCode(java.lang.String)
+	 */
+	@Override
+	public DeviceCode lookUpByUserCode(String userCode) {
+		// always up-case the code for lookup
+<span class="nc" id="L80">		return repository.getByUserCode(userCode.toUpperCase());</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#approveDeviceCode(org.mitre.oauth2.model.DeviceCode)
+	 */
+	@Override
+	public DeviceCode approveDeviceCode(DeviceCode dc, OAuth2Authentication auth) {
+<span class="nc" id="L88">		DeviceCode found = repository.getById(dc.getId());</span>
+
+<span class="nc" id="L90">		found.setApproved(true);</span>
+
+<span class="nc" id="L92">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L93">		authHolder.setAuthentication(auth);</span>
+
+<span class="nc" id="L95">		found.setAuthenticationHolder(authHolder);</span>
+
+<span class="nc" id="L97">		return repository.save(found);</span>
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#consumeDeviceCode(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)
+	 */
+	@Override
+	public DeviceCode findDeviceCode(String deviceCode, ClientDetails client) {
+<span class="nc" id="L105">		DeviceCode found = repository.getByDeviceCode(deviceCode);</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">			if (found.getClientId().equals(client.getClientId())) {</span>
+				// make sure the client matches, if so, we're good
+<span class="nc" id="L110">				return found;</span>
+			} else {
+				// if the clients don't match, pretend the code wasn't found
+<span class="nc" id="L113">				return null;</span>
+			}
+		} else {
+			// didn't find the code, return null
+<span class="nc" id="L117">			return null;</span>
+		}
+
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#clearExpiredDeviceCodes()
+	 */
+	@Override
+	@Transactional(value=&quot;defaultTransactionManager&quot;)
+	public void clearExpiredDeviceCodes() {
+
+<span class="nc" id="L131">		new AbstractPageOperationTemplate&lt;DeviceCode&gt;(&quot;clearExpiredDeviceCodes&quot;){</span>
+			@Override
+			public Collection&lt;DeviceCode&gt; fetchPage() {
+<span class="nc" id="L134">				return repository.getExpiredCodes();</span>
+			}
+
+			@Override
+			protected void doOperation(DeviceCode item) {
+<span class="nc" id="L139">				repository.remove(item);</span>
+<span class="nc" id="L140">			}</span>
+<span class="nc" id="L141">		}.execute();</span>
+<span class="nc" id="L142">	}</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.oauth2.service.DeviceCodeService#clearDeviceCode(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)
+	 */
+	@Override
+	public void clearDeviceCode(String deviceCode, ClientDetails client) {
+<span class="nc" id="L149">		DeviceCode found = findDeviceCode(deviceCode, client);</span>
+		
+<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (found != null) {</span>
+			// make sure it's not used twice
+<span class="nc" id="L153">			repository.remove(found);</span>
+		}
+
+<span class="nc" id="L156">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SavedUserAuthentication.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">SavedUserAuthentication.java</span></div><h1>SavedUserAuthentication.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package org.mitre.oauth2.model;
+
+import java.util.Collection;
+import java.util.HashSet;
+
+import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.mitre.oauth2.model.convert.SimpleGrantedAuthorityStringConverter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+/**
+ * This class stands in for an original Authentication object.
+ *
+ * @author jricher
+ *
+ */
+@Entity
+@Table(name=&quot;saved_user_auth&quot;)
+public class SavedUserAuthentication implements Authentication {
+
+	private static final long serialVersionUID = -1804249963940323488L;
+
+	private Long id;
+
+	private String name;
+
+	private Collection&lt;GrantedAuthority&gt; authorities;
+
+	private boolean authenticated;
+
+	private String sourceClass;
+
+	/**
+	 * Create a Saved Auth from an existing Auth token
+	 */
+<span class="nc" id="L66">	public SavedUserAuthentication(Authentication src) {</span>
+<span class="nc" id="L67">		setName(src.getName());</span>
+<span class="nc" id="L68">		setAuthorities(new HashSet&lt;&gt;(src.getAuthorities()));</span>
+<span class="nc" id="L69">		setAuthenticated(src.isAuthenticated());</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (src instanceof SavedUserAuthentication) {</span>
+			// if we're copying in a saved auth, carry over the original class name
+<span class="nc" id="L73">			setSourceClass(((SavedUserAuthentication) src).getSourceClass());</span>
+		} else {
+<span class="nc" id="L75">			setSourceClass(src.getClass().getName());</span>
+		}
+<span class="nc" id="L77">	}</span>
+
+	/**
+	 * Create an empty saved auth
+	 */
+<span class="nc" id="L82">	public SavedUserAuthentication() {</span>
+
+<span class="nc" id="L84">	}</span>
+
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = &quot;id&quot;)
+	public Long getId() {
+<span class="nc" id="L93">		return id;</span>
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+<span class="nc" id="L100">		this.id = id;</span>
+<span class="nc" id="L101">	}</span>
+
+	@Override
+	@Basic
+	@Column(name=&quot;name&quot;)
+	public String getName() {
+<span class="nc" id="L107">		return name;</span>
+	}
+
+	@Override
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+			name=&quot;saved_user_auth_authority&quot;,
+			joinColumns=@JoinColumn(name=&quot;owner_id&quot;)
+			)
+	@Convert(converter = SimpleGrantedAuthorityStringConverter.class)
+	@Column(name=&quot;authority&quot;)
+	public Collection&lt;GrantedAuthority&gt; getAuthorities() {
+<span class="nc" id="L119">		return authorities;</span>
+	}
+
+	@Override
+	@Transient
+	public Object getCredentials() {
+<span class="nc" id="L125">		return &quot;&quot;;</span>
+	}
+
+	@Override
+	@Transient
+	public Object getDetails() {
+<span class="nc" id="L131">		return null;</span>
+	}
+
+	@Override
+	@Transient
+	public Object getPrincipal() {
+<span class="nc" id="L137">		return getName();</span>
+	}
+
+	@Override
+	@Basic
+	@Column(name=&quot;authenticated&quot;)
+	public boolean isAuthenticated() {
+<span class="nc" id="L144">		return authenticated;</span>
+	}
+
+	@Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+<span class="nc" id="L149">		this.authenticated = isAuthenticated;</span>
+<span class="nc" id="L150">	}</span>
+
+	/**
+	 * @return the sourceClass
+	 */
+	@Basic
+	@Column(name=&quot;source_class&quot;)
+	public String getSourceClass() {
+<span class="nc" id="L158">		return sourceClass;</span>
+	}
+
+	/**
+	 * @param sourceClass the sourceClass to set
+	 */
+	public void setSourceClass(String sourceClass) {
+<span class="nc" id="L165">		this.sourceClass = sourceClass;</span>
+<span class="nc" id="L166">	}</span>
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+<span class="nc" id="L172">		this.name = name;</span>
+<span class="nc" id="L173">	}</span>
+
+	/**
+	 * @param authorities the authorities to set
+	 */
+	public void setAuthorities(Collection&lt;GrantedAuthority&gt; authorities) {
+<span class="nc" id="L179">		this.authorities = authorities;</span>
+<span class="nc" id="L180">	}</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

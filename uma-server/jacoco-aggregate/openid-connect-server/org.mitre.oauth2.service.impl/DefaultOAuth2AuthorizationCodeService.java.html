@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOAuth2AuthorizationCodeService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultOAuth2AuthorizationCodeService.java</span></div><h1>DefaultOAuth2AuthorizationCodeService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.oauth2.service.impl;
+
+import java.util.Collection;
+import java.util.Date;
+
+import org.mitre.data.AbstractPageOperationTemplate;
+import org.mitre.oauth2.model.AuthenticationHolderEntity;
+import org.mitre.oauth2.model.AuthorizationCodeEntity;
+import org.mitre.oauth2.repository.AuthenticationHolderRepository;
+import org.mitre.oauth2.repository.AuthorizationCodeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Database-backed, random-value authorization code service implementation.
+ *
+ * @author aanganes
+ *
+ */
+@Service(&quot;defaultOAuth2AuthorizationCodeService&quot;)
+<span class="nc" id="L47">public class DefaultOAuth2AuthorizationCodeService implements AuthorizationCodeServices {</span>
+	// Logger for this class
+<span class="nc" id="L49">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2AuthorizationCodeService.class);</span>
+
+	@Autowired
+	private AuthorizationCodeRepository repository;
+
+	@Autowired
+	private AuthenticationHolderRepository authenticationHolderRepository;
+
+<span class="nc" id="L57">	private int authCodeExpirationSeconds = 60 * 5; // expire in 5 minutes by default</span>
+
+<span class="nc" id="L59">	private RandomValueStringGenerator generator = new RandomValueStringGenerator();</span>
+
+	/**
+	 * Generate a random authorization code and create an AuthorizationCodeEntity,
+	 * which will be stored in the repository.
+	 *
+	 * @param authentication 	the authentication of the current user, to be retrieved when the
+	 * 							code is consumed
+	 * @return 					the authorization code
+	 */
+	@Override
+	@Transactional(value=&quot;defaultTransactionManager&quot;)
+	public String createAuthorizationCode(OAuth2Authentication authentication) {
+<span class="nc" id="L72">		String code = generator.generate();</span>
+
+		// attach the authorization so that we can look it up later
+<span class="nc" id="L75">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L76">		authHolder.setAuthentication(authentication);</span>
+<span class="nc" id="L77">		authHolder = authenticationHolderRepository.save(authHolder);</span>
+
+		// set the auth code to expire
+<span class="nc" id="L80">		Date expiration = new Date(System.currentTimeMillis() + (getAuthCodeExpirationSeconds() * 1000L));</span>
+
+<span class="nc" id="L82">		AuthorizationCodeEntity entity = new AuthorizationCodeEntity(code, authHolder, expiration);</span>
+<span class="nc" id="L83">		repository.save(entity);</span>
+
+<span class="nc" id="L85">		return code;</span>
+	}
+
+	/**
+	 * Consume a given authorization code.
+	 * Match the provided string to an AuthorizationCodeEntity. If one is found, return
+	 * the authentication associated with the code. If one is not found, throw an
+	 * InvalidGrantException.
+	 *
+	 * @param code		the authorization code
+	 * @return			the authentication that made the original request
+	 * @throws 			InvalidGrantException, if an AuthorizationCodeEntity is not found with the given value
+	 */
+	@Override
+	public OAuth2Authentication consumeAuthorizationCode(String code) throws InvalidGrantException {
+
+<span class="nc" id="L101">		AuthorizationCodeEntity result = repository.getByCode(code);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (result == null) {</span>
+<span class="nc" id="L104">			throw new InvalidGrantException(&quot;JpaAuthorizationCodeRepository: no authorization code found for value &quot; + code);</span>
+		}
+
+<span class="nc" id="L107">		OAuth2Authentication auth = result.getAuthenticationHolder().getAuthentication();</span>
+
+<span class="nc" id="L109">		repository.remove(result);</span>
+
+<span class="nc" id="L111">		return auth;</span>
+	}
+
+	/**
+	 * Find and remove all expired auth codes.
+	 */
+	@Transactional(value=&quot;defaultTransactionManager&quot;)
+	public void clearExpiredAuthorizationCodes() {
+
+<span class="nc" id="L120">		new AbstractPageOperationTemplate&lt;AuthorizationCodeEntity&gt;(&quot;clearExpiredAuthorizationCodes&quot;){</span>
+			@Override
+			public Collection&lt;AuthorizationCodeEntity&gt; fetchPage() {
+<span class="nc" id="L123">				return repository.getExpiredCodes();</span>
+			}
+
+			@Override
+			protected void doOperation(AuthorizationCodeEntity item) {
+<span class="nc" id="L128">				repository.remove(item);</span>
+<span class="nc" id="L129">			}</span>
+<span class="nc" id="L130">		}.execute();</span>
+<span class="nc" id="L131">	}</span>
+
+	/**
+	 * @return the repository
+	 */
+	public AuthorizationCodeRepository getRepository() {
+<span class="nc" id="L137">		return repository;</span>
+	}
+
+	/**
+	 * @param repository the repository to set
+	 */
+	public void setRepository(AuthorizationCodeRepository repository) {
+<span class="nc" id="L144">		this.repository = repository;</span>
+<span class="nc" id="L145">	}</span>
+
+	/**
+	 * @return the authCodeExpirationSeconds
+	 */
+	public int getAuthCodeExpirationSeconds() {
+<span class="nc" id="L151">		return authCodeExpirationSeconds;</span>
+	}
+
+	/**
+	 * @param authCodeExpirationSeconds the authCodeExpirationSeconds to set
+	 */
+	public void setAuthCodeExpirationSeconds(int authCodeExpirationSeconds) {
+<span class="nc" id="L158">		this.authCodeExpirationSeconds = authCodeExpirationSeconds;</span>
+<span class="nc" id="L159">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

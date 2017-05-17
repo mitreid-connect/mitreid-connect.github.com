@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HybridClientConfigurationService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">HybridClientConfigurationService.java</span></div><h1>HybridClientConfigurationService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+/**
+ *
+ */
+package org.mitre.openid.connect.client.service.impl;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.mitre.oauth2.model.RegisteredClient;
+import org.mitre.openid.connect.client.service.ClientConfigurationService;
+import org.mitre.openid.connect.client.service.RegisteredClientService;
+import org.mitre.openid.connect.config.ServerConfiguration;
+
+/**
+ * Houses both a static client configuration and a dynamic client configuration
+ * service in one object. Checks the static service first, then falls through to
+ * the dynamic service.
+ *
+ * Provides configuration passthrough for the template, registered client service, whitelist,
+ * and blacklist for the dynamic service, and to the static service's client map.
+ *
+ * @author jricher
+ *
+ */
+<span class="nc" id="L41">public class HybridClientConfigurationService implements ClientConfigurationService {</span>
+
+<span class="nc" id="L43">	private StaticClientConfigurationService staticClientService = new StaticClientConfigurationService();</span>
+
+<span class="nc" id="L45">	private DynamicRegistrationClientConfigurationService dynamicClientService = new DynamicRegistrationClientConfigurationService();</span>
+
+	/* (non-Javadoc)
+	 * @see org.mitre.openid.connect.client.service.ClientConfigurationService#getClientConfiguration(org.mitre.openid.connect.config.ServerConfiguration)
+	 */
+	@Override
+	public RegisteredClient getClientConfiguration(ServerConfiguration issuer) {
+
+<span class="nc" id="L53">		RegisteredClient client = staticClientService.getClientConfiguration(issuer);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">		if (client != null) {</span>
+<span class="nc" id="L55">			return client;</span>
+		} else {
+<span class="nc" id="L57">			return dynamicClientService.getClientConfiguration(issuer);</span>
+		}
+
+	}
+
+	/**
+	 * @return
+	 * @see org.mitre.openid.connect.client.service.impl.StaticClientConfigurationService#getClients()
+	 */
+	public Map&lt;String, RegisteredClient&gt; getClients() {
+<span class="nc" id="L67">		return staticClientService.getClients();</span>
+	}
+
+	/**
+	 * @param clients
+	 * @see org.mitre.openid.connect.client.service.impl.StaticClientConfigurationService#setClients(java.util.Map)
+	 */
+	public void setClients(Map&lt;String, RegisteredClient&gt; clients) {
+<span class="nc" id="L75">		staticClientService.setClients(clients);</span>
+<span class="nc" id="L76">	}</span>
+
+	/**
+	 * @return
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#getTemplate()
+	 */
+	public RegisteredClient getTemplate() {
+<span class="nc" id="L83">		return dynamicClientService.getTemplate();</span>
+	}
+
+	/**
+	 * @param template
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#setTemplate(org.mitre.oauth2.model.RegisteredClient)
+	 */
+	public void setTemplate(RegisteredClient template) {
+<span class="nc" id="L91">		dynamicClientService.setTemplate(template);</span>
+<span class="nc" id="L92">	}</span>
+
+	/**
+	 * @return
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#getRegisteredClientService()
+	 */
+	public RegisteredClientService getRegisteredClientService() {
+<span class="nc" id="L99">		return dynamicClientService.getRegisteredClientService();</span>
+	}
+
+	/**
+	 * @param registeredClientService
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#setRegisteredClientService(org.mitre.openid.connect.client.service.RegisteredClientService)
+	 */
+	public void setRegisteredClientService(RegisteredClientService registeredClientService) {
+<span class="nc" id="L107">		dynamicClientService.setRegisteredClientService(registeredClientService);</span>
+<span class="nc" id="L108">	}</span>
+
+	/**
+	 * @return
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#getWhitelist()
+	 */
+	public Set&lt;String&gt; getWhitelist() {
+<span class="nc" id="L115">		return dynamicClientService.getWhitelist();</span>
+	}
+
+	/**
+	 * @param whitelist
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#setWhitelist(java.util.Set)
+	 */
+	public void setWhitelist(Set&lt;String&gt; whitelist) {
+<span class="nc" id="L123">		dynamicClientService.setWhitelist(whitelist);</span>
+<span class="nc" id="L124">	}</span>
+
+	/**
+	 * @return
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#getBlacklist()
+	 */
+	public Set&lt;String&gt; getBlacklist() {
+<span class="nc" id="L131">		return dynamicClientService.getBlacklist();</span>
+	}
+
+	/**
+	 * @param blacklist
+	 * @see org.mitre.openid.connect.client.service.impl.DynamicRegistrationClientConfigurationService#setBlacklist(java.util.Set)
+	 */
+	public void setBlacklist(Set&lt;String&gt; blacklist) {
+<span class="nc" id="L139">		dynamicClientService.setBlacklist(blacklist);</span>
+<span class="nc" id="L140">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

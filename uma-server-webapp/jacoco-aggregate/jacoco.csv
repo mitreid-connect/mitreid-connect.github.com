@@ -1,0 +1,69 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+UMA Server Webapp/uma-server,org.mitre.uma.repository.impl,JpaResourceSetRepository,102,0,2,0,21,0,10,0,9,0
+UMA Server Webapp/uma-server,org.mitre.uma.repository.impl,JpaPermissionRepository,78,0,2,0,16,0,9,0,8,0
+UMA Server Webapp/uma-server,org.mitre.uma.util,ExternalLoginAuthoritiesMapper,17,0,0,0,3,0,3,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,UserClaimSearchHelper,163,0,6,0,32,0,5,0,2,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,PolicyAPI,693,0,58,0,133,0,39,0,10,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,AuthorizationRequestEndpoint,291,0,22,0,68,0,14,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,ClaimsCollectionEndpoint,275,0,24,0,45,0,16,0,4,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,UmaDiscoveryEndpoint,186,0,0,0,24,0,2,0,2,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,PermissionRegistrationEndpoint,191,0,14,0,42,0,10,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.web,ResourceSetRegistrationEndpoint,532,0,40,0,116,0,29,0,9,0
+UMA Server Webapp/uma-server,org.mitre.uma.view,ResourceSetEntityAbbreviatedView,102,0,4,0,26,0,5,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.view,ResourceSetEntityView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.view,ResourceSetEntityView,128,0,4,0,31,0,5,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.view,ResourceSetEntityAbbreviatedView.new ExclusionStrategy() {...},16,0,2,0,5,0,4,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,JpaRegisteredClientService,62,0,4,0,18,0,7,0,5,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,UmaDataServiceExtension_1_3.new Object() {...},19,0,0,0,1,0,1,0,1,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,DefaultResourceSetService,166,0,22,0,38,0,21,0,10,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,MatchAllClaimsOnAnyPolicy,94,0,14,0,19,0,10,0,3,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,UmaDataServiceExtension_1_3,1701,0,197,0,458,0,117,0,14,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,DefaultPermissionService,72,0,4,0,16,0,6,0,4,0
+UMA Server Webapp/uma-server,org.mitre.uma.service.impl,DefaultUmaTokenService,161,0,2,0,30,0,3,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter,1340,0,122,0,273,0,95,0,34,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher,50,0,0,0,14,0,5,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,SubjectIssuerGrantedAuthority,127,0,26,0,33,0,20,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter.new RestTemplate() {...},49,0,0,0,7,0,2,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,StaticPrefixTargetLinkURIChecker,26,0,4,0,10,0,6,0,4,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationProvider,109,0,10,0,23,0,12,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher.UserInfoLoader.new RestTemplate() {...},31,0,0,0,4,0,2,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,AuthorizationEndpointException,59,0,0,0,9,0,5,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,UserInfoFetcher.UserInfoLoader,144,0,14,0,29,0,9,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,NamedAdminAuthoritiesMapper,68,0,2,0,19,0,6,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter.TargetLinkURIAuthenticationSuccessHandler,40,0,4,0,10,0,4,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridServerConfigurationService,54,0,2,0,16,0,9,0,8,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,SignedAuthRequestUrlBuilder,124,0,6,0,26,0,7,0,4,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticClientConfigurationService,30,0,4,0,8,0,7,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.WebfingerIssuerFetcher,257,0,32,0,45,0,18,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticAuthRequestOptionsService,33,0,0,0,11,0,7,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridClientConfigurationService,72,0,2,0,22,0,13,0,12,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.LoadingResult,12,0,0,0,4,0,1,0,1,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicRegistrationClientConfigurationService.DynamicClientRegistrationLoader,161,0,4,0,32,0,5,0,3,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,EncryptedAuthRequestUrlBuilder,136,0,4,0,30,0,10,0,8,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new TypeToken() {...},6,0,0,0,1,0,1,0,1,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new TypeToken() {...},6,0,0,0,1,0,1,0,1,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new JsonSerializer() {...},9,0,0,0,2,0,2,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService.new JsonDeserializer() {...},9,0,0,0,2,0,2,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicRegistrationClientConfigurationService,132,0,8,0,34,0,16,0,12,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService,107,0,6,0,22,0,11,0,8,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticSingleIssuerService,28,0,2,0,8,0,6,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridIssuerService,102,0,2,0,28,0,15,0,14,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,PlainAuthRequestUrlBuilder,84,0,4,0,16,0,4,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService,142,0,4,0,35,0,8,0,6,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,ThirdPartyIssuerService,129,0,10,0,28,0,14,0,9,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService.OpenIDConnectServiceConfigurationFetcher,278,0,6,0,52,0,5,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticServerConfigurationService,29,0,4,0,8,0,7,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,InMemoryRegisteredClientService,21,0,0,0,5,0,3,0,3,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService,175,0,8,0,38,0,18,0,14,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypublisher,JwkViewResolver,44,0,4,0,17,0,10,0,8,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypublisher,ClientKeyPublisher,100,0,4,0,25,0,10,0,8,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypublisher,ClientKeyPublisherMapping,50,0,4,0,9,0,7,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.model,IssuerServiceResponse,53,0,2,0,21,0,12,0,11,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,ScopeBasedIntrospectionAuthoritiesGranter,69,0,6,0,13,0,7,0,4,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,JWTParsingIntrospectionConfigurationService,125,0,12,0,30,0,13,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,StaticIntrospectionConfigurationService,23,0,0,0,9,0,7,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,SimpleIntrospectionAuthorityGranter,22,0,0,0,6,0,4,0,4,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.new RestTemplate() {...},46,0,0,0,5,0,2,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.TokenCacheObject,50,0,8,0,9,0,5,0,1,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService,418,0,42,0,105,0,43,0,22,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,OAuth2AccessTokenImpl,96,0,10,0,24,0,16,0,11,0

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AbstractPageOperationTemplate.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.data</a> &gt; <span class="el_source">AbstractPageOperationTemplate.java</span></div><h1>AbstractPageOperationTemplate.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * Copyright 2017 The MITRE Corporation
+ *   and the MIT Internet Trust Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+package org.mitre.data;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Abstract class for performing an operation on a potentially large
+ * number of items by paging through the items in discreet chunks.
+ *
+ * @param &lt;T&gt;  the type parameter
+ * @author Colm Smyth.
+ */
+public abstract class AbstractPageOperationTemplate&lt;T&gt; {
+
+<span class="nc" id="L35">	private static final Logger logger = LoggerFactory.getLogger(AbstractPageOperationTemplate.class);</span>
+
+<span class="nc" id="L37">	private static int DEFAULT_MAX_PAGES = 1000;</span>
+<span class="nc" id="L38">	private static long DEFAULT_MAX_TIME_MILLIS = 600000L; //10 Minutes</span>
+
+	/**
+	 * int specifying the maximum number of
+	 * pages which should be fetched before
+	 * execution should terminate
+	 */
+	private int maxPages;
+
+	/**
+	 * long specifying the maximum execution time
+	 * in milliseconds
+	 */
+	private long maxTime;
+
+	/**
+	 * boolean specifying whether or not Exceptions
+	 * incurred performing the operation should be
+	 * swallowed during execution default true.
+	 */
+<span class="nc" id="L58">	private boolean swallowExceptions = true;</span>
+
+	/**
+	 * String that is used for logging in final tallies.
+	 */
+<span class="nc" id="L63">	private String operationName = &quot;&quot;;</span>
+
+
+	/**
+	 * default constructor which sets the value of
+	 * maxPages and maxTime to DEFAULT_MAX_PAGES and
+	 * DEFAULT_MAX_TIME_MILLIS respectively
+	 */
+	public AbstractPageOperationTemplate(String operationName){
+<span class="nc" id="L72">		this(DEFAULT_MAX_PAGES, DEFAULT_MAX_TIME_MILLIS, operationName);</span>
+<span class="nc" id="L73">	}</span>
+
+	/**
+	 * Instantiates a new AbstractPageOperationTemplate with the
+	 * given maxPages and maxTime
+	 *
+	 * @param maxPages the maximum number of pages to fetch.
+	 * @param maxTime the maximum execution time.
+	 */
+<span class="nc" id="L82">	public AbstractPageOperationTemplate(int maxPages, long maxTime, String operationName){</span>
+<span class="nc" id="L83">		this.maxPages = maxPages;</span>
+<span class="nc" id="L84">		this.maxTime = maxTime;</span>
+<span class="nc" id="L85">		this.operationName = operationName;</span>
+<span class="nc" id="L86">	}</span>
+
+	/**
+	 * Execute the operation on each member of a page of results
+	 * retrieved through the fetch method. the method will execute
+	 * until either the maxPages or maxTime limit is reached or until
+	 * the fetch method returns no more results. Exceptions thrown
+	 * performing the operation on the item will be swallowed if the
+	 * swallowException (default true) field is set true.
+	 */
+	public void execute(){
+<span class="nc" id="L97">		logger.debug(&quot;[&quot; + getOperationName() +  &quot;] Starting execution of paged operation. maximum time: &quot; + maxTime + &quot;, maximum pages: &quot; + maxPages);</span>
+
+<span class="nc" id="L99">		long startTime = System.currentTimeMillis();</span>
+<span class="nc" id="L100">		long executionTime = 0;</span>
+<span class="nc" id="L101">		int i = 0;</span>
+
+<span class="nc" id="L103">		int exceptionsSwallowedCount = 0;</span>
+<span class="nc" id="L104">		int operationsCompleted = 0;</span>
+<span class="nc" id="L105">		Set&lt;String&gt; exceptionsSwallowedClasses = new HashSet&lt;String&gt;();</span>
+
+
+<span class="nc bnc" id="L108" title="All 4 branches missed.">		while (i&lt; maxPages &amp;&amp; executionTime &lt; maxTime){</span>
+<span class="nc" id="L109">			Collection&lt;T&gt; page = fetchPage();</span>
+<span class="nc bnc" id="L110" title="All 4 branches missed.">			if(page == null || page.size() == 0){</span>
+<span class="nc" id="L111">				break;</span>
+			}
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">			for (T item : page) {</span>
+				try {
+<span class="nc" id="L116">					doOperation(item);</span>
+<span class="nc" id="L117">					operationsCompleted++;</span>
+<span class="nc" id="L118">				} catch (Exception e){</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">					if(swallowExceptions){</span>
+<span class="nc" id="L120">						exceptionsSwallowedCount++;</span>
+<span class="nc" id="L121">						exceptionsSwallowedClasses.add(e.getClass().getName());</span>
+<span class="nc" id="L122">						logger.debug(&quot;Swallowing exception &quot; + e.getMessage(), e);</span>
+					} else {
+<span class="nc" id="L124">						logger.debug(&quot;Rethrowing exception &quot; + e.getMessage());</span>
+<span class="nc" id="L125">						throw e;</span>
+					}
+<span class="nc" id="L127">				}</span>
+<span class="nc" id="L128">			}</span>
+
+<span class="nc" id="L130">			i++;</span>
+<span class="nc" id="L131">			executionTime = System.currentTimeMillis() - startTime;</span>
+<span class="nc" id="L132">		}</span>
+
+<span class="nc" id="L134">		finalReport(operationsCompleted, exceptionsSwallowedCount, exceptionsSwallowedClasses);</span>
+<span class="nc" id="L135">	}</span>
+
+
+
+	/**
+	 * method responsible for fetching
+	 * a page of items.
+	 *
+	 * @return the collection of items
+	 */
+	public abstract Collection&lt;T&gt; fetchPage();
+
+	/**
+	 * method responsible for performing desired
+	 * operation on a fetched page item.
+	 *
+	 * @param item the item
+	 */
+	protected abstract void doOperation(T item);
+
+	/**
+	 * Method responsible for final report of progress.
+	 * @return
+	 */
+	protected void finalReport(int operationsCompleted, int exceptionsSwallowedCount, Set&lt;String&gt; exceptionsSwallowedClasses) {
+<span class="nc bnc" id="L160" title="All 4 branches missed.">		if (operationsCompleted &gt; 0 || exceptionsSwallowedCount &gt; 0) {</span>
+<span class="nc" id="L161">			logger.info(&quot;[&quot; + getOperationName() +  &quot;] Paged operation run: completed &quot; + operationsCompleted + &quot;; swallowed &quot; + exceptionsSwallowedCount + &quot; exceptions&quot;);</span>
+		}
+<span class="nc bnc" id="L163" title="All 2 branches missed.">		for(String className:  exceptionsSwallowedClasses) {</span>
+<span class="nc" id="L164">			logger.warn(&quot;[&quot; + getOperationName() +  &quot;] Paged operation swallowed at least one exception of type &quot; + className);</span>
+<span class="nc" id="L165">		}</span>
+<span class="nc" id="L166">	}</span>
+
+	public int getMaxPages() {
+<span class="nc" id="L169">		return maxPages;</span>
+	}
+
+	public void setMaxPages(int maxPages) {
+<span class="nc" id="L173">		this.maxPages = maxPages;</span>
+<span class="nc" id="L174">	}</span>
+
+	public long getMaxTime() {
+<span class="nc" id="L177">		return maxTime;</span>
+	}
+
+	public void setMaxTime(long maxTime) {
+<span class="nc" id="L181">		this.maxTime = maxTime;</span>
+<span class="nc" id="L182">	}</span>
+
+	public boolean isSwallowExceptions() {
+<span class="nc" id="L185">		return swallowExceptions;</span>
+	}
+
+	public void setSwallowExceptions(boolean swallowExceptions) {
+<span class="nc" id="L189">		this.swallowExceptions = swallowExceptions;</span>
+<span class="nc" id="L190">	}</span>
+
+
+	/**
+	 * @return the operationName
+	 */
+	public String getOperationName() {
+<span class="nc" id="L197">		return operationName;</span>
+	}
+
+
+	/**
+	 * @param operationName the operationName to set
+	 */
+	public void setOperationName(String operationName) {
+<span class="nc" id="L205">		this.operationName = operationName;</span>
+<span class="nc" id="L206">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
