@@ -7,8 +7,8 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
@@ -28,93 +28,190 @@
 <span class="sourceLineNo">020</span>package org.mitre.oauth2.token;<a name="line.20"></a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
 <span class="sourceLineNo">022</span>import java.text.ParseException;<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>import org.mitre.jwt.assertion.AssertionValidator;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import org.mitre.jwt.signer.service.JWTSigningAndValidationService;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.mitre.oauth2.assertion.AssertionOAuth2RequestFactory;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.mitre.oauth2.service.OAuth2TokenEntityService;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import org.mitre.openid.connect.assertion.JWTBearerAssertionAuthenticationToken;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import org.mitre.openid.connect.config.ConfigurationPropertiesBean;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import org.springframework.beans.factory.annotation.Qualifier;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import org.springframework.security.core.AuthenticationException;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import org.springframework.security.oauth2.provider.ClientDetails;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>import org.springframework.security.oauth2.provider.OAuth2Authentication;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>import org.springframework.security.oauth2.provider.OAuth2RequestFactory;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import org.springframework.security.oauth2.provider.TokenRequest;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import org.springframework.stereotype.Component;<a name="line.40"></a>
-<span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>import com.nimbusds.jwt.JWT;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import com.nimbusds.jwt.JWTParser;<a name="line.43"></a>
+<span class="sourceLineNo">023</span>import java.util.Date;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.UUID;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.mitre.jwt.signer.service.JWTSigningAndValidationService;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.mitre.oauth2.model.ClientDetailsEntity;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.mitre.oauth2.model.OAuth2AccessTokenEntity;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.mitre.oauth2.service.ClientDetailsEntityService;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.mitre.oauth2.service.OAuth2TokenEntityService;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.mitre.oauth2.service.SystemScopeService;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.mitre.openid.connect.config.ConfigurationPropertiesBean;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.springframework.beans.factory.annotation.Autowired;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.springframework.security.authentication.BadCredentialsException;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.springframework.security.core.AuthenticationException;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.springframework.security.oauth2.common.OAuth2AccessToken;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.springframework.security.oauth2.common.exceptions.InvalidClientException;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.springframework.security.oauth2.provider.ClientDetails;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.springframework.security.oauth2.provider.OAuth2RequestFactory;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.springframework.security.oauth2.provider.TokenRequest;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.springframework.stereotype.Component;<a name="line.43"></a>
 <span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>/**<a name="line.45"></a>
-<span class="sourceLineNo">046</span> * @author jricher<a name="line.46"></a>
-<span class="sourceLineNo">047</span> *<a name="line.47"></a>
-<span class="sourceLineNo">048</span> */<a name="line.48"></a>
-<span class="sourceLineNo">049</span>@Component("jwtAssertionTokenGranter")<a name="line.49"></a>
-<span class="sourceLineNo">050</span>public class JWTAssertionTokenGranter extends AbstractTokenGranter {<a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>        private static final String grantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";<a name="line.52"></a>
-<span class="sourceLineNo">053</span><a name="line.53"></a>
-<span class="sourceLineNo">054</span>        // keep down-cast versions so we can get to the right queries<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        private OAuth2TokenEntityService tokenServices;<a name="line.55"></a>
-<span class="sourceLineNo">056</span><a name="line.56"></a>
-<span class="sourceLineNo">057</span>        @Autowired<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        private JWTSigningAndValidationService jwtService;<a name="line.58"></a>
+<span class="sourceLineNo">045</span>import com.nimbusds.jose.JWSHeader;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import com.nimbusds.jwt.JWT;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import com.nimbusds.jwt.JWTClaimsSet;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import com.nimbusds.jwt.JWTParser;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import com.nimbusds.jwt.SignedJWT;<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>/**<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * @author jricher<a name="line.52"></a>
+<span class="sourceLineNo">053</span> *<a name="line.53"></a>
+<span class="sourceLineNo">054</span> */<a name="line.54"></a>
+<span class="sourceLineNo">055</span>@Component("jwtAssertionTokenGranter")<a name="line.55"></a>
+<span class="sourceLineNo">056</span>public class JWTAssertionTokenGranter extends AbstractTokenGranter {<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>        private static final String grantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";<a name="line.58"></a>
 <span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>        @Autowired<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        private ConfigurationPropertiesBean config;<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        <a name="line.62"></a>
+<span class="sourceLineNo">060</span>        // keep down-cast versions so we can get to the right queries<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        private OAuth2TokenEntityService tokenServices;<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
 <span class="sourceLineNo">063</span>        @Autowired<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        @Qualifier("jwtAssertionValidator")<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        private AssertionValidator validator;<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        <a name="line.66"></a>
-<span class="sourceLineNo">067</span>        @Autowired<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        private AssertionOAuth2RequestFactory assertionFactory;<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>        @Autowired<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        public JWTAssertionTokenGranter(OAuth2TokenEntityService tokenServices, ClientDetailsEntityService clientDetailsService, OAuth2RequestFactory requestFactory) {<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                super(tokenServices, clientDetailsService, requestFactory, grantType);<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                this.tokenServices = tokenServices;<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        }<a name="line.74"></a>
-<span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span>        /* (non-Javadoc)<a name="line.76"></a>
-<span class="sourceLineNo">077</span>         * @see org.springframework.security.oauth2.provider.token.AbstractTokenGranter#getOAuth2Authentication(org.springframework.security.oauth2.provider.AuthorizationRequest)<a name="line.77"></a>
-<span class="sourceLineNo">078</span>         */<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        @Override<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) throws AuthenticationException, InvalidTokenException {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                // read and load up the existing token<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                try {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                        String incomingAssertionValue = tokenRequest.getRequestParameters().get("assertion");<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                        JWT assertion = JWTParser.parse(incomingAssertionValue);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                        <a name="line.85"></a>
-<span class="sourceLineNo">086</span>                        if (validator.isValid(assertion)) {<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                                <a name="line.87"></a>
-<span class="sourceLineNo">088</span>                                // our validator says it's OK, time to make a token from it<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                                // the real work happens in the assertion factory and the token services<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                                return new OAuth2Authentication(assertionFactory.createOAuth2Request(client, tokenRequest, assertion),<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                                                new JWTBearerAssertionAuthenticationToken(assertion, client.getAuthorities()));<a name="line.91"></a>
-<span class="sourceLineNo">092</span>                                <a name="line.92"></a>
-<span class="sourceLineNo">093</span>                        } else {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                                logger.warn("Incoming assertion did not pass validator, rejecting");<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                                return null;<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                        <a name="line.97"></a>
-<span class="sourceLineNo">098</span>                } catch (ParseException e) {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        logger.warn("Unable to parse incoming assertion");<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                }<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                <a name="line.101"></a>
-<span class="sourceLineNo">102</span>                // if we had made a token, we'd have returned it by now, so return null here to close out with no created token<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                return null;<a name="line.103"></a>
+<span class="sourceLineNo">064</span>        private JWTSigningAndValidationService jwtService;<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>        @Autowired<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        private ConfigurationPropertiesBean config;<a name="line.67"></a>
+<span class="sourceLineNo">068</span><a name="line.68"></a>
+<span class="sourceLineNo">069</span>        @Autowired<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        public JWTAssertionTokenGranter(OAuth2TokenEntityService tokenServices, ClientDetailsEntityService clientDetailsService, OAuth2RequestFactory requestFactory) {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                super(tokenServices, clientDetailsService, requestFactory, grantType);<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                this.tokenServices = tokenServices;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        }<a name="line.73"></a>
+<span class="sourceLineNo">074</span><a name="line.74"></a>
+<span class="sourceLineNo">075</span>        /* (non-Javadoc)<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         * @see org.springframework.security.oauth2.provider.token.AbstractTokenGranter#getOAuth2Authentication(org.springframework.security.oauth2.provider.AuthorizationRequest)<a name="line.76"></a>
+<span class="sourceLineNo">077</span>         */<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        @Override<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) throws AuthenticationException, InvalidTokenException {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                // read and load up the existing token<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                String incomingTokenValue = tokenRequest.getRequestParameters().get("assertion");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                OAuth2AccessTokenEntity incomingToken = tokenServices.readAccessToken(incomingTokenValue);<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>                if (incomingToken.getScope().contains(SystemScopeService.ID_TOKEN_SCOPE)) {<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        if (!client.getClientId().equals(tokenRequest.getClientId())) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                                throw new InvalidClientException("Not the right client for this token");<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>                        // it's an ID token, process it accordingly<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>                        try {<a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>                                // TODO: make this use a more specific idtoken class<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                                JWT idToken = JWTParser.parse(incomingTokenValue);<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>                                OAuth2AccessTokenEntity accessToken = tokenServices.getAccessTokenForIdToken(incomingToken);<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>                                if (accessToken != null) {<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>                                        //OAuth2AccessTokenEntity newIdToken = tokenServices.get<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>                                        OAuth2AccessTokenEntity newIdTokenEntity = new OAuth2AccessTokenEntity();<a name="line.103"></a>
 <span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        }<a name="line.105"></a>
-<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">105</span>                                        // copy over all existing claims<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                                        JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder(idToken.getJWTClaimsSet());<a name="line.106"></a>
 <span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span><a name="line.108"></a>
-<span class="sourceLineNo">109</span>}<a name="line.109"></a>
+<span class="sourceLineNo">108</span>                                        if (client instanceof ClientDetailsEntity) {<a name="line.108"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
+<span class="sourceLineNo">110</span>                                                ClientDetailsEntity clientEntity = (ClientDetailsEntity) client;<a name="line.110"></a>
+<span class="sourceLineNo">111</span><a name="line.111"></a>
+<span class="sourceLineNo">112</span>                                                // update expiration and issued-at claims<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                                                if (clientEntity.getIdTokenValiditySeconds() != null) {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                                                        Date expiration = new Date(System.currentTimeMillis() + (clientEntity.getIdTokenValiditySeconds() * 1000L));<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                                                        claims.expirationTime(expiration);<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                                                        newIdTokenEntity.setExpiration(expiration);<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                                                }<a name="line.117"></a>
+<span class="sourceLineNo">118</span><a name="line.118"></a>
+<span class="sourceLineNo">119</span>                                        } else {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                                                //This should never happen<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                                                logger.fatal("SEVERE: Client is not an instance of OAuth2AccessTokenEntity.");<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                                                throw new BadCredentialsException("SEVERE: Client is not an instance of ClientDetailsEntity; JwtAssertionTokenGranter cannot process this request.");<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                                        }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>                                        claims.issueTime(new Date());<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                                        claims.jwtID(UUID.randomUUID().toString()); // set a random NONCE in the middle of it<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>                                        SignedJWT newIdToken = new SignedJWT((JWSHeader) idToken.getHeader(), claims.build());<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                                        jwtService.signJwt(newIdToken);<a name="line.130"></a>
+<span class="sourceLineNo">131</span><a name="line.131"></a>
+<span class="sourceLineNo">132</span>                                        newIdTokenEntity.setJwt(newIdToken);<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                                        newIdTokenEntity.setAuthenticationHolder(incomingToken.getAuthenticationHolder());<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                                        newIdTokenEntity.setScope(incomingToken.getScope());<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                                        newIdTokenEntity.setClient(incomingToken.getClient());<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>                                        newIdTokenEntity = tokenServices.saveAccessToken(newIdTokenEntity);<a name="line.137"></a>
+<span class="sourceLineNo">138</span><a name="line.138"></a>
+<span class="sourceLineNo">139</span>                                        // attach the ID token to the access token entity<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                                        accessToken.setIdToken(newIdTokenEntity);<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                                        accessToken = tokenServices.saveAccessToken(accessToken);<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>                                        // delete the old ID token<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                                        tokenServices.revokeAccessToken(incomingToken);<a name="line.144"></a>
+<span class="sourceLineNo">145</span><a name="line.145"></a>
+<span class="sourceLineNo">146</span>                                        return newIdTokenEntity;<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>                                }<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                        } catch (ParseException e) {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                                logger.warn("Couldn't parse id token", e);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                        }<a name="line.151"></a>
+<span class="sourceLineNo">152</span><a name="line.152"></a>
+<span class="sourceLineNo">153</span>                }<a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>                // if we got down here, we didn't actually create any tokens, so return null<a name="line.155"></a>
+<span class="sourceLineNo">156</span><a name="line.156"></a>
+<span class="sourceLineNo">157</span>                return null;<a name="line.157"></a>
+<span class="sourceLineNo">158</span><a name="line.158"></a>
+<span class="sourceLineNo">159</span>                /*<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                 * Otherwise, process it like an access token assertion ... which we don't support yet so this is all commented out<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                 * /<a name="line.161"></a>
+<span class="sourceLineNo">162</span>            if (jwtService.validateSignature(incomingTokenValue)) {<a name="line.162"></a>
+<span class="sourceLineNo">163</span><a name="line.163"></a>
+<span class="sourceLineNo">164</span>                Jwt jwt = Jwt.parse(incomingTokenValue);<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span><a name="line.166"></a>
+<span class="sourceLineNo">167</span>                if (oldToken.getScope().contains("id-token")) {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                        // TODO: things<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                }<a name="line.169"></a>
+<span class="sourceLineNo">170</span><a name="line.170"></a>
+<span class="sourceLineNo">171</span>                // TODO: should any of these throw an exception instead of returning null?<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                JwtClaims claims = jwt.getClaims();<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                if (!config.getIssuer().equals(claims.getIssuer())) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        // issuer isn't us<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                        return null;<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                }<a name="line.176"></a>
+<span class="sourceLineNo">177</span><a name="line.177"></a>
+<span class="sourceLineNo">178</span>                if (!authorizationRequest.getClientId().equals(claims.getAudience())) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                        // audience isn't the client<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                        return null;<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                }<a name="line.181"></a>
+<span class="sourceLineNo">182</span><a name="line.182"></a>
+<span class="sourceLineNo">183</span>                Date now = new Date();<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                if (!now.after(claims.getExpiration())) {<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                        // token is expired<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                        return null;<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                }<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>                // FIXME<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                // This doesn't work. We need to look up the old token, figure out its scopes and bind it appropriately.<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                // In the case of an ID token, we need to look up its parent access token and change the reference, and revoke the old one, and<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                // that's tricky.<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                // we might need new calls on the token services layer to handle this, and we might<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                // need to handle id tokens separately.<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                return new OAuth2Authentication(authorizationRequest, null);<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>            } else {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                return null; // throw error??<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            }<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                 */<a name="line.200"></a>
+<span class="sourceLineNo">201</span><a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
+<span class="sourceLineNo">203</span><a name="line.203"></a>
+<span class="sourceLineNo">204</span><a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>}<a name="line.206"></a>
 
 
 

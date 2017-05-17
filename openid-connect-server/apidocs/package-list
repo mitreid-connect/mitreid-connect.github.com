@@ -1,7 +1,5 @@
 org.mitre.discovery.view
 org.mitre.discovery.web
-org.mitre.oauth2.assertion
-org.mitre.oauth2.assertion.impl
 org.mitre.oauth2.exception
 org.mitre.oauth2.repository.impl
 org.mitre.oauth2.service.impl

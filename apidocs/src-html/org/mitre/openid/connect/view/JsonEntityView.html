@@ -7,8 +7,8 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
@@ -90,30 +90,29 @@
 <span class="sourceLineNo">082</span>        protected void renderMergedOutputModel(Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {<a name="line.82"></a>
 <span class="sourceLineNo">083</span><a name="line.83"></a>
 <span class="sourceLineNo">084</span>                response.setContentType(MediaType.APPLICATION_JSON_VALUE);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                response.setCharacterEncoding("UTF-8");<a name="line.85"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
 <span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>                HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                if (code == null) {<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                        code = HttpStatus.OK; // default to 200<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                }<a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>                response.setStatus(code.value());<a name="line.93"></a>
-<span class="sourceLineNo">094</span><a name="line.94"></a>
-<span class="sourceLineNo">095</span>                try {<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>                        Writer out = response.getWriter();<a name="line.97"></a>
-<span class="sourceLineNo">098</span>                        Object obj = model.get(ENTITY);<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        gson.toJson(obj, out);<a name="line.99"></a>
-<span class="sourceLineNo">100</span><a name="line.100"></a>
-<span class="sourceLineNo">101</span>                } catch (IOException e) {<a name="line.101"></a>
-<span class="sourceLineNo">102</span><a name="line.102"></a>
-<span class="sourceLineNo">103</span>                        logger.error("IOException in JsonEntityView.java: ", e);<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>                }<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
-<span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span>}<a name="line.108"></a>
+<span class="sourceLineNo">087</span>                HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                if (code == null) {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        code = HttpStatus.OK; // default to 200<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>                response.setStatus(code.value());<a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>                try {<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                        Writer out = response.getWriter();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        Object obj = model.get(ENTITY);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        gson.toJson(obj, out);<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>                } catch (IOException e) {<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>                        logger.error("IOException in JsonEntityView.java: ", e);<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>                }<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>}<a name="line.107"></a>
 
 
 

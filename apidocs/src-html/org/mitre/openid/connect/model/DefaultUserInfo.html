@@ -7,8 +7,8 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
@@ -445,7 +445,7 @@
 <span class="sourceLineNo">437</span>                        obj.addProperty("picture", this.getPicture());<a name="line.437"></a>
 <span class="sourceLineNo">438</span>                        obj.addProperty("website", this.getWebsite());<a name="line.438"></a>
 <span class="sourceLineNo">439</span>                        obj.addProperty("gender", this.getGender());<a name="line.439"></a>
-<span class="sourceLineNo">440</span>                        obj.addProperty("zoneinfo", this.getZoneinfo());<a name="line.440"></a>
+<span class="sourceLineNo">440</span>                        obj.addProperty("zone_info", this.getZoneinfo());<a name="line.440"></a>
 <span class="sourceLineNo">441</span>                        obj.addProperty("locale", this.getLocale());<a name="line.441"></a>
 <span class="sourceLineNo">442</span>                        obj.addProperty("updated_at", this.getUpdatedTime());<a name="line.442"></a>
 <span class="sourceLineNo">443</span>                        obj.addProperty("birthdate", this.getBirthdate());<a name="line.443"></a>
@@ -497,7 +497,7 @@
 <span class="sourceLineNo">489</span>                ui.setPicture(nullSafeGetString(obj, "picture"));<a name="line.489"></a>
 <span class="sourceLineNo">490</span>                ui.setWebsite(nullSafeGetString(obj, "website"));<a name="line.490"></a>
 <span class="sourceLineNo">491</span>                ui.setGender(nullSafeGetString(obj, "gender"));<a name="line.491"></a>
-<span class="sourceLineNo">492</span>                ui.setZoneinfo(nullSafeGetString(obj, "zoneinfo"));<a name="line.492"></a>
+<span class="sourceLineNo">492</span>                ui.setZoneinfo(nullSafeGetString(obj, "zone_info"));<a name="line.492"></a>
 <span class="sourceLineNo">493</span>                ui.setLocale(nullSafeGetString(obj, "locale"));<a name="line.493"></a>
 <span class="sourceLineNo">494</span>                ui.setUpdatedTime(nullSafeGetString(obj, "updated_at"));<a name="line.494"></a>
 <span class="sourceLineNo">495</span>                ui.setBirthdate(nullSafeGetString(obj, "birthdate"));<a name="line.495"></a>
@@ -505,267 +505,264 @@
 <span class="sourceLineNo">497</span>                ui.setEmail(nullSafeGetString(obj, "email"));<a name="line.497"></a>
 <span class="sourceLineNo">498</span>                ui.setEmailVerified(obj.has("email_verified") &amp;&amp; obj.get("email_verified").isJsonPrimitive() ? obj.get("email_verified").getAsBoolean() : null);<a name="line.498"></a>
 <span class="sourceLineNo">499</span><a name="line.499"></a>
-<span class="sourceLineNo">500</span>                ui.setPhoneNumber(nullSafeGetString(obj, "phone_number"));<a name="line.500"></a>
-<span class="sourceLineNo">501</span>                ui.setPhoneNumberVerified(obj.has("phone_number_verified") &amp;&amp; obj.get("phone_number_verified").isJsonPrimitive() ? obj.get("phone_number_verified").getAsBoolean() : null);<a name="line.501"></a>
-<span class="sourceLineNo">502</span>                <a name="line.502"></a>
-<span class="sourceLineNo">503</span>                if (obj.has("address") &amp;&amp; obj.get("address").isJsonObject()) {<a name="line.503"></a>
-<span class="sourceLineNo">504</span>                        JsonObject addr = obj.get("address").getAsJsonObject();<a name="line.504"></a>
-<span class="sourceLineNo">505</span>                        ui.setAddress(new DefaultAddress());<a name="line.505"></a>
-<span class="sourceLineNo">506</span><a name="line.506"></a>
-<span class="sourceLineNo">507</span>                        ui.getAddress().setFormatted(nullSafeGetString(addr, "formatted"));<a name="line.507"></a>
-<span class="sourceLineNo">508</span>                        ui.getAddress().setStreetAddress(nullSafeGetString(addr, "street_address"));<a name="line.508"></a>
-<span class="sourceLineNo">509</span>                        ui.getAddress().setLocality(nullSafeGetString(addr, "locality"));<a name="line.509"></a>
-<span class="sourceLineNo">510</span>                        ui.getAddress().setRegion(nullSafeGetString(addr, "region"));<a name="line.510"></a>
-<span class="sourceLineNo">511</span>                        ui.getAddress().setPostalCode(nullSafeGetString(addr, "postal_code"));<a name="line.511"></a>
-<span class="sourceLineNo">512</span>                        ui.getAddress().setCountry(nullSafeGetString(addr, "country"));<a name="line.512"></a>
+<span class="sourceLineNo">500</span>                if (obj.has("address") &amp;&amp; obj.get("address").isJsonObject()) {<a name="line.500"></a>
+<span class="sourceLineNo">501</span>                        JsonObject addr = obj.get("address").getAsJsonObject();<a name="line.501"></a>
+<span class="sourceLineNo">502</span>                        ui.setAddress(new DefaultAddress());<a name="line.502"></a>
+<span class="sourceLineNo">503</span><a name="line.503"></a>
+<span class="sourceLineNo">504</span>                        ui.getAddress().setFormatted(nullSafeGetString(addr, "formatted"));<a name="line.504"></a>
+<span class="sourceLineNo">505</span>                        ui.getAddress().setStreetAddress(nullSafeGetString(addr, "street_address"));<a name="line.505"></a>
+<span class="sourceLineNo">506</span>                        ui.getAddress().setLocality(nullSafeGetString(addr, "locality"));<a name="line.506"></a>
+<span class="sourceLineNo">507</span>                        ui.getAddress().setRegion(nullSafeGetString(addr, "region"));<a name="line.507"></a>
+<span class="sourceLineNo">508</span>                        ui.getAddress().setPostalCode(nullSafeGetString(addr, "postal_code"));<a name="line.508"></a>
+<span class="sourceLineNo">509</span>                        ui.getAddress().setCountry(nullSafeGetString(addr, "country"));<a name="line.509"></a>
+<span class="sourceLineNo">510</span><a name="line.510"></a>
+<span class="sourceLineNo">511</span>                }<a name="line.511"></a>
+<span class="sourceLineNo">512</span><a name="line.512"></a>
 <span class="sourceLineNo">513</span><a name="line.513"></a>
-<span class="sourceLineNo">514</span>                }<a name="line.514"></a>
+<span class="sourceLineNo">514</span>                return ui;<a name="line.514"></a>
 <span class="sourceLineNo">515</span><a name="line.515"></a>
-<span class="sourceLineNo">516</span><a name="line.516"></a>
-<span class="sourceLineNo">517</span>                return ui;<a name="line.517"></a>
-<span class="sourceLineNo">518</span><a name="line.518"></a>
-<span class="sourceLineNo">519</span>        }<a name="line.519"></a>
-<span class="sourceLineNo">520</span>        /**<a name="line.520"></a>
-<span class="sourceLineNo">521</span>         * @return the jsonString<a name="line.521"></a>
-<span class="sourceLineNo">522</span>         */<a name="line.522"></a>
-<span class="sourceLineNo">523</span>        @Override<a name="line.523"></a>
-<span class="sourceLineNo">524</span>        @Basic<a name="line.524"></a>
-<span class="sourceLineNo">525</span>        @Column(name = "src")<a name="line.525"></a>
-<span class="sourceLineNo">526</span>        @Convert(converter = JsonObjectStringConverter.class)<a name="line.526"></a>
-<span class="sourceLineNo">527</span>        public JsonObject getSource() {<a name="line.527"></a>
-<span class="sourceLineNo">528</span>                return src;<a name="line.528"></a>
-<span class="sourceLineNo">529</span>        }<a name="line.529"></a>
-<span class="sourceLineNo">530</span><a name="line.530"></a>
-<span class="sourceLineNo">531</span>        /**<a name="line.531"></a>
-<span class="sourceLineNo">532</span>         * @param jsonString the jsonString to set<a name="line.532"></a>
-<span class="sourceLineNo">533</span>         */<a name="line.533"></a>
-<span class="sourceLineNo">534</span>        public void setSource(JsonObject src) {<a name="line.534"></a>
-<span class="sourceLineNo">535</span>                this.src = src;<a name="line.535"></a>
-<span class="sourceLineNo">536</span>        }<a name="line.536"></a>
-<span class="sourceLineNo">537</span><a name="line.537"></a>
-<span class="sourceLineNo">538</span><a name="line.538"></a>
-<span class="sourceLineNo">539</span>        private static String nullSafeGetString(JsonObject obj, String field) {<a name="line.539"></a>
-<span class="sourceLineNo">540</span>                return obj.has(field) &amp;&amp; obj.get(field).isJsonPrimitive() ? obj.get(field).getAsString() : null;<a name="line.540"></a>
-<span class="sourceLineNo">541</span>        }<a name="line.541"></a>
-<span class="sourceLineNo">542</span><a name="line.542"></a>
-<span class="sourceLineNo">543</span>        /* (non-Javadoc)<a name="line.543"></a>
-<span class="sourceLineNo">544</span>         * @see java.lang.Object#hashCode()<a name="line.544"></a>
-<span class="sourceLineNo">545</span>         */<a name="line.545"></a>
-<span class="sourceLineNo">546</span>        @Override<a name="line.546"></a>
-<span class="sourceLineNo">547</span>        public int hashCode() {<a name="line.547"></a>
-<span class="sourceLineNo">548</span>                final int prime = 31;<a name="line.548"></a>
-<span class="sourceLineNo">549</span>                int result = 1;<a name="line.549"></a>
-<span class="sourceLineNo">550</span>                result = prime * result + ((address == null) ? 0 : address.hashCode());<a name="line.550"></a>
-<span class="sourceLineNo">551</span>                result = prime * result + ((birthdate == null) ? 0 : birthdate.hashCode());<a name="line.551"></a>
-<span class="sourceLineNo">552</span>                result = prime * result + ((email == null) ? 0 : email.hashCode());<a name="line.552"></a>
-<span class="sourceLineNo">553</span>                result = prime * result + ((emailVerified == null) ? 0 : emailVerified.hashCode());<a name="line.553"></a>
-<span class="sourceLineNo">554</span>                result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());<a name="line.554"></a>
-<span class="sourceLineNo">555</span>                result = prime * result + ((gender == null) ? 0 : gender.hashCode());<a name="line.555"></a>
-<span class="sourceLineNo">556</span>                result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());<a name="line.556"></a>
-<span class="sourceLineNo">557</span>                result = prime * result + ((id == null) ? 0 : id.hashCode());<a name="line.557"></a>
-<span class="sourceLineNo">558</span>                result = prime * result + ((locale == null) ? 0 : locale.hashCode());<a name="line.558"></a>
-<span class="sourceLineNo">559</span>                result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());<a name="line.559"></a>
-<span class="sourceLineNo">560</span>                result = prime * result + ((name == null) ? 0 : name.hashCode());<a name="line.560"></a>
-<span class="sourceLineNo">561</span>                result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());<a name="line.561"></a>
-<span class="sourceLineNo">562</span>                result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());<a name="line.562"></a>
-<span class="sourceLineNo">563</span>                result = prime * result + ((phoneNumberVerified == null) ? 0 : phoneNumberVerified.hashCode());<a name="line.563"></a>
-<span class="sourceLineNo">564</span>                result = prime * result + ((picture == null) ? 0 : picture.hashCode());<a name="line.564"></a>
-<span class="sourceLineNo">565</span>                result = prime * result + ((preferredUsername == null) ? 0 : preferredUsername.hashCode());<a name="line.565"></a>
-<span class="sourceLineNo">566</span>                result = prime * result + ((profile == null) ? 0 : profile.hashCode());<a name="line.566"></a>
-<span class="sourceLineNo">567</span>                result = prime * result + ((sub == null) ? 0 : sub.hashCode());<a name="line.567"></a>
-<span class="sourceLineNo">568</span>                result = prime * result + ((updatedTime == null) ? 0 : updatedTime.hashCode());<a name="line.568"></a>
-<span class="sourceLineNo">569</span>                result = prime * result + ((website == null) ? 0 : website.hashCode());<a name="line.569"></a>
-<span class="sourceLineNo">570</span>                result = prime * result + ((zoneinfo == null) ? 0 : zoneinfo.hashCode());<a name="line.570"></a>
-<span class="sourceLineNo">571</span>                return result;<a name="line.571"></a>
-<span class="sourceLineNo">572</span>        }<a name="line.572"></a>
-<span class="sourceLineNo">573</span><a name="line.573"></a>
-<span class="sourceLineNo">574</span>        /* (non-Javadoc)<a name="line.574"></a>
-<span class="sourceLineNo">575</span>         * @see java.lang.Object#equals(java.lang.Object)<a name="line.575"></a>
-<span class="sourceLineNo">576</span>         */<a name="line.576"></a>
-<span class="sourceLineNo">577</span>        @Override<a name="line.577"></a>
-<span class="sourceLineNo">578</span>        public boolean equals(Object obj) {<a name="line.578"></a>
-<span class="sourceLineNo">579</span>                if (this == obj) {<a name="line.579"></a>
-<span class="sourceLineNo">580</span>                        return true;<a name="line.580"></a>
+<span class="sourceLineNo">516</span>        }<a name="line.516"></a>
+<span class="sourceLineNo">517</span>        /**<a name="line.517"></a>
+<span class="sourceLineNo">518</span>         * @return the jsonString<a name="line.518"></a>
+<span class="sourceLineNo">519</span>         */<a name="line.519"></a>
+<span class="sourceLineNo">520</span>        @Override<a name="line.520"></a>
+<span class="sourceLineNo">521</span>        @Basic<a name="line.521"></a>
+<span class="sourceLineNo">522</span>        @Column(name = "src")<a name="line.522"></a>
+<span class="sourceLineNo">523</span>        @Convert(converter = JsonObjectStringConverter.class)<a name="line.523"></a>
+<span class="sourceLineNo">524</span>        public JsonObject getSource() {<a name="line.524"></a>
+<span class="sourceLineNo">525</span>                return src;<a name="line.525"></a>
+<span class="sourceLineNo">526</span>        }<a name="line.526"></a>
+<span class="sourceLineNo">527</span><a name="line.527"></a>
+<span class="sourceLineNo">528</span>        /**<a name="line.528"></a>
+<span class="sourceLineNo">529</span>         * @param jsonString the jsonString to set<a name="line.529"></a>
+<span class="sourceLineNo">530</span>         */<a name="line.530"></a>
+<span class="sourceLineNo">531</span>        public void setSource(JsonObject src) {<a name="line.531"></a>
+<span class="sourceLineNo">532</span>                this.src = src;<a name="line.532"></a>
+<span class="sourceLineNo">533</span>        }<a name="line.533"></a>
+<span class="sourceLineNo">534</span><a name="line.534"></a>
+<span class="sourceLineNo">535</span><a name="line.535"></a>
+<span class="sourceLineNo">536</span>        private static String nullSafeGetString(JsonObject obj, String field) {<a name="line.536"></a>
+<span class="sourceLineNo">537</span>                return obj.has(field) &amp;&amp; obj.get(field).isJsonPrimitive() ? obj.get(field).getAsString() : null;<a name="line.537"></a>
+<span class="sourceLineNo">538</span>        }<a name="line.538"></a>
+<span class="sourceLineNo">539</span><a name="line.539"></a>
+<span class="sourceLineNo">540</span>        /* (non-Javadoc)<a name="line.540"></a>
+<span class="sourceLineNo">541</span>         * @see java.lang.Object#hashCode()<a name="line.541"></a>
+<span class="sourceLineNo">542</span>         */<a name="line.542"></a>
+<span class="sourceLineNo">543</span>        @Override<a name="line.543"></a>
+<span class="sourceLineNo">544</span>        public int hashCode() {<a name="line.544"></a>
+<span class="sourceLineNo">545</span>                final int prime = 31;<a name="line.545"></a>
+<span class="sourceLineNo">546</span>                int result = 1;<a name="line.546"></a>
+<span class="sourceLineNo">547</span>                result = prime * result + ((address == null) ? 0 : address.hashCode());<a name="line.547"></a>
+<span class="sourceLineNo">548</span>                result = prime * result + ((birthdate == null) ? 0 : birthdate.hashCode());<a name="line.548"></a>
+<span class="sourceLineNo">549</span>                result = prime * result + ((email == null) ? 0 : email.hashCode());<a name="line.549"></a>
+<span class="sourceLineNo">550</span>                result = prime * result + ((emailVerified == null) ? 0 : emailVerified.hashCode());<a name="line.550"></a>
+<span class="sourceLineNo">551</span>                result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());<a name="line.551"></a>
+<span class="sourceLineNo">552</span>                result = prime * result + ((gender == null) ? 0 : gender.hashCode());<a name="line.552"></a>
+<span class="sourceLineNo">553</span>                result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());<a name="line.553"></a>
+<span class="sourceLineNo">554</span>                result = prime * result + ((id == null) ? 0 : id.hashCode());<a name="line.554"></a>
+<span class="sourceLineNo">555</span>                result = prime * result + ((locale == null) ? 0 : locale.hashCode());<a name="line.555"></a>
+<span class="sourceLineNo">556</span>                result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());<a name="line.556"></a>
+<span class="sourceLineNo">557</span>                result = prime * result + ((name == null) ? 0 : name.hashCode());<a name="line.557"></a>
+<span class="sourceLineNo">558</span>                result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());<a name="line.558"></a>
+<span class="sourceLineNo">559</span>                result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());<a name="line.559"></a>
+<span class="sourceLineNo">560</span>                result = prime * result + ((phoneNumberVerified == null) ? 0 : phoneNumberVerified.hashCode());<a name="line.560"></a>
+<span class="sourceLineNo">561</span>                result = prime * result + ((picture == null) ? 0 : picture.hashCode());<a name="line.561"></a>
+<span class="sourceLineNo">562</span>                result = prime * result + ((preferredUsername == null) ? 0 : preferredUsername.hashCode());<a name="line.562"></a>
+<span class="sourceLineNo">563</span>                result = prime * result + ((profile == null) ? 0 : profile.hashCode());<a name="line.563"></a>
+<span class="sourceLineNo">564</span>                result = prime * result + ((sub == null) ? 0 : sub.hashCode());<a name="line.564"></a>
+<span class="sourceLineNo">565</span>                result = prime * result + ((updatedTime == null) ? 0 : updatedTime.hashCode());<a name="line.565"></a>
+<span class="sourceLineNo">566</span>                result = prime * result + ((website == null) ? 0 : website.hashCode());<a name="line.566"></a>
+<span class="sourceLineNo">567</span>                result = prime * result + ((zoneinfo == null) ? 0 : zoneinfo.hashCode());<a name="line.567"></a>
+<span class="sourceLineNo">568</span>                return result;<a name="line.568"></a>
+<span class="sourceLineNo">569</span>        }<a name="line.569"></a>
+<span class="sourceLineNo">570</span><a name="line.570"></a>
+<span class="sourceLineNo">571</span>        /* (non-Javadoc)<a name="line.571"></a>
+<span class="sourceLineNo">572</span>         * @see java.lang.Object#equals(java.lang.Object)<a name="line.572"></a>
+<span class="sourceLineNo">573</span>         */<a name="line.573"></a>
+<span class="sourceLineNo">574</span>        @Override<a name="line.574"></a>
+<span class="sourceLineNo">575</span>        public boolean equals(Object obj) {<a name="line.575"></a>
+<span class="sourceLineNo">576</span>                if (this == obj) {<a name="line.576"></a>
+<span class="sourceLineNo">577</span>                        return true;<a name="line.577"></a>
+<span class="sourceLineNo">578</span>                }<a name="line.578"></a>
+<span class="sourceLineNo">579</span>                if (obj == null) {<a name="line.579"></a>
+<span class="sourceLineNo">580</span>                        return false;<a name="line.580"></a>
 <span class="sourceLineNo">581</span>                }<a name="line.581"></a>
-<span class="sourceLineNo">582</span>                if (obj == null) {<a name="line.582"></a>
+<span class="sourceLineNo">582</span>                if (!(obj instanceof DefaultUserInfo)) {<a name="line.582"></a>
 <span class="sourceLineNo">583</span>                        return false;<a name="line.583"></a>
 <span class="sourceLineNo">584</span>                }<a name="line.584"></a>
-<span class="sourceLineNo">585</span>                if (!(obj instanceof DefaultUserInfo)) {<a name="line.585"></a>
-<span class="sourceLineNo">586</span>                        return false;<a name="line.586"></a>
-<span class="sourceLineNo">587</span>                }<a name="line.587"></a>
-<span class="sourceLineNo">588</span>                DefaultUserInfo other = (DefaultUserInfo) obj;<a name="line.588"></a>
-<span class="sourceLineNo">589</span>                if (address == null) {<a name="line.589"></a>
-<span class="sourceLineNo">590</span>                        if (other.address != null) {<a name="line.590"></a>
-<span class="sourceLineNo">591</span>                                return false;<a name="line.591"></a>
-<span class="sourceLineNo">592</span>                        }<a name="line.592"></a>
-<span class="sourceLineNo">593</span>                } else if (!address.equals(other.address)) {<a name="line.593"></a>
-<span class="sourceLineNo">594</span>                        return false;<a name="line.594"></a>
-<span class="sourceLineNo">595</span>                }<a name="line.595"></a>
-<span class="sourceLineNo">596</span>                if (birthdate == null) {<a name="line.596"></a>
-<span class="sourceLineNo">597</span>                        if (other.birthdate != null) {<a name="line.597"></a>
-<span class="sourceLineNo">598</span>                                return false;<a name="line.598"></a>
-<span class="sourceLineNo">599</span>                        }<a name="line.599"></a>
-<span class="sourceLineNo">600</span>                } else if (!birthdate.equals(other.birthdate)) {<a name="line.600"></a>
-<span class="sourceLineNo">601</span>                        return false;<a name="line.601"></a>
-<span class="sourceLineNo">602</span>                }<a name="line.602"></a>
-<span class="sourceLineNo">603</span>                if (email == null) {<a name="line.603"></a>
-<span class="sourceLineNo">604</span>                        if (other.email != null) {<a name="line.604"></a>
-<span class="sourceLineNo">605</span>                                return false;<a name="line.605"></a>
-<span class="sourceLineNo">606</span>                        }<a name="line.606"></a>
-<span class="sourceLineNo">607</span>                } else if (!email.equals(other.email)) {<a name="line.607"></a>
-<span class="sourceLineNo">608</span>                        return false;<a name="line.608"></a>
-<span class="sourceLineNo">609</span>                }<a name="line.609"></a>
-<span class="sourceLineNo">610</span>                if (emailVerified == null) {<a name="line.610"></a>
-<span class="sourceLineNo">611</span>                        if (other.emailVerified != null) {<a name="line.611"></a>
-<span class="sourceLineNo">612</span>                                return false;<a name="line.612"></a>
-<span class="sourceLineNo">613</span>                        }<a name="line.613"></a>
-<span class="sourceLineNo">614</span>                } else if (!emailVerified.equals(other.emailVerified)) {<a name="line.614"></a>
-<span class="sourceLineNo">615</span>                        return false;<a name="line.615"></a>
-<span class="sourceLineNo">616</span>                }<a name="line.616"></a>
-<span class="sourceLineNo">617</span>                if (familyName == null) {<a name="line.617"></a>
-<span class="sourceLineNo">618</span>                        if (other.familyName != null) {<a name="line.618"></a>
-<span class="sourceLineNo">619</span>                                return false;<a name="line.619"></a>
-<span class="sourceLineNo">620</span>                        }<a name="line.620"></a>
-<span class="sourceLineNo">621</span>                } else if (!familyName.equals(other.familyName)) {<a name="line.621"></a>
-<span class="sourceLineNo">622</span>                        return false;<a name="line.622"></a>
-<span class="sourceLineNo">623</span>                }<a name="line.623"></a>
-<span class="sourceLineNo">624</span>                if (gender == null) {<a name="line.624"></a>
-<span class="sourceLineNo">625</span>                        if (other.gender != null) {<a name="line.625"></a>
-<span class="sourceLineNo">626</span>                                return false;<a name="line.626"></a>
-<span class="sourceLineNo">627</span>                        }<a name="line.627"></a>
-<span class="sourceLineNo">628</span>                } else if (!gender.equals(other.gender)) {<a name="line.628"></a>
-<span class="sourceLineNo">629</span>                        return false;<a name="line.629"></a>
-<span class="sourceLineNo">630</span>                }<a name="line.630"></a>
-<span class="sourceLineNo">631</span>                if (givenName == null) {<a name="line.631"></a>
-<span class="sourceLineNo">632</span>                        if (other.givenName != null) {<a name="line.632"></a>
-<span class="sourceLineNo">633</span>                                return false;<a name="line.633"></a>
-<span class="sourceLineNo">634</span>                        }<a name="line.634"></a>
-<span class="sourceLineNo">635</span>                } else if (!givenName.equals(other.givenName)) {<a name="line.635"></a>
-<span class="sourceLineNo">636</span>                        return false;<a name="line.636"></a>
-<span class="sourceLineNo">637</span>                }<a name="line.637"></a>
-<span class="sourceLineNo">638</span>                if (id == null) {<a name="line.638"></a>
-<span class="sourceLineNo">639</span>                        if (other.id != null) {<a name="line.639"></a>
-<span class="sourceLineNo">640</span>                                return false;<a name="line.640"></a>
-<span class="sourceLineNo">641</span>                        }<a name="line.641"></a>
-<span class="sourceLineNo">642</span>                } else if (!id.equals(other.id)) {<a name="line.642"></a>
-<span class="sourceLineNo">643</span>                        return false;<a name="line.643"></a>
-<span class="sourceLineNo">644</span>                }<a name="line.644"></a>
-<span class="sourceLineNo">645</span>                if (locale == null) {<a name="line.645"></a>
-<span class="sourceLineNo">646</span>                        if (other.locale != null) {<a name="line.646"></a>
-<span class="sourceLineNo">647</span>                                return false;<a name="line.647"></a>
-<span class="sourceLineNo">648</span>                        }<a name="line.648"></a>
-<span class="sourceLineNo">649</span>                } else if (!locale.equals(other.locale)) {<a name="line.649"></a>
-<span class="sourceLineNo">650</span>                        return false;<a name="line.650"></a>
-<span class="sourceLineNo">651</span>                }<a name="line.651"></a>
-<span class="sourceLineNo">652</span>                if (middleName == null) {<a name="line.652"></a>
-<span class="sourceLineNo">653</span>                        if (other.middleName != null) {<a name="line.653"></a>
-<span class="sourceLineNo">654</span>                                return false;<a name="line.654"></a>
-<span class="sourceLineNo">655</span>                        }<a name="line.655"></a>
-<span class="sourceLineNo">656</span>                } else if (!middleName.equals(other.middleName)) {<a name="line.656"></a>
-<span class="sourceLineNo">657</span>                        return false;<a name="line.657"></a>
-<span class="sourceLineNo">658</span>                }<a name="line.658"></a>
-<span class="sourceLineNo">659</span>                if (name == null) {<a name="line.659"></a>
-<span class="sourceLineNo">660</span>                        if (other.name != null) {<a name="line.660"></a>
-<span class="sourceLineNo">661</span>                                return false;<a name="line.661"></a>
-<span class="sourceLineNo">662</span>                        }<a name="line.662"></a>
-<span class="sourceLineNo">663</span>                } else if (!name.equals(other.name)) {<a name="line.663"></a>
-<span class="sourceLineNo">664</span>                        return false;<a name="line.664"></a>
-<span class="sourceLineNo">665</span>                }<a name="line.665"></a>
-<span class="sourceLineNo">666</span>                if (nickname == null) {<a name="line.666"></a>
-<span class="sourceLineNo">667</span>                        if (other.nickname != null) {<a name="line.667"></a>
-<span class="sourceLineNo">668</span>                                return false;<a name="line.668"></a>
-<span class="sourceLineNo">669</span>                        }<a name="line.669"></a>
-<span class="sourceLineNo">670</span>                } else if (!nickname.equals(other.nickname)) {<a name="line.670"></a>
-<span class="sourceLineNo">671</span>                        return false;<a name="line.671"></a>
-<span class="sourceLineNo">672</span>                }<a name="line.672"></a>
-<span class="sourceLineNo">673</span>                if (phoneNumber == null) {<a name="line.673"></a>
-<span class="sourceLineNo">674</span>                        if (other.phoneNumber != null) {<a name="line.674"></a>
-<span class="sourceLineNo">675</span>                                return false;<a name="line.675"></a>
-<span class="sourceLineNo">676</span>                        }<a name="line.676"></a>
-<span class="sourceLineNo">677</span>                } else if (!phoneNumber.equals(other.phoneNumber)) {<a name="line.677"></a>
-<span class="sourceLineNo">678</span>                        return false;<a name="line.678"></a>
-<span class="sourceLineNo">679</span>                }<a name="line.679"></a>
-<span class="sourceLineNo">680</span>                if (phoneNumberVerified == null) {<a name="line.680"></a>
-<span class="sourceLineNo">681</span>                        if (other.phoneNumberVerified != null) {<a name="line.681"></a>
-<span class="sourceLineNo">682</span>                                return false;<a name="line.682"></a>
-<span class="sourceLineNo">683</span>                        }<a name="line.683"></a>
-<span class="sourceLineNo">684</span>                } else if (!phoneNumberVerified.equals(other.phoneNumberVerified)) {<a name="line.684"></a>
-<span class="sourceLineNo">685</span>                        return false;<a name="line.685"></a>
-<span class="sourceLineNo">686</span>                }<a name="line.686"></a>
-<span class="sourceLineNo">687</span>                if (picture == null) {<a name="line.687"></a>
-<span class="sourceLineNo">688</span>                        if (other.picture != null) {<a name="line.688"></a>
-<span class="sourceLineNo">689</span>                                return false;<a name="line.689"></a>
-<span class="sourceLineNo">690</span>                        }<a name="line.690"></a>
-<span class="sourceLineNo">691</span>                } else if (!picture.equals(other.picture)) {<a name="line.691"></a>
-<span class="sourceLineNo">692</span>                        return false;<a name="line.692"></a>
-<span class="sourceLineNo">693</span>                }<a name="line.693"></a>
-<span class="sourceLineNo">694</span>                if (preferredUsername == null) {<a name="line.694"></a>
-<span class="sourceLineNo">695</span>                        if (other.preferredUsername != null) {<a name="line.695"></a>
-<span class="sourceLineNo">696</span>                                return false;<a name="line.696"></a>
-<span class="sourceLineNo">697</span>                        }<a name="line.697"></a>
-<span class="sourceLineNo">698</span>                } else if (!preferredUsername.equals(other.preferredUsername)) {<a name="line.698"></a>
-<span class="sourceLineNo">699</span>                        return false;<a name="line.699"></a>
-<span class="sourceLineNo">700</span>                }<a name="line.700"></a>
-<span class="sourceLineNo">701</span>                if (profile == null) {<a name="line.701"></a>
-<span class="sourceLineNo">702</span>                        if (other.profile != null) {<a name="line.702"></a>
-<span class="sourceLineNo">703</span>                                return false;<a name="line.703"></a>
-<span class="sourceLineNo">704</span>                        }<a name="line.704"></a>
-<span class="sourceLineNo">705</span>                } else if (!profile.equals(other.profile)) {<a name="line.705"></a>
-<span class="sourceLineNo">706</span>                        return false;<a name="line.706"></a>
-<span class="sourceLineNo">707</span>                }<a name="line.707"></a>
-<span class="sourceLineNo">708</span>                if (sub == null) {<a name="line.708"></a>
-<span class="sourceLineNo">709</span>                        if (other.sub != null) {<a name="line.709"></a>
-<span class="sourceLineNo">710</span>                                return false;<a name="line.710"></a>
-<span class="sourceLineNo">711</span>                        }<a name="line.711"></a>
-<span class="sourceLineNo">712</span>                } else if (!sub.equals(other.sub)) {<a name="line.712"></a>
-<span class="sourceLineNo">713</span>                        return false;<a name="line.713"></a>
-<span class="sourceLineNo">714</span>                }<a name="line.714"></a>
-<span class="sourceLineNo">715</span>                if (updatedTime == null) {<a name="line.715"></a>
-<span class="sourceLineNo">716</span>                        if (other.updatedTime != null) {<a name="line.716"></a>
-<span class="sourceLineNo">717</span>                                return false;<a name="line.717"></a>
-<span class="sourceLineNo">718</span>                        }<a name="line.718"></a>
-<span class="sourceLineNo">719</span>                } else if (!updatedTime.equals(other.updatedTime)) {<a name="line.719"></a>
-<span class="sourceLineNo">720</span>                        return false;<a name="line.720"></a>
-<span class="sourceLineNo">721</span>                }<a name="line.721"></a>
-<span class="sourceLineNo">722</span>                if (website == null) {<a name="line.722"></a>
-<span class="sourceLineNo">723</span>                        if (other.website != null) {<a name="line.723"></a>
-<span class="sourceLineNo">724</span>                                return false;<a name="line.724"></a>
-<span class="sourceLineNo">725</span>                        }<a name="line.725"></a>
-<span class="sourceLineNo">726</span>                } else if (!website.equals(other.website)) {<a name="line.726"></a>
-<span class="sourceLineNo">727</span>                        return false;<a name="line.727"></a>
-<span class="sourceLineNo">728</span>                }<a name="line.728"></a>
-<span class="sourceLineNo">729</span>                if (zoneinfo == null) {<a name="line.729"></a>
-<span class="sourceLineNo">730</span>                        if (other.zoneinfo != null) {<a name="line.730"></a>
-<span class="sourceLineNo">731</span>                                return false;<a name="line.731"></a>
-<span class="sourceLineNo">732</span>                        }<a name="line.732"></a>
-<span class="sourceLineNo">733</span>                } else if (!zoneinfo.equals(other.zoneinfo)) {<a name="line.733"></a>
-<span class="sourceLineNo">734</span>                        return false;<a name="line.734"></a>
-<span class="sourceLineNo">735</span>                }<a name="line.735"></a>
-<span class="sourceLineNo">736</span>                return true;<a name="line.736"></a>
-<span class="sourceLineNo">737</span>        }<a name="line.737"></a>
-<span class="sourceLineNo">738</span><a name="line.738"></a>
-<span class="sourceLineNo">739</span><a name="line.739"></a>
-<span class="sourceLineNo">740</span>        /*<a name="line.740"></a>
-<span class="sourceLineNo">741</span>         * Custom serialization to handle the JSON object<a name="line.741"></a>
-<span class="sourceLineNo">742</span>         */<a name="line.742"></a>
-<span class="sourceLineNo">743</span>        private void writeObject(ObjectOutputStream out) throws IOException {<a name="line.743"></a>
-<span class="sourceLineNo">744</span>                out.defaultWriteObject();<a name="line.744"></a>
-<span class="sourceLineNo">745</span>                if (src == null) {<a name="line.745"></a>
-<span class="sourceLineNo">746</span>                        out.writeObject(null);<a name="line.746"></a>
-<span class="sourceLineNo">747</span>                } else {<a name="line.747"></a>
-<span class="sourceLineNo">748</span>                        out.writeObject(src.toString());<a name="line.748"></a>
-<span class="sourceLineNo">749</span>                }<a name="line.749"></a>
-<span class="sourceLineNo">750</span>        }<a name="line.750"></a>
-<span class="sourceLineNo">751</span>        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {<a name="line.751"></a>
-<span class="sourceLineNo">752</span>                in.defaultReadObject();<a name="line.752"></a>
-<span class="sourceLineNo">753</span>                Object o = in.readObject();<a name="line.753"></a>
-<span class="sourceLineNo">754</span>                if (o != null) {<a name="line.754"></a>
-<span class="sourceLineNo">755</span>                        JsonParser parser = new JsonParser();<a name="line.755"></a>
-<span class="sourceLineNo">756</span>                        src = parser.parse((String)o).getAsJsonObject();<a name="line.756"></a>
-<span class="sourceLineNo">757</span>                }<a name="line.757"></a>
-<span class="sourceLineNo">758</span>        }<a name="line.758"></a>
-<span class="sourceLineNo">759</span><a name="line.759"></a>
-<span class="sourceLineNo">760</span>}<a name="line.760"></a>
+<span class="sourceLineNo">585</span>                DefaultUserInfo other = (DefaultUserInfo) obj;<a name="line.585"></a>
+<span class="sourceLineNo">586</span>                if (address == null) {<a name="line.586"></a>
+<span class="sourceLineNo">587</span>                        if (other.address != null) {<a name="line.587"></a>
+<span class="sourceLineNo">588</span>                                return false;<a name="line.588"></a>
+<span class="sourceLineNo">589</span>                        }<a name="line.589"></a>
+<span class="sourceLineNo">590</span>                } else if (!address.equals(other.address)) {<a name="line.590"></a>
+<span class="sourceLineNo">591</span>                        return false;<a name="line.591"></a>
+<span class="sourceLineNo">592</span>                }<a name="line.592"></a>
+<span class="sourceLineNo">593</span>                if (birthdate == null) {<a name="line.593"></a>
+<span class="sourceLineNo">594</span>                        if (other.birthdate != null) {<a name="line.594"></a>
+<span class="sourceLineNo">595</span>                                return false;<a name="line.595"></a>
+<span class="sourceLineNo">596</span>                        }<a name="line.596"></a>
+<span class="sourceLineNo">597</span>                } else if (!birthdate.equals(other.birthdate)) {<a name="line.597"></a>
+<span class="sourceLineNo">598</span>                        return false;<a name="line.598"></a>
+<span class="sourceLineNo">599</span>                }<a name="line.599"></a>
+<span class="sourceLineNo">600</span>                if (email == null) {<a name="line.600"></a>
+<span class="sourceLineNo">601</span>                        if (other.email != null) {<a name="line.601"></a>
+<span class="sourceLineNo">602</span>                                return false;<a name="line.602"></a>
+<span class="sourceLineNo">603</span>                        }<a name="line.603"></a>
+<span class="sourceLineNo">604</span>                } else if (!email.equals(other.email)) {<a name="line.604"></a>
+<span class="sourceLineNo">605</span>                        return false;<a name="line.605"></a>
+<span class="sourceLineNo">606</span>                }<a name="line.606"></a>
+<span class="sourceLineNo">607</span>                if (emailVerified == null) {<a name="line.607"></a>
+<span class="sourceLineNo">608</span>                        if (other.emailVerified != null) {<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                                return false;<a name="line.609"></a>
+<span class="sourceLineNo">610</span>                        }<a name="line.610"></a>
+<span class="sourceLineNo">611</span>                } else if (!emailVerified.equals(other.emailVerified)) {<a name="line.611"></a>
+<span class="sourceLineNo">612</span>                        return false;<a name="line.612"></a>
+<span class="sourceLineNo">613</span>                }<a name="line.613"></a>
+<span class="sourceLineNo">614</span>                if (familyName == null) {<a name="line.614"></a>
+<span class="sourceLineNo">615</span>                        if (other.familyName != null) {<a name="line.615"></a>
+<span class="sourceLineNo">616</span>                                return false;<a name="line.616"></a>
+<span class="sourceLineNo">617</span>                        }<a name="line.617"></a>
+<span class="sourceLineNo">618</span>                } else if (!familyName.equals(other.familyName)) {<a name="line.618"></a>
+<span class="sourceLineNo">619</span>                        return false;<a name="line.619"></a>
+<span class="sourceLineNo">620</span>                }<a name="line.620"></a>
+<span class="sourceLineNo">621</span>                if (gender == null) {<a name="line.621"></a>
+<span class="sourceLineNo">622</span>                        if (other.gender != null) {<a name="line.622"></a>
+<span class="sourceLineNo">623</span>                                return false;<a name="line.623"></a>
+<span class="sourceLineNo">624</span>                        }<a name="line.624"></a>
+<span class="sourceLineNo">625</span>                } else if (!gender.equals(other.gender)) {<a name="line.625"></a>
+<span class="sourceLineNo">626</span>                        return false;<a name="line.626"></a>
+<span class="sourceLineNo">627</span>                }<a name="line.627"></a>
+<span class="sourceLineNo">628</span>                if (givenName == null) {<a name="line.628"></a>
+<span class="sourceLineNo">629</span>                        if (other.givenName != null) {<a name="line.629"></a>
+<span class="sourceLineNo">630</span>                                return false;<a name="line.630"></a>
+<span class="sourceLineNo">631</span>                        }<a name="line.631"></a>
+<span class="sourceLineNo">632</span>                } else if (!givenName.equals(other.givenName)) {<a name="line.632"></a>
+<span class="sourceLineNo">633</span>                        return false;<a name="line.633"></a>
+<span class="sourceLineNo">634</span>                }<a name="line.634"></a>
+<span class="sourceLineNo">635</span>                if (id == null) {<a name="line.635"></a>
+<span class="sourceLineNo">636</span>                        if (other.id != null) {<a name="line.636"></a>
+<span class="sourceLineNo">637</span>                                return false;<a name="line.637"></a>
+<span class="sourceLineNo">638</span>                        }<a name="line.638"></a>
+<span class="sourceLineNo">639</span>                } else if (!id.equals(other.id)) {<a name="line.639"></a>
+<span class="sourceLineNo">640</span>                        return false;<a name="line.640"></a>
+<span class="sourceLineNo">641</span>                }<a name="line.641"></a>
+<span class="sourceLineNo">642</span>                if (locale == null) {<a name="line.642"></a>
+<span class="sourceLineNo">643</span>                        if (other.locale != null) {<a name="line.643"></a>
+<span class="sourceLineNo">644</span>                                return false;<a name="line.644"></a>
+<span class="sourceLineNo">645</span>                        }<a name="line.645"></a>
+<span class="sourceLineNo">646</span>                } else if (!locale.equals(other.locale)) {<a name="line.646"></a>
+<span class="sourceLineNo">647</span>                        return false;<a name="line.647"></a>
+<span class="sourceLineNo">648</span>                }<a name="line.648"></a>
+<span class="sourceLineNo">649</span>                if (middleName == null) {<a name="line.649"></a>
+<span class="sourceLineNo">650</span>                        if (other.middleName != null) {<a name="line.650"></a>
+<span class="sourceLineNo">651</span>                                return false;<a name="line.651"></a>
+<span class="sourceLineNo">652</span>                        }<a name="line.652"></a>
+<span class="sourceLineNo">653</span>                } else if (!middleName.equals(other.middleName)) {<a name="line.653"></a>
+<span class="sourceLineNo">654</span>                        return false;<a name="line.654"></a>
+<span class="sourceLineNo">655</span>                }<a name="line.655"></a>
+<span class="sourceLineNo">656</span>                if (name == null) {<a name="line.656"></a>
+<span class="sourceLineNo">657</span>                        if (other.name != null) {<a name="line.657"></a>
+<span class="sourceLineNo">658</span>                                return false;<a name="line.658"></a>
+<span class="sourceLineNo">659</span>                        }<a name="line.659"></a>
+<span class="sourceLineNo">660</span>                } else if (!name.equals(other.name)) {<a name="line.660"></a>
+<span class="sourceLineNo">661</span>                        return false;<a name="line.661"></a>
+<span class="sourceLineNo">662</span>                }<a name="line.662"></a>
+<span class="sourceLineNo">663</span>                if (nickname == null) {<a name="line.663"></a>
+<span class="sourceLineNo">664</span>                        if (other.nickname != null) {<a name="line.664"></a>
+<span class="sourceLineNo">665</span>                                return false;<a name="line.665"></a>
+<span class="sourceLineNo">666</span>                        }<a name="line.666"></a>
+<span class="sourceLineNo">667</span>                } else if (!nickname.equals(other.nickname)) {<a name="line.667"></a>
+<span class="sourceLineNo">668</span>                        return false;<a name="line.668"></a>
+<span class="sourceLineNo">669</span>                }<a name="line.669"></a>
+<span class="sourceLineNo">670</span>                if (phoneNumber == null) {<a name="line.670"></a>
+<span class="sourceLineNo">671</span>                        if (other.phoneNumber != null) {<a name="line.671"></a>
+<span class="sourceLineNo">672</span>                                return false;<a name="line.672"></a>
+<span class="sourceLineNo">673</span>                        }<a name="line.673"></a>
+<span class="sourceLineNo">674</span>                } else if (!phoneNumber.equals(other.phoneNumber)) {<a name="line.674"></a>
+<span class="sourceLineNo">675</span>                        return false;<a name="line.675"></a>
+<span class="sourceLineNo">676</span>                }<a name="line.676"></a>
+<span class="sourceLineNo">677</span>                if (phoneNumberVerified == null) {<a name="line.677"></a>
+<span class="sourceLineNo">678</span>                        if (other.phoneNumberVerified != null) {<a name="line.678"></a>
+<span class="sourceLineNo">679</span>                                return false;<a name="line.679"></a>
+<span class="sourceLineNo">680</span>                        }<a name="line.680"></a>
+<span class="sourceLineNo">681</span>                } else if (!phoneNumberVerified.equals(other.phoneNumberVerified)) {<a name="line.681"></a>
+<span class="sourceLineNo">682</span>                        return false;<a name="line.682"></a>
+<span class="sourceLineNo">683</span>                }<a name="line.683"></a>
+<span class="sourceLineNo">684</span>                if (picture == null) {<a name="line.684"></a>
+<span class="sourceLineNo">685</span>                        if (other.picture != null) {<a name="line.685"></a>
+<span class="sourceLineNo">686</span>                                return false;<a name="line.686"></a>
+<span class="sourceLineNo">687</span>                        }<a name="line.687"></a>
+<span class="sourceLineNo">688</span>                } else if (!picture.equals(other.picture)) {<a name="line.688"></a>
+<span class="sourceLineNo">689</span>                        return false;<a name="line.689"></a>
+<span class="sourceLineNo">690</span>                }<a name="line.690"></a>
+<span class="sourceLineNo">691</span>                if (preferredUsername == null) {<a name="line.691"></a>
+<span class="sourceLineNo">692</span>                        if (other.preferredUsername != null) {<a name="line.692"></a>
+<span class="sourceLineNo">693</span>                                return false;<a name="line.693"></a>
+<span class="sourceLineNo">694</span>                        }<a name="line.694"></a>
+<span class="sourceLineNo">695</span>                } else if (!preferredUsername.equals(other.preferredUsername)) {<a name="line.695"></a>
+<span class="sourceLineNo">696</span>                        return false;<a name="line.696"></a>
+<span class="sourceLineNo">697</span>                }<a name="line.697"></a>
+<span class="sourceLineNo">698</span>                if (profile == null) {<a name="line.698"></a>
+<span class="sourceLineNo">699</span>                        if (other.profile != null) {<a name="line.699"></a>
+<span class="sourceLineNo">700</span>                                return false;<a name="line.700"></a>
+<span class="sourceLineNo">701</span>                        }<a name="line.701"></a>
+<span class="sourceLineNo">702</span>                } else if (!profile.equals(other.profile)) {<a name="line.702"></a>
+<span class="sourceLineNo">703</span>                        return false;<a name="line.703"></a>
+<span class="sourceLineNo">704</span>                }<a name="line.704"></a>
+<span class="sourceLineNo">705</span>                if (sub == null) {<a name="line.705"></a>
+<span class="sourceLineNo">706</span>                        if (other.sub != null) {<a name="line.706"></a>
+<span class="sourceLineNo">707</span>                                return false;<a name="line.707"></a>
+<span class="sourceLineNo">708</span>                        }<a name="line.708"></a>
+<span class="sourceLineNo">709</span>                } else if (!sub.equals(other.sub)) {<a name="line.709"></a>
+<span class="sourceLineNo">710</span>                        return false;<a name="line.710"></a>
+<span class="sourceLineNo">711</span>                }<a name="line.711"></a>
+<span class="sourceLineNo">712</span>                if (updatedTime == null) {<a name="line.712"></a>
+<span class="sourceLineNo">713</span>                        if (other.updatedTime != null) {<a name="line.713"></a>
+<span class="sourceLineNo">714</span>                                return false;<a name="line.714"></a>
+<span class="sourceLineNo">715</span>                        }<a name="line.715"></a>
+<span class="sourceLineNo">716</span>                } else if (!updatedTime.equals(other.updatedTime)) {<a name="line.716"></a>
+<span class="sourceLineNo">717</span>                        return false;<a name="line.717"></a>
+<span class="sourceLineNo">718</span>                }<a name="line.718"></a>
+<span class="sourceLineNo">719</span>                if (website == null) {<a name="line.719"></a>
+<span class="sourceLineNo">720</span>                        if (other.website != null) {<a name="line.720"></a>
+<span class="sourceLineNo">721</span>                                return false;<a name="line.721"></a>
+<span class="sourceLineNo">722</span>                        }<a name="line.722"></a>
+<span class="sourceLineNo">723</span>                } else if (!website.equals(other.website)) {<a name="line.723"></a>
+<span class="sourceLineNo">724</span>                        return false;<a name="line.724"></a>
+<span class="sourceLineNo">725</span>                }<a name="line.725"></a>
+<span class="sourceLineNo">726</span>                if (zoneinfo == null) {<a name="line.726"></a>
+<span class="sourceLineNo">727</span>                        if (other.zoneinfo != null) {<a name="line.727"></a>
+<span class="sourceLineNo">728</span>                                return false;<a name="line.728"></a>
+<span class="sourceLineNo">729</span>                        }<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                } else if (!zoneinfo.equals(other.zoneinfo)) {<a name="line.730"></a>
+<span class="sourceLineNo">731</span>                        return false;<a name="line.731"></a>
+<span class="sourceLineNo">732</span>                }<a name="line.732"></a>
+<span class="sourceLineNo">733</span>                return true;<a name="line.733"></a>
+<span class="sourceLineNo">734</span>        }<a name="line.734"></a>
+<span class="sourceLineNo">735</span><a name="line.735"></a>
+<span class="sourceLineNo">736</span><a name="line.736"></a>
+<span class="sourceLineNo">737</span>        /*<a name="line.737"></a>
+<span class="sourceLineNo">738</span>         * Custom serialization to handle the JSON object<a name="line.738"></a>
+<span class="sourceLineNo">739</span>         */<a name="line.739"></a>
+<span class="sourceLineNo">740</span>        private void writeObject(ObjectOutputStream out) throws IOException {<a name="line.740"></a>
+<span class="sourceLineNo">741</span>                out.defaultWriteObject();<a name="line.741"></a>
+<span class="sourceLineNo">742</span>                if (src == null) {<a name="line.742"></a>
+<span class="sourceLineNo">743</span>                        out.writeObject(null);<a name="line.743"></a>
+<span class="sourceLineNo">744</span>                } else {<a name="line.744"></a>
+<span class="sourceLineNo">745</span>                        out.writeObject(src.toString());<a name="line.745"></a>
+<span class="sourceLineNo">746</span>                }<a name="line.746"></a>
+<span class="sourceLineNo">747</span>        }<a name="line.747"></a>
+<span class="sourceLineNo">748</span>        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {<a name="line.748"></a>
+<span class="sourceLineNo">749</span>                in.defaultReadObject();<a name="line.749"></a>
+<span class="sourceLineNo">750</span>                Object o = in.readObject();<a name="line.750"></a>
+<span class="sourceLineNo">751</span>                if (o != null) {<a name="line.751"></a>
+<span class="sourceLineNo">752</span>                        JsonParser parser = new JsonParser();<a name="line.752"></a>
+<span class="sourceLineNo">753</span>                        src = parser.parse((String)o).getAsJsonObject();<a name="line.753"></a>
+<span class="sourceLineNo">754</span>                }<a name="line.754"></a>
+<span class="sourceLineNo">755</span>        }<a name="line.755"></a>
+<span class="sourceLineNo">756</span><a name="line.756"></a>
+<span class="sourceLineNo">757</span>}<a name="line.757"></a>
 
 
 

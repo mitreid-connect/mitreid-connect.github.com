@@ -7,8 +7,8 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
@@ -130,7 +130,7 @@
 <span class="sourceLineNo">122</span><a name="line.122"></a>
 <span class="sourceLineNo">123</span>                m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED);<a name="line.123"></a>
 <span class="sourceLineNo">124</span>                m.addAttribute(JsonEntityView.ENTITY, saved);<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + "/" + saved.getId());<a name="line.125"></a>
+<span class="sourceLineNo">125</span>                m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + "/" + rs.getId());<a name="line.125"></a>
 <span class="sourceLineNo">126</span><a name="line.126"></a>
 <span class="sourceLineNo">127</span>                return ResourceSetEntityAbbreviatedView.VIEWNAME;<a name="line.127"></a>
 <span class="sourceLineNo">128</span><a name="line.128"></a>

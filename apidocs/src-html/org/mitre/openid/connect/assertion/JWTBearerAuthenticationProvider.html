@@ -7,8 +7,8 @@
 <body>
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Copyright 2016 The MITRE Corporation<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *   and the MIT Internet Trust Consortium<a name="line.3"></a>
+<span class="sourceLineNo">002</span> * Copyright 2015 The MITRE Corporation<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *   and the MIT Kerberos and Internet Trust Consortium<a name="line.3"></a>
 <span class="sourceLineNo">004</span> *<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.5"></a>
 <span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
@@ -93,7 +93,7 @@
 <span class="sourceLineNo">085</span><a name="line.85"></a>
 <span class="sourceLineNo">086</span><a name="line.86"></a>
 <span class="sourceLineNo">087</span>                try {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                        ClientDetailsEntity client = clientService.loadClientByClientId(jwtAuth.getName());<a name="line.88"></a>
+<span class="sourceLineNo">088</span>                        ClientDetailsEntity client = clientService.loadClientByClientId(jwtAuth.getClientId());<a name="line.88"></a>
 <span class="sourceLineNo">089</span><a name="line.89"></a>
 <span class="sourceLineNo">090</span>                        JWT jwt = jwtAuth.getJwt();<a name="line.90"></a>
 <span class="sourceLineNo">091</span>                        JWTClaimsSet jwtClaims = jwt.getJWTClaimsSet();<a name="line.91"></a>
@@ -132,94 +132,89 @@
 <span class="sourceLineNo">124</span>                                                                || alg.equals(JWSAlgorithm.HS384)<a name="line.124"></a>
 <span class="sourceLineNo">125</span>                                                                || alg.equals(JWSAlgorithm.HS512)))) {<a name="line.125"></a>
 <span class="sourceLineNo">126</span><a name="line.126"></a>
-<span class="sourceLineNo">127</span>                                        // double-check the method is asymmetrical if we're in HEART mode<a name="line.127"></a>
-<span class="sourceLineNo">128</span>                                        if (config.isHeartMode() &amp;&amp; !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                                                throw new AuthenticationServiceException("[HEART mode] Invalid authentication method");<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                                        }<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                                        <a name="line.131"></a>
-<span class="sourceLineNo">132</span>                                        JWTSigningAndValidationService validator = validators.getValidator(client, alg);<a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133"></a>
-<span class="sourceLineNo">134</span>                                        if (validator == null) {<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                                                throw new AuthenticationServiceException("Unable to create signature validator for client " + client + " and algorithm " + alg);<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                                        }<a name="line.136"></a>
-<span class="sourceLineNo">137</span><a name="line.137"></a>
-<span class="sourceLineNo">138</span>                                        if (!validator.validateSignature(jws)) {<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                                                throw new AuthenticationServiceException("Signature did not validate for presented JWT authentication.");<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                                        }<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                                } else {<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                                        throw new AuthenticationServiceException("Unable to create signature validator for method " + client.getTokenEndpointAuthMethod() + " and algorithm " + alg);<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                                }<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                        }<a name="line.144"></a>
-<span class="sourceLineNo">145</span><a name="line.145"></a>
-<span class="sourceLineNo">146</span>                        // check the issuer<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                        if (jwtClaims.getIssuer() == null) {<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                                throw new AuthenticationServiceException("Assertion Token Issuer is null");<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                        } else if (!jwtClaims.getIssuer().equals(client.getClientId())){<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                                throw new AuthenticationServiceException("Issuers do not match, expected " + client.getClientId() + " got " + jwtClaims.getIssuer());<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                        }<a name="line.151"></a>
-<span class="sourceLineNo">152</span><a name="line.152"></a>
-<span class="sourceLineNo">153</span>                        // check expiration<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                        if (jwtClaims.getExpirationTime() == null) {<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                                throw new AuthenticationServiceException("Assertion Token does not have required expiration claim");<a name="line.155"></a>
-<span class="sourceLineNo">156</span>                        } else {<a name="line.156"></a>
-<span class="sourceLineNo">157</span>                                // it's not null, see if it's expired<a name="line.157"></a>
-<span class="sourceLineNo">158</span>                                Date now = new Date(System.currentTimeMillis() - (timeSkewAllowance * 1000));<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                                if (now.after(jwtClaims.getExpirationTime())) {<a name="line.159"></a>
-<span class="sourceLineNo">160</span>                                        throw new AuthenticationServiceException("Assertion Token is expired: " + jwtClaims.getExpirationTime());<a name="line.160"></a>
-<span class="sourceLineNo">161</span>                                }<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                        }<a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span>                        // check not before<a name="line.164"></a>
-<span class="sourceLineNo">165</span>                        if (jwtClaims.getNotBeforeTime() != null) {<a name="line.165"></a>
-<span class="sourceLineNo">166</span>                                Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));<a name="line.166"></a>
-<span class="sourceLineNo">167</span>                                if (now.before(jwtClaims.getNotBeforeTime())){<a name="line.167"></a>
-<span class="sourceLineNo">168</span>                                        throw new AuthenticationServiceException("Assertion Token not valid untill: " + jwtClaims.getNotBeforeTime());<a name="line.168"></a>
-<span class="sourceLineNo">169</span>                                }<a name="line.169"></a>
-<span class="sourceLineNo">170</span>                        }<a name="line.170"></a>
-<span class="sourceLineNo">171</span><a name="line.171"></a>
-<span class="sourceLineNo">172</span>                        // check issued at<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                        if (jwtClaims.getIssueTime() != null) {<a name="line.173"></a>
-<span class="sourceLineNo">174</span>                                // since it's not null, see if it was issued in the future<a name="line.174"></a>
-<span class="sourceLineNo">175</span>                                Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                                if (now.before(jwtClaims.getIssueTime())) {<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                                        throw new AuthenticationServiceException("Assertion Token was issued in the future: " + jwtClaims.getIssueTime());<a name="line.177"></a>
-<span class="sourceLineNo">178</span>                                }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                        }<a name="line.179"></a>
-<span class="sourceLineNo">180</span><a name="line.180"></a>
-<span class="sourceLineNo">181</span>                        // check audience<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                        if (jwtClaims.getAudience() == null) {<a name="line.182"></a>
-<span class="sourceLineNo">183</span>                                throw new AuthenticationServiceException("Assertion token audience is null");<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                        } else if (!(jwtClaims.getAudience().contains(config.getIssuer()) || jwtClaims.getAudience().contains(config.getIssuer() + "token"))) {<a name="line.184"></a>
-<span class="sourceLineNo">185</span>                                throw new AuthenticationServiceException("Audience does not match, expected " + config.getIssuer() + " or " + (config.getIssuer() + "token") + " got " + jwtClaims.getAudience());<a name="line.185"></a>
-<span class="sourceLineNo">186</span>                        }<a name="line.186"></a>
-<span class="sourceLineNo">187</span><a name="line.187"></a>
-<span class="sourceLineNo">188</span>                        // IFF we managed to get all the way down here, the token is valid<a name="line.188"></a>
-<span class="sourceLineNo">189</span><a name="line.189"></a>
-<span class="sourceLineNo">190</span>                        // add in the ROLE_CLIENT authority<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                        Set&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;(client.getAuthorities());<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                        authorities.add(ROLE_CLIENT);<a name="line.192"></a>
-<span class="sourceLineNo">193</span><a name="line.193"></a>
-<span class="sourceLineNo">194</span>                        return new JWTBearerAssertionAuthenticationToken(jwt, authorities);<a name="line.194"></a>
-<span class="sourceLineNo">195</span><a name="line.195"></a>
-<span class="sourceLineNo">196</span>                } catch (InvalidClientException e) {<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                        throw new UsernameNotFoundException("Could not find client: " + jwtAuth.getName());<a name="line.197"></a>
-<span class="sourceLineNo">198</span>                } catch (ParseException e) {<a name="line.198"></a>
-<span class="sourceLineNo">199</span><a name="line.199"></a>
-<span class="sourceLineNo">200</span>                        logger.error("Failure during authentication, error was: ", e);<a name="line.200"></a>
-<span class="sourceLineNo">201</span><a name="line.201"></a>
-<span class="sourceLineNo">202</span>                        throw new AuthenticationServiceException("Invalid JWT format");<a name="line.202"></a>
-<span class="sourceLineNo">203</span>                }<a name="line.203"></a>
-<span class="sourceLineNo">204</span>        }<a name="line.204"></a>
-<span class="sourceLineNo">205</span><a name="line.205"></a>
-<span class="sourceLineNo">206</span>        /**<a name="line.206"></a>
-<span class="sourceLineNo">207</span>         * We support {@link JWTBearerAssertionAuthenticationToken}s only.<a name="line.207"></a>
-<span class="sourceLineNo">208</span>         */<a name="line.208"></a>
-<span class="sourceLineNo">209</span>        @Override<a name="line.209"></a>
-<span class="sourceLineNo">210</span>        public boolean supports(Class&lt;?&gt; authentication) {<a name="line.210"></a>
-<span class="sourceLineNo">211</span>                return (JWTBearerAssertionAuthenticationToken.class.isAssignableFrom(authentication));<a name="line.211"></a>
-<span class="sourceLineNo">212</span>        }<a name="line.212"></a>
-<span class="sourceLineNo">213</span><a name="line.213"></a>
-<span class="sourceLineNo">214</span>}<a name="line.214"></a>
+<span class="sourceLineNo">127</span>                                        JWTSigningAndValidationService validator = validators.getValidator(client, alg);<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>                                        if (validator == null) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                                                throw new AuthenticationServiceException("Unable to create signature validator for client " + client + " and algorithm " + alg);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                                        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>                                        if (!validator.validateSignature(jws)) {<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                                                throw new AuthenticationServiceException("Signature did not validate for presented JWT authentication.");<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                                        }<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                                } else {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                                        throw new AuthenticationServiceException("Unable to create signature validator for method " + client.getTokenEndpointAuthMethod() + " and algorithm " + alg);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                                }<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                        }<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>                        // check the issuer<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                        if (jwtClaims.getIssuer() == null) {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                                throw new AuthenticationServiceException("Assertion Token Issuer is null");<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                        } else if (!jwtClaims.getIssuer().equals(client.getClientId())){<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                                throw new AuthenticationServiceException("Issuers do not match, expected " + client.getClientId() + " got " + jwtClaims.getIssuer());<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                        }<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>                        // check expiration<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                        if (jwtClaims.getExpirationTime() == null) {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                                throw new AuthenticationServiceException("Assertion Token does not have required expiration claim");<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                        } else {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                                // it's not null, see if it's expired<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                                Date now = new Date(System.currentTimeMillis() - (timeSkewAllowance * 1000));<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                                if (now.after(jwtClaims.getExpirationTime())) {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                                        throw new AuthenticationServiceException("Assertion Token is expired: " + jwtClaims.getExpirationTime());<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                                }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                        }<a name="line.157"></a>
+<span class="sourceLineNo">158</span><a name="line.158"></a>
+<span class="sourceLineNo">159</span>                        // check not before<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                        if (jwtClaims.getNotBeforeTime() != null) {<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                                Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                                if (now.before(jwtClaims.getNotBeforeTime())){<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                                        throw new AuthenticationServiceException("Assertion Token not valid untill: " + jwtClaims.getNotBeforeTime());<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                                }<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                        }<a name="line.165"></a>
+<span class="sourceLineNo">166</span><a name="line.166"></a>
+<span class="sourceLineNo">167</span>                        // check issued at<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                        if (jwtClaims.getIssueTime() != null) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                                // since it's not null, see if it was issued in the future<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                                Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                                if (now.before(jwtClaims.getIssueTime())) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                                        throw new AuthenticationServiceException("Assertion Token was issued in the future: " + jwtClaims.getIssueTime());<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                                }<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>                        // check audience<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                        if (jwtClaims.getAudience() == null) {<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                                throw new AuthenticationServiceException("Assertion token audience is null");<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                        } else if (!(jwtClaims.getAudience().contains(config.getIssuer()) || jwtClaims.getAudience().contains(config.getIssuer() + "token"))) {<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                                throw new AuthenticationServiceException("Audience does not match, expected " + config.getIssuer() + " or " + (config.getIssuer() + "token") + " got " + jwtClaims.getAudience());<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                        }<a name="line.181"></a>
+<span class="sourceLineNo">182</span><a name="line.182"></a>
+<span class="sourceLineNo">183</span>                        // IFF we managed to get all the way down here, the token is valid<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>                        // add in the ROLE_CLIENT authority<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                        Set&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;(client.getAuthorities());<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                        authorities.add(ROLE_CLIENT);<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>                        return new JWTBearerAssertionAuthenticationToken(client.getClientId(), jwt, authorities);<a name="line.189"></a>
+<span class="sourceLineNo">190</span><a name="line.190"></a>
+<span class="sourceLineNo">191</span>                } catch (InvalidClientException e) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                        throw new UsernameNotFoundException("Could not find client: " + jwtAuth.getClientId());<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                } catch (ParseException e) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span><a name="line.194"></a>
+<span class="sourceLineNo">195</span>                        logger.error("Failure during authentication, error was: ", e);<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>                        throw new AuthenticationServiceException("Invalid JWT format");<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                }<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
+<span class="sourceLineNo">201</span>        /**<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * We support {@link JWTBearerAssertionAuthenticationToken}s only.<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         */<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        @Override<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        public boolean supports(Class&lt;?&gt; authentication) {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                return (JWTBearerAssertionAuthenticationToken.class.isAssignableFrom(authentication));<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        }<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>}<a name="line.209"></a>
 
 
 
