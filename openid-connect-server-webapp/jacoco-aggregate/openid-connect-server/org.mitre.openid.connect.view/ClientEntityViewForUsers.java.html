@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientEntityViewForUsers.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.view</a> &gt; <span class="el_source">ClientEntityViewForUsers.java</span></div><h1>ClientEntityViewForUsers.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -38,9 +39,9 @@ import com.google.gson.FieldAttributes;
  *
  */
 @Component(ClientEntityViewForUsers.VIEWNAME)
-<span class="nc" id="L41">public class ClientEntityViewForUsers extends AbstractClientEntityView {</span>
+<span class="nc" id="L42">public class ClientEntityViewForUsers extends AbstractClientEntityView {</span>
 
-<span class="nc" id="L43">	private Set&lt;String&gt; whitelistedFields = ImmutableSet.of(&quot;clientName&quot;, &quot;clientId&quot;, &quot;id&quot;, &quot;clientDescription&quot;, &quot;scope&quot;, &quot;logoUri&quot;);</span>
+<span class="nc" id="L44">	private Set&lt;String&gt; whitelistedFields = ImmutableSet.of(&quot;clientName&quot;, &quot;clientId&quot;, &quot;id&quot;, &quot;clientDescription&quot;, &quot;scope&quot;, &quot;logoUri&quot;);</span>
 
 	public static final String VIEWNAME = &quot;clientEntityViewUsers&quot;;
 
@@ -49,25 +50,25 @@ import com.google.gson.FieldAttributes;
 	 */
 	@Override
 	protected ExclusionStrategy getExclusionStrategy() {
-<span class="nc" id="L52">		return new ExclusionStrategy() {</span>
+<span class="nc" id="L53">		return new ExclusionStrategy() {</span>
 
 			@Override
 			public boolean shouldSkipField(FieldAttributes f) {
 				// whitelist the handful of fields that are good
-<span class="nc bnc" id="L57" title="All 2 branches missed.">				if (whitelistedFields.contains(f.getName())) {</span>
-<span class="nc" id="L58">					return false;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">				if (whitelistedFields.contains(f.getName())) {</span>
+<span class="nc" id="L59">					return false;</span>
 				} else {
-<span class="nc" id="L60">					return true;</span>
+<span class="nc" id="L61">					return true;</span>
 				}
 			}
 
 			@Override
 			public boolean shouldSkipClass(Class&lt;?&gt; clazz) {
 				// skip the JPA binding wrapper
-<span class="nc bnc" id="L67" title="All 2 branches missed.">				if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
-<span class="nc" id="L68">					return true;</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">				if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
+<span class="nc" id="L69">					return true;</span>
 				}
-<span class="nc" id="L70">				return false;</span>
+<span class="nc" id="L71">				return false;</span>
 			}
 
 		};

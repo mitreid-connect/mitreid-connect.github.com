@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PolicyAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.web</a> &gt; <span class="el_source">PolicyAPI.java</span></div><h1>PolicyAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -55,15 +54,15 @@ import com.google.gson.Gson;
 @Controller
 @RequestMapping(&quot;/&quot; + PolicyAPI.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L58">public class PolicyAPI {</span>
+<span class="nc" id="L57">public class PolicyAPI {</span>
 
 	// Logger for this class
-<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(PolicyAPI.class);</span>
+<span class="nc" id="L60">	private static final Logger logger = LoggerFactory.getLogger(PolicyAPI.class);</span>
 
 	public static final String URL = RootController.API_URL + &quot;/resourceset&quot;;
 	public static final String POLICYURL = &quot;/policy&quot;;
 
-<span class="nc" id="L66">	private Gson gson = new Gson();</span>
+<span class="nc" id="L65">	private Gson gson = new Gson();</span>
 
 	@Autowired
 	private ResourceSetService resourceSetService;
@@ -77,11 +76,11 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;&quot;, method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String getResourceSetsForCurrentUser(Model m, Authentication auth) {
 
-<span class="nc" id="L80">		Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForOwner(auth.getName());</span>
+<span class="nc" id="L79">		Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForOwner(auth.getName());</span>
 
-<span class="nc" id="L82">		m.addAttribute(JsonEntityView.ENTITY, resourceSets);</span>
+<span class="nc" id="L81">		m.addAttribute(JsonEntityView.ENTITY, resourceSets);</span>
 
-<span class="nc" id="L84">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L83">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	/**
@@ -94,24 +93,24 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot;, method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String getResourceSet(@PathVariable (value = &quot;rsid&quot;) Long rsid, Model m, Authentication auth) {
 
-<span class="nc" id="L97">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L96">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L99" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L100">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L101">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L99">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L100">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L105">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L104">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L108">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L109">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L107">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L108">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L112">		m.addAttribute(JsonEntityView.ENTITY, rs);</span>
+<span class="nc" id="L111">		m.addAttribute(JsonEntityView.ENTITY, rs);</span>
 
-<span class="nc" id="L114">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L113">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	/**
@@ -124,24 +123,24 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot;, method = RequestMethod.DELETE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String deleteResourceSet(@PathVariable (value = &quot;rsid&quot;) Long rsid, Model m, Authentication auth) {
 
-<span class="nc" id="L127">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L126">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L130">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L131">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L129">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L130">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L134" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L135">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L134">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L138">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L139">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L137">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L138">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L142">		resourceSetService.remove(rs);</span>
-<span class="nc" id="L143">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
-<span class="nc" id="L144">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L141">		resourceSetService.remove(rs);</span>
+<span class="nc" id="L142">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
+<span class="nc" id="L143">		return HttpCodeView.VIEWNAME;</span>
 
 	}
 
@@ -155,24 +154,24 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot; + POLICYURL, method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String getPoliciesForResourceSet(@PathVariable (value = &quot;rsid&quot;) Long rsid, Model m, Authentication auth) {
 
-<span class="nc" id="L158">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L157">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L160" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L161">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L162">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L160">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L161">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L166">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L165">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L169">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L170">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L168">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L169">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L173">		m.addAttribute(JsonEntityView.ENTITY, rs.getPolicies());</span>
+<span class="nc" id="L172">		m.addAttribute(JsonEntityView.ENTITY, rs.getPolicies());</span>
 
-<span class="nc" id="L175">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L174">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	/**
@@ -184,51 +183,51 @@ import com.google.gson.Gson;
 	 */
 	@RequestMapping(value = &quot;/{rsid}&quot; + POLICYURL, method = RequestMethod.POST, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String createNewPolicyForResourceSet(@PathVariable (value = &quot;rsid&quot;) Long rsid, @RequestBody String jsonString, Model m, Authentication auth) {
-<span class="nc" id="L187">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L186">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L189" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L190">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L191">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L189">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L190">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L194" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L195">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L194">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L198">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L199">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L197">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L198">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L202">		Policy p = gson.fromJson(jsonString, Policy.class);</span>
+<span class="nc" id="L201">		Policy p = gson.fromJson(jsonString, Policy.class);</span>
 
-<span class="nc bnc" id="L204" title="All 2 branches missed.">		if (p.getId() != null) {</span>
-<span class="nc" id="L205">			logger.warn(&quot;Tried to add a policy with a non-null ID: &quot; + p.getId());</span>
-<span class="nc" id="L206">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L207">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">		if (p.getId() != null) {</span>
+<span class="nc" id="L204">			logger.warn(&quot;Tried to add a policy with a non-null ID: &quot; + p.getId());</span>
+<span class="nc" id="L205">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L206">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L210" title="All 2 branches missed.">		for (Claim claim : p.getClaimsRequired()) {</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">			if (claim.getId() != null) {</span>
-<span class="nc" id="L212">				logger.warn(&quot;Tried to add a policy with a non-null claim ID: &quot; + claim.getId());</span>
-<span class="nc" id="L213">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L214">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">		for (Claim claim : p.getClaimsRequired()) {</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">			if (claim.getId() != null) {</span>
+<span class="nc" id="L211">				logger.warn(&quot;Tried to add a policy with a non-null claim ID: &quot; + claim.getId());</span>
+<span class="nc" id="L212">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L213">				return HttpCodeView.VIEWNAME;</span>
 			}
-<span class="nc" id="L216">		}</span>
+<span class="nc" id="L215">		}</span>
 
-<span class="nc" id="L218">		rs.getPolicies().add(p);</span>
-<span class="nc" id="L219">		ResourceSet saved = resourceSetService.update(rs, rs);</span>
+<span class="nc" id="L217">		rs.getPolicies().add(p);</span>
+<span class="nc" id="L218">		ResourceSet saved = resourceSetService.update(rs, rs);</span>
 
 		// find the new policy object
-<span class="nc" id="L222">		Collection&lt;Policy&gt; newPolicies = Sets.difference(new HashSet&lt;&gt;(saved.getPolicies()), new HashSet&lt;&gt;(rs.getPolicies()));</span>
+<span class="nc" id="L221">		Collection&lt;Policy&gt; newPolicies = Sets.difference(new HashSet&lt;&gt;(saved.getPolicies()), new HashSet&lt;&gt;(rs.getPolicies()));</span>
 
-<span class="nc bnc" id="L224" title="All 2 branches missed.">		if (newPolicies.size() == 1) {</span>
-<span class="nc" id="L225">			Policy newPolicy = newPolicies.iterator().next();</span>
-<span class="nc" id="L226">			m.addAttribute(JsonEntityView.ENTITY, newPolicy);</span>
-<span class="nc" id="L227">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">		if (newPolicies.size() == 1) {</span>
+<span class="nc" id="L224">			Policy newPolicy = newPolicies.iterator().next();</span>
+<span class="nc" id="L225">			m.addAttribute(JsonEntityView.ENTITY, newPolicy);</span>
+<span class="nc" id="L226">			return JsonEntityView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L229">			logger.warn(&quot;Unexpected result trying to add a new policy object: &quot; + newPolicies);</span>
-<span class="nc" id="L230">			m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
-<span class="nc" id="L231">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L228">			logger.warn(&quot;Unexpected result trying to add a new policy object: &quot; + newPolicies);</span>
+<span class="nc" id="L229">			m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L230">			return HttpCodeView.VIEWNAME;</span>
 		}
 
 	}
@@ -244,32 +243,32 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot; + POLICYURL + &quot;/{pid}&quot;, method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String getPolicy(@PathVariable (value = &quot;rsid&quot;) Long rsid, @PathVariable (value = &quot;pid&quot;) Long pid, Model m, Authentication auth) {
 
-<span class="nc" id="L247">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L246">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L249" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L250">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L251">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L249">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L250">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L254" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L255">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L254">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L258">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L259">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L257">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L258">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L262" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
-<span class="nc bnc" id="L263" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
 				// found it!
-<span class="nc" id="L265">				m.addAttribute(JsonEntityView.ENTITY, policy);</span>
-<span class="nc" id="L266">				return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L264">				m.addAttribute(JsonEntityView.ENTITY, policy);</span>
+<span class="nc" id="L265">				return JsonEntityView.VIEWNAME;</span>
 			}
-<span class="nc" id="L268">		}</span>
+<span class="nc" id="L267">		}</span>
 
 		// if we made it this far, we haven't found it
-<span class="nc" id="L271">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L272">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L270">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L271">		return HttpCodeView.VIEWNAME;</span>
 	}
 
 	/**
@@ -284,63 +283,63 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot; + POLICYURL + &quot;/{pid}&quot;, method = RequestMethod.PUT, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String setClaimsForResourceSet(@PathVariable (value = &quot;rsid&quot;) Long rsid, @PathVariable (value = &quot;pid&quot;) Long pid, @RequestBody String jsonString, Model m, Authentication auth) {
 
-<span class="nc" id="L287">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L286">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L289" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L290">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L291">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L289">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L290">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L294" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
-<span class="nc" id="L295">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">		if (!rs.getOwner().equals(auth.getName())) {</span>
+<span class="nc" id="L294">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// authenticated user didn't match the owner of the resource set
-<span class="nc" id="L298">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L299">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L297">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L298">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L302">		Policy p = gson.fromJson(jsonString, Policy.class);</span>
+<span class="nc" id="L301">		Policy p = gson.fromJson(jsonString, Policy.class);</span>
 
-<span class="nc bnc" id="L304" title="All 2 branches missed.">		if (!pid.equals(p.getId())) {</span>
-<span class="nc" id="L305">			logger.warn(&quot;Policy ID mismatch, expected &quot; + pid + &quot; got &quot; + p.getId());</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">		if (!pid.equals(p.getId())) {</span>
+<span class="nc" id="L304">			logger.warn(&quot;Policy ID mismatch, expected &quot; + pid + &quot; got &quot; + p.getId());</span>
 
-<span class="nc" id="L307">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L308">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L306">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L307">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L311" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
-<span class="nc bnc" id="L312" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
 				// found it!
 
 				// find the existing claim IDs, make sure we're not overwriting anything from another policy
-<span class="nc" id="L316">				Set&lt;Long&gt; claimIds = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">				for (Claim claim : policy.getClaimsRequired()) {</span>
-<span class="nc" id="L318">					claimIds.add(claim.getId());</span>
-<span class="nc" id="L319">				}</span>
+<span class="nc" id="L315">				Set&lt;Long&gt; claimIds = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">				for (Claim claim : policy.getClaimsRequired()) {</span>
+<span class="nc" id="L317">					claimIds.add(claim.getId());</span>
+<span class="nc" id="L318">				}</span>
 
-<span class="nc bnc" id="L321" title="All 2 branches missed.">				for (Claim claim : p.getClaimsRequired()) {</span>
-<span class="nc bnc" id="L322" title="All 4 branches missed.">					if (claim.getId() != null &amp;&amp; !claimIds.contains(claim.getId())) {</span>
-<span class="nc" id="L323">						logger.warn(&quot;Tried to add a policy with a an unmatched claim ID: got &quot; + claim.getId() + &quot; expected &quot; + claimIds);</span>
-<span class="nc" id="L324">						m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L325">						return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">				for (Claim claim : p.getClaimsRequired()) {</span>
+<span class="nc bnc" id="L321" title="All 4 branches missed.">					if (claim.getId() != null &amp;&amp; !claimIds.contains(claim.getId())) {</span>
+<span class="nc" id="L322">						logger.warn(&quot;Tried to add a policy with a an unmatched claim ID: got &quot; + claim.getId() + &quot; expected &quot; + claimIds);</span>
+<span class="nc" id="L323">						m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L324">						return HttpCodeView.VIEWNAME;</span>
 					}
-<span class="nc" id="L327">				}</span>
+<span class="nc" id="L326">				}</span>
 
 				// update the existing object with the new values
-<span class="nc" id="L330">				policy.setClaimsRequired(p.getClaimsRequired());</span>
-<span class="nc" id="L331">				policy.setName(p.getName());</span>
-<span class="nc" id="L332">				policy.setScopes(p.getScopes());</span>
+<span class="nc" id="L329">				policy.setClaimsRequired(p.getClaimsRequired());</span>
+<span class="nc" id="L330">				policy.setName(p.getName());</span>
+<span class="nc" id="L331">				policy.setScopes(p.getScopes());</span>
 
-<span class="nc" id="L334">				resourceSetService.update(rs, rs);</span>
+<span class="nc" id="L333">				resourceSetService.update(rs, rs);</span>
 
-<span class="nc" id="L336">				m.addAttribute(JsonEntityView.ENTITY, policy);</span>
-<span class="nc" id="L337">				return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L335">				m.addAttribute(JsonEntityView.ENTITY, policy);</span>
+<span class="nc" id="L336">				return JsonEntityView.VIEWNAME;</span>
 			}
-<span class="nc" id="L339">		}</span>
+<span class="nc" id="L338">		}</span>
 
 		// if we made it this far, we haven't found it
-<span class="nc" id="L342">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L343">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L341">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L342">		return HttpCodeView.VIEWNAME;</span>
 	}
 
 	/**
@@ -354,38 +353,38 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{rsid}&quot; + POLICYURL + &quot;/{pid}&quot;, method = RequestMethod.DELETE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String deleteResourceSet(@PathVariable (&quot;rsid&quot;) Long rsid, @PathVariable (value = &quot;pid&quot;) Long pid, Model m, Authentication auth) {
 
-<span class="nc" id="L357">		ResourceSet rs = resourceSetService.getById(rsid);</span>
+<span class="nc" id="L356">		ResourceSet rs = resourceSetService.getById(rsid);</span>
 
-<span class="nc bnc" id="L359" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L360">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L361">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
-<span class="nc" id="L362">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L359">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L360">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
+<span class="nc" id="L361">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L365" title="All 2 branches missed.">		if (!auth.getName().equals(rs.getOwner())) {</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">		if (!auth.getName().equals(rs.getOwner())) {</span>
 
-<span class="nc" id="L367">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc" id="L366">			logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 			// it wasn't issued to this user
-<span class="nc" id="L370">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L371">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L369">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L370">			return JsonErrorView.VIEWNAME;</span>
 		}
 
 
-<span class="nc bnc" id="L375" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
-<span class="nc bnc" id="L376" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
+<span class="nc bnc" id="L374" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
+<span class="nc bnc" id="L375" title="All 2 branches missed.">			if (policy.getId().equals(pid)) {</span>
 				// found it!
-<span class="nc" id="L378">				rs.getPolicies().remove(policy);</span>
-<span class="nc" id="L379">				resourceSetService.update(rs, rs);</span>
+<span class="nc" id="L377">				rs.getPolicies().remove(policy);</span>
+<span class="nc" id="L378">				resourceSetService.update(rs, rs);</span>
 
-<span class="nc" id="L381">				m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
-<span class="nc" id="L382">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L380">				m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
+<span class="nc" id="L381">				return HttpCodeView.VIEWNAME;</span>
 			}
-<span class="nc" id="L384">		}</span>
+<span class="nc" id="L383">		}</span>
 
 		// if we made it this far, we haven't found it
-<span class="nc" id="L387">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L388">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L386">		m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L387">		return HttpCodeView.VIEWNAME;</span>
 
 	}
 

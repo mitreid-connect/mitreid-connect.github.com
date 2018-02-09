@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserInfoEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">UserInfoEndpoint.java</span></div><h1>UserInfoEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -51,7 +52,7 @@ import com.google.common.base.Strings;
  */
 @Controller
 @RequestMapping(&quot;/&quot; + UserInfoEndpoint.URL)
-<span class="nc" id="L54">public class UserInfoEndpoint {</span>
+<span class="nc" id="L55">public class UserInfoEndpoint {</span>
 
 	public static final String URL = &quot;userinfo&quot;;
 
@@ -64,7 +65,7 @@ import com.google.common.base.Strings;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L67">	private static final Logger logger = LoggerFactory.getLogger(UserInfoEndpoint.class);</span>
+<span class="nc" id="L68">	private static final Logger logger = LoggerFactory.getLogger(UserInfoEndpoint.class);</span>
 
 	/**
 	 * Get information about the user as specified in the accessToken included in this request
@@ -75,66 +76,66 @@ import com.google.common.base.Strings;
 			@RequestHeader(value=HttpHeaders.ACCEPT, required=false) String acceptHeader,
 			OAuth2Authentication auth, Model model) {
 
-<span class="nc bnc" id="L78" title="All 2 branches missed.">		if (auth == null) {</span>
-<span class="nc" id="L79">			logger.error(&quot;getInfo failed; no principal. Requester is not authorized.&quot;);</span>
-<span class="nc" id="L80">			model.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L81">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">		if (auth == null) {</span>
+<span class="nc" id="L80">			logger.error(&quot;getInfo failed; no principal. Requester is not authorized.&quot;);</span>
+<span class="nc" id="L81">			model.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L82">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L84">		String username = auth.getName();</span>
-<span class="nc" id="L85">		UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, auth.getOAuth2Request().getClientId());</span>
+<span class="nc" id="L85">		String username = auth.getName();</span>
+<span class="nc" id="L86">		UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, auth.getOAuth2Request().getClientId());</span>
 
-<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (userInfo == null) {</span>
-<span class="nc" id="L88">			logger.error(&quot;getInfo failed; user not found: &quot; + username);</span>
-<span class="nc" id="L89">			model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L90">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">		if (userInfo == null) {</span>
+<span class="nc" id="L89">			logger.error(&quot;getInfo failed; user not found: &quot; + username);</span>
+<span class="nc" id="L90">			model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L91">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L93">		model.addAttribute(UserInfoView.SCOPE, auth.getOAuth2Request().getScope());</span>
+<span class="nc" id="L94">		model.addAttribute(UserInfoView.SCOPE, auth.getOAuth2Request().getScope());</span>
 
-<span class="nc" id="L95">		model.addAttribute(UserInfoView.AUTHORIZED_CLAIMS, auth.getOAuth2Request().getExtensions().get(&quot;claims&quot;));</span>
+<span class="nc" id="L96">		model.addAttribute(UserInfoView.AUTHORIZED_CLAIMS, auth.getOAuth2Request().getExtensions().get(&quot;claims&quot;));</span>
 
-<span class="nc bnc" id="L97" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(claimsRequestJsonString)) {</span>
-<span class="nc" id="L98">			model.addAttribute(UserInfoView.REQUESTED_CLAIMS, claimsRequestJsonString);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(claimsRequestJsonString)) {</span>
+<span class="nc" id="L99">			model.addAttribute(UserInfoView.REQUESTED_CLAIMS, claimsRequestJsonString);</span>
 		}
 
-<span class="nc" id="L101">		model.addAttribute(UserInfoView.USER_INFO, userInfo);</span>
+<span class="nc" id="L102">		model.addAttribute(UserInfoView.USER_INFO, userInfo);</span>
 
 		// content negotiation
 
 		// start off by seeing if the client has registered for a signed/encrypted JWT from here
-<span class="nc" id="L106">		ClientDetailsEntity client = clientService.loadClientByClientId(auth.getOAuth2Request().getClientId());</span>
-<span class="nc" id="L107">		model.addAttribute(UserInfoJWTView.CLIENT, client);</span>
+<span class="nc" id="L107">		ClientDetailsEntity client = clientService.loadClientByClientId(auth.getOAuth2Request().getClientId());</span>
+<span class="nc" id="L108">		model.addAttribute(UserInfoJWTView.CLIENT, client);</span>
 
-<span class="nc" id="L109">		List&lt;MediaType&gt; mediaTypes = MediaType.parseMediaTypes(acceptHeader);</span>
-<span class="nc" id="L110">		MediaType.sortBySpecificityAndQuality(mediaTypes);</span>
+<span class="nc" id="L110">		List&lt;MediaType&gt; mediaTypes = MediaType.parseMediaTypes(acceptHeader);</span>
+<span class="nc" id="L111">		MediaType.sortBySpecificityAndQuality(mediaTypes);</span>
 
-<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (client.getUserInfoSignedResponseAlg() != null</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">				|| client.getUserInfoEncryptedResponseAlg() != null</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">				|| client.getUserInfoEncryptedResponseEnc() != null) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">		if (client.getUserInfoSignedResponseAlg() != null</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">				|| client.getUserInfoEncryptedResponseAlg() != null</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">				|| client.getUserInfoEncryptedResponseEnc() != null) {</span>
 			// client has a preference, see if they ask for plain JSON specifically on this request
-<span class="nc bnc" id="L116" title="All 2 branches missed.">			for (MediaType m : mediaTypes) {</span>
-<span class="nc bnc" id="L117" title="All 4 branches missed.">				if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(UserInfoJWTView.JOSE_MEDIA_TYPE)) {</span>
-<span class="nc" id="L118">					return UserInfoJWTView.VIEWNAME;</span>
-<span class="nc bnc" id="L119" title="All 4 branches missed.">				} else if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(MediaType.APPLICATION_JSON)) {</span>
-<span class="nc" id="L120">					return UserInfoView.VIEWNAME;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">			for (MediaType m : mediaTypes) {</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">				if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(UserInfoJWTView.JOSE_MEDIA_TYPE)) {</span>
+<span class="nc" id="L119">					return UserInfoJWTView.VIEWNAME;</span>
+<span class="nc bnc" id="L120" title="All 4 branches missed.">				} else if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(MediaType.APPLICATION_JSON)) {</span>
+<span class="nc" id="L121">					return UserInfoView.VIEWNAME;</span>
 				}
-<span class="nc" id="L122">			}</span>
+<span class="nc" id="L123">			}</span>
 
 			// otherwise return JWT
-<span class="nc" id="L125">			return UserInfoJWTView.VIEWNAME;</span>
+<span class="nc" id="L126">			return UserInfoJWTView.VIEWNAME;</span>
 		} else {
 			// client has no preference, see if they asked for JWT specifically on this request
-<span class="nc bnc" id="L128" title="All 2 branches missed.">			for (MediaType m : mediaTypes) {</span>
-<span class="nc bnc" id="L129" title="All 4 branches missed.">				if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(MediaType.APPLICATION_JSON)) {</span>
-<span class="nc" id="L130">					return UserInfoView.VIEWNAME;</span>
-<span class="nc bnc" id="L131" title="All 4 branches missed.">				} else if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(UserInfoJWTView.JOSE_MEDIA_TYPE)) {</span>
-<span class="nc" id="L132">					return UserInfoJWTView.VIEWNAME;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">			for (MediaType m : mediaTypes) {</span>
+<span class="nc bnc" id="L130" title="All 4 branches missed.">				if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(MediaType.APPLICATION_JSON)) {</span>
+<span class="nc" id="L131">					return UserInfoView.VIEWNAME;</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">				} else if (!m.isWildcardType() &amp;&amp; m.isCompatibleWith(UserInfoJWTView.JOSE_MEDIA_TYPE)) {</span>
+<span class="nc" id="L133">					return UserInfoJWTView.VIEWNAME;</span>
 				}
-<span class="nc" id="L134">			}</span>
+<span class="nc" id="L135">			}</span>
 
 			// otherwise return JSON
-<span class="nc" id="L137">			return UserInfoView.VIEWNAME;</span>
+<span class="nc" id="L138">			return UserInfoView.VIEWNAME;</span>
 		}
 
 	}

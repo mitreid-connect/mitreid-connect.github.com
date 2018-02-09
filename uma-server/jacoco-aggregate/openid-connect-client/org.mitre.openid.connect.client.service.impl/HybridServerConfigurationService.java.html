@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HybridServerConfigurationService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">HybridServerConfigurationService.java</span></div><h1>HybridServerConfigurationService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -37,11 +38,11 @@ import org.mitre.openid.connect.config.ServerConfiguration;
  * @author jricher
  *
  */
-<span class="nc" id="L40">public class HybridServerConfigurationService implements ServerConfigurationService {</span>
+<span class="nc" id="L41">public class HybridServerConfigurationService implements ServerConfigurationService {</span>
 
-<span class="nc" id="L42">	private StaticServerConfigurationService staticServerService = new StaticServerConfigurationService();</span>
+<span class="nc" id="L43">	private StaticServerConfigurationService staticServerService = new StaticServerConfigurationService();</span>
 
-<span class="nc" id="L44">	private DynamicServerConfigurationService dynamicServerService = new DynamicServerConfigurationService();</span>
+<span class="nc" id="L45">	private DynamicServerConfigurationService dynamicServerService = new DynamicServerConfigurationService();</span>
 
 
 	/* (non-Javadoc)
@@ -49,11 +50,11 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 */
 	@Override
 	public ServerConfiguration getServerConfiguration(String issuer) {
-<span class="nc" id="L52">		ServerConfiguration server = staticServerService.getServerConfiguration(issuer);</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		if (server != null) {</span>
-<span class="nc" id="L54">			return server;</span>
+<span class="nc" id="L53">		ServerConfiguration server = staticServerService.getServerConfiguration(issuer);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">		if (server != null) {</span>
+<span class="nc" id="L55">			return server;</span>
 		} else {
-<span class="nc" id="L56">			return dynamicServerService.getServerConfiguration(issuer);</span>
+<span class="nc" id="L57">			return dynamicServerService.getServerConfiguration(issuer);</span>
 		}
 	}
 
@@ -63,7 +64,7 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService#getServers()
 	 */
 	public Map&lt;String, ServerConfiguration&gt; getServers() {
-<span class="nc" id="L66">		return staticServerService.getServers();</span>
+<span class="nc" id="L67">		return staticServerService.getServers();</span>
 	}
 
 
@@ -72,8 +73,8 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService#setServers(java.util.Map)
 	 */
 	public void setServers(Map&lt;String, ServerConfiguration&gt; servers) {
-<span class="nc" id="L75">		staticServerService.setServers(servers);</span>
-<span class="nc" id="L76">	}</span>
+<span class="nc" id="L76">		staticServerService.setServers(servers);</span>
+<span class="nc" id="L77">	}</span>
 
 
 	/**
@@ -81,7 +82,7 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.DynamicServerConfigurationService#getWhitelist()
 	 */
 	public Set&lt;String&gt; getWhitelist() {
-<span class="nc" id="L84">		return dynamicServerService.getWhitelist();</span>
+<span class="nc" id="L85">		return dynamicServerService.getWhitelist();</span>
 	}
 
 
@@ -90,8 +91,8 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.DynamicServerConfigurationService#setWhitelist(java.util.Set)
 	 */
 	public void setWhitelist(Set&lt;String&gt; whitelist) {
-<span class="nc" id="L93">		dynamicServerService.setWhitelist(whitelist);</span>
-<span class="nc" id="L94">	}</span>
+<span class="nc" id="L94">		dynamicServerService.setWhitelist(whitelist);</span>
+<span class="nc" id="L95">	}</span>
 
 
 	/**
@@ -99,7 +100,7 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.DynamicServerConfigurationService#getBlacklist()
 	 */
 	public Set&lt;String&gt; getBlacklist() {
-<span class="nc" id="L102">		return dynamicServerService.getBlacklist();</span>
+<span class="nc" id="L103">		return dynamicServerService.getBlacklist();</span>
 	}
 
 
@@ -108,8 +109,8 @@ import org.mitre.openid.connect.config.ServerConfiguration;
 	 * @see org.mitre.openid.connect.client.service.impl.DynamicServerConfigurationService#setBlacklist(java.util.Set)
 	 */
 	public void setBlacklist(Set&lt;String&gt; blacklist) {
-<span class="nc" id="L111">		dynamicServerService.setBlacklist(blacklist);</span>
-<span class="nc" id="L112">	}</span>
+<span class="nc" id="L112">		dynamicServerService.setBlacklist(blacklist);</span>
+<span class="nc" id="L113">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

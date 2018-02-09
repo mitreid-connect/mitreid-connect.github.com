@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ApprovedSite.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">ApprovedSite.java</span></div><h1>ApprovedSite.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -78,9 +79,9 @@ public class ApprovedSite {
 	/**
 	 * Empty constructor
 	 */
-<span class="nc" id="L81">	public ApprovedSite() {</span>
+<span class="nc" id="L82">	public ApprovedSite() {</span>
 
-<span class="nc" id="L83">	}</span>
+<span class="nc" id="L84">	}</span>
 
 	/**
 	 * @return the id
@@ -89,15 +90,15 @@ public class ApprovedSite {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L92">		return id;</span>
+<span class="nc" id="L93">		return id;</span>
 	}
 
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
-<span class="nc" id="L99">		this.id = id;</span>
-<span class="nc" id="L100">	}</span>
+<span class="nc" id="L100">		this.id = id;</span>
+<span class="nc" id="L101">	}</span>
 
 	/**
 	 * @return the userInfo
@@ -105,15 +106,15 @@ public class ApprovedSite {
 	@Basic
 	@Column(name=&quot;user_id&quot;)
 	public String getUserId() {
-<span class="nc" id="L108">		return userId;</span>
+<span class="nc" id="L109">		return userId;</span>
 	}
 
 	/**
 	 * @param userInfo the userInfo to set
 	 */
 	public void setUserId(String userId) {
-<span class="nc" id="L115">		this.userId = userId;</span>
-<span class="nc" id="L116">	}</span>
+<span class="nc" id="L116">		this.userId = userId;</span>
+<span class="nc" id="L117">	}</span>
 
 	/**
 	 * @return the clientId
@@ -121,15 +122,15 @@ public class ApprovedSite {
 	@Basic
 	@Column(name=&quot;client_id&quot;)
 	public String getClientId() {
-<span class="nc" id="L124">		return clientId;</span>
+<span class="nc" id="L125">		return clientId;</span>
 	}
 
 	/**
 	 * @param clientId the clientId to set
 	 */
 	public void setClientId(String clientId) {
-<span class="nc" id="L131">		this.clientId = clientId;</span>
-<span class="nc" id="L132">	}</span>
+<span class="nc" id="L132">		this.clientId = clientId;</span>
+<span class="nc" id="L133">	}</span>
 
 	/**
 	 * @return the creationDate
@@ -138,15 +139,15 @@ public class ApprovedSite {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name=&quot;creation_date&quot;)
 	public Date getCreationDate() {
-<span class="nc" id="L141">		return creationDate;</span>
+<span class="nc" id="L142">		return creationDate;</span>
 	}
 
 	/**
 	 * @param creationDate the creationDate to set
 	 */
 	public void setCreationDate(Date creationDate) {
-<span class="nc" id="L148">		this.creationDate = creationDate;</span>
-<span class="nc" id="L149">	}</span>
+<span class="nc" id="L149">		this.creationDate = creationDate;</span>
+<span class="nc" id="L150">	}</span>
 
 	/**
 	 * @return the accessDate
@@ -155,15 +156,15 @@ public class ApprovedSite {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name=&quot;access_date&quot;)
 	public Date getAccessDate() {
-<span class="nc" id="L158">		return accessDate;</span>
+<span class="nc" id="L159">		return accessDate;</span>
 	}
 
 	/**
 	 * @param accessDate the accessDate to set
 	 */
 	public void setAccessDate(Date accessDate) {
-<span class="nc" id="L165">		this.accessDate = accessDate;</span>
-<span class="nc" id="L166">	}</span>
+<span class="nc" id="L166">		this.accessDate = accessDate;</span>
+<span class="nc" id="L167">	}</span>
 
 	/**
 	 * @return the allowedScopes
@@ -175,15 +176,15 @@ public class ApprovedSite {
 			)
 	@Column(name=&quot;scope&quot;)
 	public Set&lt;String&gt; getAllowedScopes() {
-<span class="nc" id="L178">		return allowedScopes;</span>
+<span class="nc" id="L179">		return allowedScopes;</span>
 	}
 
 	/**
 	 * @param allowedScopes the allowedScopes to set
 	 */
 	public void setAllowedScopes(Set&lt;String&gt; allowedScopes) {
-<span class="nc" id="L185">		this.allowedScopes = allowedScopes;</span>
-<span class="nc" id="L186">	}</span>
+<span class="nc" id="L186">		this.allowedScopes = allowedScopes;</span>
+<span class="nc" id="L187">	}</span>
 
 	/**
 	 * @return the timeoutDate
@@ -192,15 +193,15 @@ public class ApprovedSite {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name=&quot;timeout_date&quot;)
 	public Date getTimeoutDate() {
-<span class="nc" id="L195">		return timeoutDate;</span>
+<span class="nc" id="L196">		return timeoutDate;</span>
 	}
 
 	/**
 	 * @param timeoutDate the timeoutDate to set
 	 */
 	public void setTimeoutDate(Date timeoutDate) {
-<span class="nc" id="L202">		this.timeoutDate = timeoutDate;</span>
-<span class="nc" id="L203">	}</span>
+<span class="nc" id="L203">		this.timeoutDate = timeoutDate;</span>
+<span class="nc" id="L204">	}</span>
 
 	/**
 	 * Has this approval expired?
@@ -208,15 +209,15 @@ public class ApprovedSite {
 	 */
 	@Transient
 	public boolean isExpired() {
-<span class="nc bnc" id="L211" title="All 2 branches missed.">		if (getTimeoutDate() != null) {</span>
-<span class="nc" id="L212">			Date now = new Date();</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">			if (now.after(getTimeoutDate())) {</span>
-<span class="nc" id="L214">				return true;</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">		if (getTimeoutDate() != null) {</span>
+<span class="nc" id="L213">			Date now = new Date();</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			if (now.after(getTimeoutDate())) {</span>
+<span class="nc" id="L215">				return true;</span>
 			} else {
-<span class="nc" id="L216">				return false;</span>
+<span class="nc" id="L217">				return false;</span>
 			}
 		} else {
-<span class="nc" id="L219">			return false;</span>
+<span class="nc" id="L220">			return false;</span>
 		}
 	}
 

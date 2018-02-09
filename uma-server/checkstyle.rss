@@ -6,7 +6,7 @@
     <link>https://github.com/mitreid-connect/uma-server</link>
     <description>UMA Server Library - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2017</copyright>
+    <copyright>&#169;2018</copyright>
     <item>
       <title>File: 18,
              Errors: 0,
@@ -71,13 +71,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/uma-server/checkstyle.html#org.mitre.uma.service.impl.DefaultResourceSetService.java">org/mitre/uma/service/impl/DefaultResourceSetService.java</a>
+                  <a href="https://github.com/mitreid-connect/uma-server/checkstyle.html#org.mitre.uma.web.UserClaimSearchHelper.java">org/mitre/uma/web/UserClaimSearchHelper.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  6
                 </td>
                 <td>
                   0
@@ -99,13 +99,13 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/uma-server/checkstyle.html#org.mitre.uma.web.UserClaimSearchHelper.java">org/mitre/uma/web/UserClaimSearchHelper.java</a>
+                  <a href="https://github.com/mitreid-connect/uma-server/checkstyle.html#org.mitre.uma.service.impl.DefaultResourceSetService.java">org/mitre/uma/service/impl/DefaultResourceSetService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  6
+                  1
                 </td>
                 <td>
                   0

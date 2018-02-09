@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DiscoveryEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.discovery.web</a> &gt; <span class="el_source">DiscoveryEndpoint.java</span></div><h1>DiscoveryEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -65,7 +66,7 @@ import com.nimbusds.jose.JWSAlgorithm;
  *
  */
 @Controller
-<span class="nc" id="L68">public class DiscoveryEndpoint {</span>
+<span class="nc" id="L69">public class DiscoveryEndpoint {</span>
 
 	public static final String WELL_KNOWN_URL = &quot;.well-known&quot;;
 	public static final String OPENID_CONFIGURATION_URL = WELL_KNOWN_URL + &quot;/openid-configuration&quot;;
@@ -74,7 +75,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L77">	private static final Logger logger = LoggerFactory.getLogger(DiscoveryEndpoint.class);</span>
+<span class="nc" id="L78">	private static final Logger logger = LoggerFactory.getLogger(DiscoveryEndpoint.class);</span>
 
 	@Autowired
 	private ConfigurationPropertiesBean config;
@@ -93,13 +94,13 @@ import com.nimbusds.jose.JWSAlgorithm;
 
 
 	// used to map JWA algorithms objects to strings
-<span class="nc" id="L96">	private Function&lt;Algorithm, String&gt; toAlgorithmName = new Function&lt;Algorithm, String&gt;() {</span>
+<span class="nc" id="L97">	private Function&lt;Algorithm, String&gt; toAlgorithmName = new Function&lt;Algorithm, String&gt;() {</span>
 		@Override
 		public String apply(Algorithm alg) {
-<span class="nc bnc" id="L99" title="All 2 branches missed.">			if (alg == null) {</span>
-<span class="nc" id="L100">				return null;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">			if (alg == null) {</span>
+<span class="nc" id="L101">				return null;</span>
 			} else {
-<span class="nc" id="L102">				return alg.getName();</span>
+<span class="nc" id="L103">				return alg.getName();</span>
 			}
 		}
 	};
@@ -107,60 +108,60 @@ import com.nimbusds.jose.JWSAlgorithm;
 	@RequestMapping(value={&quot;/&quot; + WEBFINGER_URL}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String webfinger(@RequestParam(&quot;resource&quot;) String resource, @RequestParam(value = &quot;rel&quot;, required = false) String rel, Model model) {
 
-<span class="nc bnc" id="L110" title="All 4 branches missed.">		if (!Strings.isNullOrEmpty(rel) &amp;&amp; !rel.equals(&quot;http://openid.net/specs/connect/1.0/issuer&quot;)) {</span>
-<span class="nc" id="L111">			logger.warn(&quot;Responding to webfinger request for non-OIDC relation: &quot; + rel);</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">		if (!Strings.isNullOrEmpty(rel) &amp;&amp; !rel.equals(&quot;http://openid.net/specs/connect/1.0/issuer&quot;)) {</span>
+<span class="nc" id="L112">			logger.warn(&quot;Responding to webfinger request for non-OIDC relation: &quot; + rel);</span>
 		}
 
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (!resource.equals(config.getIssuer())) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		if (!resource.equals(config.getIssuer())) {</span>
 			// it's not the issuer directly, need to check other methods
 
-<span class="nc" id="L117">			UriComponents resourceUri = WebfingerURLNormalizer.normalizeResource(resource);</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">			if (resourceUri != null</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme() != null</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme().equals(&quot;acct&quot;)) {</span>
+<span class="nc" id="L118">			UriComponents resourceUri = WebfingerURLNormalizer.normalizeResource(resource);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">			if (resourceUri != null</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme() != null</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">					&amp;&amp; resourceUri.getScheme().equals(&quot;acct&quot;)) {</span>
 				// acct: URI (email address format)
 
 				// check on email addresses first
-<span class="nc" id="L124">				UserInfo user = userService.getByEmailAddress(resourceUri.getUserInfo() + &quot;@&quot; + resourceUri.getHost());</span>
+<span class="nc" id="L125">				UserInfo user = userService.getByEmailAddress(resourceUri.getUserInfo() + &quot;@&quot; + resourceUri.getHost());</span>
 
-<span class="nc bnc" id="L126" title="All 2 branches missed.">				if (user == null) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">				if (user == null) {</span>
 					// user wasn't found, see if the local part of the username matches, plus our issuer host
 
-<span class="nc" id="L129">					user = userService.getByUsername(resourceUri.getUserInfo()); // first part is the username</span>
+<span class="nc" id="L130">					user = userService.getByUsername(resourceUri.getUserInfo()); // first part is the username</span>
 
-<span class="nc bnc" id="L131" title="All 2 branches missed.">					if (user != null) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">					if (user != null) {</span>
 						// username matched, check the host component
-<span class="nc" id="L133">						UriComponents issuerComponents = UriComponentsBuilder.fromHttpUrl(config.getIssuer()).build();</span>
-<span class="nc" id="L134">						if (!Strings.nullToEmpty(issuerComponents.getHost())</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">								.equals(Strings.nullToEmpty(resourceUri.getHost()))) {</span>
-<span class="nc" id="L136">							logger.info(&quot;Host mismatch, expected &quot; + issuerComponents.getHost() + &quot; got &quot; + resourceUri.getHost());</span>
-<span class="nc" id="L137">							model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L138">							return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L134">						UriComponents issuerComponents = UriComponentsBuilder.fromHttpUrl(config.getIssuer()).build();</span>
+<span class="nc" id="L135">						if (!Strings.nullToEmpty(issuerComponents.getHost())</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">								.equals(Strings.nullToEmpty(resourceUri.getHost()))) {</span>
+<span class="nc" id="L137">							logger.info(&quot;Host mismatch, expected &quot; + issuerComponents.getHost() + &quot; got &quot; + resourceUri.getHost());</span>
+<span class="nc" id="L138">							model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L139">							return HttpCodeView.VIEWNAME;</span>
 						}
 
-<span class="nc" id="L141">					} else {</span>
+<span class="nc" id="L142">					} else {</span>
 
 						// if the user's still null, punt and say we didn't find them
 
-<span class="nc" id="L145">						logger.info(&quot;User not found: &quot; + resource);</span>
-<span class="nc" id="L146">						model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L147">						return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L146">						logger.info(&quot;User not found: &quot; + resource);</span>
+<span class="nc" id="L147">						model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L148">						return HttpCodeView.VIEWNAME;</span>
 					}
 
 				}
 
-<span class="nc" id="L152">			} else {</span>
-<span class="nc" id="L153">				logger.info(&quot;Unknown URI format: &quot; + resource);</span>
-<span class="nc" id="L154">				model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L155">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L153">			} else {</span>
+<span class="nc" id="L154">				logger.info(&quot;Unknown URI format: &quot; + resource);</span>
+<span class="nc" id="L155">				model.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L156">				return HttpCodeView.VIEWNAME;</span>
 			}
 		}
 
 		// if we got here, then we're good, return ourselves
-<span class="nc" id="L160">		model.addAttribute(&quot;resource&quot;, resource);</span>
-<span class="nc" id="L161">		model.addAttribute(&quot;issuer&quot;, config.getIssuer());</span>
+<span class="nc" id="L161">		model.addAttribute(&quot;resource&quot;, resource);</span>
+<span class="nc" id="L162">		model.addAttribute(&quot;issuer&quot;, config.getIssuer());</span>
 
-<span class="nc" id="L163">		return &quot;webfingerView&quot;;</span>
+<span class="nc" id="L164">		return &quot;webfingerView&quot;;</span>
 	}
 
 	@RequestMapping(&quot;/&quot; + OPENID_CONFIGURATION_URL)
@@ -285,54 +286,54 @@ import com.nimbusds.jose.JWSAlgorithm;
 		        OPTIONAL. URL that the OpenID Provider provides to the person registering the Client to read about OpenID Provider's terms of service.
 		        The registration process SHOULD display this URL to the person registering the Client if it is given.
 		 */
-<span class="nc" id="L288">		String baseUrl = config.getIssuer();</span>
+<span class="nc" id="L289">		String baseUrl = config.getIssuer();</span>
 
-<span class="nc bnc" id="L290" title="All 2 branches missed.">		if (!baseUrl.endsWith(&quot;/&quot;)) {</span>
-<span class="nc" id="L291">			logger.debug(&quot;Configured issuer doesn't end in /, adding for discovery: {}&quot;, baseUrl);</span>
-<span class="nc" id="L292">			baseUrl = baseUrl.concat(&quot;/&quot;);</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">		if (!baseUrl.endsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L292">			logger.debug(&quot;Configured issuer doesn't end in /, adding for discovery: {}&quot;, baseUrl);</span>
+<span class="nc" id="L293">			baseUrl = baseUrl.concat(&quot;/&quot;);</span>
 		}
 
-<span class="nc" id="L295">		signService.getAllSigningAlgsSupported();</span>
-<span class="nc" id="L296">		Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512);</span>
-<span class="nc" id="L297">		Collection&lt;JWSAlgorithm&gt; clientSymmetricAndAsymmetricSigningAlgs = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
+<span class="nc" id="L296">		signService.getAllSigningAlgsSupported();</span>
+<span class="nc" id="L297">		Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512);</span>
+<span class="nc" id="L298">		Collection&lt;JWSAlgorithm&gt; clientSymmetricAndAsymmetricSigningAlgs = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
 				JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512,
 				JWSAlgorithm.ES256, JWSAlgorithm.ES384, JWSAlgorithm.ES512,
 				JWSAlgorithm.PS256, JWSAlgorithm.PS384, JWSAlgorithm.PS512);
-<span class="nc" id="L301">		Collection&lt;Algorithm&gt; clientSymmetricAndAsymmetricSigningAlgsWithNone = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
+<span class="nc" id="L302">		Collection&lt;Algorithm&gt; clientSymmetricAndAsymmetricSigningAlgsWithNone = Lists.newArrayList(JWSAlgorithm.HS256, JWSAlgorithm.HS384, JWSAlgorithm.HS512,</span>
 				JWSAlgorithm.RS256, JWSAlgorithm.RS384, JWSAlgorithm.RS512,
 				JWSAlgorithm.ES256, JWSAlgorithm.ES384, JWSAlgorithm.ES512,
 				JWSAlgorithm.PS256, JWSAlgorithm.PS384, JWSAlgorithm.PS512,
 				Algorithm.NONE);
-<span class="nc" id="L306">		ArrayList&lt;String&gt; grantTypes = Lists.newArrayList(&quot;authorization_code&quot;, &quot;implicit&quot;, &quot;urn:ietf:params:oauth:grant-type:jwt-bearer&quot;, &quot;client_credentials&quot;, &quot;urn:ietf:params:oauth:grant_type:redelegate&quot;, &quot;urn:ietf:params:oauth:grant-type:device_code&quot;);</span>
+<span class="nc" id="L307">		ArrayList&lt;String&gt; grantTypes = Lists.newArrayList(&quot;authorization_code&quot;, &quot;implicit&quot;, &quot;urn:ietf:params:oauth:grant-type:jwt-bearer&quot;, &quot;client_credentials&quot;, &quot;urn:ietf:params:oauth:grant_type:redelegate&quot;, &quot;urn:ietf:params:oauth:grant-type:device_code&quot;);</span>
 
-<span class="nc" id="L308">		Map&lt;String, Object&gt; m = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L309">		m.put(&quot;issuer&quot;, config.getIssuer());</span>
-<span class="nc" id="L310">		m.put(&quot;authorization_endpoint&quot;, baseUrl + &quot;authorize&quot;);</span>
-<span class="nc" id="L311">		m.put(&quot;token_endpoint&quot;, baseUrl + &quot;token&quot;);</span>
-<span class="nc" id="L312">		m.put(&quot;userinfo_endpoint&quot;, baseUrl + UserInfoEndpoint.URL);</span>
+<span class="nc" id="L309">		Map&lt;String, Object&gt; m = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L310">		m.put(&quot;issuer&quot;, config.getIssuer());</span>
+<span class="nc" id="L311">		m.put(&quot;authorization_endpoint&quot;, baseUrl + &quot;authorize&quot;);</span>
+<span class="nc" id="L312">		m.put(&quot;token_endpoint&quot;, baseUrl + &quot;token&quot;);</span>
+<span class="nc" id="L313">		m.put(&quot;userinfo_endpoint&quot;, baseUrl + UserInfoEndpoint.URL);</span>
 		//check_session_iframe
-<span class="nc" id="L314">		m.put(&quot;end_session_endpoint&quot;, baseUrl + EndSessionEndpoint.URL);</span>
-<span class="nc" id="L315">		m.put(&quot;jwks_uri&quot;, baseUrl + JWKSetPublishingEndpoint.URL);</span>
-<span class="nc" id="L316">		m.put(&quot;registration_endpoint&quot;, baseUrl + DynamicClientRegistrationEndpoint.URL);</span>
-<span class="nc" id="L317">		m.put(&quot;scopes_supported&quot;, scopeService.toStrings(scopeService.getUnrestricted())); // these are the scopes that you can dynamically register for, which is what matters for discovery</span>
-<span class="nc" id="L318">		m.put(&quot;response_types_supported&quot;, Lists.newArrayList(&quot;code&quot;, &quot;token&quot;)); // we don't support these yet: , &quot;id_token&quot;, &quot;id_token token&quot;));</span>
-<span class="nc" id="L319">		m.put(&quot;grant_types_supported&quot;, grantTypes);</span>
+<span class="nc" id="L315">		m.put(&quot;end_session_endpoint&quot;, baseUrl + EndSessionEndpoint.URL);</span>
+<span class="nc" id="L316">		m.put(&quot;jwks_uri&quot;, baseUrl + JWKSetPublishingEndpoint.URL);</span>
+<span class="nc" id="L317">		m.put(&quot;registration_endpoint&quot;, baseUrl + DynamicClientRegistrationEndpoint.URL);</span>
+<span class="nc" id="L318">		m.put(&quot;scopes_supported&quot;, scopeService.toStrings(scopeService.getUnrestricted())); // these are the scopes that you can dynamically register for, which is what matters for discovery</span>
+<span class="nc" id="L319">		m.put(&quot;response_types_supported&quot;, Lists.newArrayList(&quot;code&quot;, &quot;token&quot;)); // we don't support these yet: , &quot;id_token&quot;, &quot;id_token token&quot;));</span>
+<span class="nc" id="L320">		m.put(&quot;grant_types_supported&quot;, grantTypes);</span>
 		//acr_values_supported
-<span class="nc" id="L321">		m.put(&quot;subject_types_supported&quot;, Lists.newArrayList(&quot;public&quot;, &quot;pairwise&quot;));</span>
-<span class="nc" id="L322">		m.put(&quot;userinfo_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
-<span class="nc" id="L323">		m.put(&quot;userinfo_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L324">		m.put(&quot;userinfo_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L325">		m.put(&quot;id_token_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgsWithNone, toAlgorithmName));</span>
-<span class="nc" id="L326">		m.put(&quot;id_token_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L327">		m.put(&quot;id_token_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L328">		m.put(&quot;request_object_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
-<span class="nc" id="L329">		m.put(&quot;request_object_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L330">		m.put(&quot;request_object_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
-<span class="nc" id="L331">		m.put(&quot;token_endpoint_auth_methods_supported&quot;, Lists.newArrayList(&quot;client_secret_post&quot;, &quot;client_secret_basic&quot;, &quot;client_secret_jwt&quot;, &quot;private_key_jwt&quot;, &quot;none&quot;));</span>
-<span class="nc" id="L332">		m.put(&quot;token_endpoint_auth_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+<span class="nc" id="L322">		m.put(&quot;subject_types_supported&quot;, Lists.newArrayList(&quot;public&quot;, &quot;pairwise&quot;));</span>
+<span class="nc" id="L323">		m.put(&quot;userinfo_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+<span class="nc" id="L324">		m.put(&quot;userinfo_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L325">		m.put(&quot;userinfo_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L326">		m.put(&quot;id_token_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgsWithNone, toAlgorithmName));</span>
+<span class="nc" id="L327">		m.put(&quot;id_token_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L328">		m.put(&quot;id_token_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L329">		m.put(&quot;request_object_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
+<span class="nc" id="L330">		m.put(&quot;request_object_encryption_alg_values_supported&quot;, Collections2.transform(encService.getAllEncryptionAlgsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L331">		m.put(&quot;request_object_encryption_enc_values_supported&quot;, Collections2.transform(encService.getAllEncryptionEncsSupported(), toAlgorithmName));</span>
+<span class="nc" id="L332">		m.put(&quot;token_endpoint_auth_methods_supported&quot;, Lists.newArrayList(&quot;client_secret_post&quot;, &quot;client_secret_basic&quot;, &quot;client_secret_jwt&quot;, &quot;private_key_jwt&quot;, &quot;none&quot;));</span>
+<span class="nc" id="L333">		m.put(&quot;token_endpoint_auth_signing_alg_values_supported&quot;, Collections2.transform(clientSymmetricAndAsymmetricSigningAlgs, toAlgorithmName));</span>
 		//display_types_supported
-<span class="nc" id="L334">		m.put(&quot;claim_types_supported&quot;, Lists.newArrayList(&quot;normal&quot; /*, &quot;aggregated&quot;, &quot;distributed&quot;*/));</span>
-<span class="nc" id="L335">		m.put(&quot;claims_supported&quot;, Lists.newArrayList(</span>
+<span class="nc" id="L335">		m.put(&quot;claim_types_supported&quot;, Lists.newArrayList(&quot;normal&quot; /*, &quot;aggregated&quot;, &quot;distributed&quot;*/));</span>
+<span class="nc" id="L336">		m.put(&quot;claims_supported&quot;, Lists.newArrayList(</span>
 				&quot;sub&quot;,
 				&quot;name&quot;,
 				&quot;preferred_username&quot;,
@@ -354,26 +355,26 @@ import com.nimbusds.jose.JWSAlgorithm;
 				&quot;phone_number_verified&quot;,
 				&quot;address&quot;
 				));
-<span class="nc" id="L357">		m.put(&quot;service_documentation&quot;, baseUrl + &quot;about&quot;);</span>
+<span class="nc" id="L358">		m.put(&quot;service_documentation&quot;, baseUrl + &quot;about&quot;);</span>
 		//claims_locales_supported
 		//ui_locales_supported
-<span class="nc" id="L360">		m.put(&quot;claims_parameter_supported&quot;, false);</span>
-<span class="nc" id="L361">		m.put(&quot;request_parameter_supported&quot;, true);</span>
-<span class="nc" id="L362">		m.put(&quot;request_uri_parameter_supported&quot;, false);</span>
-<span class="nc" id="L363">		m.put(&quot;require_request_uri_registration&quot;, false);</span>
-<span class="nc" id="L364">		m.put(&quot;op_policy_uri&quot;, baseUrl + &quot;about&quot;);</span>
-<span class="nc" id="L365">		m.put(&quot;op_tos_uri&quot;, baseUrl + &quot;about&quot;);</span>
+<span class="nc" id="L361">		m.put(&quot;claims_parameter_supported&quot;, false);</span>
+<span class="nc" id="L362">		m.put(&quot;request_parameter_supported&quot;, true);</span>
+<span class="nc" id="L363">		m.put(&quot;request_uri_parameter_supported&quot;, false);</span>
+<span class="nc" id="L364">		m.put(&quot;require_request_uri_registration&quot;, false);</span>
+<span class="nc" id="L365">		m.put(&quot;op_policy_uri&quot;, baseUrl + &quot;about&quot;);</span>
+<span class="nc" id="L366">		m.put(&quot;op_tos_uri&quot;, baseUrl + &quot;about&quot;);</span>
 
-<span class="nc" id="L367">		m.put(&quot;introspection_endpoint&quot;, baseUrl + IntrospectionEndpoint.URL); // token introspection endpoint for verifying tokens</span>
-<span class="nc" id="L368">		m.put(&quot;revocation_endpoint&quot;, baseUrl + RevocationEndpoint.URL); // token revocation endpoint</span>
+<span class="nc" id="L368">		m.put(&quot;introspection_endpoint&quot;, baseUrl + IntrospectionEndpoint.URL); // token introspection endpoint for verifying tokens</span>
+<span class="nc" id="L369">		m.put(&quot;revocation_endpoint&quot;, baseUrl + RevocationEndpoint.URL); // token revocation endpoint</span>
 
-<span class="nc" id="L370">		m.put(&quot;code_challenge_methods_supported&quot;, Lists.newArrayList(PKCEAlgorithm.plain.getName(), PKCEAlgorithm.S256.getName()));</span>
+<span class="nc" id="L371">		m.put(&quot;code_challenge_methods_supported&quot;, Lists.newArrayList(PKCEAlgorithm.plain.getName(), PKCEAlgorithm.S256.getName()));</span>
 
-<span class="nc" id="L372">		m.put(&quot;device_authorization_endpoint&quot;, baseUrl + DeviceEndpoint.URL);</span>
+<span class="nc" id="L373">		m.put(&quot;device_authorization_endpoint&quot;, baseUrl + DeviceEndpoint.URL);</span>
 
-<span class="nc" id="L374">		model.addAttribute(JsonEntityView.ENTITY, m);</span>
+<span class="nc" id="L375">		model.addAttribute(JsonEntityView.ENTITY, m);</span>
 
-<span class="nc" id="L376">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L377">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 }

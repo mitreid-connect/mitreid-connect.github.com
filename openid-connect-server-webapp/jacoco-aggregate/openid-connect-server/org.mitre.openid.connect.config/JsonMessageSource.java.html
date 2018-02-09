@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonMessageSource.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.config</a> &gt; <span class="el_source">JsonMessageSource.java</span></div><h1>JsonMessageSource.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -45,15 +44,15 @@ import com.google.gson.JsonSyntaxException;
  * @author jricher
  *
  */
-<span class="nc" id="L48">public class JsonMessageSource extends AbstractMessageSource {</span>
+<span class="nc" id="L47">public class JsonMessageSource extends AbstractMessageSource {</span>
 	// Logger for this class
-<span class="nc" id="L50">	private static final Logger logger = LoggerFactory.getLogger(JsonMessageSource.class);</span>
+<span class="nc" id="L49">	private static final Logger logger = LoggerFactory.getLogger(JsonMessageSource.class);</span>
 
 	private Resource baseDirectory;
 
-<span class="nc" id="L54">	private Locale fallbackLocale = new Locale(&quot;en&quot;); // US English is the fallback language</span>
+<span class="nc" id="L53">	private Locale fallbackLocale = new Locale(&quot;en&quot;); // US English is the fallback language</span>
 
-<span class="nc" id="L56">	private Map&lt;Locale, List&lt;JsonObject&gt;&gt; languageMaps = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L55">	private Map&lt;Locale, List&lt;JsonObject&gt;&gt; languageMaps = new HashMap&lt;&gt;();</span>
 
 	@Autowired
 	private ConfigurationPropertiesBean config;
@@ -61,22 +60,22 @@ import com.google.gson.JsonSyntaxException;
 	@Override
 	protected MessageFormat resolveCode(String code, Locale locale) {
 
-<span class="nc" id="L64">		List&lt;JsonObject&gt; langs = getLanguageMap(locale);</span>
+<span class="nc" id="L63">		List&lt;JsonObject&gt; langs = getLanguageMap(locale);</span>
 
-<span class="nc" id="L66">		String value = getValue(code, langs);</span>
+<span class="nc" id="L65">		String value = getValue(code, langs);</span>
 
-<span class="nc bnc" id="L68" title="All 2 branches missed.">		if (value == null) {</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (value == null) {</span>
 			// if we haven't found anything, try the default locale
-<span class="nc" id="L70">			langs = getLanguageMap(fallbackLocale);</span>
-<span class="nc" id="L71">			value = getValue(code, langs);</span>
+<span class="nc" id="L69">			langs = getLanguageMap(fallbackLocale);</span>
+<span class="nc" id="L70">			value = getValue(code, langs);</span>
 		}
 
-<span class="nc bnc" id="L74" title="All 2 branches missed.">		if (value == null) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">		if (value == null) {</span>
 			// if it's still null, return null
-<span class="nc" id="L76">			return null;</span>
+<span class="nc" id="L75">			return null;</span>
 		} else {
 			// otherwise format the message
-<span class="nc" id="L79">			return new MessageFormat(value, locale);</span>
+<span class="nc" id="L78">			return new MessageFormat(value, locale);</span>
 		}
 
 	}
@@ -88,21 +87,21 @@ import com.google.gson.JsonSyntaxException;
 	 * @return
 	 */
 	private String getValue(String code, List&lt;JsonObject&gt; langs) {
-<span class="nc bnc" id="L91" title="All 4 branches missed.">		if (langs == null || langs.isEmpty()) {</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">		if (langs == null || langs.isEmpty()) {</span>
 			// no language maps, nothing to look up
-<span class="nc" id="L93">			return null;</span>
+<span class="nc" id="L92">			return null;</span>
 		}
 
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		for (JsonObject lang : langs) {</span>
-<span class="nc" id="L97">			String value = getValue(code, lang);</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">			if (value != null) {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		for (JsonObject lang : langs) {</span>
+<span class="nc" id="L96">			String value = getValue(code, lang);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">			if (value != null) {</span>
 				// short circuit out of here if we find a match, otherwise keep going through the list
-<span class="nc" id="L100">				return value;</span>
+<span class="nc" id="L99">				return value;</span>
 			}
-<span class="nc" id="L102">		}</span>
+<span class="nc" id="L101">		}</span>
 
 		// if we didn't find anything return null
-<span class="nc" id="L105">		return null;</span>
+<span class="nc" id="L104">		return null;</span>
 	}
 
 	/**
@@ -115,27 +114,27 @@ import com.google.gson.JsonSyntaxException;
 	private String getValue(String code, JsonObject lang) {
 
 		// if there's no language map, nothing to look up
-<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (lang == null) {</span>
-<span class="nc" id="L119">			return null;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		if (lang == null) {</span>
+<span class="nc" id="L118">			return null;</span>
 		}
 
-<span class="nc" id="L122">		JsonElement e = lang;</span>
+<span class="nc" id="L121">		JsonElement e = lang;</span>
 
-<span class="nc" id="L124">		Iterable&lt;String&gt; parts = Splitter.on('.').split(code);</span>
-<span class="nc" id="L125">		Iterator&lt;String&gt; it = parts.iterator();</span>
+<span class="nc" id="L123">		Iterable&lt;String&gt; parts = Splitter.on('.').split(code);</span>
+<span class="nc" id="L124">		Iterator&lt;String&gt; it = parts.iterator();</span>
 
-<span class="nc" id="L127">		String value = null;</span>
+<span class="nc" id="L126">		String value = null;</span>
 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		while (it.hasNext()) {</span>
-<span class="nc" id="L130">			String p = it.next();</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">			if (e.isJsonObject()) {</span>
-<span class="nc" id="L132">				JsonObject o = e.getAsJsonObject();</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">				if (o.has(p)) {</span>
-<span class="nc" id="L134">					e = o.get(p); // found the next level</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">					if (!it.hasNext()) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">		while (it.hasNext()) {</span>
+<span class="nc" id="L129">			String p = it.next();</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">			if (e.isJsonObject()) {</span>
+<span class="nc" id="L131">				JsonObject o = e.getAsJsonObject();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">				if (o.has(p)) {</span>
+<span class="nc" id="L133">					e = o.get(p); // found the next level</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">					if (!it.hasNext()) {</span>
 						// we've reached a leaf, grab it
-<span class="nc bnc" id="L137" title="All 2 branches missed.">						if (e.isJsonPrimitive()) {</span>
-<span class="nc" id="L138">							value = e.getAsString();</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">						if (e.isJsonPrimitive()) {</span>
+<span class="nc" id="L137">							value = e.getAsString();</span>
 						}
 					}
 				} else {
@@ -146,10 +145,10 @@ import com.google.gson.JsonSyntaxException;
 				// didn't find it, stop processing
 				break;
 			}
-<span class="nc" id="L149">		}</span>
+<span class="nc" id="L148">		}</span>
 
 
-<span class="nc" id="L152">		return value;</span>
+<span class="nc" id="L151">		return value;</span>
 
 	}
 
@@ -159,36 +158,36 @@ import com.google.gson.JsonSyntaxException;
 	 */
 	private List&lt;JsonObject&gt; getLanguageMap(Locale locale) {
 
-<span class="nc bnc" id="L162" title="All 2 branches missed.">		if (!languageMaps.containsKey(locale)) {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (!languageMaps.containsKey(locale)) {</span>
 			try {
-<span class="nc" id="L164">				List&lt;JsonObject&gt; set = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L165" title="All 2 branches missed.">				for (String namespace : config.getLanguageNamespaces()) {</span>
+<span class="nc" id="L163">				List&lt;JsonObject&gt; set = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">				for (String namespace : config.getLanguageNamespaces()) {</span>
 					// full locale string, e.g. &quot;en_US&quot;
-<span class="nc" id="L167">					String filename = locale.getLanguage() + &quot;_&quot; + locale.getCountry() + File.separator + namespace + &quot;.json&quot;;</span>
+<span class="nc" id="L166">					String filename = locale.getLanguage() + &quot;_&quot; + locale.getCountry() + File.separator + namespace + &quot;.json&quot;;</span>
 
-<span class="nc" id="L169">					Resource r = getBaseDirectory().createRelative(filename);</span>
+<span class="nc" id="L168">					Resource r = getBaseDirectory().createRelative(filename);</span>
 
-<span class="nc bnc" id="L171" title="All 2 branches missed.">					if (!r.exists()) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">					if (!r.exists()) {</span>
 						// fallback to language only
-<span class="nc" id="L173">						logger.debug(&quot;Fallback locale to language only.&quot;);</span>
-<span class="nc" id="L174">						filename = locale.getLanguage() + File.separator + namespace + &quot;.json&quot;;</span>
-<span class="nc" id="L175">						r = getBaseDirectory().createRelative(filename);</span>
+<span class="nc" id="L172">						logger.debug(&quot;Fallback locale to language only.&quot;);</span>
+<span class="nc" id="L173">						filename = locale.getLanguage() + File.separator + namespace + &quot;.json&quot;;</span>
+<span class="nc" id="L174">						r = getBaseDirectory().createRelative(filename);</span>
 					}
 
-<span class="nc" id="L178">					logger.info(&quot;No locale loaded, trying to load from &quot; + r);</span>
+<span class="nc" id="L177">					logger.info(&quot;No locale loaded, trying to load from &quot; + r);</span>
 
-<span class="nc" id="L180">					JsonParser parser = new JsonParser();</span>
-<span class="nc" id="L181">					JsonObject obj = (JsonObject) parser.parse(new InputStreamReader(r.getInputStream(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L179">					JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L180">					JsonObject obj = (JsonObject) parser.parse(new InputStreamReader(r.getInputStream(), &quot;UTF-8&quot;));</span>
 
-<span class="nc" id="L183">					set.add(obj);</span>
-<span class="nc" id="L184">				}</span>
-<span class="nc" id="L185">				languageMaps.put(locale, set);</span>
-<span class="nc" id="L186">			} catch (JsonIOException | JsonSyntaxException | IOException e) {</span>
-<span class="nc" id="L187">				logger.error(&quot;Unable to load locale&quot;, e);</span>
-<span class="nc" id="L188">			}</span>
+<span class="nc" id="L182">					set.add(obj);</span>
+<span class="nc" id="L183">				}</span>
+<span class="nc" id="L184">				languageMaps.put(locale, set);</span>
+<span class="nc" id="L185">			} catch (JsonIOException | JsonSyntaxException | IOException e) {</span>
+<span class="nc" id="L186">				logger.error(&quot;Unable to load locale&quot;, e);</span>
+<span class="nc" id="L187">			}</span>
 		}
 
-<span class="nc" id="L191">		return languageMaps.get(locale);</span>
+<span class="nc" id="L190">		return languageMaps.get(locale);</span>
 
 
 
@@ -198,15 +197,15 @@ import com.google.gson.JsonSyntaxException;
 	 * @return the baseDirectory
 	 */
 	public Resource getBaseDirectory() {
-<span class="nc" id="L201">		return baseDirectory;</span>
+<span class="nc" id="L200">		return baseDirectory;</span>
 	}
 
 	/**
 	 * @param baseDirectory the baseDirectory to set
 	 */
 	public void setBaseDirectory(Resource baseDirectory) {
-<span class="nc" id="L208">		this.baseDirectory = baseDirectory;</span>
-<span class="nc" id="L209">	}</span>
+<span class="nc" id="L207">		this.baseDirectory = baseDirectory;</span>
+<span class="nc" id="L208">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

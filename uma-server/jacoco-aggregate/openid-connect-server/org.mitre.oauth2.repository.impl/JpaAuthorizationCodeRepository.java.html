@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JpaAuthorizationCodeRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.repository.impl</a> &gt; <span class="el_source">JpaAuthorizationCodeRepository.java</span></div><h1>JpaAuthorizationCodeRepository.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -41,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional(value=&quot;defaultTransactionManager&quot;)
-<span class="nc" id="L44">public class JpaAuthorizationCodeRepository implements AuthorizationCodeRepository {</span>
+<span class="nc" id="L45">public class JpaAuthorizationCodeRepository implements AuthorizationCodeRepository {</span>
 
 	@PersistenceContext(unitName=&quot;defaultPersistenceUnit&quot;)
 	EntityManager manager;
@@ -53,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public AuthorizationCodeEntity save(AuthorizationCodeEntity authorizationCode) {
 
-<span class="nc" id="L56">		return JpaUtil.saveOrUpdate(authorizationCode.getId(), manager, authorizationCode);</span>
+<span class="nc" id="L57">		return JpaUtil.saveOrUpdate(authorizationCode.getId(), manager, authorizationCode);</span>
 
 	}
 
@@ -63,11 +64,11 @@ import org.springframework.transaction.annotation.Transactional;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public AuthorizationCodeEntity getByCode(String code) {
-<span class="nc" id="L66">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_BY_VALUE, AuthorizationCodeEntity.class);</span>
-<span class="nc" id="L67">		query.setParameter(&quot;code&quot;, code);</span>
+<span class="nc" id="L67">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_BY_VALUE, AuthorizationCodeEntity.class);</span>
+<span class="nc" id="L68">		query.setParameter(&quot;code&quot;, code);</span>
 
-<span class="nc" id="L69">		AuthorizationCodeEntity result = JpaUtil.getSingleResult(query.getResultList());</span>
-<span class="nc" id="L70">		return result;</span>
+<span class="nc" id="L70">		AuthorizationCodeEntity result = JpaUtil.getSingleResult(query.getResultList());</span>
+<span class="nc" id="L71">		return result;</span>
 	}
 
 	/* (non-Javadoc)
@@ -75,28 +76,28 @@ import org.springframework.transaction.annotation.Transactional;
 	 */
 	@Override
 	public void remove(AuthorizationCodeEntity authorizationCodeEntity) {
-<span class="nc" id="L78">		AuthorizationCodeEntity found = manager.find(AuthorizationCodeEntity.class, authorizationCodeEntity.getId());</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">		if (found != null) {</span>
-<span class="nc" id="L80">			manager.remove(found);</span>
+<span class="nc" id="L79">		AuthorizationCodeEntity found = manager.find(AuthorizationCodeEntity.class, authorizationCodeEntity.getId());</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc" id="L81">			manager.remove(found);</span>
 		}
-<span class="nc" id="L82">	}</span>
+<span class="nc" id="L83">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.repository.AuthorizationCodeRepository#getExpiredCodes()
 	 */
 	@Override
 	public Collection&lt;AuthorizationCodeEntity&gt; getExpiredCodes() {
-<span class="nc" id="L89">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_EXPIRATION_BY_DATE, AuthorizationCodeEntity.class);</span>
-<span class="nc" id="L90">		query.setParameter(AuthorizationCodeEntity.PARAM_DATE, new Date()); // this gets anything that's already expired</span>
-<span class="nc" id="L91">		return query.getResultList();</span>
+<span class="nc" id="L90">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_EXPIRATION_BY_DATE, AuthorizationCodeEntity.class);</span>
+<span class="nc" id="L91">		query.setParameter(AuthorizationCodeEntity.PARAM_DATE, new Date()); // this gets anything that's already expired</span>
+<span class="nc" id="L92">		return query.getResultList();</span>
 	}
 
 
 	@Override
 	public Collection&lt;AuthorizationCodeEntity&gt; getExpiredCodes(PageCriteria pageCriteria) {
-<span class="nc" id="L97">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_EXPIRATION_BY_DATE, AuthorizationCodeEntity.class);</span>
-<span class="nc" id="L98">		query.setParameter(AuthorizationCodeEntity.PARAM_DATE, new Date()); // this gets anything that's already expired</span>
-<span class="nc" id="L99">		return JpaUtil.getResultPage(query, pageCriteria);</span>
+<span class="nc" id="L98">		TypedQuery&lt;AuthorizationCodeEntity&gt; query = manager.createNamedQuery(AuthorizationCodeEntity.QUERY_EXPIRATION_BY_DATE, AuthorizationCodeEntity.class);</span>
+<span class="nc" id="L99">		query.setParameter(AuthorizationCodeEntity.PARAM_DATE, new Date()); // this gets anything that's already expired</span>
+<span class="nc" id="L100">		return JpaUtil.getResultPage(query, pageCriteria);</span>
 	}
 
 

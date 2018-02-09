@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TofuUserApprovalHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.token</a> &gt; <span class="el_source">TofuUserApprovalHandler.java</span></div><h1>TofuUserApprovalHandler.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -67,7 +68,7 @@ import com.google.common.collect.Sets;
  *
  */
 @Component(&quot;tofuUserApprovalHandler&quot;)
-<span class="nc" id="L70">public class TofuUserApprovalHandler implements UserApprovalHandler {</span>
+<span class="nc" id="L71">public class TofuUserApprovalHandler implements UserApprovalHandler {</span>
 
 	@Autowired
 	private ApprovedSiteService approvedSiteService;
@@ -97,12 +98,12 @@ import com.google.common.collect.Sets;
 
 		// if this request is already approved, pass that info through
 		// (this flag may be set by updateBeforeApproval, which can also do funny things with scopes, etc)
-<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (authorizationRequest.isApproved()) {</span>
-<span class="nc" id="L101">			return true;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (authorizationRequest.isApproved()) {</span>
+<span class="nc" id="L102">			return true;</span>
 		} else {
 			// if not, check to see if the user has approved it
 			// TODO: make parameter name configurable?
-<span class="nc" id="L105">			return Boolean.parseBoolean(authorizationRequest.getApprovalParameters().get(&quot;user_oauth_approval&quot;));</span>
+<span class="nc" id="L106">			return Boolean.parseBoolean(authorizationRequest.getApprovalParameters().get(&quot;user_oauth_approval&quot;));</span>
 		}
 
 	}
@@ -123,52 +124,52 @@ import com.google.common.collect.Sets;
 
 		//First, check database to see if the user identified by the userAuthentication has stored an approval decision
 
-<span class="nc" id="L126">		String userId = userAuthentication.getName();</span>
-<span class="nc" id="L127">		String clientId = authorizationRequest.getClientId();</span>
+<span class="nc" id="L127">		String userId = userAuthentication.getName();</span>
+<span class="nc" id="L128">		String clientId = authorizationRequest.getClientId();</span>
 
 		//lookup ApprovedSites by userId and clientId
-<span class="nc" id="L130">		boolean alreadyApproved = false;</span>
+<span class="nc" id="L131">		boolean alreadyApproved = false;</span>
 
 		// find out if we're supposed to force a prompt on the user or not
-<span class="nc" id="L133">		String prompt = (String) authorizationRequest.getExtensions().get(PROMPT);</span>
-<span class="nc" id="L134">		List&lt;String&gt; prompts = Splitter.on(PROMPT_SEPARATOR).splitToList(Strings.nullToEmpty(prompt));</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (!prompts.contains(PROMPT_CONSENT)) {</span>
+<span class="nc" id="L134">		String prompt = (String) authorizationRequest.getExtensions().get(PROMPT);</span>
+<span class="nc" id="L135">		List&lt;String&gt; prompts = Splitter.on(PROMPT_SEPARATOR).splitToList(Strings.nullToEmpty(prompt));</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (!prompts.contains(PROMPT_CONSENT)) {</span>
 			// if the prompt parameter is set to &quot;consent&quot; then we can't use approved sites or whitelisted sites
 			// otherwise, we need to check them below
 
-<span class="nc" id="L139">			Collection&lt;ApprovedSite&gt; aps = approvedSiteService.getByClientIdAndUserId(clientId, userId);</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">			for (ApprovedSite ap : aps) {</span>
+<span class="nc" id="L140">			Collection&lt;ApprovedSite&gt; aps = approvedSiteService.getByClientIdAndUserId(clientId, userId);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">			for (ApprovedSite ap : aps) {</span>
 
-<span class="nc bnc" id="L142" title="All 2 branches missed.">				if (!ap.isExpired()) {</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">				if (!ap.isExpired()) {</span>
 
 					// if we find one that fits...
-<span class="nc bnc" id="L145" title="All 2 branches missed.">					if (systemScopes.scopesMatch(ap.getAllowedScopes(), authorizationRequest.getScope())) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">					if (systemScopes.scopesMatch(ap.getAllowedScopes(), authorizationRequest.getScope())) {</span>
 
 						//We have a match; update the access date on the AP entry and return true.
-<span class="nc" id="L148">						ap.setAccessDate(new Date());</span>
-<span class="nc" id="L149">						approvedSiteService.save(ap);</span>
+<span class="nc" id="L149">						ap.setAccessDate(new Date());</span>
+<span class="nc" id="L150">						approvedSiteService.save(ap);</span>
 
-<span class="nc" id="L151">						String apId = ap.getId().toString();</span>
-<span class="nc" id="L152">						authorizationRequest.getExtensions().put(APPROVED_SITE, apId);</span>
-<span class="nc" id="L153">						authorizationRequest.setApproved(true);</span>
-<span class="nc" id="L154">						alreadyApproved = true;</span>
+<span class="nc" id="L152">						String apId = ap.getId().toString();</span>
+<span class="nc" id="L153">						authorizationRequest.getExtensions().put(APPROVED_SITE, apId);</span>
+<span class="nc" id="L154">						authorizationRequest.setApproved(true);</span>
+<span class="nc" id="L155">						alreadyApproved = true;</span>
 
-<span class="nc" id="L156">						setAuthTime(authorizationRequest);</span>
+<span class="nc" id="L157">						setAuthTime(authorizationRequest);</span>
 					}
 				}
-<span class="nc" id="L159">			}</span>
+<span class="nc" id="L160">			}</span>
 
-<span class="nc bnc" id="L161" title="All 2 branches missed.">			if (!alreadyApproved) {</span>
-<span class="nc" id="L162">				WhitelistedSite ws = whitelistedSiteService.getByClientId(clientId);</span>
-<span class="nc bnc" id="L163" title="All 4 branches missed.">				if (ws != null &amp;&amp; systemScopes.scopesMatch(ws.getAllowedScopes(), authorizationRequest.getScope())) {</span>
-<span class="nc" id="L164">					authorizationRequest.setApproved(true);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">			if (!alreadyApproved) {</span>
+<span class="nc" id="L163">				WhitelistedSite ws = whitelistedSiteService.getByClientId(clientId);</span>
+<span class="nc bnc" id="L164" title="All 4 branches missed.">				if (ws != null &amp;&amp; systemScopes.scopesMatch(ws.getAllowedScopes(), authorizationRequest.getScope())) {</span>
+<span class="nc" id="L165">					authorizationRequest.setApproved(true);</span>
 
-<span class="nc" id="L166">					setAuthTime(authorizationRequest);</span>
+<span class="nc" id="L167">					setAuthTime(authorizationRequest);</span>
 				}
 			}
 		}
 
-<span class="nc" id="L171">		return authorizationRequest;</span>
+<span class="nc" id="L172">		return authorizationRequest;</span>
 
 	}
 
@@ -176,65 +177,65 @@ import com.google.common.collect.Sets;
 	@Override
 	public AuthorizationRequest updateAfterApproval(AuthorizationRequest authorizationRequest, Authentication userAuthentication) {
 
-<span class="nc" id="L179">		String userId = userAuthentication.getName();</span>
-<span class="nc" id="L180">		String clientId = authorizationRequest.getClientId();</span>
-<span class="nc" id="L181">		ClientDetails client = clientDetailsService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L180">		String userId = userAuthentication.getName();</span>
+<span class="nc" id="L181">		String clientId = authorizationRequest.getClientId();</span>
+<span class="nc" id="L182">		ClientDetails client = clientDetailsService.loadClientByClientId(clientId);</span>
 
 		// This must be re-parsed here because SECOAUTH forces us to call things in a strange order
-<span class="nc bnc" id="L184" title="All 2 branches missed.">		if (Boolean.parseBoolean(authorizationRequest.getApprovalParameters().get(&quot;user_oauth_approval&quot;))) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">		if (Boolean.parseBoolean(authorizationRequest.getApprovalParameters().get(&quot;user_oauth_approval&quot;))) {</span>
 
-<span class="nc" id="L186">			authorizationRequest.setApproved(true);</span>
+<span class="nc" id="L187">			authorizationRequest.setApproved(true);</span>
 
 			// process scopes from user input
-<span class="nc" id="L189">			Set&lt;String&gt; allowedScopes = Sets.newHashSet();</span>
-<span class="nc" id="L190">			Map&lt;String,String&gt; approvalParams = authorizationRequest.getApprovalParameters();</span>
+<span class="nc" id="L190">			Set&lt;String&gt; allowedScopes = Sets.newHashSet();</span>
+<span class="nc" id="L191">			Map&lt;String,String&gt; approvalParams = authorizationRequest.getApprovalParameters();</span>
 
-<span class="nc" id="L192">			Set&lt;String&gt; keys = approvalParams.keySet();</span>
+<span class="nc" id="L193">			Set&lt;String&gt; keys = approvalParams.keySet();</span>
 
-<span class="nc bnc" id="L194" title="All 2 branches missed.">			for (String key : keys) {</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">				if (key.startsWith(&quot;scope_&quot;)) {</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">			for (String key : keys) {</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">				if (key.startsWith(&quot;scope_&quot;)) {</span>
 					//This is a scope parameter from the approval page. The value sent back should
 					//be the scope string. Check to make sure it is contained in the client's
 					//registered allowed scopes.
 
-<span class="nc" id="L200">					String scope = approvalParams.get(key);</span>
-<span class="nc" id="L201">					Set&lt;String&gt; approveSet = Sets.newHashSet(scope);</span>
+<span class="nc" id="L201">					String scope = approvalParams.get(key);</span>
+<span class="nc" id="L202">					Set&lt;String&gt; approveSet = Sets.newHashSet(scope);</span>
 
 					//Make sure this scope is allowed for the given client
-<span class="nc bnc" id="L204" title="All 2 branches missed.">					if (systemScopes.scopesMatch(client.getScope(), approveSet)) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">					if (systemScopes.scopesMatch(client.getScope(), approveSet)) {</span>
 
-<span class="nc" id="L206">						allowedScopes.add(scope);</span>
+<span class="nc" id="L207">						allowedScopes.add(scope);</span>
 					}
 
 				}
-<span class="nc" id="L210">			}</span>
+<span class="nc" id="L211">			}</span>
 
 			// inject the user-allowed scopes into the auth request
-<span class="nc" id="L213">			authorizationRequest.setScope(allowedScopes);</span>
+<span class="nc" id="L214">			authorizationRequest.setScope(allowedScopes);</span>
 
 			//Only store an ApprovedSite if the user has checked &quot;remember this decision&quot;:
-<span class="nc" id="L216">			String remember = authorizationRequest.getApprovalParameters().get(&quot;remember&quot;);</span>
-<span class="nc bnc" id="L217" title="All 4 branches missed.">			if (!Strings.isNullOrEmpty(remember) &amp;&amp; !remember.equals(&quot;none&quot;)) {</span>
+<span class="nc" id="L217">			String remember = authorizationRequest.getApprovalParameters().get(&quot;remember&quot;);</span>
+<span class="nc bnc" id="L218" title="All 4 branches missed.">			if (!Strings.isNullOrEmpty(remember) &amp;&amp; !remember.equals(&quot;none&quot;)) {</span>
 
-<span class="nc" id="L219">				Date timeout = null;</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">				if (remember.equals(&quot;one-hour&quot;)) {</span>
+<span class="nc" id="L220">				Date timeout = null;</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">				if (remember.equals(&quot;one-hour&quot;)) {</span>
 					// set the timeout to one hour from now
-<span class="nc" id="L222">					Calendar cal = Calendar.getInstance();</span>
-<span class="nc" id="L223">					cal.add(Calendar.HOUR, 1);</span>
-<span class="nc" id="L224">					timeout = cal.getTime();</span>
+<span class="nc" id="L223">					Calendar cal = Calendar.getInstance();</span>
+<span class="nc" id="L224">					cal.add(Calendar.HOUR, 1);</span>
+<span class="nc" id="L225">					timeout = cal.getTime();</span>
 				}
 
-<span class="nc" id="L227">				ApprovedSite newSite = approvedSiteService.createApprovedSite(clientId, userId, timeout, allowedScopes);</span>
-<span class="nc" id="L228">				String newSiteId = newSite.getId().toString();</span>
-<span class="nc" id="L229">				authorizationRequest.getExtensions().put(APPROVED_SITE, newSiteId);</span>
+<span class="nc" id="L228">				ApprovedSite newSite = approvedSiteService.createApprovedSite(clientId, userId, timeout, allowedScopes);</span>
+<span class="nc" id="L229">				String newSiteId = newSite.getId().toString();</span>
+<span class="nc" id="L230">				authorizationRequest.getExtensions().put(APPROVED_SITE, newSiteId);</span>
 			}
 
-<span class="nc" id="L232">			setAuthTime(authorizationRequest);</span>
+<span class="nc" id="L233">			setAuthTime(authorizationRequest);</span>
 
 
 		}
 
-<span class="nc" id="L237">		return authorizationRequest;</span>
+<span class="nc" id="L238">		return authorizationRequest;</span>
 	}
 
 	/**
@@ -245,26 +246,26 @@ import com.google.common.collect.Sets;
 	 */
 	private void setAuthTime(AuthorizationRequest authorizationRequest) {
 		// Get the session auth time, if we have it, and store it in the request
-<span class="nc" id="L248">		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">		if (attr != null) {</span>
-<span class="nc" id="L250">			HttpSession session = attr.getRequest().getSession();</span>
-<span class="nc bnc" id="L251" title="All 2 branches missed.">			if (session != null) {</span>
-<span class="nc" id="L252">				Date authTime = (Date) session.getAttribute(AuthenticationTimeStamper.AUTH_TIMESTAMP);</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">				if (authTime != null) {</span>
-<span class="nc" id="L254">					String authTimeString = Long.toString(authTime.getTime());</span>
-<span class="nc" id="L255">					authorizationRequest.getExtensions().put(AuthenticationTimeStamper.AUTH_TIMESTAMP, authTimeString);</span>
+<span class="nc" id="L249">		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">		if (attr != null) {</span>
+<span class="nc" id="L251">			HttpSession session = attr.getRequest().getSession();</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">			if (session != null) {</span>
+<span class="nc" id="L253">				Date authTime = (Date) session.getAttribute(AuthenticationTimeStamper.AUTH_TIMESTAMP);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">				if (authTime != null) {</span>
+<span class="nc" id="L255">					String authTimeString = Long.toString(authTime.getTime());</span>
+<span class="nc" id="L256">					authorizationRequest.getExtensions().put(AuthenticationTimeStamper.AUTH_TIMESTAMP, authTimeString);</span>
 				}
 			}
 		}
-<span class="nc" id="L259">	}</span>
+<span class="nc" id="L260">	}</span>
 
 	@Override
 	public Map&lt;String, Object&gt; getUserApprovalRequest(AuthorizationRequest authorizationRequest,
 			Authentication userAuthentication) {
-<span class="nc" id="L264">		Map&lt;String, Object&gt; model = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L265">		Map&lt;String, Object&gt; model = new HashMap&lt;&gt;();</span>
 		// In case of a redirect we might want the request parameters to be included
-<span class="nc" id="L266">		model.putAll(authorizationRequest.getRequestParameters());</span>
-<span class="nc" id="L267">		return model;</span>
+<span class="nc" id="L267">		model.putAll(authorizationRequest.getRequestParameters());</span>
+<span class="nc" id="L268">		return model;</span>
 	}
 
 }

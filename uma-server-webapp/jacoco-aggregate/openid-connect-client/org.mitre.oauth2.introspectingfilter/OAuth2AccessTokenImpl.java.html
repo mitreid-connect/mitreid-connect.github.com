@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OAuth2AccessTokenImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.introspectingfilter</a> &gt; <span class="el_source">OAuth2AccessTokenImpl.java</span></div><h1>OAuth2AccessTokenImpl.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -34,67 +35,67 @@ public class OAuth2AccessTokenImpl implements OAuth2AccessToken {
 
 	private JsonObject introspectionResponse;
 	private String tokenString;
-<span class="nc" id="L37">	private Set&lt;String&gt; scopes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L38">	private Set&lt;String&gt; scopes = new HashSet&lt;&gt;();</span>
 	private Date expireDate;
 
 
-<span class="nc" id="L41">	public OAuth2AccessTokenImpl(JsonObject introspectionResponse, String tokenString) {</span>
-<span class="nc" id="L42">		this.setIntrospectionResponse(introspectionResponse);</span>
-<span class="nc" id="L43">		this.tokenString = tokenString;</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">		if (introspectionResponse.get(&quot;scope&quot;) != null) {</span>
-<span class="nc" id="L45">			scopes = Sets.newHashSet(Splitter.on(&quot; &quot;).split(introspectionResponse.get(&quot;scope&quot;).getAsString()));</span>
+<span class="nc" id="L42">	public OAuth2AccessTokenImpl(JsonObject introspectionResponse, String tokenString) {</span>
+<span class="nc" id="L43">		this.setIntrospectionResponse(introspectionResponse);</span>
+<span class="nc" id="L44">		this.tokenString = tokenString;</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">		if (introspectionResponse.get(&quot;scope&quot;) != null) {</span>
+<span class="nc" id="L46">			scopes = Sets.newHashSet(Splitter.on(&quot; &quot;).split(introspectionResponse.get(&quot;scope&quot;).getAsString()));</span>
 		}
 
-<span class="nc bnc" id="L48" title="All 2 branches missed.">		if (introspectionResponse.get(&quot;exp&quot;) != null) {</span>
-<span class="nc" id="L49">			expireDate = new Date(introspectionResponse.get(&quot;exp&quot;).getAsLong() * 1000L);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (introspectionResponse.get(&quot;exp&quot;) != null) {</span>
+<span class="nc" id="L50">			expireDate = new Date(introspectionResponse.get(&quot;exp&quot;).getAsLong() * 1000L);</span>
 		}
-<span class="nc" id="L51">	}</span>
+<span class="nc" id="L52">	}</span>
 
 
 	@Override
 	public Map&lt;String, Object&gt; getAdditionalInformation() {
-<span class="nc" id="L56">		return null;</span>
+<span class="nc" id="L57">		return null;</span>
 	}
 
 	@Override
 	public Set&lt;String&gt; getScope() {
-<span class="nc" id="L61">		return scopes;</span>
+<span class="nc" id="L62">		return scopes;</span>
 	}
 
 	@Override
 	public OAuth2RefreshToken getRefreshToken() {
-<span class="nc" id="L66">		return null;</span>
+<span class="nc" id="L67">		return null;</span>
 	}
 
 	@Override
 	public String getTokenType() {
-<span class="nc" id="L71">		return BEARER_TYPE;</span>
+<span class="nc" id="L72">		return BEARER_TYPE;</span>
 	}
 
 	@Override
 	public boolean isExpired() {
-<span class="nc bnc" id="L76" title="All 4 branches missed.">		if (expireDate != null &amp;&amp; expireDate.before(new Date())) {</span>
-<span class="nc" id="L77">			return true;</span>
+<span class="nc bnc" id="L77" title="All 4 branches missed.">		if (expireDate != null &amp;&amp; expireDate.before(new Date())) {</span>
+<span class="nc" id="L78">			return true;</span>
 		}
-<span class="nc" id="L79">		return false;</span>
+<span class="nc" id="L80">		return false;</span>
 	}
 
 	@Override
 	public Date getExpiration() {
-<span class="nc" id="L84">		return expireDate;</span>
+<span class="nc" id="L85">		return expireDate;</span>
 	}
 
 	@Override
 	public int getExpiresIn() {
-<span class="nc bnc" id="L89" title="All 2 branches missed.">		if (expireDate != null) {</span>
-<span class="nc" id="L90">			return (int)TimeUnit.MILLISECONDS.toSeconds(expireDate.getTime() - (new Date()).getTime());</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (expireDate != null) {</span>
+<span class="nc" id="L91">			return (int)TimeUnit.MILLISECONDS.toSeconds(expireDate.getTime() - (new Date()).getTime());</span>
 		}
-<span class="nc" id="L92">		return 0;</span>
+<span class="nc" id="L93">		return 0;</span>
 	}
 
 	@Override
 	public String getValue() {
-<span class="nc" id="L97">		return tokenString;</span>
+<span class="nc" id="L98">		return tokenString;</span>
 	}
 
 
@@ -102,7 +103,7 @@ public class OAuth2AccessTokenImpl implements OAuth2AccessToken {
 	 * @return the token
 	 */
 	public JsonObject getIntrospectionResponse() {
-<span class="nc" id="L105">		return introspectionResponse;</span>
+<span class="nc" id="L106">		return introspectionResponse;</span>
 	}
 
 
@@ -110,8 +111,8 @@ public class OAuth2AccessTokenImpl implements OAuth2AccessToken {
 	 * @param token the token to set
 	 */
 	public void setIntrospectionResponse(JsonObject token) {
-<span class="nc" id="L113">		this.introspectionResponse = token;</span>
-<span class="nc" id="L114">	}</span>
+<span class="nc" id="L114">		this.introspectionResponse = token;</span>
+<span class="nc" id="L115">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

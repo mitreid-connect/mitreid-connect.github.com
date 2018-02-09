@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultUserInfo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">DefaultUserInfo.java</span></div><h1>DefaultUserInfo.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -45,7 +46,7 @@ import com.google.gson.JsonParser;
 	@NamedQuery(name=DefaultUserInfo.QUERY_BY_USERNAME, query = &quot;select u from DefaultUserInfo u WHERE u.preferredUsername = :&quot; + DefaultUserInfo.PARAM_USERNAME),
 	@NamedQuery(name=DefaultUserInfo.QUERY_BY_EMAIL, query = &quot;select u from DefaultUserInfo u WHERE u.email = :&quot; + DefaultUserInfo.PARAM_EMAIL)
 })
-<span class="nc" id="L48">public class DefaultUserInfo implements UserInfo {</span>
+<span class="nc" id="L49">public class DefaultUserInfo implements UserInfo {</span>
 
 	public static final String QUERY_BY_USERNAME = &quot;DefaultUserInfo.getByUsername&quot;;
 	public static final String QUERY_BY_EMAIL = &quot;DefaultUserInfo.getByEmailAddress&quot;;
@@ -86,14 +87,14 @@ import com.google.gson.JsonParser;
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L89">		return id;</span>
+<span class="nc" id="L90">		return id;</span>
 	}
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
-<span class="nc" id="L95">		this.id = id;</span>
-<span class="nc" id="L96">	}</span>
+<span class="nc" id="L96">		this.id = id;</span>
+<span class="nc" id="L97">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getUserId()
 	 */
@@ -101,15 +102,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;sub&quot;)
 	public String getSub() {
-<span class="nc" id="L104">		return sub;</span>
+<span class="nc" id="L105">		return sub;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setUserId(java.lang.String)
 	 */
 	@Override
 	public void setSub(String sub) {
-<span class="nc" id="L111">		this.sub = sub;</span>
-<span class="nc" id="L112">	}</span>
+<span class="nc" id="L112">		this.sub = sub;</span>
+<span class="nc" id="L113">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getPreferredUsername
 	 */
@@ -117,15 +118,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;preferred_username&quot;)
 	public String getPreferredUsername() {
-<span class="nc" id="L120">		return this.preferredUsername;</span>
+<span class="nc" id="L121">		return this.preferredUsername;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setPreferredUsername(java.lang.String)
 	 */
 	@Override
 	public void setPreferredUsername(String preferredUsername) {
-<span class="nc" id="L127">		this.preferredUsername = preferredUsername;</span>
-<span class="nc" id="L128">	}</span>
+<span class="nc" id="L128">		this.preferredUsername = preferredUsername;</span>
+<span class="nc" id="L129">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getName()
 	 */
@@ -133,15 +134,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;name&quot;)
 	public String getName() {
-<span class="nc" id="L136">		return name;</span>
+<span class="nc" id="L137">		return name;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setName(java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {
-<span class="nc" id="L143">		this.name = name;</span>
-<span class="nc" id="L144">	}</span>
+<span class="nc" id="L144">		this.name = name;</span>
+<span class="nc" id="L145">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getGivenName()
 	 */
@@ -149,15 +150,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;given_name&quot;)
 	public String getGivenName() {
-<span class="nc" id="L152">		return givenName;</span>
+<span class="nc" id="L153">		return givenName;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setGivenName(java.lang.String)
 	 */
 	@Override
 	public void setGivenName(String givenName) {
-<span class="nc" id="L159">		this.givenName = givenName;</span>
-<span class="nc" id="L160">	}</span>
+<span class="nc" id="L160">		this.givenName = givenName;</span>
+<span class="nc" id="L161">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getFamilyName()
 	 */
@@ -165,15 +166,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;family_name&quot;)
 	public String getFamilyName() {
-<span class="nc" id="L168">		return familyName;</span>
+<span class="nc" id="L169">		return familyName;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setFamilyName(java.lang.String)
 	 */
 	@Override
 	public void setFamilyName(String familyName) {
-<span class="nc" id="L175">		this.familyName = familyName;</span>
-<span class="nc" id="L176">	}</span>
+<span class="nc" id="L176">		this.familyName = familyName;</span>
+<span class="nc" id="L177">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getMiddleName()
 	 */
@@ -181,15 +182,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;middle_name&quot;)
 	public String getMiddleName() {
-<span class="nc" id="L184">		return middleName;</span>
+<span class="nc" id="L185">		return middleName;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setMiddleName(java.lang.String)
 	 */
 	@Override
 	public void setMiddleName(String middleName) {
-<span class="nc" id="L191">		this.middleName = middleName;</span>
-<span class="nc" id="L192">	}</span>
+<span class="nc" id="L192">		this.middleName = middleName;</span>
+<span class="nc" id="L193">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getNickname()
 	 */
@@ -197,15 +198,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;nickname&quot;)
 	public String getNickname() {
-<span class="nc" id="L200">		return nickname;</span>
+<span class="nc" id="L201">		return nickname;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setNickname(java.lang.String)
 	 */
 	@Override
 	public void setNickname(String nickname) {
-<span class="nc" id="L207">		this.nickname = nickname;</span>
-<span class="nc" id="L208">	}</span>
+<span class="nc" id="L208">		this.nickname = nickname;</span>
+<span class="nc" id="L209">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getProfile()
 	 */
@@ -213,15 +214,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;profile&quot;)
 	public String getProfile() {
-<span class="nc" id="L216">		return profile;</span>
+<span class="nc" id="L217">		return profile;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setProfile(java.lang.String)
 	 */
 	@Override
 	public void setProfile(String profile) {
-<span class="nc" id="L223">		this.profile = profile;</span>
-<span class="nc" id="L224">	}</span>
+<span class="nc" id="L224">		this.profile = profile;</span>
+<span class="nc" id="L225">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getPicture()
 	 */
@@ -229,15 +230,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;picture&quot;)
 	public String getPicture() {
-<span class="nc" id="L232">		return picture;</span>
+<span class="nc" id="L233">		return picture;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setPicture(java.lang.String)
 	 */
 	@Override
 	public void setPicture(String picture) {
-<span class="nc" id="L239">		this.picture = picture;</span>
-<span class="nc" id="L240">	}</span>
+<span class="nc" id="L240">		this.picture = picture;</span>
+<span class="nc" id="L241">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getWebsite()
 	 */
@@ -245,15 +246,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;website&quot;)
 	public String getWebsite() {
-<span class="nc" id="L248">		return website;</span>
+<span class="nc" id="L249">		return website;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setWebsite(java.lang.String)
 	 */
 	@Override
 	public void setWebsite(String website) {
-<span class="nc" id="L255">		this.website = website;</span>
-<span class="nc" id="L256">	}</span>
+<span class="nc" id="L256">		this.website = website;</span>
+<span class="nc" id="L257">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getEmail()
 	 */
@@ -261,15 +262,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;email&quot;)
 	public String getEmail() {
-<span class="nc" id="L264">		return email;</span>
+<span class="nc" id="L265">		return email;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setEmail(java.lang.String)
 	 */
 	@Override
 	public void setEmail(String email) {
-<span class="nc" id="L271">		this.email = email;</span>
-<span class="nc" id="L272">	}</span>
+<span class="nc" id="L272">		this.email = email;</span>
+<span class="nc" id="L273">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getVerified()
 	 */
@@ -277,15 +278,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;email_verified&quot;)
 	public Boolean getEmailVerified() {
-<span class="nc" id="L280">		return emailVerified;</span>
+<span class="nc" id="L281">		return emailVerified;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setVerified(java.lang.boolean)
 	 */
 	@Override
 	public void setEmailVerified(Boolean emailVerified) {
-<span class="nc" id="L287">		this.emailVerified = emailVerified;</span>
-<span class="nc" id="L288">	}</span>
+<span class="nc" id="L288">		this.emailVerified = emailVerified;</span>
+<span class="nc" id="L289">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getGender()
 	 */
@@ -293,15 +294,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;gender&quot;)
 	public String getGender() {
-<span class="nc" id="L296">		return gender;</span>
+<span class="nc" id="L297">		return gender;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setGender(java.lang.String)
 	 */
 	@Override
 	public void setGender(String gender) {
-<span class="nc" id="L303">		this.gender = gender;</span>
-<span class="nc" id="L304">	}</span>
+<span class="nc" id="L304">		this.gender = gender;</span>
+<span class="nc" id="L305">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getZoneinfo()
 	 */
@@ -309,15 +310,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;zone_info&quot;)
 	public String getZoneinfo() {
-<span class="nc" id="L312">		return zoneinfo;</span>
+<span class="nc" id="L313">		return zoneinfo;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setZoneinfo(java.lang.String)
 	 */
 	@Override
 	public void setZoneinfo(String zoneinfo) {
-<span class="nc" id="L319">		this.zoneinfo = zoneinfo;</span>
-<span class="nc" id="L320">	}</span>
+<span class="nc" id="L320">		this.zoneinfo = zoneinfo;</span>
+<span class="nc" id="L321">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getLocale()
 	 */
@@ -325,15 +326,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name = &quot;locale&quot;)
 	public String getLocale() {
-<span class="nc" id="L328">		return locale;</span>
+<span class="nc" id="L329">		return locale;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setLocale(java.lang.String)
 	 */
 	@Override
 	public void setLocale(String locale) {
-<span class="nc" id="L335">		this.locale = locale;</span>
-<span class="nc" id="L336">	}</span>
+<span class="nc" id="L336">		this.locale = locale;</span>
+<span class="nc" id="L337">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getPhoneNumber()
 	 */
@@ -341,15 +342,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;phone_number&quot;)
 	public String getPhoneNumber() {
-<span class="nc" id="L344">		return phoneNumber;</span>
+<span class="nc" id="L345">		return phoneNumber;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setPhoneNumber(java.lang.String)
 	 */
 	@Override
 	public void setPhoneNumber(String phoneNumber) {
-<span class="nc" id="L351">		this.phoneNumber = phoneNumber;</span>
-<span class="nc" id="L352">	}</span>
+<span class="nc" id="L352">		this.phoneNumber = phoneNumber;</span>
+<span class="nc" id="L353">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getPhoneNumberVerified()
 	 */
@@ -357,15 +358,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;phone_number_verified&quot;)
 	public Boolean getPhoneNumberVerified() {
-<span class="nc" id="L360">		return phoneNumberVerified;</span>
+<span class="nc" id="L361">		return phoneNumberVerified;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setPhoneNumberVerified(java.lang.Boolean)
 	 */
 	@Override
 	public void setPhoneNumberVerified(Boolean phoneNumberVerified) {
-<span class="nc" id="L367">		this.phoneNumberVerified = phoneNumberVerified;</span>
-<span class="nc" id="L368">	}</span>
+<span class="nc" id="L368">		this.phoneNumberVerified = phoneNumberVerified;</span>
+<span class="nc" id="L369">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getAddress()
 	 */
@@ -373,19 +374,19 @@ import com.google.gson.JsonParser;
 	@OneToOne(targetEntity = DefaultAddress.class, cascade = CascadeType.ALL)
 	@JoinColumn(name=&quot;address_id&quot;)
 	public Address getAddress() {
-<span class="nc" id="L376">		return address;</span>
+<span class="nc" id="L377">		return address;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setAddress(org.mitre.openid.connect.model.Address)
 	 */
 	@Override
 	public void setAddress(Address address) {
-<span class="nc bnc" id="L383" title="All 2 branches missed.">		if (address != null) {</span>
-<span class="nc" id="L384">			this.address = new DefaultAddress(address);</span>
+<span class="nc bnc" id="L384" title="All 2 branches missed.">		if (address != null) {</span>
+<span class="nc" id="L385">			this.address = new DefaultAddress(address);</span>
 		} else {
-<span class="nc" id="L386">			this.address = null;</span>
+<span class="nc" id="L387">			this.address = null;</span>
 		}
-<span class="nc" id="L388">	}</span>
+<span class="nc" id="L389">	}</span>
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#getUpdatedTime()
 	 */
@@ -393,15 +394,15 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;updated_time&quot;)
 	public String getUpdatedTime() {
-<span class="nc" id="L396">		return updatedTime;</span>
+<span class="nc" id="L397">		return updatedTime;</span>
 	}
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.model.UserInfo#setUpdatedTime(java.lang.String)
 	 */
 	@Override
 	public void setUpdatedTime(String updatedTime) {
-<span class="nc" id="L403">		this.updatedTime = updatedTime;</span>
-<span class="nc" id="L404">	}</span>
+<span class="nc" id="L404">		this.updatedTime = updatedTime;</span>
+<span class="nc" id="L405">	}</span>
 
 	/**
 	 * @return the birthdate
@@ -410,61 +411,61 @@ import com.google.gson.JsonParser;
 	@Basic
 	@Column(name=&quot;birthdate&quot;)
 	public String getBirthdate() {
-<span class="nc" id="L413">		return birthdate;</span>
+<span class="nc" id="L414">		return birthdate;</span>
 	}
 	/**
 	 * @param birthdate the birthdate to set
 	 */
 	@Override
 	public void setBirthdate(String birthdate) {
-<span class="nc" id="L420">		this.birthdate = birthdate;</span>
-<span class="nc" id="L421">	}</span>
+<span class="nc" id="L421">		this.birthdate = birthdate;</span>
+<span class="nc" id="L422">	}</span>
 
 	@Override
 	public JsonObject toJson() {
-<span class="nc bnc" id="L425" title="All 2 branches missed.">		if (src == null) {</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">		if (src == null) {</span>
 
-<span class="nc" id="L427">			JsonObject obj = new JsonObject();</span>
+<span class="nc" id="L428">			JsonObject obj = new JsonObject();</span>
 
-<span class="nc" id="L429">			obj.addProperty(&quot;sub&quot;, this.getSub());</span>
+<span class="nc" id="L430">			obj.addProperty(&quot;sub&quot;, this.getSub());</span>
 
-<span class="nc" id="L431">			obj.addProperty(&quot;name&quot;, this.getName());</span>
-<span class="nc" id="L432">			obj.addProperty(&quot;preferred_username&quot;, this.getPreferredUsername());</span>
-<span class="nc" id="L433">			obj.addProperty(&quot;given_name&quot;, this.getGivenName());</span>
-<span class="nc" id="L434">			obj.addProperty(&quot;family_name&quot;, this.getFamilyName());</span>
-<span class="nc" id="L435">			obj.addProperty(&quot;middle_name&quot;, this.getMiddleName());</span>
-<span class="nc" id="L436">			obj.addProperty(&quot;nickname&quot;, this.getNickname());</span>
-<span class="nc" id="L437">			obj.addProperty(&quot;profile&quot;, this.getProfile());</span>
-<span class="nc" id="L438">			obj.addProperty(&quot;picture&quot;, this.getPicture());</span>
-<span class="nc" id="L439">			obj.addProperty(&quot;website&quot;, this.getWebsite());</span>
-<span class="nc" id="L440">			obj.addProperty(&quot;gender&quot;, this.getGender());</span>
-<span class="nc" id="L441">			obj.addProperty(&quot;zoneinfo&quot;, this.getZoneinfo());</span>
-<span class="nc" id="L442">			obj.addProperty(&quot;locale&quot;, this.getLocale());</span>
-<span class="nc" id="L443">			obj.addProperty(&quot;updated_at&quot;, this.getUpdatedTime());</span>
-<span class="nc" id="L444">			obj.addProperty(&quot;birthdate&quot;, this.getBirthdate());</span>
+<span class="nc" id="L432">			obj.addProperty(&quot;name&quot;, this.getName());</span>
+<span class="nc" id="L433">			obj.addProperty(&quot;preferred_username&quot;, this.getPreferredUsername());</span>
+<span class="nc" id="L434">			obj.addProperty(&quot;given_name&quot;, this.getGivenName());</span>
+<span class="nc" id="L435">			obj.addProperty(&quot;family_name&quot;, this.getFamilyName());</span>
+<span class="nc" id="L436">			obj.addProperty(&quot;middle_name&quot;, this.getMiddleName());</span>
+<span class="nc" id="L437">			obj.addProperty(&quot;nickname&quot;, this.getNickname());</span>
+<span class="nc" id="L438">			obj.addProperty(&quot;profile&quot;, this.getProfile());</span>
+<span class="nc" id="L439">			obj.addProperty(&quot;picture&quot;, this.getPicture());</span>
+<span class="nc" id="L440">			obj.addProperty(&quot;website&quot;, this.getWebsite());</span>
+<span class="nc" id="L441">			obj.addProperty(&quot;gender&quot;, this.getGender());</span>
+<span class="nc" id="L442">			obj.addProperty(&quot;zoneinfo&quot;, this.getZoneinfo());</span>
+<span class="nc" id="L443">			obj.addProperty(&quot;locale&quot;, this.getLocale());</span>
+<span class="nc" id="L444">			obj.addProperty(&quot;updated_at&quot;, this.getUpdatedTime());</span>
+<span class="nc" id="L445">			obj.addProperty(&quot;birthdate&quot;, this.getBirthdate());</span>
 
-<span class="nc" id="L446">			obj.addProperty(&quot;email&quot;, this.getEmail());</span>
-<span class="nc" id="L447">			obj.addProperty(&quot;email_verified&quot;, this.getEmailVerified());</span>
+<span class="nc" id="L447">			obj.addProperty(&quot;email&quot;, this.getEmail());</span>
+<span class="nc" id="L448">			obj.addProperty(&quot;email_verified&quot;, this.getEmailVerified());</span>
 
-<span class="nc" id="L449">			obj.addProperty(&quot;phone_number&quot;, this.getPhoneNumber());</span>
-<span class="nc" id="L450">			obj.addProperty(&quot;phone_number_verified&quot;, this.getPhoneNumberVerified());</span>
+<span class="nc" id="L450">			obj.addProperty(&quot;phone_number&quot;, this.getPhoneNumber());</span>
+<span class="nc" id="L451">			obj.addProperty(&quot;phone_number_verified&quot;, this.getPhoneNumberVerified());</span>
 
-<span class="nc bnc" id="L452" title="All 2 branches missed.">			if (this.getAddress() != null) {</span>
+<span class="nc bnc" id="L453" title="All 2 branches missed.">			if (this.getAddress() != null) {</span>
 
-<span class="nc" id="L454">				JsonObject addr = new JsonObject();</span>
-<span class="nc" id="L455">				addr.addProperty(&quot;formatted&quot;, this.getAddress().getFormatted());</span>
-<span class="nc" id="L456">				addr.addProperty(&quot;street_address&quot;, this.getAddress().getStreetAddress());</span>
-<span class="nc" id="L457">				addr.addProperty(&quot;locality&quot;, this.getAddress().getLocality());</span>
-<span class="nc" id="L458">				addr.addProperty(&quot;region&quot;, this.getAddress().getRegion());</span>
-<span class="nc" id="L459">				addr.addProperty(&quot;postal_code&quot;, this.getAddress().getPostalCode());</span>
-<span class="nc" id="L460">				addr.addProperty(&quot;country&quot;, this.getAddress().getCountry());</span>
+<span class="nc" id="L455">				JsonObject addr = new JsonObject();</span>
+<span class="nc" id="L456">				addr.addProperty(&quot;formatted&quot;, this.getAddress().getFormatted());</span>
+<span class="nc" id="L457">				addr.addProperty(&quot;street_address&quot;, this.getAddress().getStreetAddress());</span>
+<span class="nc" id="L458">				addr.addProperty(&quot;locality&quot;, this.getAddress().getLocality());</span>
+<span class="nc" id="L459">				addr.addProperty(&quot;region&quot;, this.getAddress().getRegion());</span>
+<span class="nc" id="L460">				addr.addProperty(&quot;postal_code&quot;, this.getAddress().getPostalCode());</span>
+<span class="nc" id="L461">				addr.addProperty(&quot;country&quot;, this.getAddress().getCountry());</span>
 
-<span class="nc" id="L462">				obj.add(&quot;address&quot;, addr);</span>
+<span class="nc" id="L463">				obj.add(&quot;address&quot;, addr);</span>
 			}
 
-<span class="nc" id="L465">			return obj;</span>
+<span class="nc" id="L466">			return obj;</span>
 		} else {
-<span class="nc" id="L467">			return src;</span>
+<span class="nc" id="L468">			return src;</span>
 		}
 
 	}
@@ -475,47 +476,47 @@ import com.google.gson.JsonParser;
 	 * @return
 	 */
 	public static UserInfo fromJson(JsonObject obj) {
-<span class="nc" id="L478">		DefaultUserInfo ui = new DefaultUserInfo();</span>
-<span class="nc" id="L479">		ui.setSource(obj);</span>
+<span class="nc" id="L479">		DefaultUserInfo ui = new DefaultUserInfo();</span>
+<span class="nc" id="L480">		ui.setSource(obj);</span>
 
-<span class="nc" id="L481">		ui.setSub(nullSafeGetString(obj, &quot;sub&quot;));</span>
+<span class="nc" id="L482">		ui.setSub(nullSafeGetString(obj, &quot;sub&quot;));</span>
 
-<span class="nc" id="L483">		ui.setName(nullSafeGetString(obj, &quot;name&quot;));</span>
-<span class="nc" id="L484">		ui.setPreferredUsername(nullSafeGetString(obj, &quot;preferred_username&quot;));</span>
-<span class="nc" id="L485">		ui.setGivenName(nullSafeGetString(obj, &quot;given_name&quot;));</span>
-<span class="nc" id="L486">		ui.setFamilyName(nullSafeGetString(obj, &quot;family_name&quot;));</span>
-<span class="nc" id="L487">		ui.setMiddleName(nullSafeGetString(obj, &quot;middle_name&quot;));</span>
-<span class="nc" id="L488">		ui.setNickname(nullSafeGetString(obj, &quot;nickname&quot;));</span>
-<span class="nc" id="L489">		ui.setProfile(nullSafeGetString(obj, &quot;profile&quot;));</span>
-<span class="nc" id="L490">		ui.setPicture(nullSafeGetString(obj, &quot;picture&quot;));</span>
-<span class="nc" id="L491">		ui.setWebsite(nullSafeGetString(obj, &quot;website&quot;));</span>
-<span class="nc" id="L492">		ui.setGender(nullSafeGetString(obj, &quot;gender&quot;));</span>
-<span class="nc" id="L493">		ui.setZoneinfo(nullSafeGetString(obj, &quot;zoneinfo&quot;));</span>
-<span class="nc" id="L494">		ui.setLocale(nullSafeGetString(obj, &quot;locale&quot;));</span>
-<span class="nc" id="L495">		ui.setUpdatedTime(nullSafeGetString(obj, &quot;updated_at&quot;));</span>
-<span class="nc" id="L496">		ui.setBirthdate(nullSafeGetString(obj, &quot;birthdate&quot;));</span>
+<span class="nc" id="L484">		ui.setName(nullSafeGetString(obj, &quot;name&quot;));</span>
+<span class="nc" id="L485">		ui.setPreferredUsername(nullSafeGetString(obj, &quot;preferred_username&quot;));</span>
+<span class="nc" id="L486">		ui.setGivenName(nullSafeGetString(obj, &quot;given_name&quot;));</span>
+<span class="nc" id="L487">		ui.setFamilyName(nullSafeGetString(obj, &quot;family_name&quot;));</span>
+<span class="nc" id="L488">		ui.setMiddleName(nullSafeGetString(obj, &quot;middle_name&quot;));</span>
+<span class="nc" id="L489">		ui.setNickname(nullSafeGetString(obj, &quot;nickname&quot;));</span>
+<span class="nc" id="L490">		ui.setProfile(nullSafeGetString(obj, &quot;profile&quot;));</span>
+<span class="nc" id="L491">		ui.setPicture(nullSafeGetString(obj, &quot;picture&quot;));</span>
+<span class="nc" id="L492">		ui.setWebsite(nullSafeGetString(obj, &quot;website&quot;));</span>
+<span class="nc" id="L493">		ui.setGender(nullSafeGetString(obj, &quot;gender&quot;));</span>
+<span class="nc" id="L494">		ui.setZoneinfo(nullSafeGetString(obj, &quot;zoneinfo&quot;));</span>
+<span class="nc" id="L495">		ui.setLocale(nullSafeGetString(obj, &quot;locale&quot;));</span>
+<span class="nc" id="L496">		ui.setUpdatedTime(nullSafeGetString(obj, &quot;updated_at&quot;));</span>
+<span class="nc" id="L497">		ui.setBirthdate(nullSafeGetString(obj, &quot;birthdate&quot;));</span>
 
-<span class="nc" id="L498">		ui.setEmail(nullSafeGetString(obj, &quot;email&quot;));</span>
-<span class="nc bnc" id="L499" title="All 4 branches missed.">		ui.setEmailVerified(obj.has(&quot;email_verified&quot;) &amp;&amp; obj.get(&quot;email_verified&quot;).isJsonPrimitive() ? obj.get(&quot;email_verified&quot;).getAsBoolean() : null);</span>
+<span class="nc" id="L499">		ui.setEmail(nullSafeGetString(obj, &quot;email&quot;));</span>
+<span class="nc bnc" id="L500" title="All 4 branches missed.">		ui.setEmailVerified(obj.has(&quot;email_verified&quot;) &amp;&amp; obj.get(&quot;email_verified&quot;).isJsonPrimitive() ? obj.get(&quot;email_verified&quot;).getAsBoolean() : null);</span>
 
-<span class="nc" id="L501">		ui.setPhoneNumber(nullSafeGetString(obj, &quot;phone_number&quot;));</span>
-<span class="nc bnc" id="L502" title="All 4 branches missed.">		ui.setPhoneNumberVerified(obj.has(&quot;phone_number_verified&quot;) &amp;&amp; obj.get(&quot;phone_number_verified&quot;).isJsonPrimitive() ? obj.get(&quot;phone_number_verified&quot;).getAsBoolean() : null);</span>
+<span class="nc" id="L502">		ui.setPhoneNumber(nullSafeGetString(obj, &quot;phone_number&quot;));</span>
+<span class="nc bnc" id="L503" title="All 4 branches missed.">		ui.setPhoneNumberVerified(obj.has(&quot;phone_number_verified&quot;) &amp;&amp; obj.get(&quot;phone_number_verified&quot;).isJsonPrimitive() ? obj.get(&quot;phone_number_verified&quot;).getAsBoolean() : null);</span>
 
-<span class="nc bnc" id="L504" title="All 4 branches missed.">		if (obj.has(&quot;address&quot;) &amp;&amp; obj.get(&quot;address&quot;).isJsonObject()) {</span>
-<span class="nc" id="L505">			JsonObject addr = obj.get(&quot;address&quot;).getAsJsonObject();</span>
-<span class="nc" id="L506">			ui.setAddress(new DefaultAddress());</span>
+<span class="nc bnc" id="L505" title="All 4 branches missed.">		if (obj.has(&quot;address&quot;) &amp;&amp; obj.get(&quot;address&quot;).isJsonObject()) {</span>
+<span class="nc" id="L506">			JsonObject addr = obj.get(&quot;address&quot;).getAsJsonObject();</span>
+<span class="nc" id="L507">			ui.setAddress(new DefaultAddress());</span>
 
-<span class="nc" id="L508">			ui.getAddress().setFormatted(nullSafeGetString(addr, &quot;formatted&quot;));</span>
-<span class="nc" id="L509">			ui.getAddress().setStreetAddress(nullSafeGetString(addr, &quot;street_address&quot;));</span>
-<span class="nc" id="L510">			ui.getAddress().setLocality(nullSafeGetString(addr, &quot;locality&quot;));</span>
-<span class="nc" id="L511">			ui.getAddress().setRegion(nullSafeGetString(addr, &quot;region&quot;));</span>
-<span class="nc" id="L512">			ui.getAddress().setPostalCode(nullSafeGetString(addr, &quot;postal_code&quot;));</span>
-<span class="nc" id="L513">			ui.getAddress().setCountry(nullSafeGetString(addr, &quot;country&quot;));</span>
+<span class="nc" id="L509">			ui.getAddress().setFormatted(nullSafeGetString(addr, &quot;formatted&quot;));</span>
+<span class="nc" id="L510">			ui.getAddress().setStreetAddress(nullSafeGetString(addr, &quot;street_address&quot;));</span>
+<span class="nc" id="L511">			ui.getAddress().setLocality(nullSafeGetString(addr, &quot;locality&quot;));</span>
+<span class="nc" id="L512">			ui.getAddress().setRegion(nullSafeGetString(addr, &quot;region&quot;));</span>
+<span class="nc" id="L513">			ui.getAddress().setPostalCode(nullSafeGetString(addr, &quot;postal_code&quot;));</span>
+<span class="nc" id="L514">			ui.getAddress().setCountry(nullSafeGetString(addr, &quot;country&quot;));</span>
 
 		}
 
 
-<span class="nc" id="L518">		return ui;</span>
+<span class="nc" id="L519">		return ui;</span>
 
 	}
 	/**
@@ -526,19 +527,19 @@ import com.google.gson.JsonParser;
 	@Column(name = &quot;src&quot;)
 	@Convert(converter = JsonObjectStringConverter.class)
 	public JsonObject getSource() {
-<span class="nc" id="L529">		return src;</span>
+<span class="nc" id="L530">		return src;</span>
 	}
 
 	/**
 	 * @param jsonString the jsonString to set
 	 */
 	public void setSource(JsonObject src) {
-<span class="nc" id="L536">		this.src = src;</span>
-<span class="nc" id="L537">	}</span>
+<span class="nc" id="L537">		this.src = src;</span>
+<span class="nc" id="L538">	}</span>
 
 
 	private static String nullSafeGetString(JsonObject obj, String field) {
-<span class="nc bnc" id="L541" title="All 4 branches missed.">		return obj.has(field) &amp;&amp; obj.get(field).isJsonPrimitive() ? obj.get(field).getAsString() : null;</span>
+<span class="nc bnc" id="L542" title="All 4 branches missed.">		return obj.has(field) &amp;&amp; obj.get(field).isJsonPrimitive() ? obj.get(field).getAsString() : null;</span>
 	}
 
 	/* (non-Javadoc)
@@ -546,30 +547,30 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public int hashCode() {
-<span class="nc" id="L549">		final int prime = 31;</span>
-<span class="nc" id="L550">		int result = 1;</span>
-<span class="nc bnc" id="L551" title="All 2 branches missed.">		result = prime * result + ((address == null) ? 0 : address.hashCode());</span>
-<span class="nc bnc" id="L552" title="All 2 branches missed.">		result = prime * result + ((birthdate == null) ? 0 : birthdate.hashCode());</span>
-<span class="nc bnc" id="L553" title="All 2 branches missed.">		result = prime * result + ((email == null) ? 0 : email.hashCode());</span>
-<span class="nc bnc" id="L554" title="All 2 branches missed.">		result = prime * result + ((emailVerified == null) ? 0 : emailVerified.hashCode());</span>
-<span class="nc bnc" id="L555" title="All 2 branches missed.">		result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());</span>
-<span class="nc bnc" id="L556" title="All 2 branches missed.">		result = prime * result + ((gender == null) ? 0 : gender.hashCode());</span>
-<span class="nc bnc" id="L557" title="All 2 branches missed.">		result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());</span>
-<span class="nc bnc" id="L558" title="All 2 branches missed.">		result = prime * result + ((id == null) ? 0 : id.hashCode());</span>
-<span class="nc bnc" id="L559" title="All 2 branches missed.">		result = prime * result + ((locale == null) ? 0 : locale.hashCode());</span>
-<span class="nc bnc" id="L560" title="All 2 branches missed.">		result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());</span>
-<span class="nc bnc" id="L561" title="All 2 branches missed.">		result = prime * result + ((name == null) ? 0 : name.hashCode());</span>
-<span class="nc bnc" id="L562" title="All 2 branches missed.">		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());</span>
-<span class="nc bnc" id="L563" title="All 2 branches missed.">		result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());</span>
-<span class="nc bnc" id="L564" title="All 2 branches missed.">		result = prime * result + ((phoneNumberVerified == null) ? 0 : phoneNumberVerified.hashCode());</span>
-<span class="nc bnc" id="L565" title="All 2 branches missed.">		result = prime * result + ((picture == null) ? 0 : picture.hashCode());</span>
-<span class="nc bnc" id="L566" title="All 2 branches missed.">		result = prime * result + ((preferredUsername == null) ? 0 : preferredUsername.hashCode());</span>
-<span class="nc bnc" id="L567" title="All 2 branches missed.">		result = prime * result + ((profile == null) ? 0 : profile.hashCode());</span>
-<span class="nc bnc" id="L568" title="All 2 branches missed.">		result = prime * result + ((sub == null) ? 0 : sub.hashCode());</span>
-<span class="nc bnc" id="L569" title="All 2 branches missed.">		result = prime * result + ((updatedTime == null) ? 0 : updatedTime.hashCode());</span>
-<span class="nc bnc" id="L570" title="All 2 branches missed.">		result = prime * result + ((website == null) ? 0 : website.hashCode());</span>
-<span class="nc bnc" id="L571" title="All 2 branches missed.">		result = prime * result + ((zoneinfo == null) ? 0 : zoneinfo.hashCode());</span>
-<span class="nc" id="L572">		return result;</span>
+<span class="nc" id="L550">		final int prime = 31;</span>
+<span class="nc" id="L551">		int result = 1;</span>
+<span class="nc bnc" id="L552" title="All 2 branches missed.">		result = prime * result + ((address == null) ? 0 : address.hashCode());</span>
+<span class="nc bnc" id="L553" title="All 2 branches missed.">		result = prime * result + ((birthdate == null) ? 0 : birthdate.hashCode());</span>
+<span class="nc bnc" id="L554" title="All 2 branches missed.">		result = prime * result + ((email == null) ? 0 : email.hashCode());</span>
+<span class="nc bnc" id="L555" title="All 2 branches missed.">		result = prime * result + ((emailVerified == null) ? 0 : emailVerified.hashCode());</span>
+<span class="nc bnc" id="L556" title="All 2 branches missed.">		result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">		result = prime * result + ((gender == null) ? 0 : gender.hashCode());</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">		result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">		result = prime * result + ((id == null) ? 0 : id.hashCode());</span>
+<span class="nc bnc" id="L560" title="All 2 branches missed.">		result = prime * result + ((locale == null) ? 0 : locale.hashCode());</span>
+<span class="nc bnc" id="L561" title="All 2 branches missed.">		result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">		result = prime * result + ((name == null) ? 0 : name.hashCode());</span>
+<span class="nc bnc" id="L563" title="All 2 branches missed.">		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());</span>
+<span class="nc bnc" id="L564" title="All 2 branches missed.">		result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">		result = prime * result + ((phoneNumberVerified == null) ? 0 : phoneNumberVerified.hashCode());</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">		result = prime * result + ((picture == null) ? 0 : picture.hashCode());</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">		result = prime * result + ((preferredUsername == null) ? 0 : preferredUsername.hashCode());</span>
+<span class="nc bnc" id="L568" title="All 2 branches missed.">		result = prime * result + ((profile == null) ? 0 : profile.hashCode());</span>
+<span class="nc bnc" id="L569" title="All 2 branches missed.">		result = prime * result + ((sub == null) ? 0 : sub.hashCode());</span>
+<span class="nc bnc" id="L570" title="All 2 branches missed.">		result = prime * result + ((updatedTime == null) ? 0 : updatedTime.hashCode());</span>
+<span class="nc bnc" id="L571" title="All 2 branches missed.">		result = prime * result + ((website == null) ? 0 : website.hashCode());</span>
+<span class="nc bnc" id="L572" title="All 2 branches missed.">		result = prime * result + ((zoneinfo == null) ? 0 : zoneinfo.hashCode());</span>
+<span class="nc" id="L573">		return result;</span>
 	}
 
 	/* (non-Javadoc)
@@ -577,164 +578,164 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public boolean equals(Object obj) {
-<span class="nc bnc" id="L580" title="All 2 branches missed.">		if (this == obj) {</span>
-<span class="nc" id="L581">			return true;</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L582">			return true;</span>
 		}
-<span class="nc bnc" id="L583" title="All 2 branches missed.">		if (obj == null) {</span>
-<span class="nc" id="L584">			return false;</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L585">			return false;</span>
 		}
-<span class="nc bnc" id="L586" title="All 2 branches missed.">		if (!(obj instanceof DefaultUserInfo)) {</span>
-<span class="nc" id="L587">			return false;</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">		if (!(obj instanceof DefaultUserInfo)) {</span>
+<span class="nc" id="L588">			return false;</span>
 		}
-<span class="nc" id="L589">		DefaultUserInfo other = (DefaultUserInfo) obj;</span>
-<span class="nc bnc" id="L590" title="All 2 branches missed.">		if (address == null) {</span>
-<span class="nc bnc" id="L591" title="All 2 branches missed.">			if (other.address != null) {</span>
-<span class="nc" id="L592">				return false;</span>
+<span class="nc" id="L590">		DefaultUserInfo other = (DefaultUserInfo) obj;</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">		if (address == null) {</span>
+<span class="nc bnc" id="L592" title="All 2 branches missed.">			if (other.address != null) {</span>
+<span class="nc" id="L593">				return false;</span>
 			}
-<span class="nc bnc" id="L594" title="All 2 branches missed.">		} else if (!address.equals(other.address)) {</span>
-<span class="nc" id="L595">			return false;</span>
+<span class="nc bnc" id="L595" title="All 2 branches missed.">		} else if (!address.equals(other.address)) {</span>
+<span class="nc" id="L596">			return false;</span>
 		}
-<span class="nc bnc" id="L597" title="All 2 branches missed.">		if (birthdate == null) {</span>
-<span class="nc bnc" id="L598" title="All 2 branches missed.">			if (other.birthdate != null) {</span>
-<span class="nc" id="L599">				return false;</span>
+<span class="nc bnc" id="L598" title="All 2 branches missed.">		if (birthdate == null) {</span>
+<span class="nc bnc" id="L599" title="All 2 branches missed.">			if (other.birthdate != null) {</span>
+<span class="nc" id="L600">				return false;</span>
 			}
-<span class="nc bnc" id="L601" title="All 2 branches missed.">		} else if (!birthdate.equals(other.birthdate)) {</span>
-<span class="nc" id="L602">			return false;</span>
+<span class="nc bnc" id="L602" title="All 2 branches missed.">		} else if (!birthdate.equals(other.birthdate)) {</span>
+<span class="nc" id="L603">			return false;</span>
 		}
-<span class="nc bnc" id="L604" title="All 2 branches missed.">		if (email == null) {</span>
-<span class="nc bnc" id="L605" title="All 2 branches missed.">			if (other.email != null) {</span>
-<span class="nc" id="L606">				return false;</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">		if (email == null) {</span>
+<span class="nc bnc" id="L606" title="All 2 branches missed.">			if (other.email != null) {</span>
+<span class="nc" id="L607">				return false;</span>
 			}
-<span class="nc bnc" id="L608" title="All 2 branches missed.">		} else if (!email.equals(other.email)) {</span>
-<span class="nc" id="L609">			return false;</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">		} else if (!email.equals(other.email)) {</span>
+<span class="nc" id="L610">			return false;</span>
 		}
-<span class="nc bnc" id="L611" title="All 2 branches missed.">		if (emailVerified == null) {</span>
-<span class="nc bnc" id="L612" title="All 2 branches missed.">			if (other.emailVerified != null) {</span>
-<span class="nc" id="L613">				return false;</span>
+<span class="nc bnc" id="L612" title="All 2 branches missed.">		if (emailVerified == null) {</span>
+<span class="nc bnc" id="L613" title="All 2 branches missed.">			if (other.emailVerified != null) {</span>
+<span class="nc" id="L614">				return false;</span>
 			}
-<span class="nc bnc" id="L615" title="All 2 branches missed.">		} else if (!emailVerified.equals(other.emailVerified)) {</span>
-<span class="nc" id="L616">			return false;</span>
+<span class="nc bnc" id="L616" title="All 2 branches missed.">		} else if (!emailVerified.equals(other.emailVerified)) {</span>
+<span class="nc" id="L617">			return false;</span>
 		}
-<span class="nc bnc" id="L618" title="All 2 branches missed.">		if (familyName == null) {</span>
-<span class="nc bnc" id="L619" title="All 2 branches missed.">			if (other.familyName != null) {</span>
-<span class="nc" id="L620">				return false;</span>
+<span class="nc bnc" id="L619" title="All 2 branches missed.">		if (familyName == null) {</span>
+<span class="nc bnc" id="L620" title="All 2 branches missed.">			if (other.familyName != null) {</span>
+<span class="nc" id="L621">				return false;</span>
 			}
-<span class="nc bnc" id="L622" title="All 2 branches missed.">		} else if (!familyName.equals(other.familyName)) {</span>
-<span class="nc" id="L623">			return false;</span>
+<span class="nc bnc" id="L623" title="All 2 branches missed.">		} else if (!familyName.equals(other.familyName)) {</span>
+<span class="nc" id="L624">			return false;</span>
 		}
-<span class="nc bnc" id="L625" title="All 2 branches missed.">		if (gender == null) {</span>
-<span class="nc bnc" id="L626" title="All 2 branches missed.">			if (other.gender != null) {</span>
-<span class="nc" id="L627">				return false;</span>
+<span class="nc bnc" id="L626" title="All 2 branches missed.">		if (gender == null) {</span>
+<span class="nc bnc" id="L627" title="All 2 branches missed.">			if (other.gender != null) {</span>
+<span class="nc" id="L628">				return false;</span>
 			}
-<span class="nc bnc" id="L629" title="All 2 branches missed.">		} else if (!gender.equals(other.gender)) {</span>
-<span class="nc" id="L630">			return false;</span>
+<span class="nc bnc" id="L630" title="All 2 branches missed.">		} else if (!gender.equals(other.gender)) {</span>
+<span class="nc" id="L631">			return false;</span>
 		}
-<span class="nc bnc" id="L632" title="All 2 branches missed.">		if (givenName == null) {</span>
-<span class="nc bnc" id="L633" title="All 2 branches missed.">			if (other.givenName != null) {</span>
-<span class="nc" id="L634">				return false;</span>
+<span class="nc bnc" id="L633" title="All 2 branches missed.">		if (givenName == null) {</span>
+<span class="nc bnc" id="L634" title="All 2 branches missed.">			if (other.givenName != null) {</span>
+<span class="nc" id="L635">				return false;</span>
 			}
-<span class="nc bnc" id="L636" title="All 2 branches missed.">		} else if (!givenName.equals(other.givenName)) {</span>
-<span class="nc" id="L637">			return false;</span>
+<span class="nc bnc" id="L637" title="All 2 branches missed.">		} else if (!givenName.equals(other.givenName)) {</span>
+<span class="nc" id="L638">			return false;</span>
 		}
-<span class="nc bnc" id="L639" title="All 2 branches missed.">		if (id == null) {</span>
-<span class="nc bnc" id="L640" title="All 2 branches missed.">			if (other.id != null) {</span>
-<span class="nc" id="L641">				return false;</span>
+<span class="nc bnc" id="L640" title="All 2 branches missed.">		if (id == null) {</span>
+<span class="nc bnc" id="L641" title="All 2 branches missed.">			if (other.id != null) {</span>
+<span class="nc" id="L642">				return false;</span>
 			}
-<span class="nc bnc" id="L643" title="All 2 branches missed.">		} else if (!id.equals(other.id)) {</span>
-<span class="nc" id="L644">			return false;</span>
+<span class="nc bnc" id="L644" title="All 2 branches missed.">		} else if (!id.equals(other.id)) {</span>
+<span class="nc" id="L645">			return false;</span>
 		}
-<span class="nc bnc" id="L646" title="All 2 branches missed.">		if (locale == null) {</span>
-<span class="nc bnc" id="L647" title="All 2 branches missed.">			if (other.locale != null) {</span>
-<span class="nc" id="L648">				return false;</span>
+<span class="nc bnc" id="L647" title="All 2 branches missed.">		if (locale == null) {</span>
+<span class="nc bnc" id="L648" title="All 2 branches missed.">			if (other.locale != null) {</span>
+<span class="nc" id="L649">				return false;</span>
 			}
-<span class="nc bnc" id="L650" title="All 2 branches missed.">		} else if (!locale.equals(other.locale)) {</span>
-<span class="nc" id="L651">			return false;</span>
+<span class="nc bnc" id="L651" title="All 2 branches missed.">		} else if (!locale.equals(other.locale)) {</span>
+<span class="nc" id="L652">			return false;</span>
 		}
-<span class="nc bnc" id="L653" title="All 2 branches missed.">		if (middleName == null) {</span>
-<span class="nc bnc" id="L654" title="All 2 branches missed.">			if (other.middleName != null) {</span>
-<span class="nc" id="L655">				return false;</span>
+<span class="nc bnc" id="L654" title="All 2 branches missed.">		if (middleName == null) {</span>
+<span class="nc bnc" id="L655" title="All 2 branches missed.">			if (other.middleName != null) {</span>
+<span class="nc" id="L656">				return false;</span>
 			}
-<span class="nc bnc" id="L657" title="All 2 branches missed.">		} else if (!middleName.equals(other.middleName)) {</span>
-<span class="nc" id="L658">			return false;</span>
+<span class="nc bnc" id="L658" title="All 2 branches missed.">		} else if (!middleName.equals(other.middleName)) {</span>
+<span class="nc" id="L659">			return false;</span>
 		}
-<span class="nc bnc" id="L660" title="All 2 branches missed.">		if (name == null) {</span>
-<span class="nc bnc" id="L661" title="All 2 branches missed.">			if (other.name != null) {</span>
-<span class="nc" id="L662">				return false;</span>
+<span class="nc bnc" id="L661" title="All 2 branches missed.">		if (name == null) {</span>
+<span class="nc bnc" id="L662" title="All 2 branches missed.">			if (other.name != null) {</span>
+<span class="nc" id="L663">				return false;</span>
 			}
-<span class="nc bnc" id="L664" title="All 2 branches missed.">		} else if (!name.equals(other.name)) {</span>
-<span class="nc" id="L665">			return false;</span>
+<span class="nc bnc" id="L665" title="All 2 branches missed.">		} else if (!name.equals(other.name)) {</span>
+<span class="nc" id="L666">			return false;</span>
 		}
-<span class="nc bnc" id="L667" title="All 2 branches missed.">		if (nickname == null) {</span>
-<span class="nc bnc" id="L668" title="All 2 branches missed.">			if (other.nickname != null) {</span>
-<span class="nc" id="L669">				return false;</span>
+<span class="nc bnc" id="L668" title="All 2 branches missed.">		if (nickname == null) {</span>
+<span class="nc bnc" id="L669" title="All 2 branches missed.">			if (other.nickname != null) {</span>
+<span class="nc" id="L670">				return false;</span>
 			}
-<span class="nc bnc" id="L671" title="All 2 branches missed.">		} else if (!nickname.equals(other.nickname)) {</span>
-<span class="nc" id="L672">			return false;</span>
+<span class="nc bnc" id="L672" title="All 2 branches missed.">		} else if (!nickname.equals(other.nickname)) {</span>
+<span class="nc" id="L673">			return false;</span>
 		}
-<span class="nc bnc" id="L674" title="All 2 branches missed.">		if (phoneNumber == null) {</span>
-<span class="nc bnc" id="L675" title="All 2 branches missed.">			if (other.phoneNumber != null) {</span>
-<span class="nc" id="L676">				return false;</span>
+<span class="nc bnc" id="L675" title="All 2 branches missed.">		if (phoneNumber == null) {</span>
+<span class="nc bnc" id="L676" title="All 2 branches missed.">			if (other.phoneNumber != null) {</span>
+<span class="nc" id="L677">				return false;</span>
 			}
-<span class="nc bnc" id="L678" title="All 2 branches missed.">		} else if (!phoneNumber.equals(other.phoneNumber)) {</span>
-<span class="nc" id="L679">			return false;</span>
+<span class="nc bnc" id="L679" title="All 2 branches missed.">		} else if (!phoneNumber.equals(other.phoneNumber)) {</span>
+<span class="nc" id="L680">			return false;</span>
 		}
-<span class="nc bnc" id="L681" title="All 2 branches missed.">		if (phoneNumberVerified == null) {</span>
-<span class="nc bnc" id="L682" title="All 2 branches missed.">			if (other.phoneNumberVerified != null) {</span>
-<span class="nc" id="L683">				return false;</span>
+<span class="nc bnc" id="L682" title="All 2 branches missed.">		if (phoneNumberVerified == null) {</span>
+<span class="nc bnc" id="L683" title="All 2 branches missed.">			if (other.phoneNumberVerified != null) {</span>
+<span class="nc" id="L684">				return false;</span>
 			}
-<span class="nc bnc" id="L685" title="All 2 branches missed.">		} else if (!phoneNumberVerified.equals(other.phoneNumberVerified)) {</span>
-<span class="nc" id="L686">			return false;</span>
+<span class="nc bnc" id="L686" title="All 2 branches missed.">		} else if (!phoneNumberVerified.equals(other.phoneNumberVerified)) {</span>
+<span class="nc" id="L687">			return false;</span>
 		}
-<span class="nc bnc" id="L688" title="All 2 branches missed.">		if (picture == null) {</span>
-<span class="nc bnc" id="L689" title="All 2 branches missed.">			if (other.picture != null) {</span>
-<span class="nc" id="L690">				return false;</span>
+<span class="nc bnc" id="L689" title="All 2 branches missed.">		if (picture == null) {</span>
+<span class="nc bnc" id="L690" title="All 2 branches missed.">			if (other.picture != null) {</span>
+<span class="nc" id="L691">				return false;</span>
 			}
-<span class="nc bnc" id="L692" title="All 2 branches missed.">		} else if (!picture.equals(other.picture)) {</span>
-<span class="nc" id="L693">			return false;</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">		} else if (!picture.equals(other.picture)) {</span>
+<span class="nc" id="L694">			return false;</span>
 		}
-<span class="nc bnc" id="L695" title="All 2 branches missed.">		if (preferredUsername == null) {</span>
-<span class="nc bnc" id="L696" title="All 2 branches missed.">			if (other.preferredUsername != null) {</span>
-<span class="nc" id="L697">				return false;</span>
+<span class="nc bnc" id="L696" title="All 2 branches missed.">		if (preferredUsername == null) {</span>
+<span class="nc bnc" id="L697" title="All 2 branches missed.">			if (other.preferredUsername != null) {</span>
+<span class="nc" id="L698">				return false;</span>
 			}
-<span class="nc bnc" id="L699" title="All 2 branches missed.">		} else if (!preferredUsername.equals(other.preferredUsername)) {</span>
-<span class="nc" id="L700">			return false;</span>
+<span class="nc bnc" id="L700" title="All 2 branches missed.">		} else if (!preferredUsername.equals(other.preferredUsername)) {</span>
+<span class="nc" id="L701">			return false;</span>
 		}
-<span class="nc bnc" id="L702" title="All 2 branches missed.">		if (profile == null) {</span>
-<span class="nc bnc" id="L703" title="All 2 branches missed.">			if (other.profile != null) {</span>
-<span class="nc" id="L704">				return false;</span>
+<span class="nc bnc" id="L703" title="All 2 branches missed.">		if (profile == null) {</span>
+<span class="nc bnc" id="L704" title="All 2 branches missed.">			if (other.profile != null) {</span>
+<span class="nc" id="L705">				return false;</span>
 			}
-<span class="nc bnc" id="L706" title="All 2 branches missed.">		} else if (!profile.equals(other.profile)) {</span>
-<span class="nc" id="L707">			return false;</span>
+<span class="nc bnc" id="L707" title="All 2 branches missed.">		} else if (!profile.equals(other.profile)) {</span>
+<span class="nc" id="L708">			return false;</span>
 		}
-<span class="nc bnc" id="L709" title="All 2 branches missed.">		if (sub == null) {</span>
-<span class="nc bnc" id="L710" title="All 2 branches missed.">			if (other.sub != null) {</span>
-<span class="nc" id="L711">				return false;</span>
+<span class="nc bnc" id="L710" title="All 2 branches missed.">		if (sub == null) {</span>
+<span class="nc bnc" id="L711" title="All 2 branches missed.">			if (other.sub != null) {</span>
+<span class="nc" id="L712">				return false;</span>
 			}
-<span class="nc bnc" id="L713" title="All 2 branches missed.">		} else if (!sub.equals(other.sub)) {</span>
-<span class="nc" id="L714">			return false;</span>
+<span class="nc bnc" id="L714" title="All 2 branches missed.">		} else if (!sub.equals(other.sub)) {</span>
+<span class="nc" id="L715">			return false;</span>
 		}
-<span class="nc bnc" id="L716" title="All 2 branches missed.">		if (updatedTime == null) {</span>
-<span class="nc bnc" id="L717" title="All 2 branches missed.">			if (other.updatedTime != null) {</span>
-<span class="nc" id="L718">				return false;</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">		if (updatedTime == null) {</span>
+<span class="nc bnc" id="L718" title="All 2 branches missed.">			if (other.updatedTime != null) {</span>
+<span class="nc" id="L719">				return false;</span>
 			}
-<span class="nc bnc" id="L720" title="All 2 branches missed.">		} else if (!updatedTime.equals(other.updatedTime)) {</span>
-<span class="nc" id="L721">			return false;</span>
+<span class="nc bnc" id="L721" title="All 2 branches missed.">		} else if (!updatedTime.equals(other.updatedTime)) {</span>
+<span class="nc" id="L722">			return false;</span>
 		}
-<span class="nc bnc" id="L723" title="All 2 branches missed.">		if (website == null) {</span>
-<span class="nc bnc" id="L724" title="All 2 branches missed.">			if (other.website != null) {</span>
-<span class="nc" id="L725">				return false;</span>
+<span class="nc bnc" id="L724" title="All 2 branches missed.">		if (website == null) {</span>
+<span class="nc bnc" id="L725" title="All 2 branches missed.">			if (other.website != null) {</span>
+<span class="nc" id="L726">				return false;</span>
 			}
-<span class="nc bnc" id="L727" title="All 2 branches missed.">		} else if (!website.equals(other.website)) {</span>
-<span class="nc" id="L728">			return false;</span>
+<span class="nc bnc" id="L728" title="All 2 branches missed.">		} else if (!website.equals(other.website)) {</span>
+<span class="nc" id="L729">			return false;</span>
 		}
-<span class="nc bnc" id="L730" title="All 2 branches missed.">		if (zoneinfo == null) {</span>
-<span class="nc bnc" id="L731" title="All 2 branches missed.">			if (other.zoneinfo != null) {</span>
-<span class="nc" id="L732">				return false;</span>
+<span class="nc bnc" id="L731" title="All 2 branches missed.">		if (zoneinfo == null) {</span>
+<span class="nc bnc" id="L732" title="All 2 branches missed.">			if (other.zoneinfo != null) {</span>
+<span class="nc" id="L733">				return false;</span>
 			}
-<span class="nc bnc" id="L734" title="All 2 branches missed.">		} else if (!zoneinfo.equals(other.zoneinfo)) {</span>
-<span class="nc" id="L735">			return false;</span>
+<span class="nc bnc" id="L735" title="All 2 branches missed.">		} else if (!zoneinfo.equals(other.zoneinfo)) {</span>
+<span class="nc" id="L736">			return false;</span>
 		}
-<span class="nc" id="L737">		return true;</span>
+<span class="nc" id="L738">		return true;</span>
 	}
 
 
@@ -742,21 +743,21 @@ import com.google.gson.JsonParser;
 	 * Custom serialization to handle the JSON object
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-<span class="nc" id="L745">		out.defaultWriteObject();</span>
-<span class="nc bnc" id="L746" title="All 2 branches missed.">		if (src == null) {</span>
-<span class="nc" id="L747">			out.writeObject(null);</span>
+<span class="nc" id="L746">		out.defaultWriteObject();</span>
+<span class="nc bnc" id="L747" title="All 2 branches missed.">		if (src == null) {</span>
+<span class="nc" id="L748">			out.writeObject(null);</span>
 		} else {
-<span class="nc" id="L749">			out.writeObject(src.toString());</span>
+<span class="nc" id="L750">			out.writeObject(src.toString());</span>
 		}
-<span class="nc" id="L751">	}</span>
+<span class="nc" id="L752">	}</span>
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-<span class="nc" id="L753">		in.defaultReadObject();</span>
-<span class="nc" id="L754">		Object o = in.readObject();</span>
-<span class="nc bnc" id="L755" title="All 2 branches missed.">		if (o != null) {</span>
-<span class="nc" id="L756">			JsonParser parser = new JsonParser();</span>
-<span class="nc" id="L757">			src = parser.parse((String)o).getAsJsonObject();</span>
+<span class="nc" id="L754">		in.defaultReadObject();</span>
+<span class="nc" id="L755">		Object o = in.readObject();</span>
+<span class="nc bnc" id="L756" title="All 2 branches missed.">		if (o != null) {</span>
+<span class="nc" id="L757">			JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L758">			src = parser.parse((String)o).getAsJsonObject();</span>
 		}
-<span class="nc" id="L759">	}</span>
+<span class="nc" id="L760">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

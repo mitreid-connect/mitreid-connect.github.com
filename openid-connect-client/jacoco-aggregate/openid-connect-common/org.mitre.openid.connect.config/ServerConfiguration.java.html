@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ServerConfiguration.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.config</a> &gt; <span class="el_source">ServerConfiguration.java</span></div><h1>ServerConfiguration.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ import com.nimbusds.jose.JWSAlgorithm;
  * @author nemonik, jricher
  *
  */
-<span class="nc" id="L34">public class ServerConfiguration {</span>
+<span class="nc" id="L35">public class ServerConfiguration {</span>
 
 	/*
 	 *
@@ -213,908 +214,908 @@ import com.nimbusds.jose.JWSAlgorithm;
 	// how do we send the access token to the userinfo endpoint?
 	private UserInfoTokenMethod userInfoTokenMethod;
 
-<span class="nc" id="L216">	public enum UserInfoTokenMethod {</span>
-<span class="nc" id="L217">		HEADER,</span>
-<span class="nc" id="L218">		FORM,</span>
-<span class="nc" id="L219">		QUERY;</span>
+<span class="nc" id="L217">	public enum UserInfoTokenMethod {</span>
+<span class="nc" id="L218">		HEADER,</span>
+<span class="nc" id="L219">		FORM,</span>
+<span class="nc" id="L220">		QUERY;</span>
 	}
 
 	/**
 	 * @return the authorizationEndpointUri
 	 */
 	public String getAuthorizationEndpointUri() {
-<span class="nc" id="L226">		return authorizationEndpointUri;</span>
+<span class="nc" id="L227">		return authorizationEndpointUri;</span>
 	}
 	/**
 	 * @param authorizationEndpointUri the authorizationEndpointUri to set
 	 */
 	public void setAuthorizationEndpointUri(String authorizationEndpointUri) {
-<span class="nc" id="L232">		this.authorizationEndpointUri = authorizationEndpointUri;</span>
-<span class="nc" id="L233">	}</span>
+<span class="nc" id="L233">		this.authorizationEndpointUri = authorizationEndpointUri;</span>
+<span class="nc" id="L234">	}</span>
 	/**
 	 * @return the tokenEndpointUri
 	 */
 	public String getTokenEndpointUri() {
-<span class="nc" id="L238">		return tokenEndpointUri;</span>
+<span class="nc" id="L239">		return tokenEndpointUri;</span>
 	}
 	/**
 	 * @param tokenEndpointUri the tokenEndpointUri to set
 	 */
 	public void setTokenEndpointUri(String tokenEndpointUri) {
-<span class="nc" id="L244">		this.tokenEndpointUri = tokenEndpointUri;</span>
-<span class="nc" id="L245">	}</span>
+<span class="nc" id="L245">		this.tokenEndpointUri = tokenEndpointUri;</span>
+<span class="nc" id="L246">	}</span>
 	/**
 	 * @return the registrationEndpointUri
 	 */
 	public String getRegistrationEndpointUri() {
-<span class="nc" id="L250">		return registrationEndpointUri;</span>
+<span class="nc" id="L251">		return registrationEndpointUri;</span>
 	}
 	/**
 	 * @param registrationEndpointUri the registrationEndpointUri to set
 	 */
 	public void setRegistrationEndpointUri(String registrationEndpointUri) {
-<span class="nc" id="L256">		this.registrationEndpointUri = registrationEndpointUri;</span>
-<span class="nc" id="L257">	}</span>
+<span class="nc" id="L257">		this.registrationEndpointUri = registrationEndpointUri;</span>
+<span class="nc" id="L258">	}</span>
 	/**
 	 * @return the issuer
 	 */
 	public String getIssuer() {
-<span class="nc" id="L262">		return issuer;</span>
+<span class="nc" id="L263">		return issuer;</span>
 	}
 	/**
 	 * @param issuer the issuer to set
 	 */
 	public void setIssuer(String issuer) {
-<span class="nc" id="L268">		this.issuer = issuer;</span>
-<span class="nc" id="L269">	}</span>
+<span class="nc" id="L269">		this.issuer = issuer;</span>
+<span class="nc" id="L270">	}</span>
 	/**
 	 * @return the jwksUri
 	 */
 	public String getJwksUri() {
-<span class="nc" id="L274">		return jwksUri;</span>
+<span class="nc" id="L275">		return jwksUri;</span>
 	}
 	/**
 	 * @param jwksUri the jwksUri to set
 	 */
 	public void setJwksUri(String jwksUri) {
-<span class="nc" id="L280">		this.jwksUri = jwksUri;</span>
-<span class="nc" id="L281">	}</span>
+<span class="nc" id="L281">		this.jwksUri = jwksUri;</span>
+<span class="nc" id="L282">	}</span>
 	/**
 	 * @return the userInfoUri
 	 */
 	public String getUserInfoUri() {
-<span class="nc" id="L286">		return userInfoUri;</span>
+<span class="nc" id="L287">		return userInfoUri;</span>
 	}
 	/**
 	 * @param userInfoUri the userInfoUri to set
 	 */
 	public void setUserInfoUri(String userInfoUri) {
-<span class="nc" id="L292">		this.userInfoUri = userInfoUri;</span>
-<span class="nc" id="L293">	}</span>
+<span class="nc" id="L293">		this.userInfoUri = userInfoUri;</span>
+<span class="nc" id="L294">	}</span>
 	/**
 	 * @return the introspectionEndpointUri
 	 */
 	public String getIntrospectionEndpointUri() {
-<span class="nc" id="L298">		return introspectionEndpointUri;</span>
+<span class="nc" id="L299">		return introspectionEndpointUri;</span>
 	}
 	/**
 	 * @param introspectionEndpointUri the introspectionEndpointUri to set
 	 */
 	public void setIntrospectionEndpointUri(String introspectionEndpointUri) {
-<span class="nc" id="L304">		this.introspectionEndpointUri = introspectionEndpointUri;</span>
-<span class="nc" id="L305">	}</span>
+<span class="nc" id="L305">		this.introspectionEndpointUri = introspectionEndpointUri;</span>
+<span class="nc" id="L306">	}</span>
 	/**
 	 * @return the checkSessionIframe
 	 */
 	public String getCheckSessionIframe() {
-<span class="nc" id="L310">		return checkSessionIframe;</span>
+<span class="nc" id="L311">		return checkSessionIframe;</span>
 	}
 	/**
 	 * @param checkSessionIframe the checkSessionIframe to set
 	 */
 	public void setCheckSessionIframe(String checkSessionIframe) {
-<span class="nc" id="L316">		this.checkSessionIframe = checkSessionIframe;</span>
-<span class="nc" id="L317">	}</span>
+<span class="nc" id="L317">		this.checkSessionIframe = checkSessionIframe;</span>
+<span class="nc" id="L318">	}</span>
 	/**
 	 * @return the endSessionEndpoint
 	 */
 	public String getEndSessionEndpoint() {
-<span class="nc" id="L322">		return endSessionEndpoint;</span>
+<span class="nc" id="L323">		return endSessionEndpoint;</span>
 	}
 	/**
 	 * @param endSessionEndpoint the endSessionEndpoint to set
 	 */
 	public void setEndSessionEndpoint(String endSessionEndpoint) {
-<span class="nc" id="L328">		this.endSessionEndpoint = endSessionEndpoint;</span>
-<span class="nc" id="L329">	}</span>
+<span class="nc" id="L329">		this.endSessionEndpoint = endSessionEndpoint;</span>
+<span class="nc" id="L330">	}</span>
 	/**
 	 * @return the scopesSupported
 	 */
 	public List&lt;String&gt; getScopesSupported() {
-<span class="nc" id="L334">		return scopesSupported;</span>
+<span class="nc" id="L335">		return scopesSupported;</span>
 	}
 	/**
 	 * @param scopesSupported the scopesSupported to set
 	 */
 	public void setScopesSupported(List&lt;String&gt; scopesSupported) {
-<span class="nc" id="L340">		this.scopesSupported = scopesSupported;</span>
-<span class="nc" id="L341">	}</span>
+<span class="nc" id="L341">		this.scopesSupported = scopesSupported;</span>
+<span class="nc" id="L342">	}</span>
 	/**
 	 * @return the responseTypesSupported
 	 */
 	public List&lt;String&gt; getResponseTypesSupported() {
-<span class="nc" id="L346">		return responseTypesSupported;</span>
+<span class="nc" id="L347">		return responseTypesSupported;</span>
 	}
 	/**
 	 * @param responseTypesSupported the responseTypesSupported to set
 	 */
 	public void setResponseTypesSupported(List&lt;String&gt; responseTypesSupported) {
-<span class="nc" id="L352">		this.responseTypesSupported = responseTypesSupported;</span>
-<span class="nc" id="L353">	}</span>
+<span class="nc" id="L353">		this.responseTypesSupported = responseTypesSupported;</span>
+<span class="nc" id="L354">	}</span>
 	/**
 	 * @return the grantTypesSupported
 	 */
 	public List&lt;String&gt; getGrantTypesSupported() {
-<span class="nc" id="L358">		return grantTypesSupported;</span>
+<span class="nc" id="L359">		return grantTypesSupported;</span>
 	}
 	/**
 	 * @param grantTypesSupported the grantTypesSupported to set
 	 */
 	public void setGrantTypesSupported(List&lt;String&gt; grantTypesSupported) {
-<span class="nc" id="L364">		this.grantTypesSupported = grantTypesSupported;</span>
-<span class="nc" id="L365">	}</span>
+<span class="nc" id="L365">		this.grantTypesSupported = grantTypesSupported;</span>
+<span class="nc" id="L366">	}</span>
 	/**
 	 * @return the acrValuesSupported
 	 */
 	public List&lt;String&gt; getAcrValuesSupported() {
-<span class="nc" id="L370">		return acrValuesSupported;</span>
+<span class="nc" id="L371">		return acrValuesSupported;</span>
 	}
 	/**
 	 * @param acrValuesSupported the acrValuesSupported to set
 	 */
 	public void setAcrValuesSupported(List&lt;String&gt; acrValuesSupported) {
-<span class="nc" id="L376">		this.acrValuesSupported = acrValuesSupported;</span>
-<span class="nc" id="L377">	}</span>
+<span class="nc" id="L377">		this.acrValuesSupported = acrValuesSupported;</span>
+<span class="nc" id="L378">	}</span>
 	/**
 	 * @return the subjectTypesSupported
 	 */
 	public List&lt;String&gt; getSubjectTypesSupported() {
-<span class="nc" id="L382">		return subjectTypesSupported;</span>
+<span class="nc" id="L383">		return subjectTypesSupported;</span>
 	}
 	/**
 	 * @param subjectTypesSupported the subjectTypesSupported to set
 	 */
 	public void setSubjectTypesSupported(List&lt;String&gt; subjectTypesSupported) {
-<span class="nc" id="L388">		this.subjectTypesSupported = subjectTypesSupported;</span>
-<span class="nc" id="L389">	}</span>
+<span class="nc" id="L389">		this.subjectTypesSupported = subjectTypesSupported;</span>
+<span class="nc" id="L390">	}</span>
 	/**
 	 * @return the userinfoSigningAlgValuesSupported
 	 */
 	public List&lt;JWSAlgorithm&gt; getUserinfoSigningAlgValuesSupported() {
-<span class="nc" id="L394">		return userinfoSigningAlgValuesSupported;</span>
+<span class="nc" id="L395">		return userinfoSigningAlgValuesSupported;</span>
 	}
 	/**
 	 * @param userinfoSigningAlgValuesSupported the userinfoSigningAlgValuesSupported to set
 	 */
 	public void setUserinfoSigningAlgValuesSupported(List&lt;JWSAlgorithm&gt; userinfoSigningAlgValuesSupported) {
-<span class="nc" id="L400">		this.userinfoSigningAlgValuesSupported = userinfoSigningAlgValuesSupported;</span>
-<span class="nc" id="L401">	}</span>
+<span class="nc" id="L401">		this.userinfoSigningAlgValuesSupported = userinfoSigningAlgValuesSupported;</span>
+<span class="nc" id="L402">	}</span>
 	/**
 	 * @return the userinfoEncryptionAlgValuesSupported
 	 */
 	public List&lt;JWEAlgorithm&gt; getUserinfoEncryptionAlgValuesSupported() {
-<span class="nc" id="L406">		return userinfoEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L407">		return userinfoEncryptionAlgValuesSupported;</span>
 	}
 	/**
 	 * @param userinfoEncryptionAlgValuesSupported the userinfoEncryptionAlgValuesSupported to set
 	 */
 	public void setUserinfoEncryptionAlgValuesSupported(List&lt;JWEAlgorithm&gt; userinfoEncryptionAlgValuesSupported) {
-<span class="nc" id="L412">		this.userinfoEncryptionAlgValuesSupported = userinfoEncryptionAlgValuesSupported;</span>
-<span class="nc" id="L413">	}</span>
+<span class="nc" id="L413">		this.userinfoEncryptionAlgValuesSupported = userinfoEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L414">	}</span>
 	/**
 	 * @return the userinfoEncryptionEncValuesSupported
 	 */
 	public List&lt;EncryptionMethod&gt; getUserinfoEncryptionEncValuesSupported() {
-<span class="nc" id="L418">		return userinfoEncryptionEncValuesSupported;</span>
+<span class="nc" id="L419">		return userinfoEncryptionEncValuesSupported;</span>
 	}
 	/**
 	 * @param userinfoEncryptionEncValuesSupported the userinfoEncryptionEncValuesSupported to set
 	 */
 	public void setUserinfoEncryptionEncValuesSupported(List&lt;EncryptionMethod&gt; userinfoEncryptionEncValuesSupported) {
-<span class="nc" id="L424">		this.userinfoEncryptionEncValuesSupported = userinfoEncryptionEncValuesSupported;</span>
-<span class="nc" id="L425">	}</span>
+<span class="nc" id="L425">		this.userinfoEncryptionEncValuesSupported = userinfoEncryptionEncValuesSupported;</span>
+<span class="nc" id="L426">	}</span>
 	/**
 	 * @return the idTokenSigningAlgValuesSupported
 	 */
 	public List&lt;JWSAlgorithm&gt; getIdTokenSigningAlgValuesSupported() {
-<span class="nc" id="L430">		return idTokenSigningAlgValuesSupported;</span>
+<span class="nc" id="L431">		return idTokenSigningAlgValuesSupported;</span>
 	}
 	/**
 	 * @param idTokenSigningAlgValuesSupported the idTokenSigningAlgValuesSupported to set
 	 */
 	public void setIdTokenSigningAlgValuesSupported(List&lt;JWSAlgorithm&gt; idTokenSigningAlgValuesSupported) {
-<span class="nc" id="L436">		this.idTokenSigningAlgValuesSupported = idTokenSigningAlgValuesSupported;</span>
-<span class="nc" id="L437">	}</span>
+<span class="nc" id="L437">		this.idTokenSigningAlgValuesSupported = idTokenSigningAlgValuesSupported;</span>
+<span class="nc" id="L438">	}</span>
 	/**
 	 * @return the idTokenEncryptionAlgValuesSupported
 	 */
 	public List&lt;JWEAlgorithm&gt; getIdTokenEncryptionAlgValuesSupported() {
-<span class="nc" id="L442">		return idTokenEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L443">		return idTokenEncryptionAlgValuesSupported;</span>
 	}
 	/**
 	 * @param idTokenEncryptionAlgValuesSupported the idTokenEncryptionAlgValuesSupported to set
 	 */
 	public void setIdTokenEncryptionAlgValuesSupported(List&lt;JWEAlgorithm&gt; idTokenEncryptionAlgValuesSupported) {
-<span class="nc" id="L448">		this.idTokenEncryptionAlgValuesSupported = idTokenEncryptionAlgValuesSupported;</span>
-<span class="nc" id="L449">	}</span>
+<span class="nc" id="L449">		this.idTokenEncryptionAlgValuesSupported = idTokenEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L450">	}</span>
 	/**
 	 * @return the idTokenEncryptionEncValuesSupported
 	 */
 	public List&lt;EncryptionMethod&gt; getIdTokenEncryptionEncValuesSupported() {
-<span class="nc" id="L454">		return idTokenEncryptionEncValuesSupported;</span>
+<span class="nc" id="L455">		return idTokenEncryptionEncValuesSupported;</span>
 	}
 	/**
 	 * @param idTokenEncryptionEncValuesSupported the idTokenEncryptionEncValuesSupported to set
 	 */
 	public void setIdTokenEncryptionEncValuesSupported(List&lt;EncryptionMethod&gt; idTokenEncryptionEncValuesSupported) {
-<span class="nc" id="L460">		this.idTokenEncryptionEncValuesSupported = idTokenEncryptionEncValuesSupported;</span>
-<span class="nc" id="L461">	}</span>
+<span class="nc" id="L461">		this.idTokenEncryptionEncValuesSupported = idTokenEncryptionEncValuesSupported;</span>
+<span class="nc" id="L462">	}</span>
 	/**
 	 * @return the requestObjectSigningAlgValuesSupported
 	 */
 	public List&lt;JWSAlgorithm&gt; getRequestObjectSigningAlgValuesSupported() {
-<span class="nc" id="L466">		return requestObjectSigningAlgValuesSupported;</span>
+<span class="nc" id="L467">		return requestObjectSigningAlgValuesSupported;</span>
 	}
 	/**
 	 * @param requestObjectSigningAlgValuesSupported the requestObjectSigningAlgValuesSupported to set
 	 */
 	public void setRequestObjectSigningAlgValuesSupported(List&lt;JWSAlgorithm&gt; requestObjectSigningAlgValuesSupported) {
-<span class="nc" id="L472">		this.requestObjectSigningAlgValuesSupported = requestObjectSigningAlgValuesSupported;</span>
-<span class="nc" id="L473">	}</span>
+<span class="nc" id="L473">		this.requestObjectSigningAlgValuesSupported = requestObjectSigningAlgValuesSupported;</span>
+<span class="nc" id="L474">	}</span>
 	/**
 	 * @return the requestObjectEncryptionAlgValuesSupported
 	 */
 	public List&lt;JWEAlgorithm&gt; getRequestObjectEncryptionAlgValuesSupported() {
-<span class="nc" id="L478">		return requestObjectEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L479">		return requestObjectEncryptionAlgValuesSupported;</span>
 	}
 	/**
 	 * @param requestObjectEncryptionAlgValuesSupported the requestObjectEncryptionAlgValuesSupported to set
 	 */
 	public void setRequestObjectEncryptionAlgValuesSupported(List&lt;JWEAlgorithm&gt; requestObjectEncryptionAlgValuesSupported) {
-<span class="nc" id="L484">		this.requestObjectEncryptionAlgValuesSupported = requestObjectEncryptionAlgValuesSupported;</span>
-<span class="nc" id="L485">	}</span>
+<span class="nc" id="L485">		this.requestObjectEncryptionAlgValuesSupported = requestObjectEncryptionAlgValuesSupported;</span>
+<span class="nc" id="L486">	}</span>
 	/**
 	 * @return the requestObjectEncryptionEncValuesSupported
 	 */
 	public List&lt;EncryptionMethod&gt; getRequestObjectEncryptionEncValuesSupported() {
-<span class="nc" id="L490">		return requestObjectEncryptionEncValuesSupported;</span>
+<span class="nc" id="L491">		return requestObjectEncryptionEncValuesSupported;</span>
 	}
 	/**
 	 * @param requestObjectEncryptionEncValuesSupported the requestObjectEncryptionEncValuesSupported to set
 	 */
 	public void setRequestObjectEncryptionEncValuesSupported(List&lt;EncryptionMethod&gt; requestObjectEncryptionEncValuesSupported) {
-<span class="nc" id="L496">		this.requestObjectEncryptionEncValuesSupported = requestObjectEncryptionEncValuesSupported;</span>
-<span class="nc" id="L497">	}</span>
+<span class="nc" id="L497">		this.requestObjectEncryptionEncValuesSupported = requestObjectEncryptionEncValuesSupported;</span>
+<span class="nc" id="L498">	}</span>
 	/**
 	 * @return the tokenEndpointAuthMethodsSupported
 	 */
 	public List&lt;String&gt; getTokenEndpointAuthMethodsSupported() {
-<span class="nc" id="L502">		return tokenEndpointAuthMethodsSupported;</span>
+<span class="nc" id="L503">		return tokenEndpointAuthMethodsSupported;</span>
 	}
 	/**
 	 * @param tokenEndpointAuthMethodsSupported the tokenEndpointAuthMethodsSupported to set
 	 */
 	public void setTokenEndpointAuthMethodsSupported(List&lt;String&gt; tokenEndpointAuthMethodsSupported) {
-<span class="nc" id="L508">		this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
-<span class="nc" id="L509">	}</span>
+<span class="nc" id="L509">		this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
+<span class="nc" id="L510">	}</span>
 	/**
 	 * @return the tokenEndpointAuthSigningAlgValuesSupported
 	 */
 	public List&lt;JWSAlgorithm&gt; getTokenEndpointAuthSigningAlgValuesSupported() {
-<span class="nc" id="L514">		return tokenEndpointAuthSigningAlgValuesSupported;</span>
+<span class="nc" id="L515">		return tokenEndpointAuthSigningAlgValuesSupported;</span>
 	}
 	/**
 	 * @param tokenEndpointAuthSigningAlgValuesSupported the tokenEndpointAuthSigningAlgValuesSupported to set
 	 */
 	public void setTokenEndpointAuthSigningAlgValuesSupported(List&lt;JWSAlgorithm&gt; tokenEndpointAuthSigningAlgValuesSupported) {
-<span class="nc" id="L520">		this.tokenEndpointAuthSigningAlgValuesSupported = tokenEndpointAuthSigningAlgValuesSupported;</span>
-<span class="nc" id="L521">	}</span>
+<span class="nc" id="L521">		this.tokenEndpointAuthSigningAlgValuesSupported = tokenEndpointAuthSigningAlgValuesSupported;</span>
+<span class="nc" id="L522">	}</span>
 	/**
 	 * @return the displayValuesSupported
 	 */
 	public List&lt;String&gt; getDisplayValuesSupported() {
-<span class="nc" id="L526">		return displayValuesSupported;</span>
+<span class="nc" id="L527">		return displayValuesSupported;</span>
 	}
 	/**
 	 * @param displayValuesSupported the displayValuesSupported to set
 	 */
 	public void setDisplayValuesSupported(List&lt;String&gt; displayValuesSupported) {
-<span class="nc" id="L532">		this.displayValuesSupported = displayValuesSupported;</span>
-<span class="nc" id="L533">	}</span>
+<span class="nc" id="L533">		this.displayValuesSupported = displayValuesSupported;</span>
+<span class="nc" id="L534">	}</span>
 	/**
 	 * @return the claimTypesSupported
 	 */
 	public List&lt;String&gt; getClaimTypesSupported() {
-<span class="nc" id="L538">		return claimTypesSupported;</span>
+<span class="nc" id="L539">		return claimTypesSupported;</span>
 	}
 	/**
 	 * @param claimTypesSupported the claimTypesSupported to set
 	 */
 	public void setClaimTypesSupported(List&lt;String&gt; claimTypesSupported) {
-<span class="nc" id="L544">		this.claimTypesSupported = claimTypesSupported;</span>
-<span class="nc" id="L545">	}</span>
+<span class="nc" id="L545">		this.claimTypesSupported = claimTypesSupported;</span>
+<span class="nc" id="L546">	}</span>
 	/**
 	 * @return the claimsSupported
 	 */
 	public List&lt;String&gt; getClaimsSupported() {
-<span class="nc" id="L550">		return claimsSupported;</span>
+<span class="nc" id="L551">		return claimsSupported;</span>
 	}
 	/**
 	 * @param claimsSupported the claimsSupported to set
 	 */
 	public void setClaimsSupported(List&lt;String&gt; claimsSupported) {
-<span class="nc" id="L556">		this.claimsSupported = claimsSupported;</span>
-<span class="nc" id="L557">	}</span>
+<span class="nc" id="L557">		this.claimsSupported = claimsSupported;</span>
+<span class="nc" id="L558">	}</span>
 	/**
 	 * @return the serviceDocumentation
 	 */
 	public String getServiceDocumentation() {
-<span class="nc" id="L562">		return serviceDocumentation;</span>
+<span class="nc" id="L563">		return serviceDocumentation;</span>
 	}
 	/**
 	 * @param serviceDocumentation the serviceDocumentation to set
 	 */
 	public void setServiceDocumentation(String serviceDocumentation) {
-<span class="nc" id="L568">		this.serviceDocumentation = serviceDocumentation;</span>
-<span class="nc" id="L569">	}</span>
+<span class="nc" id="L569">		this.serviceDocumentation = serviceDocumentation;</span>
+<span class="nc" id="L570">	}</span>
 	/**
 	 * @return the claimsLocalesSupported
 	 */
 	public List&lt;String&gt; getClaimsLocalesSupported() {
-<span class="nc" id="L574">		return claimsLocalesSupported;</span>
+<span class="nc" id="L575">		return claimsLocalesSupported;</span>
 	}
 	/**
 	 * @param claimsLocalesSupported the claimsLocalesSupported to set
 	 */
 	public void setClaimsLocalesSupported(List&lt;String&gt; claimsLocalesSupported) {
-<span class="nc" id="L580">		this.claimsLocalesSupported = claimsLocalesSupported;</span>
-<span class="nc" id="L581">	}</span>
+<span class="nc" id="L581">		this.claimsLocalesSupported = claimsLocalesSupported;</span>
+<span class="nc" id="L582">	}</span>
 	/**
 	 * @return the uiLocalesSupported
 	 */
 	public List&lt;String&gt; getUiLocalesSupported() {
-<span class="nc" id="L586">		return uiLocalesSupported;</span>
+<span class="nc" id="L587">		return uiLocalesSupported;</span>
 	}
 	/**
 	 * @param uiLocalesSupported the uiLocalesSupported to set
 	 */
 	public void setUiLocalesSupported(List&lt;String&gt; uiLocalesSupported) {
-<span class="nc" id="L592">		this.uiLocalesSupported = uiLocalesSupported;</span>
-<span class="nc" id="L593">	}</span>
+<span class="nc" id="L593">		this.uiLocalesSupported = uiLocalesSupported;</span>
+<span class="nc" id="L594">	}</span>
 	/**
 	 * @return the claimsParameterSupported
 	 */
 	public Boolean getClaimsParameterSupported() {
-<span class="nc" id="L598">		return claimsParameterSupported;</span>
+<span class="nc" id="L599">		return claimsParameterSupported;</span>
 	}
 	/**
 	 * @param claimsParameterSupported the claimsParameterSupported to set
 	 */
 	public void setClaimsParameterSupported(Boolean claimsParameterSupported) {
-<span class="nc" id="L604">		this.claimsParameterSupported = claimsParameterSupported;</span>
-<span class="nc" id="L605">	}</span>
+<span class="nc" id="L605">		this.claimsParameterSupported = claimsParameterSupported;</span>
+<span class="nc" id="L606">	}</span>
 	/**
 	 * @return the requestParameterSupported
 	 */
 	public Boolean getRequestParameterSupported() {
-<span class="nc" id="L610">		return requestParameterSupported;</span>
+<span class="nc" id="L611">		return requestParameterSupported;</span>
 	}
 	/**
 	 * @param requestParameterSupported the requestParameterSupported to set
 	 */
 	public void setRequestParameterSupported(Boolean requestParameterSupported) {
-<span class="nc" id="L616">		this.requestParameterSupported = requestParameterSupported;</span>
-<span class="nc" id="L617">	}</span>
+<span class="nc" id="L617">		this.requestParameterSupported = requestParameterSupported;</span>
+<span class="nc" id="L618">	}</span>
 	/**
 	 * @return the requestUriParameterSupported
 	 */
 	public Boolean getRequestUriParameterSupported() {
-<span class="nc" id="L622">		return requestUriParameterSupported;</span>
+<span class="nc" id="L623">		return requestUriParameterSupported;</span>
 	}
 	/**
 	 * @param requestUriParameterSupported the requestUriParameterSupported to set
 	 */
 	public void setRequestUriParameterSupported(Boolean requestUriParameterSupported) {
-<span class="nc" id="L628">		this.requestUriParameterSupported = requestUriParameterSupported;</span>
-<span class="nc" id="L629">	}</span>
+<span class="nc" id="L629">		this.requestUriParameterSupported = requestUriParameterSupported;</span>
+<span class="nc" id="L630">	}</span>
 	/**
 	 * @return the requireRequestUriRegistration
 	 */
 	public Boolean getRequireRequestUriRegistration() {
-<span class="nc" id="L634">		return requireRequestUriRegistration;</span>
+<span class="nc" id="L635">		return requireRequestUriRegistration;</span>
 	}
 	/**
 	 * @param requireRequestUriRegistration the requireRequestUriRegistration to set
 	 */
 	public void setRequireRequestUriRegistration(Boolean requireRequestUriRegistration) {
-<span class="nc" id="L640">		this.requireRequestUriRegistration = requireRequestUriRegistration;</span>
-<span class="nc" id="L641">	}</span>
+<span class="nc" id="L641">		this.requireRequestUriRegistration = requireRequestUriRegistration;</span>
+<span class="nc" id="L642">	}</span>
 	/**
 	 * @return the opPolicyUri
 	 */
 	public String getOpPolicyUri() {
-<span class="nc" id="L646">		return opPolicyUri;</span>
+<span class="nc" id="L647">		return opPolicyUri;</span>
 	}
 	/**
 	 * @param opPolicyUri the opPolicyUri to set
 	 */
 	public void setOpPolicyUri(String opPolicyUri) {
-<span class="nc" id="L652">		this.opPolicyUri = opPolicyUri;</span>
-<span class="nc" id="L653">	}</span>
+<span class="nc" id="L653">		this.opPolicyUri = opPolicyUri;</span>
+<span class="nc" id="L654">	}</span>
 	/**
 	 * @return the opTosUri
 	 */
 	public String getOpTosUri() {
-<span class="nc" id="L658">		return opTosUri;</span>
+<span class="nc" id="L659">		return opTosUri;</span>
 	}
 	/**
 	 * @param opTosUri the opTosUri to set
 	 */
 	public void setOpTosUri(String opTosUri) {
-<span class="nc" id="L664">		this.opTosUri = opTosUri;</span>
-<span class="nc" id="L665">	}</span>
+<span class="nc" id="L665">		this.opTosUri = opTosUri;</span>
+<span class="nc" id="L666">	}</span>
 
 	public String getRevocationEndpointUri() {
-<span class="nc" id="L668">		return revocationEndpointUri;</span>
+<span class="nc" id="L669">		return revocationEndpointUri;</span>
 	}
 	public void setRevocationEndpointUri(String revocationEndpointUri) {
-<span class="nc" id="L671">		this.revocationEndpointUri = revocationEndpointUri;</span>
-<span class="nc" id="L672">	}</span>
+<span class="nc" id="L672">		this.revocationEndpointUri = revocationEndpointUri;</span>
+<span class="nc" id="L673">	}</span>
 
 	public UserInfoTokenMethod getUserInfoTokenMethod() {
-<span class="nc" id="L675">		return userInfoTokenMethod;</span>
+<span class="nc" id="L676">		return userInfoTokenMethod;</span>
 	}
 	public void setUserInfoTokenMethod(UserInfoTokenMethod userInfoTokenMethod) {
-<span class="nc" id="L678">		this.userInfoTokenMethod = userInfoTokenMethod;</span>
-<span class="nc" id="L679">	}</span>
+<span class="nc" id="L679">		this.userInfoTokenMethod = userInfoTokenMethod;</span>
+<span class="nc" id="L680">	}</span>
 	@Override
 	public int hashCode() {
-<span class="nc" id="L682">		final int prime = 31;</span>
-<span class="nc" id="L683">		int result = 1;</span>
-<span class="nc bnc" id="L684" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L683">		final int prime = 31;</span>
+<span class="nc" id="L684">		int result = 1;</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((acrValuesSupported == null) ? 0 : acrValuesSupported
-<span class="nc" id="L687">						.hashCode());</span>
-<span class="nc bnc" id="L688" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L688">						.hashCode());</span>
+<span class="nc bnc" id="L689" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((authorizationEndpointUri == null) ? 0
-<span class="nc" id="L691">						: authorizationEndpointUri.hashCode());</span>
-<span class="nc bnc" id="L692" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L692">						: authorizationEndpointUri.hashCode());</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((checkSessionIframe == null) ? 0 : checkSessionIframe
-<span class="nc" id="L695">						.hashCode());</span>
-<span class="nc bnc" id="L696" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L696">						.hashCode());</span>
+<span class="nc bnc" id="L697" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((claimTypesSupported == null) ? 0 : claimTypesSupported
-<span class="nc" id="L699">						.hashCode());</span>
-<span class="nc bnc" id="L700" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L700">						.hashCode());</span>
+<span class="nc bnc" id="L701" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((claimsLocalesSupported == null) ? 0
-<span class="nc" id="L703">						: claimsLocalesSupported.hashCode());</span>
-<span class="nc bnc" id="L704" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L704">						: claimsLocalesSupported.hashCode());</span>
+<span class="nc bnc" id="L705" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((claimsParameterSupported == null) ? 0
-<span class="nc" id="L707">						: claimsParameterSupported.hashCode());</span>
-<span class="nc bnc" id="L708" title="All 2 branches missed.">		result = prime * result</span>
-<span class="nc" id="L709">				+ ((claimsSupported == null) ? 0 : claimsSupported.hashCode());</span>
-<span class="nc bnc" id="L710" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L708">						: claimsParameterSupported.hashCode());</span>
+<span class="nc bnc" id="L709" title="All 2 branches missed.">		result = prime * result</span>
+<span class="nc" id="L710">				+ ((claimsSupported == null) ? 0 : claimsSupported.hashCode());</span>
+<span class="nc bnc" id="L711" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((displayValuesSupported == null) ? 0
-<span class="nc" id="L713">						: displayValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L714" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L714">						: displayValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L715" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((endSessionEndpoint == null) ? 0 : endSessionEndpoint
-<span class="nc" id="L717">						.hashCode());</span>
-<span class="nc bnc" id="L718" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L718">						.hashCode());</span>
+<span class="nc bnc" id="L719" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((grantTypesSupported == null) ? 0 : grantTypesSupported
-<span class="nc" id="L721">						.hashCode());</span>
-<span class="nc bnc" id="L722" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L722">						.hashCode());</span>
+<span class="nc bnc" id="L723" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((idTokenEncryptionAlgValuesSupported == null) ? 0
-<span class="nc" id="L725">						: idTokenEncryptionAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L726" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L726">						: idTokenEncryptionAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L727" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((idTokenEncryptionEncValuesSupported == null) ? 0
-<span class="nc" id="L729">						: idTokenEncryptionEncValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L730" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L730">						: idTokenEncryptionEncValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L731" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((idTokenSigningAlgValuesSupported == null) ? 0
-<span class="nc" id="L733">						: idTokenSigningAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L734" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L734">						: idTokenSigningAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L735" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((introspectionEndpointUri == null) ? 0
-<span class="nc" id="L737">						: introspectionEndpointUri.hashCode());</span>
-<span class="nc bnc" id="L738" title="All 2 branches missed.">		result = prime * result + ((issuer == null) ? 0 : issuer.hashCode());</span>
-<span class="nc bnc" id="L739" title="All 2 branches missed.">		result = prime * result + ((jwksUri == null) ? 0 : jwksUri.hashCode());</span>
-<span class="nc bnc" id="L740" title="All 2 branches missed.">		result = prime * result</span>
-<span class="nc" id="L741">				+ ((opPolicyUri == null) ? 0 : opPolicyUri.hashCode());</span>
-<span class="nc bnc" id="L742" title="All 2 branches missed.">		result = prime * result</span>
-<span class="nc" id="L743">				+ ((opTosUri == null) ? 0 : opTosUri.hashCode());</span>
-<span class="nc bnc" id="L744" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L738">						: introspectionEndpointUri.hashCode());</span>
+<span class="nc bnc" id="L739" title="All 2 branches missed.">		result = prime * result + ((issuer == null) ? 0 : issuer.hashCode());</span>
+<span class="nc bnc" id="L740" title="All 2 branches missed.">		result = prime * result + ((jwksUri == null) ? 0 : jwksUri.hashCode());</span>
+<span class="nc bnc" id="L741" title="All 2 branches missed.">		result = prime * result</span>
+<span class="nc" id="L742">				+ ((opPolicyUri == null) ? 0 : opPolicyUri.hashCode());</span>
+<span class="nc bnc" id="L743" title="All 2 branches missed.">		result = prime * result</span>
+<span class="nc" id="L744">				+ ((opTosUri == null) ? 0 : opTosUri.hashCode());</span>
+<span class="nc bnc" id="L745" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((registrationEndpointUri == null) ? 0
-<span class="nc" id="L747">						: registrationEndpointUri.hashCode());</span>
-<span class="nc bnc" id="L748" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L748">						: registrationEndpointUri.hashCode());</span>
+<span class="nc bnc" id="L749" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requestObjectEncryptionAlgValuesSupported == null) ? 0
-<span class="nc" id="L751">						: requestObjectEncryptionAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L752" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L752">						: requestObjectEncryptionAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L753" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requestObjectEncryptionEncValuesSupported == null) ? 0
-<span class="nc" id="L755">						: requestObjectEncryptionEncValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L756" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L756">						: requestObjectEncryptionEncValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L757" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requestObjectSigningAlgValuesSupported == null) ? 0
-<span class="nc" id="L759">						: requestObjectSigningAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L760" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L760">						: requestObjectSigningAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L761" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requestParameterSupported == null) ? 0
-<span class="nc" id="L763">						: requestParameterSupported.hashCode());</span>
-<span class="nc bnc" id="L764" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L764">						: requestParameterSupported.hashCode());</span>
+<span class="nc bnc" id="L765" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requestUriParameterSupported == null) ? 0
-<span class="nc" id="L767">						: requestUriParameterSupported.hashCode());</span>
-<span class="nc bnc" id="L768" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L768">						: requestUriParameterSupported.hashCode());</span>
+<span class="nc bnc" id="L769" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((requireRequestUriRegistration == null) ? 0
-<span class="nc" id="L771">						: requireRequestUriRegistration.hashCode());</span>
-<span class="nc bnc" id="L772" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L772">						: requireRequestUriRegistration.hashCode());</span>
+<span class="nc bnc" id="L773" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((responseTypesSupported == null) ? 0
-<span class="nc" id="L775">						: responseTypesSupported.hashCode());</span>
-<span class="nc bnc" id="L776" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L776">						: responseTypesSupported.hashCode());</span>
+<span class="nc bnc" id="L777" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((revocationEndpointUri == null) ? 0 : revocationEndpointUri
-<span class="nc" id="L779">						.hashCode());</span>
-<span class="nc bnc" id="L780" title="All 2 branches missed.">		result = prime * result</span>
-<span class="nc" id="L781">				+ ((scopesSupported == null) ? 0 : scopesSupported.hashCode());</span>
-<span class="nc bnc" id="L782" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L780">						.hashCode());</span>
+<span class="nc bnc" id="L781" title="All 2 branches missed.">		result = prime * result</span>
+<span class="nc" id="L782">				+ ((scopesSupported == null) ? 0 : scopesSupported.hashCode());</span>
+<span class="nc bnc" id="L783" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((serviceDocumentation == null) ? 0 : serviceDocumentation
-<span class="nc" id="L785">						.hashCode());</span>
-<span class="nc bnc" id="L786" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L786">						.hashCode());</span>
+<span class="nc bnc" id="L787" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((subjectTypesSupported == null) ? 0 : subjectTypesSupported
-<span class="nc" id="L789">						.hashCode());</span>
-<span class="nc bnc" id="L790" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L790">						.hashCode());</span>
+<span class="nc bnc" id="L791" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((tokenEndpointAuthMethodsSupported == null) ? 0
-<span class="nc" id="L793">						: tokenEndpointAuthMethodsSupported.hashCode());</span>
-<span class="nc bnc" id="L794" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L794">						: tokenEndpointAuthMethodsSupported.hashCode());</span>
+<span class="nc bnc" id="L795" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((tokenEndpointAuthSigningAlgValuesSupported == null) ? 0
-<span class="nc" id="L797">						: tokenEndpointAuthSigningAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L798" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L798">						: tokenEndpointAuthSigningAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L799" title="All 2 branches missed.">		result = prime</span>
 				* result
-<span class="nc" id="L800">				+ ((tokenEndpointUri == null) ? 0 : tokenEndpointUri.hashCode());</span>
-<span class="nc bnc" id="L801" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L801">				+ ((tokenEndpointUri == null) ? 0 : tokenEndpointUri.hashCode());</span>
+<span class="nc bnc" id="L802" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((uiLocalesSupported == null) ? 0 : uiLocalesSupported
-<span class="nc" id="L804">						.hashCode());</span>
-<span class="nc bnc" id="L805" title="All 2 branches missed.">		result = prime * result</span>
-<span class="nc" id="L806">				+ ((userInfoUri == null) ? 0 : userInfoUri.hashCode());</span>
-<span class="nc bnc" id="L807" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L805">						.hashCode());</span>
+<span class="nc bnc" id="L806" title="All 2 branches missed.">		result = prime * result</span>
+<span class="nc" id="L807">				+ ((userInfoUri == null) ? 0 : userInfoUri.hashCode());</span>
+<span class="nc bnc" id="L808" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((userinfoEncryptionAlgValuesSupported == null) ? 0
-<span class="nc" id="L810">						: userinfoEncryptionAlgValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L811" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L811">						: userinfoEncryptionAlgValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L812" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((userinfoEncryptionEncValuesSupported == null) ? 0
-<span class="nc" id="L814">						: userinfoEncryptionEncValuesSupported.hashCode());</span>
-<span class="nc bnc" id="L815" title="All 2 branches missed.">		result = prime</span>
+<span class="nc" id="L815">						: userinfoEncryptionEncValuesSupported.hashCode());</span>
+<span class="nc bnc" id="L816" title="All 2 branches missed.">		result = prime</span>
 				* result
 				+ ((userinfoSigningAlgValuesSupported == null) ? 0
-<span class="nc" id="L818">						: userinfoSigningAlgValuesSupported.hashCode());</span>
-<span class="nc" id="L819">		return result;</span>
+<span class="nc" id="L819">						: userinfoSigningAlgValuesSupported.hashCode());</span>
+<span class="nc" id="L820">		return result;</span>
 	}
 	@Override
 	public boolean equals(Object obj) {
-<span class="nc bnc" id="L823" title="All 2 branches missed.">		if (this == obj) {</span>
-<span class="nc" id="L824">			return true;</span>
+<span class="nc bnc" id="L824" title="All 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L825">			return true;</span>
 		}
-<span class="nc bnc" id="L826" title="All 2 branches missed.">		if (obj == null) {</span>
-<span class="nc" id="L827">			return false;</span>
+<span class="nc bnc" id="L827" title="All 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L828">			return false;</span>
 		}
-<span class="nc bnc" id="L829" title="All 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L830">			return false;</span>
+<span class="nc bnc" id="L830" title="All 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L831">			return false;</span>
 		}
-<span class="nc" id="L832">		ServerConfiguration other = (ServerConfiguration) obj;</span>
-<span class="nc bnc" id="L833" title="All 2 branches missed.">		if (acrValuesSupported == null) {</span>
-<span class="nc bnc" id="L834" title="All 2 branches missed.">			if (other.acrValuesSupported != null) {</span>
-<span class="nc" id="L835">				return false;</span>
+<span class="nc" id="L833">		ServerConfiguration other = (ServerConfiguration) obj;</span>
+<span class="nc bnc" id="L834" title="All 2 branches missed.">		if (acrValuesSupported == null) {</span>
+<span class="nc bnc" id="L835" title="All 2 branches missed.">			if (other.acrValuesSupported != null) {</span>
+<span class="nc" id="L836">				return false;</span>
 			}
-<span class="nc bnc" id="L837" title="All 2 branches missed.">		} else if (!acrValuesSupported.equals(other.acrValuesSupported)) {</span>
-<span class="nc" id="L838">			return false;</span>
+<span class="nc bnc" id="L838" title="All 2 branches missed.">		} else if (!acrValuesSupported.equals(other.acrValuesSupported)) {</span>
+<span class="nc" id="L839">			return false;</span>
 		}
-<span class="nc bnc" id="L840" title="All 2 branches missed.">		if (authorizationEndpointUri == null) {</span>
-<span class="nc bnc" id="L841" title="All 2 branches missed.">			if (other.authorizationEndpointUri != null) {</span>
-<span class="nc" id="L842">				return false;</span>
+<span class="nc bnc" id="L841" title="All 2 branches missed.">		if (authorizationEndpointUri == null) {</span>
+<span class="nc bnc" id="L842" title="All 2 branches missed.">			if (other.authorizationEndpointUri != null) {</span>
+<span class="nc" id="L843">				return false;</span>
 			}
-<span class="nc" id="L844">		} else if (!authorizationEndpointUri</span>
-<span class="nc bnc" id="L845" title="All 2 branches missed.">				.equals(other.authorizationEndpointUri)) {</span>
-<span class="nc" id="L846">			return false;</span>
+<span class="nc" id="L845">		} else if (!authorizationEndpointUri</span>
+<span class="nc bnc" id="L846" title="All 2 branches missed.">				.equals(other.authorizationEndpointUri)) {</span>
+<span class="nc" id="L847">			return false;</span>
 		}
-<span class="nc bnc" id="L848" title="All 2 branches missed.">		if (checkSessionIframe == null) {</span>
-<span class="nc bnc" id="L849" title="All 2 branches missed.">			if (other.checkSessionIframe != null) {</span>
-<span class="nc" id="L850">				return false;</span>
+<span class="nc bnc" id="L849" title="All 2 branches missed.">		if (checkSessionIframe == null) {</span>
+<span class="nc bnc" id="L850" title="All 2 branches missed.">			if (other.checkSessionIframe != null) {</span>
+<span class="nc" id="L851">				return false;</span>
 			}
-<span class="nc bnc" id="L852" title="All 2 branches missed.">		} else if (!checkSessionIframe.equals(other.checkSessionIframe)) {</span>
-<span class="nc" id="L853">			return false;</span>
+<span class="nc bnc" id="L853" title="All 2 branches missed.">		} else if (!checkSessionIframe.equals(other.checkSessionIframe)) {</span>
+<span class="nc" id="L854">			return false;</span>
 		}
-<span class="nc bnc" id="L855" title="All 2 branches missed.">		if (claimTypesSupported == null) {</span>
-<span class="nc bnc" id="L856" title="All 2 branches missed.">			if (other.claimTypesSupported != null) {</span>
-<span class="nc" id="L857">				return false;</span>
+<span class="nc bnc" id="L856" title="All 2 branches missed.">		if (claimTypesSupported == null) {</span>
+<span class="nc bnc" id="L857" title="All 2 branches missed.">			if (other.claimTypesSupported != null) {</span>
+<span class="nc" id="L858">				return false;</span>
 			}
-<span class="nc bnc" id="L859" title="All 2 branches missed.">		} else if (!claimTypesSupported.equals(other.claimTypesSupported)) {</span>
-<span class="nc" id="L860">			return false;</span>
+<span class="nc bnc" id="L860" title="All 2 branches missed.">		} else if (!claimTypesSupported.equals(other.claimTypesSupported)) {</span>
+<span class="nc" id="L861">			return false;</span>
 		}
-<span class="nc bnc" id="L862" title="All 2 branches missed.">		if (claimsLocalesSupported == null) {</span>
-<span class="nc bnc" id="L863" title="All 2 branches missed.">			if (other.claimsLocalesSupported != null) {</span>
-<span class="nc" id="L864">				return false;</span>
+<span class="nc bnc" id="L863" title="All 2 branches missed.">		if (claimsLocalesSupported == null) {</span>
+<span class="nc bnc" id="L864" title="All 2 branches missed.">			if (other.claimsLocalesSupported != null) {</span>
+<span class="nc" id="L865">				return false;</span>
 			}
-<span class="nc bnc" id="L866" title="All 2 branches missed.">		} else if (!claimsLocalesSupported.equals(other.claimsLocalesSupported)) {</span>
-<span class="nc" id="L867">			return false;</span>
+<span class="nc bnc" id="L867" title="All 2 branches missed.">		} else if (!claimsLocalesSupported.equals(other.claimsLocalesSupported)) {</span>
+<span class="nc" id="L868">			return false;</span>
 		}
-<span class="nc bnc" id="L869" title="All 2 branches missed.">		if (claimsParameterSupported == null) {</span>
-<span class="nc bnc" id="L870" title="All 2 branches missed.">			if (other.claimsParameterSupported != null) {</span>
-<span class="nc" id="L871">				return false;</span>
+<span class="nc bnc" id="L870" title="All 2 branches missed.">		if (claimsParameterSupported == null) {</span>
+<span class="nc bnc" id="L871" title="All 2 branches missed.">			if (other.claimsParameterSupported != null) {</span>
+<span class="nc" id="L872">				return false;</span>
 			}
-<span class="nc" id="L873">		} else if (!claimsParameterSupported</span>
-<span class="nc bnc" id="L874" title="All 2 branches missed.">				.equals(other.claimsParameterSupported)) {</span>
-<span class="nc" id="L875">			return false;</span>
+<span class="nc" id="L874">		} else if (!claimsParameterSupported</span>
+<span class="nc bnc" id="L875" title="All 2 branches missed.">				.equals(other.claimsParameterSupported)) {</span>
+<span class="nc" id="L876">			return false;</span>
 		}
-<span class="nc bnc" id="L877" title="All 2 branches missed.">		if (claimsSupported == null) {</span>
-<span class="nc bnc" id="L878" title="All 2 branches missed.">			if (other.claimsSupported != null) {</span>
-<span class="nc" id="L879">				return false;</span>
+<span class="nc bnc" id="L878" title="All 2 branches missed.">		if (claimsSupported == null) {</span>
+<span class="nc bnc" id="L879" title="All 2 branches missed.">			if (other.claimsSupported != null) {</span>
+<span class="nc" id="L880">				return false;</span>
 			}
-<span class="nc bnc" id="L881" title="All 2 branches missed.">		} else if (!claimsSupported.equals(other.claimsSupported)) {</span>
-<span class="nc" id="L882">			return false;</span>
+<span class="nc bnc" id="L882" title="All 2 branches missed.">		} else if (!claimsSupported.equals(other.claimsSupported)) {</span>
+<span class="nc" id="L883">			return false;</span>
 		}
-<span class="nc bnc" id="L884" title="All 2 branches missed.">		if (displayValuesSupported == null) {</span>
-<span class="nc bnc" id="L885" title="All 2 branches missed.">			if (other.displayValuesSupported != null) {</span>
-<span class="nc" id="L886">				return false;</span>
+<span class="nc bnc" id="L885" title="All 2 branches missed.">		if (displayValuesSupported == null) {</span>
+<span class="nc bnc" id="L886" title="All 2 branches missed.">			if (other.displayValuesSupported != null) {</span>
+<span class="nc" id="L887">				return false;</span>
 			}
-<span class="nc bnc" id="L888" title="All 2 branches missed.">		} else if (!displayValuesSupported.equals(other.displayValuesSupported)) {</span>
-<span class="nc" id="L889">			return false;</span>
+<span class="nc bnc" id="L889" title="All 2 branches missed.">		} else if (!displayValuesSupported.equals(other.displayValuesSupported)) {</span>
+<span class="nc" id="L890">			return false;</span>
 		}
-<span class="nc bnc" id="L891" title="All 2 branches missed.">		if (endSessionEndpoint == null) {</span>
-<span class="nc bnc" id="L892" title="All 2 branches missed.">			if (other.endSessionEndpoint != null) {</span>
-<span class="nc" id="L893">				return false;</span>
+<span class="nc bnc" id="L892" title="All 2 branches missed.">		if (endSessionEndpoint == null) {</span>
+<span class="nc bnc" id="L893" title="All 2 branches missed.">			if (other.endSessionEndpoint != null) {</span>
+<span class="nc" id="L894">				return false;</span>
 			}
-<span class="nc bnc" id="L895" title="All 2 branches missed.">		} else if (!endSessionEndpoint.equals(other.endSessionEndpoint)) {</span>
-<span class="nc" id="L896">			return false;</span>
+<span class="nc bnc" id="L896" title="All 2 branches missed.">		} else if (!endSessionEndpoint.equals(other.endSessionEndpoint)) {</span>
+<span class="nc" id="L897">			return false;</span>
 		}
-<span class="nc bnc" id="L898" title="All 2 branches missed.">		if (grantTypesSupported == null) {</span>
-<span class="nc bnc" id="L899" title="All 2 branches missed.">			if (other.grantTypesSupported != null) {</span>
-<span class="nc" id="L900">				return false;</span>
+<span class="nc bnc" id="L899" title="All 2 branches missed.">		if (grantTypesSupported == null) {</span>
+<span class="nc bnc" id="L900" title="All 2 branches missed.">			if (other.grantTypesSupported != null) {</span>
+<span class="nc" id="L901">				return false;</span>
 			}
-<span class="nc bnc" id="L902" title="All 2 branches missed.">		} else if (!grantTypesSupported.equals(other.grantTypesSupported)) {</span>
-<span class="nc" id="L903">			return false;</span>
+<span class="nc bnc" id="L903" title="All 2 branches missed.">		} else if (!grantTypesSupported.equals(other.grantTypesSupported)) {</span>
+<span class="nc" id="L904">			return false;</span>
 		}
-<span class="nc bnc" id="L905" title="All 2 branches missed.">		if (idTokenEncryptionAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L906" title="All 2 branches missed.">			if (other.idTokenEncryptionAlgValuesSupported != null) {</span>
-<span class="nc" id="L907">				return false;</span>
+<span class="nc bnc" id="L906" title="All 2 branches missed.">		if (idTokenEncryptionAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L907" title="All 2 branches missed.">			if (other.idTokenEncryptionAlgValuesSupported != null) {</span>
+<span class="nc" id="L908">				return false;</span>
 			}
-<span class="nc" id="L909">		} else if (!idTokenEncryptionAlgValuesSupported</span>
-<span class="nc bnc" id="L910" title="All 2 branches missed.">				.equals(other.idTokenEncryptionAlgValuesSupported)) {</span>
-<span class="nc" id="L911">			return false;</span>
+<span class="nc" id="L910">		} else if (!idTokenEncryptionAlgValuesSupported</span>
+<span class="nc bnc" id="L911" title="All 2 branches missed.">				.equals(other.idTokenEncryptionAlgValuesSupported)) {</span>
+<span class="nc" id="L912">			return false;</span>
 		}
-<span class="nc bnc" id="L913" title="All 2 branches missed.">		if (idTokenEncryptionEncValuesSupported == null) {</span>
-<span class="nc bnc" id="L914" title="All 2 branches missed.">			if (other.idTokenEncryptionEncValuesSupported != null) {</span>
-<span class="nc" id="L915">				return false;</span>
+<span class="nc bnc" id="L914" title="All 2 branches missed.">		if (idTokenEncryptionEncValuesSupported == null) {</span>
+<span class="nc bnc" id="L915" title="All 2 branches missed.">			if (other.idTokenEncryptionEncValuesSupported != null) {</span>
+<span class="nc" id="L916">				return false;</span>
 			}
-<span class="nc" id="L917">		} else if (!idTokenEncryptionEncValuesSupported</span>
-<span class="nc bnc" id="L918" title="All 2 branches missed.">				.equals(other.idTokenEncryptionEncValuesSupported)) {</span>
-<span class="nc" id="L919">			return false;</span>
+<span class="nc" id="L918">		} else if (!idTokenEncryptionEncValuesSupported</span>
+<span class="nc bnc" id="L919" title="All 2 branches missed.">				.equals(other.idTokenEncryptionEncValuesSupported)) {</span>
+<span class="nc" id="L920">			return false;</span>
 		}
-<span class="nc bnc" id="L921" title="All 2 branches missed.">		if (idTokenSigningAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L922" title="All 2 branches missed.">			if (other.idTokenSigningAlgValuesSupported != null) {</span>
-<span class="nc" id="L923">				return false;</span>
+<span class="nc bnc" id="L922" title="All 2 branches missed.">		if (idTokenSigningAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L923" title="All 2 branches missed.">			if (other.idTokenSigningAlgValuesSupported != null) {</span>
+<span class="nc" id="L924">				return false;</span>
 			}
-<span class="nc" id="L925">		} else if (!idTokenSigningAlgValuesSupported</span>
-<span class="nc bnc" id="L926" title="All 2 branches missed.">				.equals(other.idTokenSigningAlgValuesSupported)) {</span>
-<span class="nc" id="L927">			return false;</span>
+<span class="nc" id="L926">		} else if (!idTokenSigningAlgValuesSupported</span>
+<span class="nc bnc" id="L927" title="All 2 branches missed.">				.equals(other.idTokenSigningAlgValuesSupported)) {</span>
+<span class="nc" id="L928">			return false;</span>
 		}
-<span class="nc bnc" id="L929" title="All 2 branches missed.">		if (introspectionEndpointUri == null) {</span>
-<span class="nc bnc" id="L930" title="All 2 branches missed.">			if (other.introspectionEndpointUri != null) {</span>
-<span class="nc" id="L931">				return false;</span>
+<span class="nc bnc" id="L930" title="All 2 branches missed.">		if (introspectionEndpointUri == null) {</span>
+<span class="nc bnc" id="L931" title="All 2 branches missed.">			if (other.introspectionEndpointUri != null) {</span>
+<span class="nc" id="L932">				return false;</span>
 			}
-<span class="nc" id="L933">		} else if (!introspectionEndpointUri</span>
-<span class="nc bnc" id="L934" title="All 2 branches missed.">				.equals(other.introspectionEndpointUri)) {</span>
-<span class="nc" id="L935">			return false;</span>
+<span class="nc" id="L934">		} else if (!introspectionEndpointUri</span>
+<span class="nc bnc" id="L935" title="All 2 branches missed.">				.equals(other.introspectionEndpointUri)) {</span>
+<span class="nc" id="L936">			return false;</span>
 		}
-<span class="nc bnc" id="L937" title="All 2 branches missed.">		if (issuer == null) {</span>
-<span class="nc bnc" id="L938" title="All 2 branches missed.">			if (other.issuer != null) {</span>
-<span class="nc" id="L939">				return false;</span>
+<span class="nc bnc" id="L938" title="All 2 branches missed.">		if (issuer == null) {</span>
+<span class="nc bnc" id="L939" title="All 2 branches missed.">			if (other.issuer != null) {</span>
+<span class="nc" id="L940">				return false;</span>
 			}
-<span class="nc bnc" id="L941" title="All 2 branches missed.">		} else if (!issuer.equals(other.issuer)) {</span>
-<span class="nc" id="L942">			return false;</span>
+<span class="nc bnc" id="L942" title="All 2 branches missed.">		} else if (!issuer.equals(other.issuer)) {</span>
+<span class="nc" id="L943">			return false;</span>
 		}
-<span class="nc bnc" id="L944" title="All 2 branches missed.">		if (jwksUri == null) {</span>
-<span class="nc bnc" id="L945" title="All 2 branches missed.">			if (other.jwksUri != null) {</span>
-<span class="nc" id="L946">				return false;</span>
+<span class="nc bnc" id="L945" title="All 2 branches missed.">		if (jwksUri == null) {</span>
+<span class="nc bnc" id="L946" title="All 2 branches missed.">			if (other.jwksUri != null) {</span>
+<span class="nc" id="L947">				return false;</span>
 			}
-<span class="nc bnc" id="L948" title="All 2 branches missed.">		} else if (!jwksUri.equals(other.jwksUri)) {</span>
-<span class="nc" id="L949">			return false;</span>
+<span class="nc bnc" id="L949" title="All 2 branches missed.">		} else if (!jwksUri.equals(other.jwksUri)) {</span>
+<span class="nc" id="L950">			return false;</span>
 		}
-<span class="nc bnc" id="L951" title="All 2 branches missed.">		if (opPolicyUri == null) {</span>
-<span class="nc bnc" id="L952" title="All 2 branches missed.">			if (other.opPolicyUri != null) {</span>
-<span class="nc" id="L953">				return false;</span>
+<span class="nc bnc" id="L952" title="All 2 branches missed.">		if (opPolicyUri == null) {</span>
+<span class="nc bnc" id="L953" title="All 2 branches missed.">			if (other.opPolicyUri != null) {</span>
+<span class="nc" id="L954">				return false;</span>
 			}
-<span class="nc bnc" id="L955" title="All 2 branches missed.">		} else if (!opPolicyUri.equals(other.opPolicyUri)) {</span>
-<span class="nc" id="L956">			return false;</span>
+<span class="nc bnc" id="L956" title="All 2 branches missed.">		} else if (!opPolicyUri.equals(other.opPolicyUri)) {</span>
+<span class="nc" id="L957">			return false;</span>
 		}
-<span class="nc bnc" id="L958" title="All 2 branches missed.">		if (opTosUri == null) {</span>
-<span class="nc bnc" id="L959" title="All 2 branches missed.">			if (other.opTosUri != null) {</span>
-<span class="nc" id="L960">				return false;</span>
+<span class="nc bnc" id="L959" title="All 2 branches missed.">		if (opTosUri == null) {</span>
+<span class="nc bnc" id="L960" title="All 2 branches missed.">			if (other.opTosUri != null) {</span>
+<span class="nc" id="L961">				return false;</span>
 			}
-<span class="nc bnc" id="L962" title="All 2 branches missed.">		} else if (!opTosUri.equals(other.opTosUri)) {</span>
-<span class="nc" id="L963">			return false;</span>
+<span class="nc bnc" id="L963" title="All 2 branches missed.">		} else if (!opTosUri.equals(other.opTosUri)) {</span>
+<span class="nc" id="L964">			return false;</span>
 		}
-<span class="nc bnc" id="L965" title="All 2 branches missed.">		if (registrationEndpointUri == null) {</span>
-<span class="nc bnc" id="L966" title="All 2 branches missed.">			if (other.registrationEndpointUri != null) {</span>
-<span class="nc" id="L967">				return false;</span>
+<span class="nc bnc" id="L966" title="All 2 branches missed.">		if (registrationEndpointUri == null) {</span>
+<span class="nc bnc" id="L967" title="All 2 branches missed.">			if (other.registrationEndpointUri != null) {</span>
+<span class="nc" id="L968">				return false;</span>
 			}
-<span class="nc" id="L969">		} else if (!registrationEndpointUri</span>
-<span class="nc bnc" id="L970" title="All 2 branches missed.">				.equals(other.registrationEndpointUri)) {</span>
-<span class="nc" id="L971">			return false;</span>
+<span class="nc" id="L970">		} else if (!registrationEndpointUri</span>
+<span class="nc bnc" id="L971" title="All 2 branches missed.">				.equals(other.registrationEndpointUri)) {</span>
+<span class="nc" id="L972">			return false;</span>
 		}
-<span class="nc bnc" id="L973" title="All 2 branches missed.">		if (requestObjectEncryptionAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L974" title="All 2 branches missed.">			if (other.requestObjectEncryptionAlgValuesSupported != null) {</span>
-<span class="nc" id="L975">				return false;</span>
+<span class="nc bnc" id="L974" title="All 2 branches missed.">		if (requestObjectEncryptionAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L975" title="All 2 branches missed.">			if (other.requestObjectEncryptionAlgValuesSupported != null) {</span>
+<span class="nc" id="L976">				return false;</span>
 			}
-<span class="nc" id="L977">		} else if (!requestObjectEncryptionAlgValuesSupported</span>
-<span class="nc bnc" id="L978" title="All 2 branches missed.">				.equals(other.requestObjectEncryptionAlgValuesSupported)) {</span>
-<span class="nc" id="L979">			return false;</span>
+<span class="nc" id="L978">		} else if (!requestObjectEncryptionAlgValuesSupported</span>
+<span class="nc bnc" id="L979" title="All 2 branches missed.">				.equals(other.requestObjectEncryptionAlgValuesSupported)) {</span>
+<span class="nc" id="L980">			return false;</span>
 		}
-<span class="nc bnc" id="L981" title="All 2 branches missed.">		if (requestObjectEncryptionEncValuesSupported == null) {</span>
-<span class="nc bnc" id="L982" title="All 2 branches missed.">			if (other.requestObjectEncryptionEncValuesSupported != null) {</span>
-<span class="nc" id="L983">				return false;</span>
+<span class="nc bnc" id="L982" title="All 2 branches missed.">		if (requestObjectEncryptionEncValuesSupported == null) {</span>
+<span class="nc bnc" id="L983" title="All 2 branches missed.">			if (other.requestObjectEncryptionEncValuesSupported != null) {</span>
+<span class="nc" id="L984">				return false;</span>
 			}
-<span class="nc" id="L985">		} else if (!requestObjectEncryptionEncValuesSupported</span>
-<span class="nc bnc" id="L986" title="All 2 branches missed.">				.equals(other.requestObjectEncryptionEncValuesSupported)) {</span>
-<span class="nc" id="L987">			return false;</span>
+<span class="nc" id="L986">		} else if (!requestObjectEncryptionEncValuesSupported</span>
+<span class="nc bnc" id="L987" title="All 2 branches missed.">				.equals(other.requestObjectEncryptionEncValuesSupported)) {</span>
+<span class="nc" id="L988">			return false;</span>
 		}
-<span class="nc bnc" id="L989" title="All 2 branches missed.">		if (requestObjectSigningAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L990" title="All 2 branches missed.">			if (other.requestObjectSigningAlgValuesSupported != null) {</span>
-<span class="nc" id="L991">				return false;</span>
+<span class="nc bnc" id="L990" title="All 2 branches missed.">		if (requestObjectSigningAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L991" title="All 2 branches missed.">			if (other.requestObjectSigningAlgValuesSupported != null) {</span>
+<span class="nc" id="L992">				return false;</span>
 			}
-<span class="nc" id="L993">		} else if (!requestObjectSigningAlgValuesSupported</span>
-<span class="nc bnc" id="L994" title="All 2 branches missed.">				.equals(other.requestObjectSigningAlgValuesSupported)) {</span>
-<span class="nc" id="L995">			return false;</span>
+<span class="nc" id="L994">		} else if (!requestObjectSigningAlgValuesSupported</span>
+<span class="nc bnc" id="L995" title="All 2 branches missed.">				.equals(other.requestObjectSigningAlgValuesSupported)) {</span>
+<span class="nc" id="L996">			return false;</span>
 		}
-<span class="nc bnc" id="L997" title="All 2 branches missed.">		if (requestParameterSupported == null) {</span>
-<span class="nc bnc" id="L998" title="All 2 branches missed.">			if (other.requestParameterSupported != null) {</span>
-<span class="nc" id="L999">				return false;</span>
+<span class="nc bnc" id="L998" title="All 2 branches missed.">		if (requestParameterSupported == null) {</span>
+<span class="nc bnc" id="L999" title="All 2 branches missed.">			if (other.requestParameterSupported != null) {</span>
+<span class="nc" id="L1000">				return false;</span>
 			}
-<span class="nc" id="L1001">		} else if (!requestParameterSupported</span>
-<span class="nc bnc" id="L1002" title="All 2 branches missed.">				.equals(other.requestParameterSupported)) {</span>
-<span class="nc" id="L1003">			return false;</span>
+<span class="nc" id="L1002">		} else if (!requestParameterSupported</span>
+<span class="nc bnc" id="L1003" title="All 2 branches missed.">				.equals(other.requestParameterSupported)) {</span>
+<span class="nc" id="L1004">			return false;</span>
 		}
-<span class="nc bnc" id="L1005" title="All 2 branches missed.">		if (requestUriParameterSupported == null) {</span>
-<span class="nc bnc" id="L1006" title="All 2 branches missed.">			if (other.requestUriParameterSupported != null) {</span>
-<span class="nc" id="L1007">				return false;</span>
+<span class="nc bnc" id="L1006" title="All 2 branches missed.">		if (requestUriParameterSupported == null) {</span>
+<span class="nc bnc" id="L1007" title="All 2 branches missed.">			if (other.requestUriParameterSupported != null) {</span>
+<span class="nc" id="L1008">				return false;</span>
 			}
-<span class="nc" id="L1009">		} else if (!requestUriParameterSupported</span>
-<span class="nc bnc" id="L1010" title="All 2 branches missed.">				.equals(other.requestUriParameterSupported)) {</span>
-<span class="nc" id="L1011">			return false;</span>
+<span class="nc" id="L1010">		} else if (!requestUriParameterSupported</span>
+<span class="nc bnc" id="L1011" title="All 2 branches missed.">				.equals(other.requestUriParameterSupported)) {</span>
+<span class="nc" id="L1012">			return false;</span>
 		}
-<span class="nc bnc" id="L1013" title="All 2 branches missed.">		if (requireRequestUriRegistration == null) {</span>
-<span class="nc bnc" id="L1014" title="All 2 branches missed.">			if (other.requireRequestUriRegistration != null) {</span>
-<span class="nc" id="L1015">				return false;</span>
+<span class="nc bnc" id="L1014" title="All 2 branches missed.">		if (requireRequestUriRegistration == null) {</span>
+<span class="nc bnc" id="L1015" title="All 2 branches missed.">			if (other.requireRequestUriRegistration != null) {</span>
+<span class="nc" id="L1016">				return false;</span>
 			}
-<span class="nc" id="L1017">		} else if (!requireRequestUriRegistration</span>
-<span class="nc bnc" id="L1018" title="All 2 branches missed.">				.equals(other.requireRequestUriRegistration)) {</span>
-<span class="nc" id="L1019">			return false;</span>
+<span class="nc" id="L1018">		} else if (!requireRequestUriRegistration</span>
+<span class="nc bnc" id="L1019" title="All 2 branches missed.">				.equals(other.requireRequestUriRegistration)) {</span>
+<span class="nc" id="L1020">			return false;</span>
 		}
-<span class="nc bnc" id="L1021" title="All 2 branches missed.">		if (responseTypesSupported == null) {</span>
-<span class="nc bnc" id="L1022" title="All 2 branches missed.">			if (other.responseTypesSupported != null) {</span>
-<span class="nc" id="L1023">				return false;</span>
+<span class="nc bnc" id="L1022" title="All 2 branches missed.">		if (responseTypesSupported == null) {</span>
+<span class="nc bnc" id="L1023" title="All 2 branches missed.">			if (other.responseTypesSupported != null) {</span>
+<span class="nc" id="L1024">				return false;</span>
 			}
-<span class="nc bnc" id="L1025" title="All 2 branches missed.">		} else if (!responseTypesSupported.equals(other.responseTypesSupported)) {</span>
-<span class="nc" id="L1026">			return false;</span>
+<span class="nc bnc" id="L1026" title="All 2 branches missed.">		} else if (!responseTypesSupported.equals(other.responseTypesSupported)) {</span>
+<span class="nc" id="L1027">			return false;</span>
 		}
-<span class="nc bnc" id="L1028" title="All 2 branches missed.">		if (revocationEndpointUri == null) {</span>
-<span class="nc bnc" id="L1029" title="All 2 branches missed.">			if (other.revocationEndpointUri != null) {</span>
-<span class="nc" id="L1030">				return false;</span>
+<span class="nc bnc" id="L1029" title="All 2 branches missed.">		if (revocationEndpointUri == null) {</span>
+<span class="nc bnc" id="L1030" title="All 2 branches missed.">			if (other.revocationEndpointUri != null) {</span>
+<span class="nc" id="L1031">				return false;</span>
 			}
-<span class="nc bnc" id="L1032" title="All 2 branches missed.">		} else if (!revocationEndpointUri.equals(other.revocationEndpointUri)) {</span>
-<span class="nc" id="L1033">			return false;</span>
+<span class="nc bnc" id="L1033" title="All 2 branches missed.">		} else if (!revocationEndpointUri.equals(other.revocationEndpointUri)) {</span>
+<span class="nc" id="L1034">			return false;</span>
 		}
-<span class="nc bnc" id="L1035" title="All 2 branches missed.">		if (scopesSupported == null) {</span>
-<span class="nc bnc" id="L1036" title="All 2 branches missed.">			if (other.scopesSupported != null) {</span>
-<span class="nc" id="L1037">				return false;</span>
+<span class="nc bnc" id="L1036" title="All 2 branches missed.">		if (scopesSupported == null) {</span>
+<span class="nc bnc" id="L1037" title="All 2 branches missed.">			if (other.scopesSupported != null) {</span>
+<span class="nc" id="L1038">				return false;</span>
 			}
-<span class="nc bnc" id="L1039" title="All 2 branches missed.">		} else if (!scopesSupported.equals(other.scopesSupported)) {</span>
-<span class="nc" id="L1040">			return false;</span>
+<span class="nc bnc" id="L1040" title="All 2 branches missed.">		} else if (!scopesSupported.equals(other.scopesSupported)) {</span>
+<span class="nc" id="L1041">			return false;</span>
 		}
-<span class="nc bnc" id="L1042" title="All 2 branches missed.">		if (serviceDocumentation == null) {</span>
-<span class="nc bnc" id="L1043" title="All 2 branches missed.">			if (other.serviceDocumentation != null) {</span>
-<span class="nc" id="L1044">				return false;</span>
+<span class="nc bnc" id="L1043" title="All 2 branches missed.">		if (serviceDocumentation == null) {</span>
+<span class="nc bnc" id="L1044" title="All 2 branches missed.">			if (other.serviceDocumentation != null) {</span>
+<span class="nc" id="L1045">				return false;</span>
 			}
-<span class="nc bnc" id="L1046" title="All 2 branches missed.">		} else if (!serviceDocumentation.equals(other.serviceDocumentation)) {</span>
-<span class="nc" id="L1047">			return false;</span>
+<span class="nc bnc" id="L1047" title="All 2 branches missed.">		} else if (!serviceDocumentation.equals(other.serviceDocumentation)) {</span>
+<span class="nc" id="L1048">			return false;</span>
 		}
-<span class="nc bnc" id="L1049" title="All 2 branches missed.">		if (subjectTypesSupported == null) {</span>
-<span class="nc bnc" id="L1050" title="All 2 branches missed.">			if (other.subjectTypesSupported != null) {</span>
-<span class="nc" id="L1051">				return false;</span>
+<span class="nc bnc" id="L1050" title="All 2 branches missed.">		if (subjectTypesSupported == null) {</span>
+<span class="nc bnc" id="L1051" title="All 2 branches missed.">			if (other.subjectTypesSupported != null) {</span>
+<span class="nc" id="L1052">				return false;</span>
 			}
-<span class="nc bnc" id="L1053" title="All 2 branches missed.">		} else if (!subjectTypesSupported.equals(other.subjectTypesSupported)) {</span>
-<span class="nc" id="L1054">			return false;</span>
+<span class="nc bnc" id="L1054" title="All 2 branches missed.">		} else if (!subjectTypesSupported.equals(other.subjectTypesSupported)) {</span>
+<span class="nc" id="L1055">			return false;</span>
 		}
-<span class="nc bnc" id="L1056" title="All 2 branches missed.">		if (tokenEndpointAuthMethodsSupported == null) {</span>
-<span class="nc bnc" id="L1057" title="All 2 branches missed.">			if (other.tokenEndpointAuthMethodsSupported != null) {</span>
-<span class="nc" id="L1058">				return false;</span>
+<span class="nc bnc" id="L1057" title="All 2 branches missed.">		if (tokenEndpointAuthMethodsSupported == null) {</span>
+<span class="nc bnc" id="L1058" title="All 2 branches missed.">			if (other.tokenEndpointAuthMethodsSupported != null) {</span>
+<span class="nc" id="L1059">				return false;</span>
 			}
-<span class="nc" id="L1060">		} else if (!tokenEndpointAuthMethodsSupported</span>
-<span class="nc bnc" id="L1061" title="All 2 branches missed.">				.equals(other.tokenEndpointAuthMethodsSupported)) {</span>
-<span class="nc" id="L1062">			return false;</span>
+<span class="nc" id="L1061">		} else if (!tokenEndpointAuthMethodsSupported</span>
+<span class="nc bnc" id="L1062" title="All 2 branches missed.">				.equals(other.tokenEndpointAuthMethodsSupported)) {</span>
+<span class="nc" id="L1063">			return false;</span>
 		}
-<span class="nc bnc" id="L1064" title="All 2 branches missed.">		if (tokenEndpointAuthSigningAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L1065" title="All 2 branches missed.">			if (other.tokenEndpointAuthSigningAlgValuesSupported != null) {</span>
-<span class="nc" id="L1066">				return false;</span>
+<span class="nc bnc" id="L1065" title="All 2 branches missed.">		if (tokenEndpointAuthSigningAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L1066" title="All 2 branches missed.">			if (other.tokenEndpointAuthSigningAlgValuesSupported != null) {</span>
+<span class="nc" id="L1067">				return false;</span>
 			}
-<span class="nc" id="L1068">		} else if (!tokenEndpointAuthSigningAlgValuesSupported</span>
-<span class="nc bnc" id="L1069" title="All 2 branches missed.">				.equals(other.tokenEndpointAuthSigningAlgValuesSupported)) {</span>
-<span class="nc" id="L1070">			return false;</span>
+<span class="nc" id="L1069">		} else if (!tokenEndpointAuthSigningAlgValuesSupported</span>
+<span class="nc bnc" id="L1070" title="All 2 branches missed.">				.equals(other.tokenEndpointAuthSigningAlgValuesSupported)) {</span>
+<span class="nc" id="L1071">			return false;</span>
 		}
-<span class="nc bnc" id="L1072" title="All 2 branches missed.">		if (tokenEndpointUri == null) {</span>
-<span class="nc bnc" id="L1073" title="All 2 branches missed.">			if (other.tokenEndpointUri != null) {</span>
-<span class="nc" id="L1074">				return false;</span>
+<span class="nc bnc" id="L1073" title="All 2 branches missed.">		if (tokenEndpointUri == null) {</span>
+<span class="nc bnc" id="L1074" title="All 2 branches missed.">			if (other.tokenEndpointUri != null) {</span>
+<span class="nc" id="L1075">				return false;</span>
 			}
-<span class="nc bnc" id="L1076" title="All 2 branches missed.">		} else if (!tokenEndpointUri.equals(other.tokenEndpointUri)) {</span>
-<span class="nc" id="L1077">			return false;</span>
+<span class="nc bnc" id="L1077" title="All 2 branches missed.">		} else if (!tokenEndpointUri.equals(other.tokenEndpointUri)) {</span>
+<span class="nc" id="L1078">			return false;</span>
 		}
-<span class="nc bnc" id="L1079" title="All 2 branches missed.">		if (uiLocalesSupported == null) {</span>
-<span class="nc bnc" id="L1080" title="All 2 branches missed.">			if (other.uiLocalesSupported != null) {</span>
-<span class="nc" id="L1081">				return false;</span>
+<span class="nc bnc" id="L1080" title="All 2 branches missed.">		if (uiLocalesSupported == null) {</span>
+<span class="nc bnc" id="L1081" title="All 2 branches missed.">			if (other.uiLocalesSupported != null) {</span>
+<span class="nc" id="L1082">				return false;</span>
 			}
-<span class="nc bnc" id="L1083" title="All 2 branches missed.">		} else if (!uiLocalesSupported.equals(other.uiLocalesSupported)) {</span>
-<span class="nc" id="L1084">			return false;</span>
+<span class="nc bnc" id="L1084" title="All 2 branches missed.">		} else if (!uiLocalesSupported.equals(other.uiLocalesSupported)) {</span>
+<span class="nc" id="L1085">			return false;</span>
 		}
-<span class="nc bnc" id="L1086" title="All 2 branches missed.">		if (userInfoUri == null) {</span>
-<span class="nc bnc" id="L1087" title="All 2 branches missed.">			if (other.userInfoUri != null) {</span>
-<span class="nc" id="L1088">				return false;</span>
+<span class="nc bnc" id="L1087" title="All 2 branches missed.">		if (userInfoUri == null) {</span>
+<span class="nc bnc" id="L1088" title="All 2 branches missed.">			if (other.userInfoUri != null) {</span>
+<span class="nc" id="L1089">				return false;</span>
 			}
-<span class="nc bnc" id="L1090" title="All 2 branches missed.">		} else if (!userInfoUri.equals(other.userInfoUri)) {</span>
-<span class="nc" id="L1091">			return false;</span>
+<span class="nc bnc" id="L1091" title="All 2 branches missed.">		} else if (!userInfoUri.equals(other.userInfoUri)) {</span>
+<span class="nc" id="L1092">			return false;</span>
 		}
-<span class="nc bnc" id="L1093" title="All 2 branches missed.">		if (userinfoEncryptionAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L1094" title="All 2 branches missed.">			if (other.userinfoEncryptionAlgValuesSupported != null) {</span>
-<span class="nc" id="L1095">				return false;</span>
+<span class="nc bnc" id="L1094" title="All 2 branches missed.">		if (userinfoEncryptionAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L1095" title="All 2 branches missed.">			if (other.userinfoEncryptionAlgValuesSupported != null) {</span>
+<span class="nc" id="L1096">				return false;</span>
 			}
-<span class="nc" id="L1097">		} else if (!userinfoEncryptionAlgValuesSupported</span>
-<span class="nc bnc" id="L1098" title="All 2 branches missed.">				.equals(other.userinfoEncryptionAlgValuesSupported)) {</span>
-<span class="nc" id="L1099">			return false;</span>
+<span class="nc" id="L1098">		} else if (!userinfoEncryptionAlgValuesSupported</span>
+<span class="nc bnc" id="L1099" title="All 2 branches missed.">				.equals(other.userinfoEncryptionAlgValuesSupported)) {</span>
+<span class="nc" id="L1100">			return false;</span>
 		}
-<span class="nc bnc" id="L1101" title="All 2 branches missed.">		if (userinfoEncryptionEncValuesSupported == null) {</span>
-<span class="nc bnc" id="L1102" title="All 2 branches missed.">			if (other.userinfoEncryptionEncValuesSupported != null) {</span>
-<span class="nc" id="L1103">				return false;</span>
+<span class="nc bnc" id="L1102" title="All 2 branches missed.">		if (userinfoEncryptionEncValuesSupported == null) {</span>
+<span class="nc bnc" id="L1103" title="All 2 branches missed.">			if (other.userinfoEncryptionEncValuesSupported != null) {</span>
+<span class="nc" id="L1104">				return false;</span>
 			}
-<span class="nc" id="L1105">		} else if (!userinfoEncryptionEncValuesSupported</span>
-<span class="nc bnc" id="L1106" title="All 2 branches missed.">				.equals(other.userinfoEncryptionEncValuesSupported)) {</span>
-<span class="nc" id="L1107">			return false;</span>
+<span class="nc" id="L1106">		} else if (!userinfoEncryptionEncValuesSupported</span>
+<span class="nc bnc" id="L1107" title="All 2 branches missed.">				.equals(other.userinfoEncryptionEncValuesSupported)) {</span>
+<span class="nc" id="L1108">			return false;</span>
 		}
-<span class="nc bnc" id="L1109" title="All 2 branches missed.">		if (userinfoSigningAlgValuesSupported == null) {</span>
-<span class="nc bnc" id="L1110" title="All 2 branches missed.">			if (other.userinfoSigningAlgValuesSupported != null) {</span>
-<span class="nc" id="L1111">				return false;</span>
+<span class="nc bnc" id="L1110" title="All 2 branches missed.">		if (userinfoSigningAlgValuesSupported == null) {</span>
+<span class="nc bnc" id="L1111" title="All 2 branches missed.">			if (other.userinfoSigningAlgValuesSupported != null) {</span>
+<span class="nc" id="L1112">				return false;</span>
 			}
-<span class="nc" id="L1113">		} else if (!userinfoSigningAlgValuesSupported</span>
-<span class="nc bnc" id="L1114" title="All 2 branches missed.">				.equals(other.userinfoSigningAlgValuesSupported)) {</span>
-<span class="nc" id="L1115">			return false;</span>
+<span class="nc" id="L1114">		} else if (!userinfoSigningAlgValuesSupported</span>
+<span class="nc bnc" id="L1115" title="All 2 branches missed.">				.equals(other.userinfoSigningAlgValuesSupported)) {</span>
+<span class="nc" id="L1116">			return false;</span>
 		}
-<span class="nc" id="L1117">		return true;</span>
+<span class="nc" id="L1118">		return true;</span>
 	}
 
 

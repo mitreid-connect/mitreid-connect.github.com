@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EndSessionEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">EndSessionEndpoint.java</span></div><h1>EndSessionEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -58,7 +57,7 @@ import com.nimbusds.jwt.JWTParser;
  *
  */
 @Controller
-<span class="nc" id="L61">public class EndSessionEndpoint {</span>
+<span class="nc" id="L60">public class EndSessionEndpoint {</span>
 
 	public static final String URL = &quot;endsession&quot;;
 	
@@ -66,7 +65,7 @@ import com.nimbusds.jwt.JWTParser;
 	private static final String STATE_KEY = &quot;state&quot;;
 	private static final String REDIRECT_URI_KEY = &quot;redirectUri&quot;;
 
-<span class="nc" id="L69">	private static Logger logger = LoggerFactory.getLogger(EndSessionEndpoint.class);</span>
+<span class="nc" id="L68">	private static Logger logger = LoggerFactory.getLogger(EndSessionEndpoint.class);</span>
 	
 	@Autowired
 	private SelfAssertionValidator validator;
@@ -87,68 +86,68 @@ import com.nimbusds.jwt.JWTParser;
 		    Authentication auth, Model m) {
 
 		// conditionally filled variables
-<span class="nc" id="L90">		JWTClaimsSet idTokenClaims = null; // pulled from the parsed and validated ID token</span>
-<span class="nc" id="L91">		ClientDetailsEntity client = null; // pulled from ID token's audience field</span>
+<span class="nc" id="L89">		JWTClaimsSet idTokenClaims = null; // pulled from the parsed and validated ID token</span>
+<span class="nc" id="L90">		ClientDetailsEntity client = null; // pulled from ID token's audience field</span>
 		
-<span class="nc bnc" id="L93" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(postLogoutRedirectUri)) {</span>
-<span class="nc" id="L94">			session.setAttribute(REDIRECT_URI_KEY, postLogoutRedirectUri);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(postLogoutRedirectUri)) {</span>
+<span class="nc" id="L93">			session.setAttribute(REDIRECT_URI_KEY, postLogoutRedirectUri);</span>
 		}
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(state)) {</span>
-<span class="nc" id="L97">			session.setAttribute(STATE_KEY, state);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(state)) {</span>
+<span class="nc" id="L96">			session.setAttribute(STATE_KEY, state);</span>
 		}
 		
 		// parse the ID token hint to see if it's valid
-<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(idTokenHint)) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(idTokenHint)) {</span>
 			try {
-<span class="nc" id="L103">				JWT idToken = JWTParser.parse(idTokenHint);</span>
+<span class="nc" id="L102">				JWT idToken = JWTParser.parse(idTokenHint);</span>
 				
-<span class="nc bnc" id="L105" title="All 2 branches missed.">				if (validator.isValid(idToken)) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">				if (validator.isValid(idToken)) {</span>
 					// we issued this ID token, figure out who it's for
-<span class="nc" id="L107">					idTokenClaims = idToken.getJWTClaimsSet();</span>
+<span class="nc" id="L106">					idTokenClaims = idToken.getJWTClaimsSet();</span>
 					
-<span class="nc" id="L109">					String clientId = Iterables.getOnlyElement(idTokenClaims.getAudience());</span>
+<span class="nc" id="L108">					String clientId = Iterables.getOnlyElement(idTokenClaims.getAudience());</span>
 					
-<span class="nc" id="L111">					client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L110">					client = clientService.loadClientByClientId(clientId);</span>
 					
 					// save a reference in the session for us to pick up later
 					//session.setAttribute(&quot;endSession_idTokenHint_claims&quot;, idTokenClaims);
-<span class="nc" id="L115">					session.setAttribute(CLIENT_KEY, client);</span>
+<span class="nc" id="L114">					session.setAttribute(CLIENT_KEY, client);</span>
 				}
-<span class="nc" id="L117">			} catch (ParseException e) {</span>
+<span class="nc" id="L116">			} catch (ParseException e) {</span>
 				// it's not a valid ID token, ignore it
-<span class="nc" id="L119">				logger.debug(&quot;Invalid id token hint&quot;, e);</span>
-<span class="nc" id="L120">			} catch (InvalidClientException e) {</span>
+<span class="nc" id="L118">				logger.debug(&quot;Invalid id token hint&quot;, e);</span>
+<span class="nc" id="L119">			} catch (InvalidClientException e) {</span>
 				// couldn't find the client, ignore it
-<span class="nc" id="L122">				logger.debug(&quot;Invalid client&quot;, e);</span>
-<span class="nc" id="L123">			}</span>
+<span class="nc" id="L121">				logger.debug(&quot;Invalid client&quot;, e);</span>
+<span class="nc" id="L122">			}</span>
 		}
 		
 		// are we logged in or not?
-<span class="nc bnc" id="L127" title="All 4 branches missed.">		if (auth == null || !request.isUserInRole(&quot;ROLE_USER&quot;)) {</span>
+<span class="nc bnc" id="L126" title="All 4 branches missed.">		if (auth == null || !request.isUserInRole(&quot;ROLE_USER&quot;)) {</span>
 			// we're not logged in anyway, process the final redirect bits if needed
-<span class="nc" id="L129">			return processLogout(null, request, response, session, auth, m);</span>
+<span class="nc" id="L128">			return processLogout(null, request, response, session, auth, m);</span>
 		} else {
 			// we are logged in, need to prompt the user before we log out
 		
 			// see who the current user is
-<span class="nc" id="L134">			UserInfo ui = userInfoService.getByUsername(auth.getName()); </span>
+<span class="nc" id="L133">			UserInfo ui = userInfoService.getByUsername(auth.getName()); </span>
 			
-<span class="nc bnc" id="L136" title="All 2 branches missed.">			if (idTokenClaims != null) {</span>
-<span class="nc" id="L137">				String subject = idTokenClaims.getSubject();</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">			if (idTokenClaims != null) {</span>
+<span class="nc" id="L136">				String subject = idTokenClaims.getSubject();</span>
 				// see if the current user is the same as the one in the ID token
 				// TODO: should we do anything different in these cases?
-<span class="nc bnc" id="L140" title="All 4 branches missed.">				if (!Strings.isNullOrEmpty(subject) &amp;&amp; subject.equals(ui.getSub())) {</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">				if (!Strings.isNullOrEmpty(subject) &amp;&amp; subject.equals(ui.getSub())) {</span>
 					// it's the same user
 				} else { 
 					// it's not the same user
 				}
 			}
 
-<span class="nc" id="L147">			m.addAttribute(&quot;client&quot;, client);</span>
-<span class="nc" id="L148">			m.addAttribute(&quot;idToken&quot;, idTokenClaims);</span>
+<span class="nc" id="L146">			m.addAttribute(&quot;client&quot;, client);</span>
+<span class="nc" id="L147">			m.addAttribute(&quot;idToken&quot;, idTokenClaims);</span>
 			
 			// display the log out confirmation page
-<span class="nc" id="L151">			return &quot;logoutConfirmation&quot;;</span>
+<span class="nc" id="L150">			return &quot;logoutConfirmation&quot;;</span>
 		}
 	}
 	
@@ -159,16 +158,16 @@ import com.nimbusds.jwt.JWTParser;
 		    HttpSession session,
 		    Authentication auth, Model m) {
 
-<span class="nc" id="L162">		String redirectUri = (String) session.getAttribute(REDIRECT_URI_KEY);</span>
-<span class="nc" id="L163">		String state = (String) session.getAttribute(STATE_KEY);</span>
-<span class="nc" id="L164">		ClientDetailsEntity client = (ClientDetailsEntity) session.getAttribute(CLIENT_KEY);</span>
+<span class="nc" id="L161">		String redirectUri = (String) session.getAttribute(REDIRECT_URI_KEY);</span>
+<span class="nc" id="L162">		String state = (String) session.getAttribute(STATE_KEY);</span>
+<span class="nc" id="L163">		ClientDetailsEntity client = (ClientDetailsEntity) session.getAttribute(CLIENT_KEY);</span>
 		
-<span class="nc bnc" id="L166" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(approved)) {</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(approved)) {</span>
 			// use approved, perform the logout
-<span class="nc bnc" id="L168" title="All 2 branches missed.">			if (auth != null){    </span>
-<span class="nc" id="L169">				new SecurityContextLogoutHandler().logout(request, response, auth);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">			if (auth != null){    </span>
+<span class="nc" id="L168">				new SecurityContextLogoutHandler().logout(request, response, auth);</span>
 			}
-<span class="nc" id="L171">			SecurityContextHolder.getContext().setAuthentication(null);</span>
+<span class="nc" id="L170">			SecurityContextHolder.getContext().setAuthentication(null);</span>
 			// TODO: hook into other logout post-processing
 		}
 		
@@ -178,21 +177,21 @@ import com.nimbusds.jwt.JWTParser;
 		
 		// if we have a client AND the client has post-logout redirect URIs
 		// registered AND the URI given is in that list, then...
-<span class="nc bnc" id="L181" title="All 4 branches missed.">		if (!Strings.isNullOrEmpty(redirectUri) &amp;&amp; </span>
-<span class="nc bnc" id="L182" title="All 2 branches missed.">			client != null &amp;&amp; client.getPostLogoutRedirectUris() != null) {</span>
+<span class="nc bnc" id="L180" title="All 4 branches missed.">		if (!Strings.isNullOrEmpty(redirectUri) &amp;&amp; </span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">			client != null &amp;&amp; client.getPostLogoutRedirectUris() != null) {</span>
 			
-<span class="nc bnc" id="L184" title="All 2 branches missed.">			if (client.getPostLogoutRedirectUris().contains(redirectUri)) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">			if (client.getPostLogoutRedirectUris().contains(redirectUri)) {</span>
 				// TODO: future, add the redirect URI to the model for the display page for an interstitial
 				// m.addAttribute(&quot;redirectUri&quot;, postLogoutRedirectUri);
 				
-<span class="nc" id="L188">				UriComponents uri = UriComponentsBuilder.fromHttpUrl(redirectUri).queryParam(&quot;state&quot;, state).build();</span>
+<span class="nc" id="L187">				UriComponents uri = UriComponentsBuilder.fromHttpUrl(redirectUri).queryParam(&quot;state&quot;, state).build();</span>
 				
-<span class="nc" id="L190">				return &quot;redirect:&quot; + uri;</span>
+<span class="nc" id="L189">				return &quot;redirect:&quot; + uri;</span>
 			}
 		}
 		
 		// otherwise, return to a nice post-logout landing page
-<span class="nc" id="L195">		return &quot;postLogout&quot;;</span>
+<span class="nc" id="L194">		return &quot;postLogout&quot;;</span>
 	}
 
 }

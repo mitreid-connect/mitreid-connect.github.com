@@ -6,7 +6,7 @@
     <link>https://github.com/mitreid-connect/openid-connect-common</link>
     <description>OpenID Connect Common - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2017</copyright>
+    <copyright>&#169;2018</copyright>
     <item>
       <title>File: 107,
              Errors: 8,
@@ -85,20 +85,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.data.PageCriteria.java">org/mitre/data/PageCriteria.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.repository.UserInfoRepository.java">org/mitre/openid/connect/repository/UserInfoRepository.java</a>
                 </td>
                 <td>
@@ -106,6 +92,20 @@
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.data.PageCriteria.java">org/mitre/data/PageCriteria.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -771,20 +771,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.oauth2.service.DeviceCodeService.java">org/mitre/oauth2/service/DeviceCodeService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.util.jpa.JpaUtil.java">org/mitre/util/jpa/JpaUtil.java</a>
                 </td>
                 <td>
@@ -792,6 +778,20 @@
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.oauth2.service.DeviceCodeService.java">org/mitre/oauth2/service/DeviceCodeService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -1233,7 +1233,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.repository.BlacklistedSiteRepository.java">org/mitre/openid/connect/repository/BlacklistedSiteRepository.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.repository.PairwiseIdentifierRepository.java">org/mitre/openid/connect/repository/PairwiseIdentifierRepository.java</a>
                 </td>
                 <td>
                   0
@@ -1247,7 +1247,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.repository.PairwiseIdentifierRepository.java">org/mitre/openid/connect/repository/PairwiseIdentifierRepository.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-common/checkstyle.html#org.mitre.openid.connect.repository.BlacklistedSiteRepository.java">org/mitre/openid/connect/repository/BlacklistedSiteRepository.java</a>
                 </td>
                 <td>
                   0

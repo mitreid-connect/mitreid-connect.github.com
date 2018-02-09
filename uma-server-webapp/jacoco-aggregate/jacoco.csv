@@ -32,9 +32,9 @@ UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,UserInfo
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,NamedAdminAuthoritiesMapper,68,0,2,0,19,0,6,0,5,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client,OIDCAuthenticationFilter.TargetLinkURIAuthenticationSuccessHandler,40,0,4,0,10,0,4,0,2,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridServerConfigurationService,54,0,2,0,16,0,9,0,8,0
-UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,SignedAuthRequestUrlBuilder,124,0,6,0,26,0,7,0,4,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticClientConfigurationService,30,0,4,0,8,0,7,0,5,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.WebfingerIssuerFetcher,257,0,32,0,45,0,18,0,2,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,SignedAuthRequestUrlBuilder,124,0,6,0,26,0,7,0,4,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticAuthRequestOptionsService,33,0,0,0,11,0,7,0,7,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,HybridClientConfigurationService,72,0,2,0,22,0,13,0,12,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService.LoadingResult,12,0,0,0,4,0,1,0,1,0
@@ -51,8 +51,8 @@ UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,PlainAuthRequestUrlBuilder,84,0,4,0,16,0,4,0,2,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,JsonFileRegisteredClientService,142,0,4,0,35,0,8,0,6,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,ThirdPartyIssuerService,129,0,10,0,28,0,14,0,9,0
-UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService.OpenIDConnectServiceConfigurationFetcher,278,0,6,0,52,0,5,0,2,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,StaticServerConfigurationService,29,0,4,0,8,0,7,0,5,0
+UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,DynamicServerConfigurationService.OpenIDConnectServiceConfigurationFetcher,278,0,6,0,52,0,5,0,2,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,InMemoryRegisteredClientService,21,0,0,0,5,0,3,0,3,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.service.impl,WebfingerIssuerService,175,0,8,0,38,0,18,0,14,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypublisher,JwkViewResolver,44,0,4,0,17,0,10,0,8,0
@@ -60,8 +60,8 @@ UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypubli
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.keypublisher,ClientKeyPublisherMapping,50,0,4,0,9,0,7,0,5,0
 UMA Server Webapp/openid-connect-client,org.mitre.openid.connect.client.model,IssuerServiceResponse,53,0,2,0,21,0,12,0,11,0
 UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,ScopeBasedIntrospectionAuthoritiesGranter,69,0,6,0,13,0,7,0,4,0
-UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,JWTParsingIntrospectionConfigurationService,125,0,12,0,30,0,13,0,7,0
 UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,StaticIntrospectionConfigurationService,23,0,0,0,9,0,7,0,7,0
+UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,JWTParsingIntrospectionConfigurationService,125,0,12,0,30,0,13,0,7,0
 UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter.service.impl,SimpleIntrospectionAuthorityGranter,22,0,0,0,6,0,4,0,4,0
 UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.new RestTemplate() {...},46,0,0,0,5,0,2,0,2,0
 UMA Server Webapp/openid-connect-client,org.mitre.oauth2.introspectingfilter,IntrospectingTokenService.TokenCacheObject,50,0,8,0,9,0,5,0,1,0

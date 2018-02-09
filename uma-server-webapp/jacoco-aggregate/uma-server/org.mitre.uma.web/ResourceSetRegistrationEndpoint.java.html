@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceSetRegistrationEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.web</a> &gt; <span class="el_source">ResourceSetRegistrationEndpoint.java</span></div><h1>ResourceSetRegistrationEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -61,9 +60,9 @@ import com.google.gson.JsonParser;
 @Controller
 @RequestMapping(&quot;/&quot; + ResourceSetRegistrationEndpoint.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L64">public class ResourceSetRegistrationEndpoint {</span>
+<span class="nc" id="L63">public class ResourceSetRegistrationEndpoint {</span>
 
-<span class="nc" id="L66">	private static final Logger logger = LoggerFactory.getLogger(ResourceSetRegistrationEndpoint.class);</span>
+<span class="nc" id="L65">	private static final Logger logger = LoggerFactory.getLogger(ResourceSetRegistrationEndpoint.class);</span>
 
 	public static final String DISCOVERY_URL = &quot;resource_set&quot;;
 	public static final String URL = DISCOVERY_URL + &quot;/resource_set&quot;;
@@ -77,81 +76,81 @@ import com.google.gson.JsonParser;
 	@Autowired
 	private SystemScopeService scopeService;
 
-<span class="nc" id="L80">	private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L79">	private JsonParser parser = new JsonParser();</span>
 
 	@RequestMapping(method = RequestMethod.POST, produces = MimeTypeUtils.APPLICATION_JSON_VALUE, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String createResourceSet(@RequestBody String jsonString, Model m, Authentication auth) {
-<span class="nc" id="L84">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L83">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
-<span class="nc" id="L86">		ResourceSet rs = parseResourceSet(jsonString);</span>
+<span class="nc" id="L85">		ResourceSet rs = parseResourceSet(jsonString);</span>
 
-<span class="nc bnc" id="L88" title="All 2 branches missed.">		if (rs == null) { // there was no resource set in the body</span>
-<span class="nc" id="L89">			logger.warn(&quot;Resource set registration missing body.&quot;);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (rs == null) { // there was no resource set in the body</span>
+<span class="nc" id="L88">			logger.warn(&quot;Resource set registration missing body.&quot;);</span>
 
-<span class="nc" id="L91">			m.addAttribute(&quot;code&quot;, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L92">			m.addAttribute(&quot;error_description&quot;, &quot;Resource request was missing body.&quot;);</span>
-<span class="nc" id="L93">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L90">			m.addAttribute(&quot;code&quot;, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L91">			m.addAttribute(&quot;error_description&quot;, &quot;Resource request was missing body.&quot;);</span>
+<span class="nc" id="L92">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
 			// if it's an OAuth mediated call, it's on behalf of a client, so store that
-<span class="nc" id="L98">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
-<span class="nc" id="L99">			rs.setClientId(o2a.getOAuth2Request().getClientId());</span>
-<span class="nc" id="L100">			rs.setOwner(auth.getName()); // the username is going to be in the auth object</span>
-<span class="nc" id="L101">		} else {</span>
+<span class="nc" id="L97">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
+<span class="nc" id="L98">			rs.setClientId(o2a.getOAuth2Request().getClientId());</span>
+<span class="nc" id="L99">			rs.setOwner(auth.getName()); // the username is going to be in the auth object</span>
+<span class="nc" id="L100">		} else {</span>
 			// this one shouldn't be called if it's not OAuth
-<span class="nc" id="L103">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L104">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;This call must be made with an OAuth token&quot;);</span>
-<span class="nc" id="L105">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L102">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L103">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;This call must be made with an OAuth token&quot;);</span>
+<span class="nc" id="L104">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L108">		rs = validateScopes(rs);</span>
+<span class="nc" id="L107">		rs = validateScopes(rs);</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(rs.getName()) // there was no name (required)</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">				|| rs.getScopes() == null // there were no scopes (required)</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(rs.getName()) // there was no name (required)</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">				|| rs.getScopes() == null // there were no scopes (required)</span>
 				) {
 
-<span class="nc" id="L114">			logger.warn(&quot;Resource set registration missing one or more required fields.&quot;);</span>
+<span class="nc" id="L113">			logger.warn(&quot;Resource set registration missing one or more required fields.&quot;);</span>
 
-<span class="nc" id="L116">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L117">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Resource request was missing one or more required fields.&quot;);</span>
-<span class="nc" id="L118">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L115">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L116">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Resource request was missing one or more required fields.&quot;);</span>
+<span class="nc" id="L117">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L121">		ResourceSet saved = resourceSetService.saveNew(rs);</span>
+<span class="nc" id="L120">		ResourceSet saved = resourceSetService.saveNew(rs);</span>
 
-<span class="nc" id="L123">		m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED);</span>
-<span class="nc" id="L124">		m.addAttribute(JsonEntityView.ENTITY, saved);</span>
-<span class="nc" id="L125">		m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + &quot;/&quot; + saved.getId());</span>
+<span class="nc" id="L122">		m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED);</span>
+<span class="nc" id="L123">		m.addAttribute(JsonEntityView.ENTITY, saved);</span>
+<span class="nc" id="L124">		m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + &quot;/&quot; + saved.getId());</span>
 
-<span class="nc" id="L127">		return ResourceSetEntityAbbreviatedView.VIEWNAME;</span>
+<span class="nc" id="L126">		return ResourceSetEntityAbbreviatedView.VIEWNAME;</span>
 
 	}
 
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String readResourceSet(@PathVariable (&quot;id&quot;) Long id, Model m, Authentication auth) {
-<span class="nc" id="L133">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L132">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
-<span class="nc" id="L135">		ResourceSet rs = resourceSetService.getById(id);</span>
+<span class="nc" id="L134">		ResourceSet rs = resourceSetService.getById(id);</span>
 
-<span class="nc bnc" id="L137" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L138">			m.addAttribute(&quot;code&quot;, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L139">			m.addAttribute(&quot;error&quot;, &quot;not_found&quot;);</span>
-<span class="nc" id="L140">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L137">			m.addAttribute(&quot;code&quot;, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L138">			m.addAttribute(&quot;error&quot;, &quot;not_found&quot;);</span>
+<span class="nc" id="L139">			return JsonErrorView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L143">			rs = validateScopes(rs);</span>
+<span class="nc" id="L142">			rs = validateScopes(rs);</span>
 
-<span class="nc bnc" id="L145" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
 
-<span class="nc" id="L147">				logger.warn(&quot;Unauthorized resource set request from wrong user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc" id="L146">				logger.warn(&quot;Unauthorized resource set request from wrong user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 				// it wasn't issued to this user
-<span class="nc" id="L150">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L151">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L149">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L150">				return JsonErrorView.VIEWNAME;</span>
 			} else {
-<span class="nc" id="L153">				m.addAttribute(JsonEntityView.ENTITY, rs);</span>
-<span class="nc" id="L154">				return ResourceSetEntityView.VIEWNAME;</span>
+<span class="nc" id="L152">				m.addAttribute(JsonEntityView.ENTITY, rs);</span>
+<span class="nc" id="L153">				return ResourceSetEntityView.VIEWNAME;</span>
 			}
 
 		}
@@ -160,44 +159,44 @@ import com.google.gson.JsonParser;
 
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.PUT, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String updateResourceSet(@PathVariable (&quot;id&quot;) Long id, @RequestBody String jsonString, Model m, Authentication auth) {
-<span class="nc" id="L163">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L162">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
-<span class="nc" id="L165">		ResourceSet newRs = parseResourceSet(jsonString);</span>
+<span class="nc" id="L164">		ResourceSet newRs = parseResourceSet(jsonString);</span>
 
-<span class="nc bnc" id="L167" title="All 2 branches missed.">		if (newRs == null // there was no resource set in the body</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">				|| Strings.isNullOrEmpty(newRs.getName()) // there was no name (required)</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">				|| newRs.getScopes() == null // there were no scopes (required)</span>
-<span class="nc bnc" id="L170" title="All 4 branches missed.">				|| newRs.getId() == null || !newRs.getId().equals(id) // the IDs didn't match</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">		if (newRs == null // there was no resource set in the body</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">				|| Strings.isNullOrEmpty(newRs.getName()) // there was no name (required)</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">				|| newRs.getScopes() == null // there were no scopes (required)</span>
+<span class="nc bnc" id="L169" title="All 4 branches missed.">				|| newRs.getId() == null || !newRs.getId().equals(id) // the IDs didn't match</span>
 				) {
 
-<span class="nc" id="L173">			logger.warn(&quot;Resource set registration missing one or more required fields.&quot;);</span>
+<span class="nc" id="L172">			logger.warn(&quot;Resource set registration missing one or more required fields.&quot;);</span>
 
-<span class="nc" id="L175">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L176">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Resource request was missing one or more required fields.&quot;);</span>
-<span class="nc" id="L177">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L174">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L175">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Resource request was missing one or more required fields.&quot;);</span>
+<span class="nc" id="L176">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L180">		ResourceSet rs = resourceSetService.getById(id);</span>
+<span class="nc" id="L179">		ResourceSet rs = resourceSetService.getById(id);</span>
 
-<span class="nc bnc" id="L182" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L183">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L184">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
-<span class="nc" id="L185">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L182">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L183">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
+<span class="nc" id="L184">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc bnc" id="L187" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
 
-<span class="nc" id="L189">				logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc" id="L188">				logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 				// it wasn't issued to this user
-<span class="nc" id="L192">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L193">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L191">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L192">				return JsonErrorView.VIEWNAME;</span>
 			} else {
 
-<span class="nc" id="L196">				ResourceSet saved = resourceSetService.update(rs, newRs);</span>
+<span class="nc" id="L195">				ResourceSet saved = resourceSetService.update(rs, newRs);</span>
 
-<span class="nc" id="L198">				m.addAttribute(JsonEntityView.ENTITY, saved);</span>
-<span class="nc" id="L199">				m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + &quot;/&quot; + rs.getId());</span>
-<span class="nc" id="L200">				return ResourceSetEntityAbbreviatedView.VIEWNAME;</span>
+<span class="nc" id="L197">				m.addAttribute(JsonEntityView.ENTITY, saved);</span>
+<span class="nc" id="L198">				m.addAttribute(ResourceSetEntityAbbreviatedView.LOCATION, config.getIssuer() + URL + &quot;/&quot; + rs.getId());</span>
+<span class="nc" id="L199">				return ResourceSetEntityAbbreviatedView.VIEWNAME;</span>
 			}
 
 		}
@@ -205,37 +204,37 @@ import com.google.gson.JsonParser;
 
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.DELETE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String deleteResourceSet(@PathVariable (&quot;id&quot;) Long id, Model m, Authentication auth) {
-<span class="nc" id="L208">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L207">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
-<span class="nc" id="L210">		ResourceSet rs = resourceSetService.getById(id);</span>
+<span class="nc" id="L209">		ResourceSet rs = resourceSetService.getById(id);</span>
 
-<span class="nc bnc" id="L212" title="All 2 branches missed.">		if (rs == null) {</span>
-<span class="nc" id="L213">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L214">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
-<span class="nc" id="L215">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">		if (rs == null) {</span>
+<span class="nc" id="L212">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L213">			m.addAttribute(JsonErrorView.ERROR, &quot;not_found&quot;);</span>
+<span class="nc" id="L214">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc bnc" id="L217" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">			if (!auth.getName().equals(rs.getOwner())) {</span>
 
-<span class="nc" id="L219">				logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
+<span class="nc" id="L218">				logger.warn(&quot;Unauthorized resource set request from bad user; expected &quot; + rs.getOwner() + &quot; got &quot; + auth.getName());</span>
 
 				// it wasn't issued to this user
-<span class="nc" id="L222">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L223">				return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L224" title="All 2 branches missed.">			} else if (auth instanceof OAuth2Authentication &amp;&amp;</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">					!((OAuth2Authentication)auth).getOAuth2Request().getClientId().equals(rs.getClientId())){</span>
+<span class="nc" id="L221">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L222">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">			} else if (auth instanceof OAuth2Authentication &amp;&amp;</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">					!((OAuth2Authentication)auth).getOAuth2Request().getClientId().equals(rs.getClientId())){</span>
 
-<span class="nc" id="L227">				logger.warn(&quot;Unauthorized resource set request from bad client; expected &quot; + rs.getClientId() + &quot; got &quot; + ((OAuth2Authentication)auth).getOAuth2Request().getClientId());</span>
+<span class="nc" id="L226">				logger.warn(&quot;Unauthorized resource set request from bad client; expected &quot; + rs.getClientId() + &quot; got &quot; + ((OAuth2Authentication)auth).getOAuth2Request().getClientId());</span>
 
 				// it wasn't issued to this client
-<span class="nc" id="L230">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L231">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L229">				m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L230">				return JsonErrorView.VIEWNAME;</span>
 			} else {
 
 				// user and client matched
-<span class="nc" id="L235">				resourceSetService.remove(rs);</span>
+<span class="nc" id="L234">				resourceSetService.remove(rs);</span>
 
-<span class="nc" id="L237">				m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
-<span class="nc" id="L238">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L236">				m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT);</span>
+<span class="nc" id="L237">				return HttpCodeView.VIEWNAME;</span>
 			}
 
 		}
@@ -243,55 +242,55 @@ import com.google.gson.JsonParser;
 
 	@RequestMapping(method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 	public String listResourceSets(Model m, Authentication auth) {
-<span class="nc" id="L246">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L245">		ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
-<span class="nc" id="L248">		String owner = auth.getName();</span>
+<span class="nc" id="L247">		String owner = auth.getName();</span>
 
-<span class="nc" id="L250">		Collection&lt;ResourceSet&gt; resourceSets = Collections.emptySet();</span>
-<span class="nc bnc" id="L251" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
+<span class="nc" id="L249">		Collection&lt;ResourceSet&gt; resourceSets = Collections.emptySet();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
 			// if it's an OAuth mediated call, it's on behalf of a client, so look that up too
-<span class="nc" id="L253">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
-<span class="nc" id="L254">			resourceSets = resourceSetService.getAllForOwnerAndClient(owner, o2a.getOAuth2Request().getClientId());</span>
-<span class="nc" id="L255">		} else {</span>
+<span class="nc" id="L252">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
+<span class="nc" id="L253">			resourceSets = resourceSetService.getAllForOwnerAndClient(owner, o2a.getOAuth2Request().getClientId());</span>
+<span class="nc" id="L254">		} else {</span>
 			// otherwise get everything for the current user
-<span class="nc" id="L257">			resourceSets = resourceSetService.getAllForOwner(owner);</span>
+<span class="nc" id="L256">			resourceSets = resourceSetService.getAllForOwner(owner);</span>
 		}
 
 		// build the entity here and send to the display
 
-<span class="nc" id="L262">		Set&lt;String&gt; ids = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L263" title="All 2 branches missed.">		for (ResourceSet resourceSet : resourceSets) {</span>
-<span class="nc" id="L264">			ids.add(resourceSet.getId().toString()); // add them all as strings so that gson renders them properly</span>
-<span class="nc" id="L265">		}</span>
+<span class="nc" id="L261">		Set&lt;String&gt; ids = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">		for (ResourceSet resourceSet : resourceSets) {</span>
+<span class="nc" id="L263">			ids.add(resourceSet.getId().toString()); // add them all as strings so that gson renders them properly</span>
+<span class="nc" id="L264">		}</span>
 
-<span class="nc" id="L267">		m.addAttribute(JsonEntityView.ENTITY, ids);</span>
-<span class="nc" id="L268">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L266">		m.addAttribute(JsonEntityView.ENTITY, ids);</span>
+<span class="nc" id="L267">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	private ResourceSet parseResourceSet(String jsonString) {
 
 		try {
-<span class="nc" id="L274">			JsonElement el = parser.parse(jsonString);</span>
+<span class="nc" id="L273">			JsonElement el = parser.parse(jsonString);</span>
 
-<span class="nc bnc" id="L276" title="All 2 branches missed.">			if (el.isJsonObject()) {</span>
-<span class="nc" id="L277">				JsonObject o = el.getAsJsonObject();</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">			if (el.isJsonObject()) {</span>
+<span class="nc" id="L276">				JsonObject o = el.getAsJsonObject();</span>
 
-<span class="nc" id="L279">				ResourceSet rs = new ResourceSet();</span>
-<span class="nc" id="L280">				rs.setId(getAsLong(o, &quot;_id&quot;));</span>
-<span class="nc" id="L281">				rs.setName(getAsString(o, &quot;name&quot;));</span>
-<span class="nc" id="L282">				rs.setIconUri(getAsString(o, &quot;icon_uri&quot;));</span>
-<span class="nc" id="L283">				rs.setType(getAsString(o, &quot;type&quot;));</span>
-<span class="nc" id="L284">				rs.setScopes(getAsStringSet(o, &quot;scopes&quot;));</span>
-<span class="nc" id="L285">				rs.setUri(getAsString(o, &quot;uri&quot;));</span>
+<span class="nc" id="L278">				ResourceSet rs = new ResourceSet();</span>
+<span class="nc" id="L279">				rs.setId(getAsLong(o, &quot;_id&quot;));</span>
+<span class="nc" id="L280">				rs.setName(getAsString(o, &quot;name&quot;));</span>
+<span class="nc" id="L281">				rs.setIconUri(getAsString(o, &quot;icon_uri&quot;));</span>
+<span class="nc" id="L282">				rs.setType(getAsString(o, &quot;type&quot;));</span>
+<span class="nc" id="L283">				rs.setScopes(getAsStringSet(o, &quot;scopes&quot;));</span>
+<span class="nc" id="L284">				rs.setUri(getAsString(o, &quot;uri&quot;));</span>
 
-<span class="nc" id="L287">				return rs;</span>
+<span class="nc" id="L286">				return rs;</span>
 
 			}
 
-<span class="nc" id="L291">			return null;</span>
+<span class="nc" id="L290">			return null;</span>
 
-<span class="nc" id="L293">		} catch (JsonParseException e) {</span>
-<span class="nc" id="L294">			return null;</span>
+<span class="nc" id="L292">		} catch (JsonParseException e) {</span>
+<span class="nc" id="L293">			return null;</span>
 		}
 
 	}
@@ -305,14 +304,14 @@ import com.google.gson.JsonParser;
 	 */
 	private ResourceSet validateScopes(ResourceSet rs) {
 		// scopes that the client is asking for
-<span class="nc" id="L308">		Set&lt;SystemScope&gt; requestedScopes = scopeService.fromStrings(rs.getScopes());</span>
+<span class="nc" id="L307">		Set&lt;SystemScope&gt; requestedScopes = scopeService.fromStrings(rs.getScopes());</span>
 
 		// the scopes that the resource set can have must be a subset of the dynamically allowed scopes
-<span class="nc" id="L311">		Set&lt;SystemScope&gt; allowedScopes = scopeService.removeRestrictedAndReservedScopes(requestedScopes);</span>
+<span class="nc" id="L310">		Set&lt;SystemScope&gt; allowedScopes = scopeService.removeRestrictedAndReservedScopes(requestedScopes);</span>
 
-<span class="nc" id="L313">		rs.setScopes(scopeService.toStrings(allowedScopes));</span>
+<span class="nc" id="L312">		rs.setScopes(scopeService.toStrings(allowedScopes));</span>
 
-<span class="nc" id="L315">		return rs;</span>
+<span class="nc" id="L314">		return rs;</span>
 	}
 
 }

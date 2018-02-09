@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClaimProcessingResult.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.model</a> &gt; <span class="el_source">ClaimProcessingResult.java</span></div><h1>ClaimProcessingResult.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -35,63 +34,63 @@ public class ClaimProcessingResult {
 	 * Create an unmatched result. isSatisfied is false.
 	 * @param unmatched
 	 */
-<span class="nc" id="L38">	public ClaimProcessingResult(Collection&lt;Claim&gt; unmatched) {</span>
-<span class="nc" id="L39">		this.satisfied = false;</span>
-<span class="nc" id="L40">		this.unmatched = unmatched;</span>
-<span class="nc" id="L41">		this.matched = null;</span>
-<span class="nc" id="L42">	}</span>
+<span class="nc" id="L37">	public ClaimProcessingResult(Collection&lt;Claim&gt; unmatched) {</span>
+<span class="nc" id="L38">		this.satisfied = false;</span>
+<span class="nc" id="L39">		this.unmatched = unmatched;</span>
+<span class="nc" id="L40">		this.matched = null;</span>
+<span class="nc" id="L41">	}</span>
 
 	/**
 	 * Create a matched result. isSatisfied is true.
 	 * @param matched
 	 */
-<span class="nc" id="L48">	public ClaimProcessingResult(Policy matched) {</span>
-<span class="nc" id="L49">		this.satisfied = true;</span>
-<span class="nc" id="L50">		this.matched = matched;</span>
-<span class="nc" id="L51">		this.unmatched = null;</span>
-<span class="nc" id="L52">	}</span>
+<span class="nc" id="L47">	public ClaimProcessingResult(Policy matched) {</span>
+<span class="nc" id="L48">		this.satisfied = true;</span>
+<span class="nc" id="L49">		this.matched = matched;</span>
+<span class="nc" id="L50">		this.unmatched = null;</span>
+<span class="nc" id="L51">	}</span>
 
 	/**
 	 * @return the satisfied
 	 */
 	public boolean isSatisfied() {
-<span class="nc" id="L58">		return satisfied;</span>
+<span class="nc" id="L57">		return satisfied;</span>
 	}
 
 	/**
 	 * @param satisfied the satisfied to set
 	 */
 	public void setSatisfied(boolean satisfied) {
-<span class="nc" id="L65">		this.satisfied = satisfied;</span>
-<span class="nc" id="L66">	}</span>
+<span class="nc" id="L64">		this.satisfied = satisfied;</span>
+<span class="nc" id="L65">	}</span>
 
 	/**
 	 * @return the unmatched
 	 */
 	public Collection&lt;Claim&gt; getUnmatched() {
-<span class="nc" id="L72">		return unmatched;</span>
+<span class="nc" id="L71">		return unmatched;</span>
 	}
 
 	/**
 	 * @param unmatched the unmatched to set
 	 */
 	public void setUnmatched(Collection&lt;Claim&gt; unmatched) {
-<span class="nc" id="L79">		this.unmatched = unmatched;</span>
-<span class="nc" id="L80">	}</span>
+<span class="nc" id="L78">		this.unmatched = unmatched;</span>
+<span class="nc" id="L79">	}</span>
 
 	/**
 	 * @return the matched
 	 */
 	public Policy getMatched() {
-<span class="nc" id="L86">		return matched;</span>
+<span class="nc" id="L85">		return matched;</span>
 	}
 
 	/**
 	 * @param matched the matched to set
 	 */
 	public void setMatched(Policy matched) {
-<span class="nc" id="L93">		this.matched = matched;</span>
-<span class="nc" id="L94">	}</span>
+<span class="nc" id="L92">		this.matched = matched;</span>
+<span class="nc" id="L93">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryClientLogoLoadingService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service.impl</a> &gt; <span class="el_source">InMemoryClientLogoLoadingService.java</span></div><h1>InMemoryClientLogoLoadingService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -48,20 +47,20 @@ public class InMemoryClientLogoLoadingService implements ClientLogoLoadingServic
 	private LoadingCache&lt;ClientDetailsEntity, CachedImage&gt; cache;
 
 	public InMemoryClientLogoLoadingService() {
-<span class="nc" id="L51">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
-<span class="nc" id="L52">	}</span>
+<span class="nc" id="L50">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L51">	}</span>
 
 	/**
 	 *
 	 */
-<span class="nc" id="L57">	public InMemoryClientLogoLoadingService(HttpClient httpClient) {</span>
+<span class="nc" id="L56">	public InMemoryClientLogoLoadingService(HttpClient httpClient) {</span>
 
-<span class="nc" id="L59">		cache = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L60">				.maximumSize(100)</span>
-<span class="nc" id="L61">				.expireAfterAccess(14, TimeUnit.DAYS)</span>
-<span class="nc" id="L62">				.build(new ClientLogoFetcher(httpClient));</span>
+<span class="nc" id="L58">		cache = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L59">				.maximumSize(100)</span>
+<span class="nc" id="L60">				.expireAfterAccess(14, TimeUnit.DAYS)</span>
+<span class="nc" id="L61">				.build(new ClientLogoFetcher(httpClient));</span>
 
-<span class="nc" id="L64">	}</span>
+<span class="nc" id="L63">	}</span>
 
 
 	/* (non-Javadoc)
@@ -70,13 +69,13 @@ public class InMemoryClientLogoLoadingService implements ClientLogoLoadingServic
 	@Override
 	public CachedImage getLogo(ClientDetailsEntity client) {
 		try {
-<span class="nc bnc" id="L73" title="All 4 branches missed.">			if (client != null &amp;&amp; !Strings.isNullOrEmpty(client.getLogoUri())) {</span>
-<span class="nc" id="L74">				return cache.get(client);</span>
+<span class="nc bnc" id="L72" title="All 4 branches missed.">			if (client != null &amp;&amp; !Strings.isNullOrEmpty(client.getLogoUri())) {</span>
+<span class="nc" id="L73">				return cache.get(client);</span>
 			} else {
-<span class="nc" id="L76">				return null;</span>
+<span class="nc" id="L75">				return null;</span>
 			}
-<span class="nc" id="L78">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L79">			return null;</span>
+<span class="nc" id="L77">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L78">			return null;</span>
 		}
 	}
 
@@ -88,12 +87,12 @@ public class InMemoryClientLogoLoadingService implements ClientLogoLoadingServic
 		private HttpClient httpClient;
 
 		public ClientLogoFetcher() {
-<span class="nc" id="L91">			this(HttpClientBuilder.create().useSystemProperties().build());</span>
-<span class="nc" id="L92">		}</span>
+<span class="nc" id="L90">			this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L91">		}</span>
 
-<span class="nc" id="L94">		public ClientLogoFetcher(HttpClient httpClient) {</span>
-<span class="nc" id="L95">			this.httpClient = httpClient;</span>
-<span class="nc" id="L96">		}</span>
+<span class="nc" id="L93">		public ClientLogoFetcher(HttpClient httpClient) {</span>
+<span class="nc" id="L94">			this.httpClient = httpClient;</span>
+<span class="nc" id="L95">		}</span>
 
 		/* (non-Javadoc)
 		 * @see com.google.common.cache.CacheLoader#load(java.lang.Object)
@@ -101,19 +100,19 @@ public class InMemoryClientLogoLoadingService implements ClientLogoLoadingServic
 		@Override
 		public CachedImage load(ClientDetailsEntity key) throws Exception {
 			try {
-<span class="nc" id="L104">				HttpResponse response = httpClient.execute(new HttpGet(key.getLogoUri()));</span>
+<span class="nc" id="L103">				HttpResponse response = httpClient.execute(new HttpGet(key.getLogoUri()));</span>
 
-<span class="nc" id="L106">				HttpEntity entity = response.getEntity();</span>
+<span class="nc" id="L105">				HttpEntity entity = response.getEntity();</span>
 
-<span class="nc" id="L108">				CachedImage image = new CachedImage();</span>
+<span class="nc" id="L107">				CachedImage image = new CachedImage();</span>
 
-<span class="nc" id="L110">				image.setContentType(entity.getContentType().getValue());</span>
-<span class="nc" id="L111">				image.setLength(entity.getContentLength());</span>
-<span class="nc" id="L112">				image.setData(IOUtils.toByteArray(entity.getContent()));</span>
+<span class="nc" id="L109">				image.setContentType(entity.getContentType().getValue());</span>
+<span class="nc" id="L110">				image.setLength(entity.getContentLength());</span>
+<span class="nc" id="L111">				image.setData(IOUtils.toByteArray(entity.getContent()));</span>
 
-<span class="nc" id="L114">				return image;</span>
-<span class="nc" id="L115">			} catch (IOException e) {</span>
-<span class="nc" id="L116">				throw new IllegalArgumentException(&quot;Unable to load client image.&quot;);</span>
+<span class="nc" id="L113">				return image;</span>
+<span class="nc" id="L114">			} catch (IOException e) {</span>
+<span class="nc" id="L115">				throw new IllegalArgumentException(&quot;Unable to load client image.&quot;);</span>
 			}
 		}
 

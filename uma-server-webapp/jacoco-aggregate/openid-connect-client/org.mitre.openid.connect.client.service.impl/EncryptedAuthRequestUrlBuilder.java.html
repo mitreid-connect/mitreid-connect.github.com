@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EncryptedAuthRequestUrlBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">EncryptedAuthRequestUrlBuilder.java</span></div><h1>EncryptedAuthRequestUrlBuilder.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -43,7 +44,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
  * @author jricher
  *
  */
-<span class="nc" id="L46">public class EncryptedAuthRequestUrlBuilder implements AuthRequestUrlBuilder {</span>
+<span class="nc" id="L47">public class EncryptedAuthRequestUrlBuilder implements AuthRequestUrlBuilder {</span>
 
 	private JWKSetCacheService encrypterService;
 
@@ -58,46 +59,46 @@ import com.nimbusds.jwt.JWTClaimsSet;
 	public String buildAuthRequestUrl(ServerConfiguration serverConfig, RegisteredClient clientConfig, String redirectUri, String nonce, String state, Map&lt;String, String&gt; options, String loginHint) {
 
 		// create our signed JWT for the request object
-<span class="nc" id="L61">		JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder();</span>
+<span class="nc" id="L62">		JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder();</span>
 
 		//set parameters to JwtClaims
-<span class="nc" id="L64">		claims.claim(&quot;response_type&quot;, &quot;code&quot;);</span>
-<span class="nc" id="L65">		claims.claim(&quot;client_id&quot;, clientConfig.getClientId());</span>
-<span class="nc" id="L66">		claims.claim(&quot;scope&quot;, Joiner.on(&quot; &quot;).join(clientConfig.getScope()));</span>
+<span class="nc" id="L65">		claims.claim(&quot;response_type&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L66">		claims.claim(&quot;client_id&quot;, clientConfig.getClientId());</span>
+<span class="nc" id="L67">		claims.claim(&quot;scope&quot;, Joiner.on(&quot; &quot;).join(clientConfig.getScope()));</span>
 
 		// build our redirect URI
-<span class="nc" id="L69">		claims.claim(&quot;redirect_uri&quot;, redirectUri);</span>
+<span class="nc" id="L70">		claims.claim(&quot;redirect_uri&quot;, redirectUri);</span>
 
 		// this comes back in the id token
-<span class="nc" id="L72">		claims.claim(&quot;nonce&quot;, nonce);</span>
+<span class="nc" id="L73">		claims.claim(&quot;nonce&quot;, nonce);</span>
 
 		// this comes back in the auth request return
-<span class="nc" id="L75">		claims.claim(&quot;state&quot;, state);</span>
+<span class="nc" id="L76">		claims.claim(&quot;state&quot;, state);</span>
 
 		// Optional parameters
-<span class="nc bnc" id="L78" title="All 2 branches missed.">		for (Entry&lt;String, String&gt; option : options.entrySet()) {</span>
-<span class="nc" id="L79">			claims.claim(option.getKey(), option.getValue());</span>
-<span class="nc" id="L80">		}</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">		for (Entry&lt;String, String&gt; option : options.entrySet()) {</span>
+<span class="nc" id="L80">			claims.claim(option.getKey(), option.getValue());</span>
+<span class="nc" id="L81">		}</span>
 
 		// if there's a login hint, send it
-<span class="nc bnc" id="L83" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(loginHint)) {</span>
-<span class="nc" id="L84">			claims.claim(&quot;login_hint&quot;, loginHint);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(loginHint)) {</span>
+<span class="nc" id="L85">			claims.claim(&quot;login_hint&quot;, loginHint);</span>
 		}
 
-<span class="nc" id="L87">		EncryptedJWT jwt = new EncryptedJWT(new JWEHeader(alg, enc), claims.build());</span>
+<span class="nc" id="L88">		EncryptedJWT jwt = new EncryptedJWT(new JWEHeader(alg, enc), claims.build());</span>
 
-<span class="nc" id="L89">		JWTEncryptionAndDecryptionService encryptor = encrypterService.getEncrypter(serverConfig.getJwksUri());</span>
+<span class="nc" id="L90">		JWTEncryptionAndDecryptionService encryptor = encrypterService.getEncrypter(serverConfig.getJwksUri());</span>
 
-<span class="nc" id="L91">		encryptor.encryptJwt(jwt);</span>
+<span class="nc" id="L92">		encryptor.encryptJwt(jwt);</span>
 
 		try {
-<span class="nc" id="L94">			URIBuilder uriBuilder = new URIBuilder(serverConfig.getAuthorizationEndpointUri());</span>
-<span class="nc" id="L95">			uriBuilder.addParameter(&quot;request&quot;, jwt.serialize());</span>
+<span class="nc" id="L95">			URIBuilder uriBuilder = new URIBuilder(serverConfig.getAuthorizationEndpointUri());</span>
+<span class="nc" id="L96">			uriBuilder.addParameter(&quot;request&quot;, jwt.serialize());</span>
 
 			// build out the URI
-<span class="nc" id="L98">			return uriBuilder.build().toString();</span>
-<span class="nc" id="L99">		} catch (URISyntaxException e) {</span>
-<span class="nc" id="L100">			throw new AuthenticationServiceException(&quot;Malformed Authorization Endpoint Uri&quot;, e);</span>
+<span class="nc" id="L99">			return uriBuilder.build().toString();</span>
+<span class="nc" id="L100">		} catch (URISyntaxException e) {</span>
+<span class="nc" id="L101">			throw new AuthenticationServiceException(&quot;Malformed Authorization Endpoint Uri&quot;, e);</span>
 		}
 	}
 
@@ -105,43 +106,43 @@ import com.nimbusds.jwt.JWTClaimsSet;
 	 * @return the encrypterService
 	 */
 	public JWKSetCacheService getEncrypterService() {
-<span class="nc" id="L108">		return encrypterService;</span>
+<span class="nc" id="L109">		return encrypterService;</span>
 	}
 
 	/**
 	 * @param encrypterService the encrypterService to set
 	 */
 	public void setEncrypterService(JWKSetCacheService encrypterService) {
-<span class="nc" id="L115">		this.encrypterService = encrypterService;</span>
-<span class="nc" id="L116">	}</span>
+<span class="nc" id="L116">		this.encrypterService = encrypterService;</span>
+<span class="nc" id="L117">	}</span>
 
 	/**
 	 * @return the alg
 	 */
 	public JWEAlgorithm getAlg() {
-<span class="nc" id="L122">		return alg;</span>
+<span class="nc" id="L123">		return alg;</span>
 	}
 
 	/**
 	 * @param alg the alg to set
 	 */
 	public void setAlg(JWEAlgorithm alg) {
-<span class="nc" id="L129">		this.alg = alg;</span>
-<span class="nc" id="L130">	}</span>
+<span class="nc" id="L130">		this.alg = alg;</span>
+<span class="nc" id="L131">	}</span>
 
 	/**
 	 * @return the enc
 	 */
 	public EncryptionMethod getEnc() {
-<span class="nc" id="L136">		return enc;</span>
+<span class="nc" id="L137">		return enc;</span>
 	}
 
 	/**
 	 * @param enc the enc to set
 	 */
 	public void setEnc(EncryptionMethod enc) {
-<span class="nc" id="L143">		this.enc = enc;</span>
-<span class="nc" id="L144">	}</span>
+<span class="nc" id="L144">		this.enc = enc;</span>
+<span class="nc" id="L145">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

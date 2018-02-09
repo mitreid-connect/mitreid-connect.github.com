@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultWhitelistedSiteService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service.impl</a> &gt; <span class="el_source">DefaultWhitelistedSiteService.java</span></div><h1>DefaultWhitelistedSiteService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -33,45 +34,45 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(value=&quot;defaultTransactionManager&quot;)
-<span class="nc" id="L36">public class DefaultWhitelistedSiteService implements WhitelistedSiteService {</span>
+<span class="nc" id="L37">public class DefaultWhitelistedSiteService implements WhitelistedSiteService {</span>
 
 	@Autowired
 	private WhitelistedSiteRepository repository;
 
 	@Override
 	public WhitelistedSite getById(Long id) {
-<span class="nc" id="L43">		return repository.getById(id);</span>
+<span class="nc" id="L44">		return repository.getById(id);</span>
 	}
 
 	@Override
 	public void remove(WhitelistedSite whitelistedSite) {
-<span class="nc" id="L48">		repository.remove(whitelistedSite);</span>
-<span class="nc" id="L49">	}</span>
+<span class="nc" id="L49">		repository.remove(whitelistedSite);</span>
+<span class="nc" id="L50">	}</span>
 
 	@Override
 	public WhitelistedSite saveNew(WhitelistedSite whitelistedSite) {
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		if (whitelistedSite.getId() != null) {</span>
-<span class="nc" id="L54">			throw new IllegalArgumentException(&quot;A new whitelisted site cannot be created with an id value already set: &quot; + whitelistedSite.getId());</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">		if (whitelistedSite.getId() != null) {</span>
+<span class="nc" id="L55">			throw new IllegalArgumentException(&quot;A new whitelisted site cannot be created with an id value already set: &quot; + whitelistedSite.getId());</span>
 		}
-<span class="nc" id="L56">		return repository.save(whitelistedSite);</span>
+<span class="nc" id="L57">		return repository.save(whitelistedSite);</span>
 	}
 
 	@Override
 	public Collection&lt;WhitelistedSite&gt; getAll() {
-<span class="nc" id="L61">		return repository.getAll();</span>
+<span class="nc" id="L62">		return repository.getAll();</span>
 	}
 
 	@Override
 	public WhitelistedSite getByClientId(String clientId) {
-<span class="nc" id="L66">		return repository.getByClientId(clientId);</span>
+<span class="nc" id="L67">		return repository.getByClientId(clientId);</span>
 	}
 
 	@Override
 	public WhitelistedSite update(WhitelistedSite oldWhitelistedSite, WhitelistedSite whitelistedSite) {
-<span class="nc bnc" id="L71" title="All 4 branches missed.">		if (oldWhitelistedSite == null || whitelistedSite == null) {</span>
-<span class="nc" id="L72">			throw new IllegalArgumentException(&quot;Neither the old or new sites may be null&quot;);</span>
+<span class="nc bnc" id="L72" title="All 4 branches missed.">		if (oldWhitelistedSite == null || whitelistedSite == null) {</span>
+<span class="nc" id="L73">			throw new IllegalArgumentException(&quot;Neither the old or new sites may be null&quot;);</span>
 		}
-<span class="nc" id="L74">		return repository.update(oldWhitelistedSite, whitelistedSite);</span>
+<span class="nc" id="L75">		return repository.update(oldWhitelistedSite, whitelistedSite);</span>
 	}
 
 }

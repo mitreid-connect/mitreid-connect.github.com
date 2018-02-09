@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PKCEAlgorithm.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">PKCEAlgorithm.java</span></div><h1>PKCEAlgorithm.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -31,25 +30,25 @@ public final class PKCEAlgorithm extends Algorithm {
 	 */
 	private static final long serialVersionUID = 7752852583210088925L;
 
-<span class="nc" id="L34">	public static final PKCEAlgorithm plain = new PKCEAlgorithm(&quot;plain&quot;, Requirement.REQUIRED);</span>
+<span class="nc" id="L33">	public static final PKCEAlgorithm plain = new PKCEAlgorithm(&quot;plain&quot;, Requirement.REQUIRED);</span>
 
-<span class="nc" id="L36">	public static final PKCEAlgorithm S256 = new PKCEAlgorithm(&quot;S256&quot;, Requirement.OPTIONAL);</span>
+<span class="nc" id="L35">	public static final PKCEAlgorithm S256 = new PKCEAlgorithm(&quot;S256&quot;, Requirement.OPTIONAL);</span>
 
 	public PKCEAlgorithm(String name, Requirement req) {
-<span class="nc" id="L39">		super(name, req);</span>
-<span class="nc" id="L40">	}</span>
+<span class="nc" id="L38">		super(name, req);</span>
+<span class="nc" id="L39">	}</span>
 
 	public PKCEAlgorithm(String name) {
-<span class="nc" id="L43">		super(name, null);</span>
-<span class="nc" id="L44">	}</span>
+<span class="nc" id="L42">		super(name, null);</span>
+<span class="nc" id="L43">	}</span>
 
 	public static PKCEAlgorithm parse(final String s) {
-<span class="nc bnc" id="L47" title="All 2 branches missed.">		if (s.equals(plain.getName())) {</span>
-<span class="nc" id="L48">			return plain;</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">		} else if (s.equals(S256.getName())) {</span>
-<span class="nc" id="L50">			return S256;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (s.equals(plain.getName())) {</span>
+<span class="nc" id="L47">			return plain;</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		} else if (s.equals(S256.getName())) {</span>
+<span class="nc" id="L49">			return S256;</span>
 		} else {
-<span class="nc" id="L52">			return new PKCEAlgorithm(s);</span>
+<span class="nc" id="L51">			return new PKCEAlgorithm(s);</span>
 		}
 	}
 

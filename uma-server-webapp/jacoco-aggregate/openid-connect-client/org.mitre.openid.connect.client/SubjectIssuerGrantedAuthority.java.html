@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SubjectIssuerGrantedAuthority.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client</a> &gt; <span class="el_source">SubjectIssuerGrantedAuthority.java</span></div><h1>SubjectIssuerGrantedAuthority.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -41,13 +40,13 @@ public class SubjectIssuerGrantedAuthority implements GrantedAuthority {
 	 * @param subject
 	 * @param issuer
 	 */
-<span class="nc" id="L44">	public SubjectIssuerGrantedAuthority(String subject, String issuer) {</span>
-<span class="nc bnc" id="L45" title="All 4 branches missed.">		if (Strings.isNullOrEmpty(subject) || Strings.isNullOrEmpty(issuer)) {</span>
-<span class="nc" id="L46">			throw new IllegalArgumentException(&quot;Neither subject nor issuer may be null or empty&quot;);</span>
+<span class="nc" id="L43">	public SubjectIssuerGrantedAuthority(String subject, String issuer) {</span>
+<span class="nc bnc" id="L44" title="All 4 branches missed.">		if (Strings.isNullOrEmpty(subject) || Strings.isNullOrEmpty(issuer)) {</span>
+<span class="nc" id="L45">			throw new IllegalArgumentException(&quot;Neither subject nor issuer may be null or empty&quot;);</span>
 		}
-<span class="nc" id="L48">		this.subject = subject;</span>
-<span class="nc" id="L49">		this.issuer = issuer;</span>
-<span class="nc" id="L50">	}</span>
+<span class="nc" id="L47">		this.subject = subject;</span>
+<span class="nc" id="L48">		this.issuer = issuer;</span>
+<span class="nc" id="L49">	}</span>
 
 	/**
 	 * Returns a string formed by concatenating the subject with the issuer, separated by _ and prepended with OIDC_
@@ -58,21 +57,21 @@ public class SubjectIssuerGrantedAuthority implements GrantedAuthority {
 	 */
 	@Override
 	public String getAuthority() {
-<span class="nc" id="L61">		return &quot;OIDC_&quot; + subject + &quot;_&quot; + issuer;</span>
+<span class="nc" id="L60">		return &quot;OIDC_&quot; + subject + &quot;_&quot; + issuer;</span>
 	}
 
 	/**
 	 * @return the subject
 	 */
 	public String getSubject() {
-<span class="nc" id="L68">		return subject;</span>
+<span class="nc" id="L67">		return subject;</span>
 	}
 
 	/**
 	 * @return the issuer
 	 */
 	public String getIssuer() {
-<span class="nc" id="L75">		return issuer;</span>
+<span class="nc" id="L74">		return issuer;</span>
 	}
 
 	/* (non-Javadoc)
@@ -80,11 +79,11 @@ public class SubjectIssuerGrantedAuthority implements GrantedAuthority {
 	 */
 	@Override
 	public int hashCode() {
-<span class="nc" id="L83">		final int prime = 31;</span>
-<span class="nc" id="L84">		int result = 1;</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">		result = prime * result + ((issuer == null) ? 0 : issuer.hashCode());</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		result = prime * result + ((subject == null) ? 0 : subject.hashCode());</span>
-<span class="nc" id="L87">		return result;</span>
+<span class="nc" id="L82">		final int prime = 31;</span>
+<span class="nc" id="L83">		int result = 1;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		result = prime * result + ((issuer == null) ? 0 : issuer.hashCode());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">		result = prime * result + ((subject == null) ? 0 : subject.hashCode());</span>
+<span class="nc" id="L86">		return result;</span>
 	}
 
 	/* (non-Javadoc)
@@ -92,36 +91,36 @@ public class SubjectIssuerGrantedAuthority implements GrantedAuthority {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (this == obj) {</span>
-<span class="nc" id="L96">			return true;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L95">			return true;</span>
 		}
-<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (obj == null) {</span>
-<span class="nc" id="L99">			return false;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L98">			return false;</span>
 		}
-<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (!(obj instanceof SubjectIssuerGrantedAuthority)) {</span>
-<span class="nc" id="L102">			return false;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (!(obj instanceof SubjectIssuerGrantedAuthority)) {</span>
+<span class="nc" id="L101">			return false;</span>
 		}
-<span class="nc" id="L104">		SubjectIssuerGrantedAuthority other = (SubjectIssuerGrantedAuthority) obj;</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (issuer == null) {</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">			if (other.issuer != null) {</span>
-<span class="nc" id="L107">				return false;</span>
+<span class="nc" id="L103">		SubjectIssuerGrantedAuthority other = (SubjectIssuerGrantedAuthority) obj;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (issuer == null) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">			if (other.issuer != null) {</span>
+<span class="nc" id="L106">				return false;</span>
 			}
-<span class="nc bnc" id="L109" title="All 2 branches missed.">		} else if (!issuer.equals(other.issuer)) {</span>
-<span class="nc" id="L110">			return false;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">		} else if (!issuer.equals(other.issuer)) {</span>
+<span class="nc" id="L109">			return false;</span>
 		}
-<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (subject == null) {</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">			if (other.subject != null) {</span>
-<span class="nc" id="L114">				return false;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (subject == null) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">			if (other.subject != null) {</span>
+<span class="nc" id="L113">				return false;</span>
 			}
-<span class="nc bnc" id="L116" title="All 2 branches missed.">		} else if (!subject.equals(other.subject)) {</span>
-<span class="nc" id="L117">			return false;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		} else if (!subject.equals(other.subject)) {</span>
+<span class="nc" id="L116">			return false;</span>
 		}
-<span class="nc" id="L119">		return true;</span>
+<span class="nc" id="L118">		return true;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="nc" id="L124">		return getAuthority();</span>
+<span class="nc" id="L123">		return getAuthority();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

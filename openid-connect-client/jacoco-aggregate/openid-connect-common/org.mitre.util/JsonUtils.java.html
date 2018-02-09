@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.util</a> &gt; <span class="el_source">JsonUtils.java</span></div><h1>JsonUtils.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -53,14 +54,14 @@ import com.nimbusds.jose.JWSAlgorithm;
  *
  */
 @SuppressWarnings(value = {&quot;rawtypes&quot;, &quot;unchecked&quot;})
-<span class="nc" id="L56">public class JsonUtils {</span>
+<span class="nc" id="L57">public class JsonUtils {</span>
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);</span>
+<span class="nc" id="L62">	private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);</span>
 
-<span class="nc" id="L63">	private static Gson gson = new Gson();</span>
+<span class="nc" id="L64">	private static Gson gson = new Gson();</span>
 
 	/**
 	 * Translate a set of strings to a JSON array, empty array returned as null
@@ -68,7 +69,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * @return
 	 */
 	public static JsonElement getAsArray(Set&lt;String&gt; value) {
-<span class="nc" id="L71">		return getAsArray(value, false);</span>
+<span class="nc" id="L72">		return getAsArray(value, false);</span>
 	}
 
 
@@ -79,11 +80,11 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * @return
 	 */
 	public static JsonElement getAsArray(Set&lt;String&gt; value, boolean preserveEmpty) {
-<span class="nc bnc" id="L82" title="All 6 branches missed.">		if (!preserveEmpty &amp;&amp; value != null &amp;&amp; value.isEmpty()) {</span>
+<span class="nc bnc" id="L83" title="All 6 branches missed.">		if (!preserveEmpty &amp;&amp; value != null &amp;&amp; value.isEmpty()) {</span>
 			// if we're not preserving empty arrays and the value is empty, return null
-<span class="nc" id="L84">			return JsonNull.INSTANCE;</span>
+<span class="nc" id="L85">			return JsonNull.INSTANCE;</span>
 		} else {
-<span class="nc" id="L86">			return gson.toJsonTree(value, new TypeToken&lt;Set&lt;String&gt;&gt;(){}.getType());</span>
+<span class="nc" id="L87">			return gson.toJsonTree(value, new TypeToken&lt;Set&lt;String&gt;&gt;(){}.getType());</span>
 		}
 	}
 
@@ -91,15 +92,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member (expressed as integer seconds since epoch) as a Date
 	 */
 	public static Date getAsDate(JsonObject o, String member) {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc" id="L95">			JsonElement e = o.get(member);</span>
-<span class="nc bnc" id="L96" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
-<span class="nc" id="L97">				return new Date(e.getAsInt() * 1000L);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc" id="L96">			JsonElement e = o.get(member);</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
+<span class="nc" id="L98">				return new Date(e.getAsInt() * 1000L);</span>
 			} else {
-<span class="nc" id="L99">				return null;</span>
+<span class="nc" id="L100">				return null;</span>
 			}
 		} else {
-<span class="nc" id="L102">			return null;</span>
+<span class="nc" id="L103">			return null;</span>
 		}
 	}
 
@@ -107,11 +108,11 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a JWE Algorithm, null if it doesn't exist
 	 */
 	public static JWEAlgorithm getAsJweAlgorithm(JsonObject o, String member) {
-<span class="nc" id="L110">		String s = getAsString(o, member);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (s != null) {</span>
-<span class="nc" id="L112">			return JWEAlgorithm.parse(s);</span>
+<span class="nc" id="L111">		String s = getAsString(o, member);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (s != null) {</span>
+<span class="nc" id="L113">			return JWEAlgorithm.parse(s);</span>
 		} else {
-<span class="nc" id="L114">			return null;</span>
+<span class="nc" id="L115">			return null;</span>
 		}
 	}
 
@@ -119,11 +120,11 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a JWE Encryption Method, null if it doesn't exist
 	 */
 	public static EncryptionMethod getAsJweEncryptionMethod(JsonObject o, String member) {
-<span class="nc" id="L122">		String s = getAsString(o, member);</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">		if (s != null) {</span>
-<span class="nc" id="L124">			return EncryptionMethod.parse(s);</span>
+<span class="nc" id="L123">		String s = getAsString(o, member);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		if (s != null) {</span>
+<span class="nc" id="L125">			return EncryptionMethod.parse(s);</span>
 		} else {
-<span class="nc" id="L126">			return null;</span>
+<span class="nc" id="L127">			return null;</span>
 		}
 	}
 
@@ -131,11 +132,11 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a JWS Algorithm, null if it doesn't exist
 	 */
 	public static JWSAlgorithm getAsJwsAlgorithm(JsonObject o, String member) {
-<span class="nc" id="L134">		String s = getAsString(o, member);</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (s != null) {</span>
-<span class="nc" id="L136">			return JWSAlgorithm.parse(s);</span>
+<span class="nc" id="L135">		String s = getAsString(o, member);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (s != null) {</span>
+<span class="nc" id="L137">			return JWSAlgorithm.parse(s);</span>
 		} else {
-<span class="nc" id="L138">			return null;</span>
+<span class="nc" id="L139">			return null;</span>
 		}
 	}
 
@@ -146,11 +147,11 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * @return
 	 */
 	public static PKCEAlgorithm getAsPkceAlgorithm(JsonObject o, String member) {
-<span class="nc" id="L149">		String s = getAsString(o, member);</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (s != null) {</span>
-<span class="nc" id="L151">			return PKCEAlgorithm.parse(s);</span>
+<span class="nc" id="L150">		String s = getAsString(o, member);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (s != null) {</span>
+<span class="nc" id="L152">			return PKCEAlgorithm.parse(s);</span>
 		} else {
-<span class="nc" id="L153">			return null;</span>
+<span class="nc" id="L154">			return null;</span>
 		}
 	}
 
@@ -158,15 +159,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a string, null if it doesn't exist
 	 */
 	public static String getAsString(JsonObject o, String member) {
-<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc" id="L162">			JsonElement e = o.get(member);</span>
-<span class="nc bnc" id="L163" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
-<span class="nc" id="L164">				return e.getAsString();</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc" id="L163">			JsonElement e = o.get(member);</span>
+<span class="nc bnc" id="L164" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
+<span class="nc" id="L165">				return e.getAsString();</span>
 			} else {
-<span class="nc" id="L166">				return null;</span>
+<span class="nc" id="L167">				return null;</span>
 			}
 		} else {
-<span class="nc" id="L169">			return null;</span>
+<span class="nc" id="L170">			return null;</span>
 		}
 	}
 
@@ -174,15 +175,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a boolean, null if it doesn't exist
 	 */
 	public static Boolean getAsBoolean(JsonObject o, String member) {
-<span class="nc bnc" id="L177" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc" id="L178">			JsonElement e = o.get(member);</span>
-<span class="nc bnc" id="L179" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
-<span class="nc" id="L180">				return e.getAsBoolean();</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc" id="L179">			JsonElement e = o.get(member);</span>
+<span class="nc bnc" id="L180" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
+<span class="nc" id="L181">				return e.getAsBoolean();</span>
 			} else {
-<span class="nc" id="L182">				return null;</span>
+<span class="nc" id="L183">				return null;</span>
 			}
 		} else {
-<span class="nc" id="L185">			return null;</span>
+<span class="nc" id="L186">			return null;</span>
 		}
 	}
 
@@ -190,15 +191,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a Long, null if it doesn't exist
 	 */
 	public static Long getAsLong(JsonObject o, String member) {
-<span class="nc bnc" id="L193" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc" id="L194">			JsonElement e = o.get(member);</span>
-<span class="nc bnc" id="L195" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
-<span class="nc" id="L196">				return e.getAsLong();</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc" id="L195">			JsonElement e = o.get(member);</span>
+<span class="nc bnc" id="L196" title="All 4 branches missed.">			if (e != null &amp;&amp; e.isJsonPrimitive()) {</span>
+<span class="nc" id="L197">				return e.getAsLong();</span>
 			} else {
-<span class="nc" id="L198">				return null;</span>
+<span class="nc" id="L199">				return null;</span>
 			}
 		} else {
-<span class="nc" id="L201">			return null;</span>
+<span class="nc" id="L202">			return null;</span>
 		}
 	}
 
@@ -206,14 +207,14 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given given member as a set of strings, null if it doesn't exist
 	 */
 	public static Set&lt;String&gt; getAsStringSet(JsonObject o, String member) throws JsonSyntaxException {
-<span class="nc bnc" id="L209" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc bnc" id="L210" title="All 2 branches missed.">			if (o.get(member).isJsonArray()) {</span>
-<span class="nc" id="L211">				return gson.fromJson(o.get(member), new TypeToken&lt;Set&lt;String&gt;&gt;(){}.getType());</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">			if (o.get(member).isJsonArray()) {</span>
+<span class="nc" id="L212">				return gson.fromJson(o.get(member), new TypeToken&lt;Set&lt;String&gt;&gt;(){}.getType());</span>
 			} else {
-<span class="nc" id="L213">				return Sets.newHashSet(o.get(member).getAsString());</span>
+<span class="nc" id="L214">				return Sets.newHashSet(o.get(member).getAsString());</span>
 			}
 		} else {
-<span class="nc" id="L216">			return null;</span>
+<span class="nc" id="L217">			return null;</span>
 		}
 	}
 
@@ -221,14 +222,14 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given given member as a set of strings, null if it doesn't exist
 	 */
 	public static List&lt;String&gt; getAsStringList(JsonObject o, String member) throws JsonSyntaxException {
-<span class="nc bnc" id="L224" title="All 2 branches missed.">		if (o.has(member)) {</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">			if (o.get(member).isJsonArray()) {</span>
-<span class="nc" id="L226">				return gson.fromJson(o.get(member), new TypeToken&lt;List&lt;String&gt;&gt;(){}.getType());</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">		if (o.has(member)) {</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">			if (o.get(member).isJsonArray()) {</span>
+<span class="nc" id="L227">				return gson.fromJson(o.get(member), new TypeToken&lt;List&lt;String&gt;&gt;(){}.getType());</span>
 			} else {
-<span class="nc" id="L228">				return Lists.newArrayList(o.get(member).getAsString());</span>
+<span class="nc" id="L229">				return Lists.newArrayList(o.get(member).getAsString());</span>
 			}
 		} else {
-<span class="nc" id="L231">			return null;</span>
+<span class="nc" id="L232">			return null;</span>
 		}
 	}
 
@@ -236,15 +237,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a list of JWS Algorithms, null if it doesn't exist
 	 */
 	public static List&lt;JWSAlgorithm&gt; getAsJwsAlgorithmList(JsonObject o, String member) {
-<span class="nc" id="L239">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
-<span class="nc bnc" id="L240" title="All 2 branches missed.">		if (strings != null) {</span>
-<span class="nc" id="L241">			List&lt;JWSAlgorithm&gt; algs = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L242" title="All 2 branches missed.">			for (String alg : strings) {</span>
-<span class="nc" id="L243">				algs.add(JWSAlgorithm.parse(alg));</span>
-<span class="nc" id="L244">			}</span>
-<span class="nc" id="L245">			return algs;</span>
+<span class="nc" id="L240">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">		if (strings != null) {</span>
+<span class="nc" id="L242">			List&lt;JWSAlgorithm&gt; algs = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">			for (String alg : strings) {</span>
+<span class="nc" id="L244">				algs.add(JWSAlgorithm.parse(alg));</span>
+<span class="nc" id="L245">			}</span>
+<span class="nc" id="L246">			return algs;</span>
 		} else {
-<span class="nc" id="L247">			return null;</span>
+<span class="nc" id="L248">			return null;</span>
 		}
 	}
 
@@ -252,15 +253,15 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a list of JWS Algorithms, null if it doesn't exist
 	 */
 	public static List&lt;JWEAlgorithm&gt; getAsJweAlgorithmList(JsonObject o, String member) {
-<span class="nc" id="L255">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">		if (strings != null) {</span>
-<span class="nc" id="L257">			List&lt;JWEAlgorithm&gt; algs = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L258" title="All 2 branches missed.">			for (String alg : strings) {</span>
-<span class="nc" id="L259">				algs.add(JWEAlgorithm.parse(alg));</span>
-<span class="nc" id="L260">			}</span>
-<span class="nc" id="L261">			return algs;</span>
+<span class="nc" id="L256">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">		if (strings != null) {</span>
+<span class="nc" id="L258">			List&lt;JWEAlgorithm&gt; algs = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">			for (String alg : strings) {</span>
+<span class="nc" id="L260">				algs.add(JWEAlgorithm.parse(alg));</span>
+<span class="nc" id="L261">			}</span>
+<span class="nc" id="L262">			return algs;</span>
 		} else {
-<span class="nc" id="L263">			return null;</span>
+<span class="nc" id="L264">			return null;</span>
 		}
 	}
 
@@ -268,80 +269,80 @@ import com.nimbusds.jose.JWSAlgorithm;
 	 * Gets the value of the given member as a list of JWS Algorithms, null if it doesn't exist
 	 */
 	public static List&lt;EncryptionMethod&gt; getAsEncryptionMethodList(JsonObject o, String member) {
-<span class="nc" id="L271">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
-<span class="nc bnc" id="L272" title="All 2 branches missed.">		if (strings != null) {</span>
-<span class="nc" id="L273">			List&lt;EncryptionMethod&gt; algs = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">			for (String alg : strings) {</span>
-<span class="nc" id="L275">				algs.add(EncryptionMethod.parse(alg));</span>
-<span class="nc" id="L276">			}</span>
-<span class="nc" id="L277">			return algs;</span>
+<span class="nc" id="L272">		List&lt;String&gt; strings = getAsStringList(o, member);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">		if (strings != null) {</span>
+<span class="nc" id="L274">			List&lt;EncryptionMethod&gt; algs = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">			for (String alg : strings) {</span>
+<span class="nc" id="L276">				algs.add(EncryptionMethod.parse(alg));</span>
+<span class="nc" id="L277">			}</span>
+<span class="nc" id="L278">			return algs;</span>
 		} else {
-<span class="nc" id="L279">			return null;</span>
+<span class="nc" id="L280">			return null;</span>
 		}
 	}
 
 	public static Map readMap(JsonReader reader) throws IOException {
-<span class="nc" id="L284">		Map map = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L285">		reader.beginObject();</span>
-<span class="nc bnc" id="L286" title="All 2 branches missed.">		while(reader.hasNext()) {</span>
-<span class="nc" id="L287">			String name = reader.nextName();</span>
-<span class="nc" id="L288">			Object value = null;</span>
-<span class="nc bnc" id="L289" title="All 4 branches missed.">			switch(reader.peek()) {</span>
+<span class="nc" id="L285">		Map map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L286">		reader.beginObject();</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">		while(reader.hasNext()) {</span>
+<span class="nc" id="L288">			String name = reader.nextName();</span>
+<span class="nc" id="L289">			Object value = null;</span>
+<span class="nc bnc" id="L290" title="All 4 branches missed.">			switch(reader.peek()) {</span>
 				case STRING:
-<span class="nc" id="L291">					value = reader.nextString();</span>
-<span class="nc" id="L292">					break;</span>
+<span class="nc" id="L292">					value = reader.nextString();</span>
+<span class="nc" id="L293">					break;</span>
 				case BOOLEAN:
-<span class="nc" id="L294">					value = reader.nextBoolean();</span>
-<span class="nc" id="L295">					break;</span>
+<span class="nc" id="L295">					value = reader.nextBoolean();</span>
+<span class="nc" id="L296">					break;</span>
 				case NUMBER:
-<span class="nc" id="L297">					value = reader.nextLong();</span>
-<span class="nc" id="L298">					break;</span>
+<span class="nc" id="L298">					value = reader.nextLong();</span>
+<span class="nc" id="L299">					break;</span>
 				default:
-<span class="nc" id="L300">					logger.debug(&quot;Found unexpected entry&quot;);</span>
-<span class="nc" id="L301">					reader.skipValue();</span>
-<span class="nc" id="L302">					continue;</span>
+<span class="nc" id="L301">					logger.debug(&quot;Found unexpected entry&quot;);</span>
+<span class="nc" id="L302">					reader.skipValue();</span>
+<span class="nc" id="L303">					continue;</span>
 			}
-<span class="nc" id="L304">			map.put(name, value);</span>
-<span class="nc" id="L305">		}</span>
-<span class="nc" id="L306">		reader.endObject();</span>
-<span class="nc" id="L307">		return map;</span>
+<span class="nc" id="L305">			map.put(name, value);</span>
+<span class="nc" id="L306">		}</span>
+<span class="nc" id="L307">		reader.endObject();</span>
+<span class="nc" id="L308">		return map;</span>
 	}
 
 	public static Set readSet(JsonReader reader) throws IOException {
-<span class="nc" id="L311">		Set arraySet = null;</span>
-<span class="nc" id="L312">		reader.beginArray();</span>
-<span class="nc bnc" id="L313" title="All 3 branches missed.">		switch (reader.peek()) {</span>
+<span class="nc" id="L312">		Set arraySet = null;</span>
+<span class="nc" id="L313">		reader.beginArray();</span>
+<span class="nc bnc" id="L314" title="All 3 branches missed.">		switch (reader.peek()) {</span>
 			case STRING:
-<span class="nc" id="L315">				arraySet = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L316" title="All 2 branches missed.">				while (reader.hasNext()) {</span>
-<span class="nc" id="L317">					arraySet.add(reader.nextString());</span>
+<span class="nc" id="L316">				arraySet = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">				while (reader.hasNext()) {</span>
+<span class="nc" id="L318">					arraySet.add(reader.nextString());</span>
 				}
 				break;
 			case NUMBER:
-<span class="nc" id="L321">				arraySet = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">				while (reader.hasNext()) {</span>
-<span class="nc" id="L323">					arraySet.add(reader.nextLong());</span>
+<span class="nc" id="L322">				arraySet = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">				while (reader.hasNext()) {</span>
+<span class="nc" id="L324">					arraySet.add(reader.nextLong());</span>
 				}
 				break;
 			default:
-<span class="nc" id="L327">				arraySet = new HashSet();</span>
+<span class="nc" id="L328">				arraySet = new HashSet();</span>
 				break;
 		}
-<span class="nc" id="L330">		reader.endArray();</span>
-<span class="nc" id="L331">		return arraySet;</span>
+<span class="nc" id="L331">		reader.endArray();</span>
+<span class="nc" id="L332">		return arraySet;</span>
 	}
 
 	public static void writeNullSafeArray(JsonWriter writer, Set&lt;String&gt; items) throws IOException {
-<span class="nc bnc" id="L335" title="All 2 branches missed.">		if (items != null) {</span>
-<span class="nc" id="L336">			writer.beginArray();</span>
-<span class="nc bnc" id="L337" title="All 2 branches missed.">			for (String s : items) {</span>
-<span class="nc" id="L338">				writer.value(s);</span>
-<span class="nc" id="L339">			}</span>
-<span class="nc" id="L340">			writer.endArray();</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">		if (items != null) {</span>
+<span class="nc" id="L337">			writer.beginArray();</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">			for (String s : items) {</span>
+<span class="nc" id="L339">				writer.value(s);</span>
+<span class="nc" id="L340">			}</span>
+<span class="nc" id="L341">			writer.endArray();</span>
 		} else {
-<span class="nc" id="L342">			writer.nullValue();</span>
+<span class="nc" id="L343">			writer.nullValue();</span>
 		}
-<span class="nc" id="L344">	}</span>
+<span class="nc" id="L345">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

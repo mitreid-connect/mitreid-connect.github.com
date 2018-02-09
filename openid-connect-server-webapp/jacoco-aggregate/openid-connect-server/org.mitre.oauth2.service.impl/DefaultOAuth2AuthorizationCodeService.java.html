@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOAuth2AuthorizationCodeService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultOAuth2AuthorizationCodeService.java</span></div><h1>DefaultOAuth2AuthorizationCodeService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -44,9 +45,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Service(&quot;defaultOAuth2AuthorizationCodeService&quot;)
-<span class="nc" id="L47">public class DefaultOAuth2AuthorizationCodeService implements AuthorizationCodeServices {</span>
+<span class="nc" id="L48">public class DefaultOAuth2AuthorizationCodeService implements AuthorizationCodeServices {</span>
 	// Logger for this class
-<span class="nc" id="L49">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2AuthorizationCodeService.class);</span>
+<span class="nc" id="L50">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2AuthorizationCodeService.class);</span>
 
 	@Autowired
 	private AuthorizationCodeRepository repository;
@@ -54,9 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
 	@Autowired
 	private AuthenticationHolderRepository authenticationHolderRepository;
 
-<span class="nc" id="L57">	private int authCodeExpirationSeconds = 60 * 5; // expire in 5 minutes by default</span>
+<span class="nc" id="L58">	private int authCodeExpirationSeconds = 60 * 5; // expire in 5 minutes by default</span>
 
-<span class="nc" id="L59">	private RandomValueStringGenerator generator = new RandomValueStringGenerator();</span>
+<span class="nc" id="L60">	private RandomValueStringGenerator generator = new RandomValueStringGenerator();</span>
 
 	/**
 	 * Generate a random authorization code and create an AuthorizationCodeEntity,
@@ -69,20 +70,20 @@ import org.springframework.transaction.annotation.Transactional;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public String createAuthorizationCode(OAuth2Authentication authentication) {
-<span class="nc" id="L72">		String code = generator.generate();</span>
+<span class="nc" id="L73">		String code = generator.generate();</span>
 
 		// attach the authorization so that we can look it up later
-<span class="nc" id="L75">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
-<span class="nc" id="L76">		authHolder.setAuthentication(authentication);</span>
-<span class="nc" id="L77">		authHolder = authenticationHolderRepository.save(authHolder);</span>
+<span class="nc" id="L76">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L77">		authHolder.setAuthentication(authentication);</span>
+<span class="nc" id="L78">		authHolder = authenticationHolderRepository.save(authHolder);</span>
 
 		// set the auth code to expire
-<span class="nc" id="L80">		Date expiration = new Date(System.currentTimeMillis() + (getAuthCodeExpirationSeconds() * 1000L));</span>
+<span class="nc" id="L81">		Date expiration = new Date(System.currentTimeMillis() + (getAuthCodeExpirationSeconds() * 1000L));</span>
 
-<span class="nc" id="L82">		AuthorizationCodeEntity entity = new AuthorizationCodeEntity(code, authHolder, expiration);</span>
-<span class="nc" id="L83">		repository.save(entity);</span>
+<span class="nc" id="L83">		AuthorizationCodeEntity entity = new AuthorizationCodeEntity(code, authHolder, expiration);</span>
+<span class="nc" id="L84">		repository.save(entity);</span>
 
-<span class="nc" id="L85">		return code;</span>
+<span class="nc" id="L86">		return code;</span>
 	}
 
 	/**
@@ -98,17 +99,17 @@ import org.springframework.transaction.annotation.Transactional;
 	@Override
 	public OAuth2Authentication consumeAuthorizationCode(String code) throws InvalidGrantException {
 
-<span class="nc" id="L101">		AuthorizationCodeEntity result = repository.getByCode(code);</span>
+<span class="nc" id="L102">		AuthorizationCodeEntity result = repository.getByCode(code);</span>
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (result == null) {</span>
-<span class="nc" id="L104">			throw new InvalidGrantException(&quot;JpaAuthorizationCodeRepository: no authorization code found for value &quot; + code);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (result == null) {</span>
+<span class="nc" id="L105">			throw new InvalidGrantException(&quot;JpaAuthorizationCodeRepository: no authorization code found for value &quot; + code);</span>
 		}
 
-<span class="nc" id="L107">		OAuth2Authentication auth = result.getAuthenticationHolder().getAuthentication();</span>
+<span class="nc" id="L108">		OAuth2Authentication auth = result.getAuthenticationHolder().getAuthentication();</span>
 
-<span class="nc" id="L109">		repository.remove(result);</span>
+<span class="nc" id="L110">		repository.remove(result);</span>
 
-<span class="nc" id="L111">		return auth;</span>
+<span class="nc" id="L112">		return auth;</span>
 	}
 
 	/**
@@ -117,46 +118,46 @@ import org.springframework.transaction.annotation.Transactional;
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearExpiredAuthorizationCodes() {
 
-<span class="nc" id="L120">		new AbstractPageOperationTemplate&lt;AuthorizationCodeEntity&gt;(&quot;clearExpiredAuthorizationCodes&quot;){</span>
+<span class="nc" id="L121">		new AbstractPageOperationTemplate&lt;AuthorizationCodeEntity&gt;(&quot;clearExpiredAuthorizationCodes&quot;){</span>
 			@Override
 			public Collection&lt;AuthorizationCodeEntity&gt; fetchPage() {
-<span class="nc" id="L123">				return repository.getExpiredCodes();</span>
+<span class="nc" id="L124">				return repository.getExpiredCodes();</span>
 			}
 
 			@Override
 			protected void doOperation(AuthorizationCodeEntity item) {
-<span class="nc" id="L128">				repository.remove(item);</span>
-<span class="nc" id="L129">			}</span>
-<span class="nc" id="L130">		}.execute();</span>
-<span class="nc" id="L131">	}</span>
+<span class="nc" id="L129">				repository.remove(item);</span>
+<span class="nc" id="L130">			}</span>
+<span class="nc" id="L131">		}.execute();</span>
+<span class="nc" id="L132">	}</span>
 
 	/**
 	 * @return the repository
 	 */
 	public AuthorizationCodeRepository getRepository() {
-<span class="nc" id="L137">		return repository;</span>
+<span class="nc" id="L138">		return repository;</span>
 	}
 
 	/**
 	 * @param repository the repository to set
 	 */
 	public void setRepository(AuthorizationCodeRepository repository) {
-<span class="nc" id="L144">		this.repository = repository;</span>
-<span class="nc" id="L145">	}</span>
+<span class="nc" id="L145">		this.repository = repository;</span>
+<span class="nc" id="L146">	}</span>
 
 	/**
 	 * @return the authCodeExpirationSeconds
 	 */
 	public int getAuthCodeExpirationSeconds() {
-<span class="nc" id="L151">		return authCodeExpirationSeconds;</span>
+<span class="nc" id="L152">		return authCodeExpirationSeconds;</span>
 	}
 
 	/**
 	 * @param authCodeExpirationSeconds the authCodeExpirationSeconds to set
 	 */
 	public void setAuthCodeExpirationSeconds(int authCodeExpirationSeconds) {
-<span class="nc" id="L158">		this.authCodeExpirationSeconds = authCodeExpirationSeconds;</span>
-<span class="nc" id="L159">	}</span>
+<span class="nc" id="L159">		this.authCodeExpirationSeconds = authCodeExpirationSeconds;</span>
+<span class="nc" id="L160">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

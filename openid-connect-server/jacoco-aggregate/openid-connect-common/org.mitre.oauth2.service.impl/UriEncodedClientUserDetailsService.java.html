@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UriEncodedClientUserDetailsService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">UriEncodedClientUserDetailsService.java</span></div><h1>UriEncodedClientUserDetailsService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -48,9 +47,9 @@ import com.google.common.base.Strings;
  *
  */
 @Service(&quot;uriEncodedClientUserDetailsService&quot;)
-<span class="nc" id="L51">public class UriEncodedClientUserDetailsService implements UserDetailsService {</span>
+<span class="nc" id="L50">public class UriEncodedClientUserDetailsService implements UserDetailsService {</span>
 
-<span class="nc" id="L53">	private static GrantedAuthority ROLE_CLIENT = new SimpleGrantedAuthority(&quot;ROLE_CLIENT&quot;);</span>
+<span class="nc" id="L52">	private static GrantedAuthority ROLE_CLIENT = new SimpleGrantedAuthority(&quot;ROLE_CLIENT&quot;);</span>
 
 	@Autowired
 	private ClientDetailsEntityService clientDetailsService;
@@ -62,49 +61,49 @@ import com.google.common.base.Strings;
 	public UserDetails loadUserByUsername(String clientId) throws  UsernameNotFoundException {
 
 		try {
-<span class="nc" id="L65">			String decodedClientId = UriUtils.decode(clientId, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L64">			String decodedClientId = UriUtils.decode(clientId, &quot;UTF-8&quot;);</span>
 
-<span class="nc" id="L67">			ClientDetailsEntity client = clientDetailsService.loadClientByClientId(decodedClientId);</span>
+<span class="nc" id="L66">			ClientDetailsEntity client = clientDetailsService.loadClientByClientId(decodedClientId);</span>
 
-<span class="nc bnc" id="L69" title="All 2 branches missed.">			if (client != null) {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">			if (client != null) {</span>
 
-<span class="nc" id="L71">				String encodedPassword = UriUtils.encodePathSegment(Strings.nullToEmpty(client.getClientSecret()), &quot;UTF-8&quot;);</span>
+<span class="nc" id="L70">				String encodedPassword = UriUtils.encodePathSegment(Strings.nullToEmpty(client.getClientSecret()), &quot;UTF-8&quot;);</span>
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">				if (config.isHeartMode() || // if we're running HEART mode turn off all client secrets</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">						(client.getTokenEndpointAuthMethod() != null &amp;&amp;</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">							(client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY) ||</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">								client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT)))) {</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">				if (config.isHeartMode() || // if we're running HEART mode turn off all client secrets</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">						(client.getTokenEndpointAuthMethod() != null &amp;&amp;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">							(client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY) ||</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">								client.getTokenEndpointAuthMethod().equals(AuthMethod.SECRET_JWT)))) {</span>
 
 					// Issue a random password each time to prevent password auth from being used (or skipped)
 					// for private key or shared key clients, see #715
 
-<span class="nc" id="L81">					encodedPassword = new BigInteger(512, new SecureRandom()).toString(16);</span>
+<span class="nc" id="L80">					encodedPassword = new BigInteger(512, new SecureRandom()).toString(16);</span>
 				}
 
-<span class="nc" id="L84">				boolean enabled = true;</span>
-<span class="nc" id="L85">				boolean accountNonExpired = true;</span>
-<span class="nc" id="L86">				boolean credentialsNonExpired = true;</span>
-<span class="nc" id="L87">				boolean accountNonLocked = true;</span>
-<span class="nc" id="L88">				Collection&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;(client.getAuthorities());</span>
-<span class="nc" id="L89">				authorities.add(ROLE_CLIENT);</span>
+<span class="nc" id="L83">				boolean enabled = true;</span>
+<span class="nc" id="L84">				boolean accountNonExpired = true;</span>
+<span class="nc" id="L85">				boolean credentialsNonExpired = true;</span>
+<span class="nc" id="L86">				boolean accountNonLocked = true;</span>
+<span class="nc" id="L87">				Collection&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;(client.getAuthorities());</span>
+<span class="nc" id="L88">				authorities.add(ROLE_CLIENT);</span>
 
-<span class="nc" id="L91">				return new User(decodedClientId, encodedPassword, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);</span>
+<span class="nc" id="L90">				return new User(decodedClientId, encodedPassword, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);</span>
 			} else {
-<span class="nc" id="L93">				throw new UsernameNotFoundException(&quot;Client not found: &quot; + clientId);</span>
+<span class="nc" id="L92">				throw new UsernameNotFoundException(&quot;Client not found: &quot; + clientId);</span>
 			}
-<span class="nc" id="L95">		} catch (UnsupportedEncodingException | InvalidClientException e) {</span>
-<span class="nc" id="L96">			throw new UsernameNotFoundException(&quot;Client not found: &quot; + clientId);</span>
+<span class="nc" id="L94">		} catch (UnsupportedEncodingException | InvalidClientException e) {</span>
+<span class="nc" id="L95">			throw new UsernameNotFoundException(&quot;Client not found: &quot; + clientId);</span>
 		}
 
 	}
 
 	public ClientDetailsEntityService getClientDetailsService() {
-<span class="nc" id="L102">		return clientDetailsService;</span>
+<span class="nc" id="L101">		return clientDetailsService;</span>
 	}
 
 	public void setClientDetailsService(ClientDetailsEntityService clientDetailsService) {
-<span class="nc" id="L106">		this.clientDetailsService = clientDetailsService;</span>
-<span class="nc" id="L107">	}</span>
+<span class="nc" id="L105">		this.clientDetailsService = clientDetailsService;</span>
+<span class="nc" id="L106">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

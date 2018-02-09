@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JWTBearerAssertionAuthenticationToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.assertion</a> &gt; <span class="el_source">JWTBearerAssertionAuthenticationToken.java</span></div><h1>JWTBearerAssertionAuthenticationToken.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -46,17 +47,17 @@ public class JWTBearerAssertionAuthenticationToken extends AbstractAuthenticatio
 	 * @param jwt
 	 */
 	public JWTBearerAssertionAuthenticationToken(JWT jwt) {
-<span class="nc" id="L49">		super(null);</span>
+<span class="nc" id="L50">		super(null);</span>
 		try {
 			// save the subject of the JWT in case the credentials get erased later
-<span class="nc" id="L52">			this.subject = jwt.getJWTClaimsSet().getSubject();</span>
-<span class="nc" id="L53">		} catch (ParseException e) {</span>
+<span class="nc" id="L53">			this.subject = jwt.getJWTClaimsSet().getSubject();</span>
+<span class="nc" id="L54">		} catch (ParseException e) {</span>
 			// TODO Auto-generated catch block
-<span class="nc" id="L55">			e.printStackTrace();</span>
-<span class="nc" id="L56">		}</span>
-<span class="nc" id="L57">		this.jwt = jwt;</span>
-<span class="nc" id="L58">		setAuthenticated(false);</span>
-<span class="nc" id="L59">	}</span>
+<span class="nc" id="L56">			e.printStackTrace();</span>
+<span class="nc" id="L57">		}</span>
+<span class="nc" id="L58">		this.jwt = jwt;</span>
+<span class="nc" id="L59">		setAuthenticated(false);</span>
+<span class="nc" id="L60">	}</span>
 
 	/**
 	 * Create an authenticated token with the given clientID, jwt, and authorities set
@@ -65,24 +66,24 @@ public class JWTBearerAssertionAuthenticationToken extends AbstractAuthenticatio
 	 * @param authorities
 	 */
 	public JWTBearerAssertionAuthenticationToken(JWT jwt, Collection&lt;? extends GrantedAuthority&gt; authorities) {
-<span class="nc" id="L68">		super(authorities);</span>
+<span class="nc" id="L69">		super(authorities);</span>
 		try {
 			// save the subject of the JWT in case the credentials get erased later
-<span class="nc" id="L71">			this.subject = jwt.getJWTClaimsSet().getSubject();</span>
-<span class="nc" id="L72">		} catch (ParseException e) {</span>
+<span class="nc" id="L72">			this.subject = jwt.getJWTClaimsSet().getSubject();</span>
+<span class="nc" id="L73">		} catch (ParseException e) {</span>
 			// TODO Auto-generated catch block
-<span class="nc" id="L74">			e.printStackTrace();</span>
-<span class="nc" id="L75">		}</span>
-<span class="nc" id="L76">		this.jwt = jwt;</span>
-<span class="nc" id="L77">		setAuthenticated(true);</span>
-<span class="nc" id="L78">	}</span>
+<span class="nc" id="L75">			e.printStackTrace();</span>
+<span class="nc" id="L76">		}</span>
+<span class="nc" id="L77">		this.jwt = jwt;</span>
+<span class="nc" id="L78">		setAuthenticated(true);</span>
+<span class="nc" id="L79">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.Authentication#getCredentials()
 	 */
 	@Override
 	public Object getCredentials() {
-<span class="nc" id="L85">		return jwt;</span>
+<span class="nc" id="L86">		return jwt;</span>
 	}
 
 	/* (non-Javadoc)
@@ -90,31 +91,31 @@ public class JWTBearerAssertionAuthenticationToken extends AbstractAuthenticatio
 	 */
 	@Override
 	public Object getPrincipal() {
-<span class="nc" id="L93">		return subject;</span>
+<span class="nc" id="L94">		return subject;</span>
 	}
 
 	/**
 	 * @return the jwt
 	 */
 	public JWT getJwt() {
-<span class="nc" id="L100">		return jwt;</span>
+<span class="nc" id="L101">		return jwt;</span>
 	}
 
 	/**
 	 * @param jwt the jwt to set
 	 */
 	public void setJwt(JWT jwt) {
-<span class="nc" id="L107">		this.jwt = jwt;</span>
-<span class="nc" id="L108">	}</span>
+<span class="nc" id="L108">		this.jwt = jwt;</span>
+<span class="nc" id="L109">	}</span>
 
 	/**
 	 * Clear out the JWT that this token holds.
 	 */
 	@Override
 	public void eraseCredentials() {
-<span class="nc" id="L115">		super.eraseCredentials();</span>
-<span class="nc" id="L116">		setJwt(null);</span>
-<span class="nc" id="L117">	}</span>
+<span class="nc" id="L116">		super.eraseCredentials();</span>
+<span class="nc" id="L117">		setJwt(null);</span>
+<span class="nc" id="L118">	}</span>
 
 
 

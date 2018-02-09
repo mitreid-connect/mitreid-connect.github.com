@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceSet.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.model</a> &gt; <span class="el_source">ResourceSet.java</span></div><h1>ResourceSet.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -44,7 +43,7 @@ import javax.persistence.Table;
 	@NamedQuery(name = ResourceSet.QUERY_BY_CLIENT, query = &quot;select r from ResourceSet r where r.clientId = :&quot; + ResourceSet.PARAM_CLIENTID),
 	@NamedQuery(name = ResourceSet.QUERY_ALL, query = &quot;select r from ResourceSet r&quot;)
 })
-<span class="nc" id="L47">public class ResourceSet {</span>
+<span class="nc" id="L46">public class ResourceSet {</span>
 
 	public static final String QUERY_BY_OWNER = &quot;ResourceSet.queryByOwner&quot;;
 	public static final String QUERY_BY_OWNER_AND_CLIENT = &quot;ResourceSet.queryByOwnerAndClient&quot;;
@@ -58,13 +57,13 @@ import javax.persistence.Table;
 	private String name;
 	private String uri;
 	private String type;
-<span class="nc" id="L61">	private Set&lt;String&gt; scopes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L60">	private Set&lt;String&gt; scopes = new HashSet&lt;&gt;();</span>
 	private String iconUri;
 
 	private String owner; // username of the person responsible for the registration (either directly or via OAuth token)
 	private String clientId; // client id of the protected resource that registered this resource set via OAuth token
 
-<span class="nc" id="L67">	private Collection&lt;Policy&gt; policies = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L66">	private Collection&lt;Policy&gt; policies = new HashSet&lt;&gt;();</span>
 
 	/**
 	 * @return the id
@@ -73,15 +72,15 @@ import javax.persistence.Table;
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L76">		return id;</span>
+<span class="nc" id="L75">		return id;</span>
 	}
 
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
-<span class="nc" id="L83">		this.id = id;</span>
-<span class="nc" id="L84">	}</span>
+<span class="nc" id="L82">		this.id = id;</span>
+<span class="nc" id="L83">	}</span>
 
 	/**
 	 * @return the name
@@ -89,15 +88,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;name&quot;)
 	public String getName() {
-<span class="nc" id="L92">		return name;</span>
+<span class="nc" id="L91">		return name;</span>
 	}
 
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-<span class="nc" id="L99">		this.name = name;</span>
-<span class="nc" id="L100">	}</span>
+<span class="nc" id="L98">		this.name = name;</span>
+<span class="nc" id="L99">	}</span>
 
 	/**
 	 * @return the uri
@@ -105,15 +104,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;uri&quot;)
 	public String getUri() {
-<span class="nc" id="L108">		return uri;</span>
+<span class="nc" id="L107">		return uri;</span>
 	}
 
 	/**
 	 * @param uri the uri to set
 	 */
 	public void setUri(String uri) {
-<span class="nc" id="L115">		this.uri = uri;</span>
-<span class="nc" id="L116">	}</span>
+<span class="nc" id="L114">		this.uri = uri;</span>
+<span class="nc" id="L115">	}</span>
 
 	/**
 	 * @return the type
@@ -121,15 +120,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;rs_type&quot;)
 	public String getType() {
-<span class="nc" id="L124">		return type;</span>
+<span class="nc" id="L123">		return type;</span>
 	}
 
 	/**
 	 * @param type the type to set
 	 */
 	public void setType(String type) {
-<span class="nc" id="L131">		this.type = type;</span>
-<span class="nc" id="L132">	}</span>
+<span class="nc" id="L130">		this.type = type;</span>
+<span class="nc" id="L131">	}</span>
 
 	/**
 	 * @return the scopes
@@ -141,15 +140,15 @@ import javax.persistence.Table;
 			joinColumns = @JoinColumn(name = &quot;owner_id&quot;)
 			)
 	public Set&lt;String&gt; getScopes() {
-<span class="nc" id="L144">		return scopes;</span>
+<span class="nc" id="L143">		return scopes;</span>
 	}
 
 	/**
 	 * @param scopes the scopes to set
 	 */
 	public void setScopes(Set&lt;String&gt; scopes) {
-<span class="nc" id="L151">		this.scopes = scopes;</span>
-<span class="nc" id="L152">	}</span>
+<span class="nc" id="L150">		this.scopes = scopes;</span>
+<span class="nc" id="L151">	}</span>
 
 	/**
 	 * @return the iconUri
@@ -157,15 +156,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;icon_uri&quot;)
 	public String getIconUri() {
-<span class="nc" id="L160">		return iconUri;</span>
+<span class="nc" id="L159">		return iconUri;</span>
 	}
 
 	/**
 	 * @param iconUri the iconUri to set
 	 */
 	public void setIconUri(String iconUri) {
-<span class="nc" id="L167">		this.iconUri = iconUri;</span>
-<span class="nc" id="L168">	}</span>
+<span class="nc" id="L166">		this.iconUri = iconUri;</span>
+<span class="nc" id="L167">	}</span>
 
 	/**
 	 * @return the owner
@@ -173,15 +172,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;owner&quot;)
 	public String getOwner() {
-<span class="nc" id="L176">		return owner;</span>
+<span class="nc" id="L175">		return owner;</span>
 	}
 
 	/**
 	 * @param owner the owner to set
 	 */
 	public void setOwner(String owner) {
-<span class="nc" id="L183">		this.owner = owner;</span>
-<span class="nc" id="L184">	}</span>
+<span class="nc" id="L182">		this.owner = owner;</span>
+<span class="nc" id="L183">	}</span>
 
 	/**
 	 * @return the clientId
@@ -189,15 +188,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;client_id&quot;)
 	public String getClientId() {
-<span class="nc" id="L192">		return clientId;</span>
+<span class="nc" id="L191">		return clientId;</span>
 	}
 
 	/**
 	 * @param clientId the clientId to set
 	 */
 	public void setClientId(String clientId) {
-<span class="nc" id="L199">		this.clientId = clientId;</span>
-<span class="nc" id="L200">	}</span>
+<span class="nc" id="L198">		this.clientId = clientId;</span>
+<span class="nc" id="L199">	}</span>
 
 	/**
 	 * @return the claimsRequired
@@ -205,22 +204,22 @@ import javax.persistence.Table;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = &quot;resource_set_id&quot;)
 	public Collection&lt;Policy&gt; getPolicies() {
-<span class="nc" id="L208">		return policies;</span>
+<span class="nc" id="L207">		return policies;</span>
 	}
 
 	/**
 	 * @param policies the claimsRequired to set
 	 */
 	public void setPolicies(Collection&lt;Policy&gt; policies) {
-<span class="nc" id="L215">		this.policies = policies;</span>
-<span class="nc" id="L216">	}</span>
+<span class="nc" id="L214">		this.policies = policies;</span>
+<span class="nc" id="L215">	}</span>
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-<span class="nc" id="L223">		return &quot;ResourceSet [id=&quot; + id + &quot;, name=&quot; + name + &quot;, uri=&quot; + uri + &quot;, type=&quot; + type + &quot;, scopes=&quot; + scopes + &quot;, iconUri=&quot; + iconUri + &quot;, owner=&quot; + owner + &quot;, clientId=&quot; + clientId + &quot;, policies=&quot; + policies + &quot;]&quot;;</span>
+<span class="nc" id="L222">		return &quot;ResourceSet [id=&quot; + id + &quot;, name=&quot; + name + &quot;, uri=&quot; + uri + &quot;, type=&quot; + type + &quot;, scopes=&quot; + scopes + &quot;, iconUri=&quot; + iconUri + &quot;, owner=&quot; + owner + &quot;, clientId=&quot; + clientId + &quot;, policies=&quot; + policies + &quot;]&quot;;</span>
 	}
 
 	/* (non-Javadoc)
@@ -228,18 +227,18 @@ import javax.persistence.Table;
 	 */
 	@Override
 	public int hashCode() {
-<span class="nc" id="L231">		final int prime = 31;</span>
-<span class="nc" id="L232">		int result = 1;</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">		result = prime * result + ((clientId == null) ? 0 : clientId.hashCode());</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">		result = prime * result + ((iconUri == null) ? 0 : iconUri.hashCode());</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">		result = prime * result + ((id == null) ? 0 : id.hashCode());</span>
-<span class="nc bnc" id="L236" title="All 2 branches missed.">		result = prime * result + ((name == null) ? 0 : name.hashCode());</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">		result = prime * result + ((owner == null) ? 0 : owner.hashCode());</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">		result = prime * result + ((policies == null) ? 0 : policies.hashCode());</span>
-<span class="nc bnc" id="L239" title="All 2 branches missed.">		result = prime * result + ((scopes == null) ? 0 : scopes.hashCode());</span>
-<span class="nc bnc" id="L240" title="All 2 branches missed.">		result = prime * result + ((type == null) ? 0 : type.hashCode());</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">		result = prime * result + ((uri == null) ? 0 : uri.hashCode());</span>
-<span class="nc" id="L242">		return result;</span>
+<span class="nc" id="L230">		final int prime = 31;</span>
+<span class="nc" id="L231">		int result = 1;</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">		result = prime * result + ((clientId == null) ? 0 : clientId.hashCode());</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">		result = prime * result + ((iconUri == null) ? 0 : iconUri.hashCode());</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">		result = prime * result + ((id == null) ? 0 : id.hashCode());</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">		result = prime * result + ((name == null) ? 0 : name.hashCode());</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">		result = prime * result + ((owner == null) ? 0 : owner.hashCode());</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">		result = prime * result + ((policies == null) ? 0 : policies.hashCode());</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">		result = prime * result + ((scopes == null) ? 0 : scopes.hashCode());</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">		result = prime * result + ((type == null) ? 0 : type.hashCode());</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">		result = prime * result + ((uri == null) ? 0 : uri.hashCode());</span>
+<span class="nc" id="L241">		return result;</span>
 	}
 
 	/* (non-Javadoc)
@@ -247,80 +246,80 @@ import javax.persistence.Table;
 	 */
 	@Override
 	public boolean equals(Object obj) {
-<span class="nc bnc" id="L250" title="All 2 branches missed.">		if (this == obj) {</span>
-<span class="nc" id="L251">			return true;</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L250">			return true;</span>
 		}
-<span class="nc bnc" id="L253" title="All 2 branches missed.">		if (obj == null) {</span>
-<span class="nc" id="L254">			return false;</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L253">			return false;</span>
 		}
-<span class="nc bnc" id="L256" title="All 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L257">			return false;</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L256">			return false;</span>
 		}
-<span class="nc" id="L259">		ResourceSet other = (ResourceSet) obj;</span>
-<span class="nc bnc" id="L260" title="All 2 branches missed.">		if (clientId == null) {</span>
-<span class="nc bnc" id="L261" title="All 2 branches missed.">			if (other.clientId != null) {</span>
-<span class="nc" id="L262">				return false;</span>
+<span class="nc" id="L258">		ResourceSet other = (ResourceSet) obj;</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">		if (clientId == null) {</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">			if (other.clientId != null) {</span>
+<span class="nc" id="L261">				return false;</span>
 			}
-<span class="nc bnc" id="L264" title="All 2 branches missed.">		} else if (!clientId.equals(other.clientId)) {</span>
-<span class="nc" id="L265">			return false;</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">		} else if (!clientId.equals(other.clientId)) {</span>
+<span class="nc" id="L264">			return false;</span>
 		}
-<span class="nc bnc" id="L267" title="All 2 branches missed.">		if (iconUri == null) {</span>
-<span class="nc bnc" id="L268" title="All 2 branches missed.">			if (other.iconUri != null) {</span>
-<span class="nc" id="L269">				return false;</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">		if (iconUri == null) {</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">			if (other.iconUri != null) {</span>
+<span class="nc" id="L268">				return false;</span>
 			}
-<span class="nc bnc" id="L271" title="All 2 branches missed.">		} else if (!iconUri.equals(other.iconUri)) {</span>
-<span class="nc" id="L272">			return false;</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">		} else if (!iconUri.equals(other.iconUri)) {</span>
+<span class="nc" id="L271">			return false;</span>
 		}
-<span class="nc bnc" id="L274" title="All 2 branches missed.">		if (id == null) {</span>
-<span class="nc bnc" id="L275" title="All 2 branches missed.">			if (other.id != null) {</span>
-<span class="nc" id="L276">				return false;</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">		if (id == null) {</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">			if (other.id != null) {</span>
+<span class="nc" id="L275">				return false;</span>
 			}
-<span class="nc bnc" id="L278" title="All 2 branches missed.">		} else if (!id.equals(other.id)) {</span>
-<span class="nc" id="L279">			return false;</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">		} else if (!id.equals(other.id)) {</span>
+<span class="nc" id="L278">			return false;</span>
 		}
-<span class="nc bnc" id="L281" title="All 2 branches missed.">		if (name == null) {</span>
-<span class="nc bnc" id="L282" title="All 2 branches missed.">			if (other.name != null) {</span>
-<span class="nc" id="L283">				return false;</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">		if (name == null) {</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">			if (other.name != null) {</span>
+<span class="nc" id="L282">				return false;</span>
 			}
-<span class="nc bnc" id="L285" title="All 2 branches missed.">		} else if (!name.equals(other.name)) {</span>
-<span class="nc" id="L286">			return false;</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">		} else if (!name.equals(other.name)) {</span>
+<span class="nc" id="L285">			return false;</span>
 		}
-<span class="nc bnc" id="L288" title="All 2 branches missed.">		if (owner == null) {</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">			if (other.owner != null) {</span>
-<span class="nc" id="L290">				return false;</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">		if (owner == null) {</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">			if (other.owner != null) {</span>
+<span class="nc" id="L289">				return false;</span>
 			}
-<span class="nc bnc" id="L292" title="All 2 branches missed.">		} else if (!owner.equals(other.owner)) {</span>
-<span class="nc" id="L293">			return false;</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">		} else if (!owner.equals(other.owner)) {</span>
+<span class="nc" id="L292">			return false;</span>
 		}
-<span class="nc bnc" id="L295" title="All 2 branches missed.">		if (policies == null) {</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">			if (other.policies != null) {</span>
-<span class="nc" id="L297">				return false;</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">		if (policies == null) {</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">			if (other.policies != null) {</span>
+<span class="nc" id="L296">				return false;</span>
 			}
-<span class="nc bnc" id="L299" title="All 2 branches missed.">		} else if (!policies.equals(other.policies)) {</span>
-<span class="nc" id="L300">			return false;</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">		} else if (!policies.equals(other.policies)) {</span>
+<span class="nc" id="L299">			return false;</span>
 		}
-<span class="nc bnc" id="L302" title="All 2 branches missed.">		if (scopes == null) {</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">			if (other.scopes != null) {</span>
-<span class="nc" id="L304">				return false;</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">		if (scopes == null) {</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">			if (other.scopes != null) {</span>
+<span class="nc" id="L303">				return false;</span>
 			}
-<span class="nc bnc" id="L306" title="All 2 branches missed.">		} else if (!scopes.equals(other.scopes)) {</span>
-<span class="nc" id="L307">			return false;</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">		} else if (!scopes.equals(other.scopes)) {</span>
+<span class="nc" id="L306">			return false;</span>
 		}
-<span class="nc bnc" id="L309" title="All 2 branches missed.">		if (type == null) {</span>
-<span class="nc bnc" id="L310" title="All 2 branches missed.">			if (other.type != null) {</span>
-<span class="nc" id="L311">				return false;</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">		if (type == null) {</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">			if (other.type != null) {</span>
+<span class="nc" id="L310">				return false;</span>
 			}
-<span class="nc bnc" id="L313" title="All 2 branches missed.">		} else if (!type.equals(other.type)) {</span>
-<span class="nc" id="L314">			return false;</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">		} else if (!type.equals(other.type)) {</span>
+<span class="nc" id="L313">			return false;</span>
 		}
-<span class="nc bnc" id="L316" title="All 2 branches missed.">		if (uri == null) {</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">			if (other.uri != null) {</span>
-<span class="nc" id="L318">				return false;</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">		if (uri == null) {</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">			if (other.uri != null) {</span>
+<span class="nc" id="L317">				return false;</span>
 			}
-<span class="nc bnc" id="L320" title="All 2 branches missed.">		} else if (!uri.equals(other.uri)) {</span>
-<span class="nc" id="L321">			return false;</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">		} else if (!uri.equals(other.uri)) {</span>
+<span class="nc" id="L320">			return false;</span>
 		}
-<span class="nc" id="L323">		return true;</span>
+<span class="nc" id="L322">		return true;</span>
 	}
 
 

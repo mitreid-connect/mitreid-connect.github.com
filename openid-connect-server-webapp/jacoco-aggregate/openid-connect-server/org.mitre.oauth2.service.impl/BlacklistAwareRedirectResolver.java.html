@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BlacklistAwareRedirectResolver.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">BlacklistAwareRedirectResolver.java</span></div><h1>BlacklistAwareRedirectResolver.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -39,7 +38,7 @@ import com.google.common.base.Strings;
  *
  */
 @Component(&quot;blacklistAwareRedirectResolver&quot;)
-<span class="nc" id="L42">public class BlacklistAwareRedirectResolver extends DefaultRedirectResolver {</span>
+<span class="nc" id="L41">public class BlacklistAwareRedirectResolver extends DefaultRedirectResolver {</span>
 
 	@Autowired
 	private BlacklistedSiteService blacklistService;
@@ -47,20 +46,20 @@ import com.google.common.base.Strings;
 	@Autowired
 	private ConfigurationPropertiesBean config;
 
-<span class="nc" id="L50">	private boolean strictMatch = false;</span>
+<span class="nc" id="L49">	private boolean strictMatch = true;</span>
 
 	/* (non-Javadoc)
 	 * @see org.springframework.security.oauth2.provider.endpoint.RedirectResolver#resolveRedirect(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)
 	 */
 	@Override
 	public String resolveRedirect(String requestedRedirect, ClientDetails client) throws OAuth2Exception {
-<span class="nc" id="L57">		String redirect = super.resolveRedirect(requestedRedirect, client);</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (blacklistService.isBlacklisted(redirect)) {</span>
+<span class="nc" id="L56">		String redirect = super.resolveRedirect(requestedRedirect, client);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		if (blacklistService.isBlacklisted(redirect)) {</span>
 			// don't let it go through
-<span class="nc" id="L60">			throw new InvalidRequestException(&quot;The supplied redirect_uri is not allowed on this server.&quot;);</span>
+<span class="nc" id="L59">			throw new InvalidRequestException(&quot;The supplied redirect_uri is not allowed on this server.&quot;);</span>
 		} else {
 			// not blacklisted, passed the parent test, we're fine
-<span class="nc" id="L63">			return redirect;</span>
+<span class="nc" id="L62">			return redirect;</span>
 		}
 	}
 
@@ -70,12 +69,12 @@ import com.google.common.base.Strings;
 	@Override
 	protected boolean redirectMatches(String requestedRedirect, String redirectUri) {
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">		if (isStrictMatch()) {</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">		if (isStrictMatch()) {</span>
 			// we're doing a strict string match for all clients
-<span class="nc" id="L75">			return Strings.nullToEmpty(requestedRedirect).equals(redirectUri);</span>
+<span class="nc" id="L74">			return Strings.nullToEmpty(requestedRedirect).equals(redirectUri);</span>
 		} else {
 			// otherwise do the prefix-match from the library
-<span class="nc" id="L78">			return super.redirectMatches(requestedRedirect, redirectUri);</span>
+<span class="nc" id="L77">			return super.redirectMatches(requestedRedirect, redirectUri);</span>
 		}
 
 	}
@@ -84,11 +83,11 @@ import com.google.common.base.Strings;
 	 * @return the strictMatch
 	 */
 	public boolean isStrictMatch() {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
 			// HEART mode enforces strict matching
-<span class="nc" id="L89">			return true;</span>
+<span class="nc" id="L88">			return true;</span>
 		} else {
-<span class="nc" id="L91">			return strictMatch;</span>
+<span class="nc" id="L90">			return strictMatch;</span>
 		}
 	}
 
@@ -98,8 +97,8 @@ import com.google.common.base.Strings;
 	 * @param strictMatch the strictMatch to set
 	 */
 	public void setStrictMatch(boolean strictMatch) {
-<span class="nc" id="L101">		this.strictMatch = strictMatch;</span>
-<span class="nc" id="L102">	}</span>
+<span class="nc" id="L100">		this.strictMatch = strictMatch;</span>
+<span class="nc" id="L101">	}</span>
 
 
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PendingOIDCAuthenticationToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">PendingOIDCAuthenticationToken.java</span></div><h1>PendingOIDCAuthenticationToken.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -63,20 +62,20 @@ public class PendingOIDCAuthenticationToken extends AbstractAuthenticationToken 
 			ServerConfiguration serverConfiguration,
 			JWT idToken, String accessTokenValue, String refreshTokenValue) {
 
-<span class="nc" id="L66">		super(new ArrayList&lt;GrantedAuthority&gt;(0));</span>
+<span class="nc" id="L65">		super(new ArrayList&lt;GrantedAuthority&gt;(0));</span>
 
-<span class="nc" id="L68">		this.principal = ImmutableMap.of(&quot;sub&quot;, subject, &quot;iss&quot;, issuer);</span>
-<span class="nc" id="L69">		this.sub = subject;</span>
-<span class="nc" id="L70">		this.issuer = issuer;</span>
-<span class="nc" id="L71">		this.idToken = idToken;</span>
-<span class="nc" id="L72">		this.accessTokenValue = accessTokenValue;</span>
-<span class="nc" id="L73">		this.refreshTokenValue = refreshTokenValue;</span>
+<span class="nc" id="L67">		this.principal = ImmutableMap.of(&quot;sub&quot;, subject, &quot;iss&quot;, issuer);</span>
+<span class="nc" id="L68">		this.sub = subject;</span>
+<span class="nc" id="L69">		this.issuer = issuer;</span>
+<span class="nc" id="L70">		this.idToken = idToken;</span>
+<span class="nc" id="L71">		this.accessTokenValue = accessTokenValue;</span>
+<span class="nc" id="L72">		this.refreshTokenValue = refreshTokenValue;</span>
 
-<span class="nc" id="L75">		this.serverConfiguration = serverConfiguration;</span>
+<span class="nc" id="L74">		this.serverConfiguration = serverConfiguration;</span>
 
 
-<span class="nc" id="L78">		setAuthenticated(false);</span>
-<span class="nc" id="L79">	}</span>
+<span class="nc" id="L77">		setAuthenticated(false);</span>
+<span class="nc" id="L78">	}</span>
 
 	/*
 	 * (non-Javadoc)
@@ -85,7 +84,7 @@ public class PendingOIDCAuthenticationToken extends AbstractAuthenticationToken 
 	 */
 	@Override
 	public Object getCredentials() {
-<span class="nc" id="L88">		return accessTokenValue;</span>
+<span class="nc" id="L87">		return accessTokenValue;</span>
 	}
 
 	/**
@@ -93,66 +92,66 @@ public class PendingOIDCAuthenticationToken extends AbstractAuthenticationToken 
 	 */
 	@Override
 	public Object getPrincipal() {
-<span class="nc" id="L96">		return principal;</span>
+<span class="nc" id="L95">		return principal;</span>
 	}
 
 	public String getSub() {
-<span class="nc" id="L100">		return sub;</span>
+<span class="nc" id="L99">		return sub;</span>
 	}
 
 	/**
 	 * @return the idTokenValue
 	 */
 	public JWT getIdToken() {
-<span class="nc" id="L107">		return idToken;</span>
+<span class="nc" id="L106">		return idToken;</span>
 	}
 
 	/**
 	 * @return the accessTokenValue
 	 */
 	public String getAccessTokenValue() {
-<span class="nc" id="L114">		return accessTokenValue;</span>
+<span class="nc" id="L113">		return accessTokenValue;</span>
 	}
 
 	/**
 	 * @return the refreshTokenValue
 	 */
 	public String getRefreshTokenValue() {
-<span class="nc" id="L121">		return refreshTokenValue;</span>
+<span class="nc" id="L120">		return refreshTokenValue;</span>
 	}
 
 	/**
 	 * @return the serverConfiguration
 	 */
 	public ServerConfiguration getServerConfiguration() {
-<span class="nc" id="L128">		return serverConfiguration;</span>
+<span class="nc" id="L127">		return serverConfiguration;</span>
 	}
 
 	/**
 	 * @return the issuer
 	 */
 	public String getIssuer() {
-<span class="nc" id="L135">		return issuer;</span>
+<span class="nc" id="L134">		return issuer;</span>
 	}
 
 	/*
 	 * Custom serialization to handle the JSON object
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-<span class="nc" id="L142">		out.defaultWriteObject();</span>
-<span class="nc bnc" id="L143" title="All 2 branches missed.">		if (idToken == null) {</span>
-<span class="nc" id="L144">			out.writeObject(null);</span>
+<span class="nc" id="L141">		out.defaultWriteObject();</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">		if (idToken == null) {</span>
+<span class="nc" id="L143">			out.writeObject(null);</span>
 		} else {
-<span class="nc" id="L146">			out.writeObject(idToken.serialize());</span>
+<span class="nc" id="L145">			out.writeObject(idToken.serialize());</span>
 		}
-<span class="nc" id="L148">	}</span>
+<span class="nc" id="L147">	}</span>
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException, ParseException {
-<span class="nc" id="L150">		in.defaultReadObject();</span>
-<span class="nc" id="L151">		Object o = in.readObject();</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">		if (o != null) {</span>
-<span class="nc" id="L153">			idToken = JWTParser.parse((String)o);</span>
+<span class="nc" id="L149">		in.defaultReadObject();</span>
+<span class="nc" id="L150">		Object o = in.readObject();</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (o != null) {</span>
+<span class="nc" id="L152">			idToken = JWTParser.parse((String)o);</span>
 		}
-<span class="nc" id="L155">	}</span>
+<span class="nc" id="L154">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProtectedResourceRegistrationEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">ProtectedResourceRegistrationEndpoint.java</span></div><h1>ProtectedResourceRegistrationEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -58,7 +57,7 @@ import com.google.gson.JsonSyntaxException;
 
 @Controller
 @RequestMapping(value = ProtectedResourceRegistrationEndpoint.URL)
-<span class="nc" id="L61">public class ProtectedResourceRegistrationEndpoint {</span>
+<span class="nc" id="L60">public class ProtectedResourceRegistrationEndpoint {</span>
 
 	/**
 	 *
@@ -83,7 +82,7 @@ import com.google.gson.JsonSyntaxException;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L86">	private static final Logger logger = LoggerFactory.getLogger(ProtectedResourceRegistrationEndpoint.class);</span>
+<span class="nc" id="L85">	private static final Logger logger = LoggerFactory.getLogger(ProtectedResourceRegistrationEndpoint.class);</span>
 
 	/**
 	 * Create a new Client, issue a client ID, and create a registration access token.
@@ -95,18 +94,18 @@ import com.google.gson.JsonSyntaxException;
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String registerNewProtectedResource(@RequestBody String jsonString, Model m) {
 
-<span class="nc" id="L98">		ClientDetailsEntity newClient = null;</span>
+<span class="nc" id="L97">		ClientDetailsEntity newClient = null;</span>
 		try {
-<span class="nc" id="L100">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
-<span class="nc" id="L101">		} catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L99">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
+<span class="nc" id="L100">		} catch (JsonSyntaxException e) {</span>
 			// bad parse
 			// didn't parse, this is a bad request
-<span class="nc" id="L104">			logger.error(&quot;registerNewProtectedResource failed; submitted JSON is malformed&quot;);</span>
-<span class="nc" id="L105">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
-<span class="nc" id="L106">			return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L107">		}</span>
+<span class="nc" id="L103">			logger.error(&quot;registerNewProtectedResource failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L104">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L105">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L106">		}</span>
 
-<span class="nc bnc" id="L109" title="All 2 branches missed.">		if (newClient != null) {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (newClient != null) {</span>
 			// it parsed!
 
 			//
@@ -114,108 +113,108 @@ import com.google.gson.JsonSyntaxException;
 			//
 
 			// clear out any spurious id/secret (clients don't get to pick)
-<span class="nc" id="L117">			newClient.setClientId(null);</span>
-<span class="nc" id="L118">			newClient.setClientSecret(null);</span>
+<span class="nc" id="L116">			newClient.setClientId(null);</span>
+<span class="nc" id="L117">			newClient.setClientSecret(null);</span>
 
 			// do validation on the fields
 			try {
-<span class="nc" id="L122">				newClient = validateScopes(newClient);</span>
-<span class="nc" id="L123">				newClient = validateAuth(newClient);</span>
-<span class="nc" id="L124">			} catch (ValidationException ve) {</span>
+<span class="nc" id="L121">				newClient = validateScopes(newClient);</span>
+<span class="nc" id="L122">				newClient = validateAuth(newClient);</span>
+<span class="nc" id="L123">			} catch (ValidationException ve) {</span>
 				// validation failed, return an error
-<span class="nc" id="L126">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
-<span class="nc" id="L127">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
-<span class="nc" id="L128">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
-<span class="nc" id="L129">				return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L130">			}</span>
+<span class="nc" id="L125">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
+<span class="nc" id="L126">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
+<span class="nc" id="L127">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
+<span class="nc" id="L128">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L129">			}</span>
 
 
 			// no grant types are allowed
-<span class="nc" id="L134">			newClient.setGrantTypes(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L135">			newClient.setResponseTypes(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L136">			newClient.setRedirectUris(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L133">			newClient.setGrantTypes(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L134">			newClient.setResponseTypes(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L135">			newClient.setRedirectUris(new HashSet&lt;String&gt;());</span>
 
 			// don't issue tokens to this client
-<span class="nc" id="L139">			newClient.setAccessTokenValiditySeconds(0);</span>
-<span class="nc" id="L140">			newClient.setIdTokenValiditySeconds(0);</span>
-<span class="nc" id="L141">			newClient.setRefreshTokenValiditySeconds(0);</span>
+<span class="nc" id="L138">			newClient.setAccessTokenValiditySeconds(0);</span>
+<span class="nc" id="L139">			newClient.setIdTokenValiditySeconds(0);</span>
+<span class="nc" id="L140">			newClient.setRefreshTokenValiditySeconds(0);</span>
 
 			// clear out unused fields
-<span class="nc" id="L144">			newClient.setDefaultACRvalues(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L145">			newClient.setDefaultMaxAge(null);</span>
-<span class="nc" id="L146">			newClient.setIdTokenEncryptedResponseAlg(null);</span>
-<span class="nc" id="L147">			newClient.setIdTokenEncryptedResponseEnc(null);</span>
-<span class="nc" id="L148">			newClient.setIdTokenSignedResponseAlg(null);</span>
-<span class="nc" id="L149">			newClient.setInitiateLoginUri(null);</span>
-<span class="nc" id="L150">			newClient.setPostLogoutRedirectUris(null);</span>
-<span class="nc" id="L151">			newClient.setRequestObjectSigningAlg(null);</span>
-<span class="nc" id="L152">			newClient.setRequireAuthTime(null);</span>
-<span class="nc" id="L153">			newClient.setReuseRefreshToken(false);</span>
-<span class="nc" id="L154">			newClient.setSectorIdentifierUri(null);</span>
-<span class="nc" id="L155">			newClient.setSubjectType(null);</span>
-<span class="nc" id="L156">			newClient.setUserInfoEncryptedResponseAlg(null);</span>
-<span class="nc" id="L157">			newClient.setUserInfoEncryptedResponseEnc(null);</span>
-<span class="nc" id="L158">			newClient.setUserInfoSignedResponseAlg(null);</span>
+<span class="nc" id="L143">			newClient.setDefaultACRvalues(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L144">			newClient.setDefaultMaxAge(null);</span>
+<span class="nc" id="L145">			newClient.setIdTokenEncryptedResponseAlg(null);</span>
+<span class="nc" id="L146">			newClient.setIdTokenEncryptedResponseEnc(null);</span>
+<span class="nc" id="L147">			newClient.setIdTokenSignedResponseAlg(null);</span>
+<span class="nc" id="L148">			newClient.setInitiateLoginUri(null);</span>
+<span class="nc" id="L149">			newClient.setPostLogoutRedirectUris(null);</span>
+<span class="nc" id="L150">			newClient.setRequestObjectSigningAlg(null);</span>
+<span class="nc" id="L151">			newClient.setRequireAuthTime(null);</span>
+<span class="nc" id="L152">			newClient.setReuseRefreshToken(false);</span>
+<span class="nc" id="L153">			newClient.setSectorIdentifierUri(null);</span>
+<span class="nc" id="L154">			newClient.setSubjectType(null);</span>
+<span class="nc" id="L155">			newClient.setUserInfoEncryptedResponseAlg(null);</span>
+<span class="nc" id="L156">			newClient.setUserInfoEncryptedResponseEnc(null);</span>
+<span class="nc" id="L157">			newClient.setUserInfoSignedResponseAlg(null);</span>
 
 			// this client has been dynamically registered (obviously)
-<span class="nc" id="L161">			newClient.setDynamicallyRegistered(true);</span>
+<span class="nc" id="L160">			newClient.setDynamicallyRegistered(true);</span>
 
 			// this client has access to the introspection endpoint
-<span class="nc" id="L164">			newClient.setAllowIntrospection(true);</span>
+<span class="nc" id="L163">			newClient.setAllowIntrospection(true);</span>
 
 			// now save it
 			try {
-<span class="nc" id="L168">				ClientDetailsEntity savedClient = clientService.saveNewClient(newClient);</span>
+<span class="nc" id="L167">				ClientDetailsEntity savedClient = clientService.saveNewClient(newClient);</span>
 
 				// generate the registration access token
-<span class="nc" id="L171">				OAuth2AccessTokenEntity token = connectTokenService.createResourceAccessToken(savedClient);</span>
-<span class="nc" id="L172">				tokenService.saveAccessToken(token);</span>
+<span class="nc" id="L170">				OAuth2AccessTokenEntity token = connectTokenService.createResourceAccessToken(savedClient);</span>
+<span class="nc" id="L171">				tokenService.saveAccessToken(token);</span>
 
 				// send it all out to the view
 
-<span class="nc" id="L176">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;resource/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L177">				m.addAttribute(&quot;client&quot;, registered);</span>
-<span class="nc" id="L178">				m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED); // http 201</span>
+<span class="nc" id="L175">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;resource/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L176">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L177">				m.addAttribute(HttpCodeView.CODE, HttpStatus.CREATED); // http 201</span>
 
-<span class="nc" id="L180">				return ClientInformationResponseView.VIEWNAME;</span>
-<span class="nc" id="L181">			} catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L182">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
-<span class="nc" id="L183">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
-<span class="nc" id="L184">				return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L185">			} catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L186">				logger.error(&quot;Couldn't save client&quot;, e);</span>
+<span class="nc" id="L179">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L180">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L181">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L182">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L183">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L184">			} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L185">				logger.error(&quot;Couldn't save client&quot;, e);</span>
 
-<span class="nc" id="L188">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
-<span class="nc" id="L189">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
-<span class="nc" id="L190">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L187">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
+<span class="nc" id="L188">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
+<span class="nc" id="L189">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
 
-<span class="nc" id="L192">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L191">				return JsonErrorView.VIEWNAME;</span>
 			}
 		} else {
 			// didn't parse, this is a bad request
-<span class="nc" id="L196">			logger.error(&quot;registerNewClient failed; submitted JSON is malformed&quot;);</span>
-<span class="nc" id="L197">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L195">			logger.error(&quot;registerNewClient failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L196">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
 
-<span class="nc" id="L199">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L198">			return HttpCodeView.VIEWNAME;</span>
 		}
 
 	}
 
 	private ClientDetailsEntity validateScopes(ClientDetailsEntity newClient) throws ValidationException {
 		// scopes that the client is asking for
-<span class="nc" id="L206">		Set&lt;SystemScope&gt; requestedScopes = scopeService.fromStrings(newClient.getScope());</span>
+<span class="nc" id="L205">		Set&lt;SystemScope&gt; requestedScopes = scopeService.fromStrings(newClient.getScope());</span>
 
 		// the scopes that the client can have must be a subset of the dynamically allowed scopes
-<span class="nc" id="L209">		Set&lt;SystemScope&gt; allowedScopes = scopeService.removeRestrictedAndReservedScopes(requestedScopes);</span>
+<span class="nc" id="L208">		Set&lt;SystemScope&gt; allowedScopes = scopeService.removeRestrictedAndReservedScopes(requestedScopes);</span>
 
 		// if the client didn't ask for any, give them the defaults
-<span class="nc bnc" id="L212" title="All 4 branches missed.">		if (allowedScopes == null || allowedScopes.isEmpty()) {</span>
-<span class="nc" id="L213">			allowedScopes = scopeService.getDefaults();</span>
+<span class="nc bnc" id="L211" title="All 4 branches missed.">		if (allowedScopes == null || allowedScopes.isEmpty()) {</span>
+<span class="nc" id="L212">			allowedScopes = scopeService.getDefaults();</span>
 		}
 
-<span class="nc" id="L216">		newClient.setScope(scopeService.toStrings(allowedScopes));</span>
+<span class="nc" id="L215">		newClient.setScope(scopeService.toStrings(allowedScopes));</span>
 
-<span class="nc" id="L218">		return newClient;</span>
+<span class="nc" id="L217">		return newClient;</span>
 	}
 
 	/**
@@ -229,35 +228,35 @@ import com.google.gson.JsonSyntaxException;
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String readResourceConfiguration(@PathVariable(&quot;id&quot;) String clientId, Model m, OAuth2Authentication auth) {
 
-<span class="nc" id="L232">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L231">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L234" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
 
 
 
 			try {
 				// possibly update the token
-<span class="nc" id="L240">				OAuth2AccessTokenEntity token = fetchValidRegistrationToken(auth, client);</span>
+<span class="nc" id="L239">				OAuth2AccessTokenEntity token = fetchValidRegistrationToken(auth, client);</span>
 
-<span class="nc" id="L242">				RegisteredClient registered = new RegisteredClient(client, token.getValue(), config.getIssuer() + &quot;resource/&quot; +  UriUtils.encodePathSegment(client.getClientId(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L241">				RegisteredClient registered = new RegisteredClient(client, token.getValue(), config.getIssuer() + &quot;resource/&quot; +  UriUtils.encodePathSegment(client.getClientId(), &quot;UTF-8&quot;));</span>
 
 				// send it all out to the view
-<span class="nc" id="L245">				m.addAttribute(&quot;client&quot;, registered);</span>
-<span class="nc" id="L246">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
+<span class="nc" id="L244">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L245">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
 
-<span class="nc" id="L248">				return ClientInformationResponseView.VIEWNAME;</span>
-<span class="nc" id="L249">			} catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L250">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
-<span class="nc" id="L251">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
-<span class="nc" id="L252">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L247">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L248">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L249">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L250">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L251">				return HttpCodeView.VIEWNAME;</span>
 			}
 		} else {
 			// client mismatch
-<span class="nc" id="L256">			logger.error(&quot;readResourceConfiguration failed, client ID mismatch: &quot;</span>
-<span class="nc" id="L257">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
-<span class="nc" id="L258">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+<span class="nc" id="L255">			logger.error(&quot;readResourceConfiguration failed, client ID mismatch: &quot;</span>
+<span class="nc" id="L256">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L257">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
 
-<span class="nc" id="L260">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L259">			return HttpCodeView.VIEWNAME;</span>
 		}
 	}
 
@@ -274,110 +273,110 @@ import com.google.gson.JsonSyntaxException;
 	public String updateProtectedResource(@PathVariable(&quot;id&quot;) String clientId, @RequestBody String jsonString, Model m, OAuth2Authentication auth) {
 
 
-<span class="nc" id="L277">		ClientDetailsEntity newClient = null;</span>
+<span class="nc" id="L276">		ClientDetailsEntity newClient = null;</span>
 		try {
-<span class="nc" id="L279">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
-<span class="nc" id="L280">		} catch (JsonSyntaxException e) {</span>
+<span class="nc" id="L278">			newClient = ClientDetailsEntityJsonProcessor.parse(jsonString);</span>
+<span class="nc" id="L279">		} catch (JsonSyntaxException e) {</span>
 			// bad parse
 			// didn't parse, this is a bad request
-<span class="nc" id="L283">			logger.error(&quot;updateProtectedResource failed; submitted JSON is malformed&quot;);</span>
-<span class="nc" id="L284">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
-<span class="nc" id="L285">			return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L286">		}</span>
+<span class="nc" id="L282">			logger.error(&quot;updateProtectedResource failed; submitted JSON is malformed&quot;);</span>
+<span class="nc" id="L283">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L284">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L285">		}</span>
 
-<span class="nc" id="L288">		ClientDetailsEntity oldClient = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L287">		ClientDetailsEntity oldClient = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L290" title="All 4 branches missed.">		if (newClient != null &amp;&amp; oldClient != null  // we have an existing client and the new one parsed</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(auth.getOAuth2Request().getClientId()) // the client passed in the URI matches the one in the auth</span>
-<span class="nc bnc" id="L292" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(newClient.getClientId()) // the client passed in the body matches the one in the URI</span>
+<span class="nc bnc" id="L289" title="All 4 branches missed.">		if (newClient != null &amp;&amp; oldClient != null  // we have an existing client and the new one parsed</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(auth.getOAuth2Request().getClientId()) // the client passed in the URI matches the one in the auth</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">				&amp;&amp; oldClient.getClientId().equals(newClient.getClientId()) // the client passed in the body matches the one in the URI</span>
 				) {
 
 			// a client can't ask to update its own client secret to any particular value
-<span class="nc" id="L296">			newClient.setClientSecret(oldClient.getClientSecret());</span>
+<span class="nc" id="L295">			newClient.setClientSecret(oldClient.getClientSecret());</span>
 
-<span class="nc" id="L298">			newClient.setCreatedAt(oldClient.getCreatedAt());</span>
+<span class="nc" id="L297">			newClient.setCreatedAt(oldClient.getCreatedAt());</span>
 
 			// no grant types are allowed
-<span class="nc" id="L301">			newClient.setGrantTypes(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L302">			newClient.setResponseTypes(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L303">			newClient.setRedirectUris(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L300">			newClient.setGrantTypes(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L301">			newClient.setResponseTypes(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L302">			newClient.setRedirectUris(new HashSet&lt;String&gt;());</span>
 
 			// don't issue tokens to this client
-<span class="nc" id="L306">			newClient.setAccessTokenValiditySeconds(0);</span>
-<span class="nc" id="L307">			newClient.setIdTokenValiditySeconds(0);</span>
-<span class="nc" id="L308">			newClient.setRefreshTokenValiditySeconds(0);</span>
+<span class="nc" id="L305">			newClient.setAccessTokenValiditySeconds(0);</span>
+<span class="nc" id="L306">			newClient.setIdTokenValiditySeconds(0);</span>
+<span class="nc" id="L307">			newClient.setRefreshTokenValiditySeconds(0);</span>
 
 			// clear out unused fields
-<span class="nc" id="L311">			newClient.setDefaultACRvalues(new HashSet&lt;String&gt;());</span>
-<span class="nc" id="L312">			newClient.setDefaultMaxAge(null);</span>
-<span class="nc" id="L313">			newClient.setIdTokenEncryptedResponseAlg(null);</span>
-<span class="nc" id="L314">			newClient.setIdTokenEncryptedResponseEnc(null);</span>
-<span class="nc" id="L315">			newClient.setIdTokenSignedResponseAlg(null);</span>
-<span class="nc" id="L316">			newClient.setInitiateLoginUri(null);</span>
-<span class="nc" id="L317">			newClient.setPostLogoutRedirectUris(null);</span>
-<span class="nc" id="L318">			newClient.setRequestObjectSigningAlg(null);</span>
-<span class="nc" id="L319">			newClient.setRequireAuthTime(null);</span>
-<span class="nc" id="L320">			newClient.setReuseRefreshToken(false);</span>
-<span class="nc" id="L321">			newClient.setSectorIdentifierUri(null);</span>
-<span class="nc" id="L322">			newClient.setSubjectType(null);</span>
-<span class="nc" id="L323">			newClient.setUserInfoEncryptedResponseAlg(null);</span>
-<span class="nc" id="L324">			newClient.setUserInfoEncryptedResponseEnc(null);</span>
-<span class="nc" id="L325">			newClient.setUserInfoSignedResponseAlg(null);</span>
+<span class="nc" id="L310">			newClient.setDefaultACRvalues(new HashSet&lt;String&gt;());</span>
+<span class="nc" id="L311">			newClient.setDefaultMaxAge(null);</span>
+<span class="nc" id="L312">			newClient.setIdTokenEncryptedResponseAlg(null);</span>
+<span class="nc" id="L313">			newClient.setIdTokenEncryptedResponseEnc(null);</span>
+<span class="nc" id="L314">			newClient.setIdTokenSignedResponseAlg(null);</span>
+<span class="nc" id="L315">			newClient.setInitiateLoginUri(null);</span>
+<span class="nc" id="L316">			newClient.setPostLogoutRedirectUris(null);</span>
+<span class="nc" id="L317">			newClient.setRequestObjectSigningAlg(null);</span>
+<span class="nc" id="L318">			newClient.setRequireAuthTime(null);</span>
+<span class="nc" id="L319">			newClient.setReuseRefreshToken(false);</span>
+<span class="nc" id="L320">			newClient.setSectorIdentifierUri(null);</span>
+<span class="nc" id="L321">			newClient.setSubjectType(null);</span>
+<span class="nc" id="L322">			newClient.setUserInfoEncryptedResponseAlg(null);</span>
+<span class="nc" id="L323">			newClient.setUserInfoEncryptedResponseEnc(null);</span>
+<span class="nc" id="L324">			newClient.setUserInfoSignedResponseAlg(null);</span>
 
 			// this client has been dynamically registered (obviously)
-<span class="nc" id="L328">			newClient.setDynamicallyRegistered(true);</span>
+<span class="nc" id="L327">			newClient.setDynamicallyRegistered(true);</span>
 
 			// this client has access to the introspection endpoint
-<span class="nc" id="L331">			newClient.setAllowIntrospection(true);</span>
+<span class="nc" id="L330">			newClient.setAllowIntrospection(true);</span>
 
 			// do validation on the fields
 			try {
-<span class="nc" id="L335">				newClient = validateScopes(newClient);</span>
-<span class="nc" id="L336">				newClient = validateAuth(newClient);</span>
-<span class="nc" id="L337">			} catch (ValidationException ve) {</span>
+<span class="nc" id="L334">				newClient = validateScopes(newClient);</span>
+<span class="nc" id="L335">				newClient = validateAuth(newClient);</span>
+<span class="nc" id="L336">			} catch (ValidationException ve) {</span>
 				// validation failed, return an error
-<span class="nc" id="L339">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
-<span class="nc" id="L340">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
-<span class="nc" id="L341">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
-<span class="nc" id="L342">				return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L343">			}</span>
+<span class="nc" id="L338">				m.addAttribute(JsonErrorView.ERROR, ve.getError());</span>
+<span class="nc" id="L339">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, ve.getErrorDescription());</span>
+<span class="nc" id="L340">				m.addAttribute(HttpCodeView.CODE, ve.getStatus());</span>
+<span class="nc" id="L341">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L342">			}</span>
 
 
 			try {
 				// save the client
-<span class="nc" id="L348">				ClientDetailsEntity savedClient = clientService.updateClient(oldClient, newClient);</span>
+<span class="nc" id="L347">				ClientDetailsEntity savedClient = clientService.updateClient(oldClient, newClient);</span>
 
 				// possibly update the token
-<span class="nc" id="L351">				OAuth2AccessTokenEntity token = fetchValidRegistrationToken(auth, savedClient);</span>
+<span class="nc" id="L350">				OAuth2AccessTokenEntity token = fetchValidRegistrationToken(auth, savedClient);</span>
 
-<span class="nc" id="L353">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;resource/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L352">				RegisteredClient registered = new RegisteredClient(savedClient, token.getValue(), config.getIssuer() + &quot;resource/&quot; + UriUtils.encodePathSegment(savedClient.getClientId(), &quot;UTF-8&quot;));</span>
 
 				// send it all out to the view
-<span class="nc" id="L356">				m.addAttribute(&quot;client&quot;, registered);</span>
-<span class="nc" id="L357">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
+<span class="nc" id="L355">				m.addAttribute(&quot;client&quot;, registered);</span>
+<span class="nc" id="L356">				m.addAttribute(HttpCodeView.CODE, HttpStatus.OK); // http 200</span>
 
-<span class="nc" id="L359">				return ClientInformationResponseView.VIEWNAME;</span>
-<span class="nc" id="L360">			} catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L361">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
-<span class="nc" id="L362">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
-<span class="nc" id="L363">				return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L364">			} catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L365">				logger.error(&quot;Couldn't save client&quot;, e);</span>
+<span class="nc" id="L358">				return ClientInformationResponseView.VIEWNAME;</span>
+<span class="nc" id="L359">			} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L360">				logger.error(&quot;Unsupported encoding&quot;, e);</span>
+<span class="nc" id="L361">				m.addAttribute(HttpCodeView.CODE, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L362">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L363">			} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L364">				logger.error(&quot;Couldn't save client&quot;, e);</span>
 
-<span class="nc" id="L367">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
-<span class="nc" id="L368">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
-<span class="nc" id="L369">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
+<span class="nc" id="L366">				m.addAttribute(JsonErrorView.ERROR, &quot;invalid_client_metadata&quot;);</span>
+<span class="nc" id="L367">				m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Unable to save client due to invalid or inconsistent metadata.&quot;);</span>
+<span class="nc" id="L368">				m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST); // http 400</span>
 
-<span class="nc" id="L371">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L370">				return JsonErrorView.VIEWNAME;</span>
 			}
 		} else {
 			// client mismatch
-<span class="nc" id="L375">			logger.error(&quot;updateProtectedResource&quot; +</span>
+<span class="nc" id="L374">			logger.error(&quot;updateProtectedResource&quot; +</span>
 					&quot; failed, client ID mismatch: &quot;
-<span class="nc" id="L377">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
-<span class="nc" id="L378">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+<span class="nc" id="L376">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L377">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
 
-<span class="nc" id="L380">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L379">			return HttpCodeView.VIEWNAME;</span>
 		}
 	}
 
@@ -392,79 +391,79 @@ import com.google.gson.JsonSyntaxException;
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteResource(@PathVariable(&quot;id&quot;) String clientId, Model m, OAuth2Authentication auth) {
 
-<span class="nc" id="L395">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L394">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L397" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
+<span class="nc bnc" id="L396" title="All 4 branches missed.">		if (client != null &amp;&amp; client.getClientId().equals(auth.getOAuth2Request().getClientId())) {</span>
 
-<span class="nc" id="L399">			clientService.deleteClient(client);</span>
+<span class="nc" id="L398">			clientService.deleteClient(client);</span>
 
-<span class="nc" id="L401">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT); // http 204</span>
+<span class="nc" id="L400">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NO_CONTENT); // http 204</span>
 
-<span class="nc" id="L403">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L402">			return HttpCodeView.VIEWNAME;</span>
 		} else {
 			// client mismatch
-<span class="nc" id="L406">			logger.error(&quot;readClientConfiguration failed, client ID mismatch: &quot;</span>
-<span class="nc" id="L407">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
-<span class="nc" id="L408">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
+<span class="nc" id="L405">			logger.error(&quot;readClientConfiguration failed, client ID mismatch: &quot;</span>
+<span class="nc" id="L406">					+ clientId + &quot; and &quot; + auth.getOAuth2Request().getClientId() + &quot; do not match.&quot;);</span>
+<span class="nc" id="L407">			m.addAttribute(HttpCodeView.CODE, HttpStatus.FORBIDDEN); // http 403</span>
 
-<span class="nc" id="L410">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L409">			return HttpCodeView.VIEWNAME;</span>
 		}
 	}
 
 	private ClientDetailsEntity validateAuth(ClientDetailsEntity newClient) throws ValidationException {
-<span class="nc bnc" id="L415" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == null) {</span>
-<span class="nc" id="L416">			newClient.setTokenEndpointAuthMethod(AuthMethod.SECRET_BASIC);</span>
+<span class="nc bnc" id="L414" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == null) {</span>
+<span class="nc" id="L415">			newClient.setTokenEndpointAuthMethod(AuthMethod.SECRET_BASIC);</span>
 		}
 
-<span class="nc bnc" id="L419" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_BASIC ||</span>
-<span class="nc bnc" id="L420" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_JWT ||</span>
-<span class="nc bnc" id="L421" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_POST) {</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">		if (newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_BASIC ||</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_JWT ||</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">				newClient.getTokenEndpointAuthMethod() == AuthMethod.SECRET_POST) {</span>
 
-<span class="nc bnc" id="L423" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(newClient.getClientSecret())) {</span>
+<span class="nc bnc" id="L422" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(newClient.getClientSecret())) {</span>
 				// no secret yet, we need to generate a secret
-<span class="nc" id="L425">				newClient = clientService.generateClientSecret(newClient);</span>
+<span class="nc" id="L424">				newClient = clientService.generateClientSecret(newClient);</span>
 			}
-<span class="nc bnc" id="L427" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.PRIVATE_KEY) {</span>
-<span class="nc bnc" id="L428" title="All 4 branches missed.">			if (Strings.isNullOrEmpty(newClient.getJwksUri()) &amp;&amp; newClient.getJwks() == null) {</span>
-<span class="nc" id="L429">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;JWK Set URI required when using private key authentication&quot;, HttpStatus.BAD_REQUEST);</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.PRIVATE_KEY) {</span>
+<span class="nc bnc" id="L427" title="All 4 branches missed.">			if (Strings.isNullOrEmpty(newClient.getJwksUri()) &amp;&amp; newClient.getJwks() == null) {</span>
+<span class="nc" id="L428">				throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;JWK Set URI required when using private key authentication&quot;, HttpStatus.BAD_REQUEST);</span>
 			}
 
-<span class="nc" id="L432">			newClient.setClientSecret(null);</span>
-<span class="nc bnc" id="L433" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.NONE) {</span>
-<span class="nc" id="L434">			newClient.setClientSecret(null);</span>
+<span class="nc" id="L431">			newClient.setClientSecret(null);</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">		} else if (newClient.getTokenEndpointAuthMethod() == AuthMethod.NONE) {</span>
+<span class="nc" id="L433">			newClient.setClientSecret(null);</span>
 		} else {
-<span class="nc" id="L436">			throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Unknown authentication method&quot;, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L435">			throw new ValidationException(&quot;invalid_client_metadata&quot;, &quot;Unknown authentication method&quot;, HttpStatus.BAD_REQUEST);</span>
 		}
-<span class="nc" id="L438">		return newClient;</span>
+<span class="nc" id="L437">		return newClient;</span>
 	}
 
 	private OAuth2AccessTokenEntity fetchValidRegistrationToken(OAuth2Authentication auth, ClientDetailsEntity client) {
 
-<span class="nc" id="L443">		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();</span>
-<span class="nc" id="L444">		OAuth2AccessTokenEntity token = tokenService.readAccessToken(details.getTokenValue());</span>
+<span class="nc" id="L442">		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();</span>
+<span class="nc" id="L443">		OAuth2AccessTokenEntity token = tokenService.readAccessToken(details.getTokenValue());</span>
 
-<span class="nc bnc" id="L446" title="All 2 branches missed.">		if (config.getRegTokenLifeTime() != null) {</span>
+<span class="nc bnc" id="L445" title="All 2 branches missed.">		if (config.getRegTokenLifeTime() != null) {</span>
 
 			try {
 				// Re-issue the token if it has been issued before [currentTime - validity]
-<span class="nc" id="L450">				Date validToDate = new Date(System.currentTimeMillis() - config.getRegTokenLifeTime() * 1000);</span>
-<span class="nc bnc" id="L451" title="All 2 branches missed.">				if(token.getJwt().getJWTClaimsSet().getIssueTime().before(validToDate)) {</span>
-<span class="nc" id="L452">					logger.info(&quot;Rotating the registration access token for &quot; + client.getClientId());</span>
-<span class="nc" id="L453">					tokenService.revokeAccessToken(token);</span>
-<span class="nc" id="L454">					OAuth2AccessTokenEntity newToken = connectTokenService.createResourceAccessToken(client);</span>
-<span class="nc" id="L455">					tokenService.saveAccessToken(newToken);</span>
-<span class="nc" id="L456">					return newToken;</span>
+<span class="nc" id="L449">				Date validToDate = new Date(System.currentTimeMillis() - config.getRegTokenLifeTime() * 1000);</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">				if(token.getJwt().getJWTClaimsSet().getIssueTime().before(validToDate)) {</span>
+<span class="nc" id="L451">					logger.info(&quot;Rotating the registration access token for &quot; + client.getClientId());</span>
+<span class="nc" id="L452">					tokenService.revokeAccessToken(token);</span>
+<span class="nc" id="L453">					OAuth2AccessTokenEntity newToken = connectTokenService.createResourceAccessToken(client);</span>
+<span class="nc" id="L454">					tokenService.saveAccessToken(newToken);</span>
+<span class="nc" id="L455">					return newToken;</span>
 				} else {
 					// it's not expired, keep going
-<span class="nc" id="L459">					return token;</span>
+<span class="nc" id="L458">					return token;</span>
 				}
-<span class="nc" id="L461">			} catch (ParseException e) {</span>
-<span class="nc" id="L462">				logger.error(&quot;Couldn't parse a known-valid token?&quot;, e);</span>
-<span class="nc" id="L463">				return token;</span>
+<span class="nc" id="L460">			} catch (ParseException e) {</span>
+<span class="nc" id="L461">				logger.error(&quot;Couldn't parse a known-valid token?&quot;, e);</span>
+<span class="nc" id="L462">				return token;</span>
 			}
 		} else {
 			// tokens don't expire, just return it
-<span class="nc" id="L467">			return token;</span>
+<span class="nc" id="L466">			return token;</span>
 		}
 	}
 

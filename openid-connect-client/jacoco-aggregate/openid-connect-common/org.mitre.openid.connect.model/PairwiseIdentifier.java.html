@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PairwiseIdentifier.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model</a> &gt; <span class="el_source">PairwiseIdentifier.java</span></div><h1>PairwiseIdentifier.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -42,7 +43,7 @@ import javax.persistence.Table;
 	@NamedQuery(name=PairwiseIdentifier.QUERY_ALL, query = &quot;select p from PairwiseIdentifier p&quot;),
 	@NamedQuery(name=PairwiseIdentifier.QUERY_BY_SECTOR_IDENTIFIER, query = &quot;select p from PairwiseIdentifier p WHERE p.userSub = :&quot; + PairwiseIdentifier.PARAM_SUB + &quot; AND p.sectorIdentifier = :&quot; + PairwiseIdentifier.PARAM_SECTOR_IDENTIFIER)
 })
-<span class="nc" id="L45">public class PairwiseIdentifier {</span>
+<span class="nc" id="L46">public class PairwiseIdentifier {</span>
 
 	public static final String QUERY_BY_SECTOR_IDENTIFIER = &quot;PairwiseIdentifier.getBySectorIdentifier&quot;;
 	public static final String QUERY_ALL = &quot;PairwiseIdentifier.getAll&quot;;
@@ -62,15 +63,15 @@ import javax.persistence.Table;
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L65">		return id;</span>
+<span class="nc" id="L66">		return id;</span>
 	}
 
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
-<span class="nc" id="L72">		this.id = id;</span>
-<span class="nc" id="L73">	}</span>
+<span class="nc" id="L73">		this.id = id;</span>
+<span class="nc" id="L74">	}</span>
 
 	/**
 	 * @return the identifier
@@ -78,15 +79,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;identifier&quot;)
 	public String getIdentifier() {
-<span class="nc" id="L81">		return identifier;</span>
+<span class="nc" id="L82">		return identifier;</span>
 	}
 
 	/**
 	 * @param identifier the identifier to set
 	 */
 	public void setIdentifier(String identifier) {
-<span class="nc" id="L88">		this.identifier = identifier;</span>
-<span class="nc" id="L89">	}</span>
+<span class="nc" id="L89">		this.identifier = identifier;</span>
+<span class="nc" id="L90">	}</span>
 
 	/**
 	 * @return the userSub
@@ -94,15 +95,15 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = PairwiseIdentifier.PARAM_SUB)
 	public String getUserSub() {
-<span class="nc" id="L97">		return userSub;</span>
+<span class="nc" id="L98">		return userSub;</span>
 	}
 
 	/**
 	 * @param userSub the userSub to set
 	 */
 	public void setUserSub(String userSub) {
-<span class="nc" id="L104">		this.userSub = userSub;</span>
-<span class="nc" id="L105">	}</span>
+<span class="nc" id="L105">		this.userSub = userSub;</span>
+<span class="nc" id="L106">	}</span>
 
 	/**
 	 * @return the sectorIdentifier
@@ -110,14 +111,14 @@ import javax.persistence.Table;
 	@Basic
 	@Column(name = &quot;sector_identifier&quot;)
 	public String getSectorIdentifier() {
-<span class="nc" id="L113">		return sectorIdentifier;</span>
+<span class="nc" id="L114">		return sectorIdentifier;</span>
 	}
 
 	/**
 	 * @param sectorIdentifier the sectorIdentifier to set
 	 */
 	public void setSectorIdentifier(String sectorIdentifier) {
-<span class="nc" id="L120">		this.sectorIdentifier = sectorIdentifier;</span>
-<span class="nc" id="L121">	}</span>
+<span class="nc" id="L121">		this.sectorIdentifier = sectorIdentifier;</span>
+<span class="nc" id="L122">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

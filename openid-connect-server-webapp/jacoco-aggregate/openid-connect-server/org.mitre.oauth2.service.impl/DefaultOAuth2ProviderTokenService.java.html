@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOAuth2ProviderTokenService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultOAuth2ProviderTokenService.java</span></div><h1>DefaultOAuth2ProviderTokenService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -64,6 +65,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -75,12 +77,12 @@ import com.nimbusds.jwt.PlainJWT;
  *
  */
 @Service(&quot;defaultOAuth2ProviderTokenService&quot;)
-<span class="nc" id="L78">public class DefaultOAuth2ProviderTokenService implements OAuth2TokenEntityService {</span>
+<span class="nc" id="L80">public class DefaultOAuth2ProviderTokenService implements OAuth2TokenEntityService {</span>
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L83">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2ProviderTokenService.class);</span>
+<span class="nc" id="L85">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2ProviderTokenService.class);</span>
 
 	@Autowired
 	private OAuth2TokenRepository tokenRepository;
@@ -104,41 +106,41 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	public Set&lt;OAuth2AccessTokenEntity&gt; getAllAccessTokensForUser(String id) {
 
-<span class="nc" id="L107">		Set&lt;OAuth2AccessTokenEntity&gt; all = tokenRepository.getAllAccessTokens();</span>
-<span class="nc" id="L108">		Set&lt;OAuth2AccessTokenEntity&gt; results = Sets.newLinkedHashSet();</span>
+<span class="nc" id="L109">		Set&lt;OAuth2AccessTokenEntity&gt; all = tokenRepository.getAllAccessTokens();</span>
+<span class="nc" id="L110">		Set&lt;OAuth2AccessTokenEntity&gt; results = Sets.newLinkedHashSet();</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : all) {</span>
-<span class="nc bnc" id="L111" title="All 4 branches missed.">			if (clearExpiredAccessToken(token) != null &amp;&amp; token.getAuthenticationHolder().getAuthentication().getName().equals(id)) {</span>
-<span class="nc" id="L112">				results.add(token);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : all) {</span>
+<span class="nc bnc" id="L113" title="All 4 branches missed.">			if (clearExpiredAccessToken(token) != null &amp;&amp; token.getAuthenticationHolder().getAuthentication().getName().equals(id)) {</span>
+<span class="nc" id="L114">				results.add(token);</span>
 			}
-<span class="nc" id="L114">		}</span>
+<span class="nc" id="L116">		}</span>
 
-<span class="nc" id="L116">		return results;</span>
+<span class="nc" id="L118">		return results;</span>
 	}
 
 
 	@Override
 	public Set&lt;OAuth2RefreshTokenEntity&gt; getAllRefreshTokensForUser(String id) {
-<span class="nc" id="L122">		Set&lt;OAuth2RefreshTokenEntity&gt; all = tokenRepository.getAllRefreshTokens();</span>
-<span class="nc" id="L123">		Set&lt;OAuth2RefreshTokenEntity&gt; results = Sets.newLinkedHashSet();</span>
+<span class="nc" id="L124">		Set&lt;OAuth2RefreshTokenEntity&gt; all = tokenRepository.getAllRefreshTokens();</span>
+<span class="nc" id="L125">		Set&lt;OAuth2RefreshTokenEntity&gt; results = Sets.newLinkedHashSet();</span>
 
-<span class="nc bnc" id="L125" title="All 2 branches missed.">		for (OAuth2RefreshTokenEntity token : all) {</span>
-<span class="nc bnc" id="L126" title="All 4 branches missed.">			if (clearExpiredRefreshToken(token) != null &amp;&amp; token.getAuthenticationHolder().getAuthentication().getName().equals(id)) {</span>
-<span class="nc" id="L127">				results.add(token);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">		for (OAuth2RefreshTokenEntity token : all) {</span>
+<span class="nc bnc" id="L128" title="All 4 branches missed.">			if (clearExpiredRefreshToken(token) != null &amp;&amp; token.getAuthenticationHolder().getAuthentication().getName().equals(id)) {</span>
+<span class="nc" id="L129">				results.add(token);</span>
 			}
-<span class="nc" id="L129">		}</span>
+<span class="nc" id="L131">		}</span>
 
-<span class="nc" id="L131">		return results;</span>
+<span class="nc" id="L133">		return results;</span>
 	}
 
 	@Override
 	public OAuth2AccessTokenEntity getAccessTokenById(Long id) {
-<span class="nc" id="L136">		return clearExpiredAccessToken(tokenRepository.getAccessTokenById(id));</span>
+<span class="nc" id="L138">		return clearExpiredAccessToken(tokenRepository.getAccessTokenById(id));</span>
 	}
 
 	@Override
 	public OAuth2RefreshTokenEntity getRefreshTokenById(Long id) {
-<span class="nc" id="L141">		return clearExpiredRefreshToken(tokenRepository.getRefreshTokenById(id));</span>
+<span class="nc" id="L143">		return clearExpiredRefreshToken(tokenRepository.getRefreshTokenById(id));</span>
 	}
 
 	/**
@@ -147,15 +149,15 @@ import com.nimbusds.jwt.PlainJWT;
 	 * @return null if the token is null or expired, the input token (unchanged) if it hasn't
 	 */
 	private OAuth2AccessTokenEntity clearExpiredAccessToken(OAuth2AccessTokenEntity token) {
-<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L151">			return null;</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">		} else if (token.isExpired()) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L153">			return null;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		} else if (token.isExpired()) {</span>
 			// immediately revoke expired token
-<span class="nc" id="L154">			logger.debug(&quot;Clearing expired access token: &quot; + token.getValue());</span>
-<span class="nc" id="L155">			revokeAccessToken(token);</span>
-<span class="nc" id="L156">			return null;</span>
+<span class="nc" id="L156">			logger.debug(&quot;Clearing expired access token: &quot; + token.getValue());</span>
+<span class="nc" id="L157">			revokeAccessToken(token);</span>
+<span class="nc" id="L158">			return null;</span>
 		} else {
-<span class="nc" id="L158">			return token;</span>
+<span class="nc" id="L160">			return token;</span>
 		}
 	}
 
@@ -165,255 +167,261 @@ import com.nimbusds.jwt.PlainJWT;
 	 * @return null if the token is null or expired, the input token (unchanged) if it hasn't
 	 */
 	private OAuth2RefreshTokenEntity clearExpiredRefreshToken(OAuth2RefreshTokenEntity token) {
-<span class="nc bnc" id="L168" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L169">			return null;</span>
-<span class="nc bnc" id="L170" title="All 2 branches missed.">		} else if (token.isExpired()) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L171">			return null;</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">		} else if (token.isExpired()) {</span>
 			// immediately revoke expired token
-<span class="nc" id="L172">			logger.debug(&quot;Clearing expired refresh token: &quot; + token.getValue());</span>
-<span class="nc" id="L173">			revokeRefreshToken(token);</span>
-<span class="nc" id="L174">			return null;</span>
+<span class="nc" id="L174">			logger.debug(&quot;Clearing expired refresh token: &quot; + token.getValue());</span>
+<span class="nc" id="L175">			revokeRefreshToken(token);</span>
+<span class="nc" id="L176">			return null;</span>
 		} else {
-<span class="nc" id="L176">			return token;</span>
+<span class="nc" id="L178">			return token;</span>
 		}
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2AccessTokenEntity createAccessToken(OAuth2Authentication authentication) throws AuthenticationException, InvalidClientException {
-<span class="nc bnc" id="L183" title="All 4 branches missed.">		if (authentication != null &amp;&amp; authentication.getOAuth2Request() != null) {</span>
+<span class="nc bnc" id="L185" title="All 4 branches missed.">		if (authentication != null &amp;&amp; authentication.getOAuth2Request() != null) {</span>
 			// look up our client
-<span class="nc" id="L185">			OAuth2Request request = authentication.getOAuth2Request();</span>
+<span class="nc" id="L187">			OAuth2Request request = authentication.getOAuth2Request();</span>
 
-<span class="nc" id="L187">			ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
+<span class="nc" id="L189">			ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
 
-<span class="nc bnc" id="L189" title="All 2 branches missed.">			if (client == null) {</span>
-<span class="nc" id="L190">				throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">			if (client == null) {</span>
+<span class="nc" id="L192">				throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
 			}
 
 
 			// handle the PKCE code challenge if present
-<span class="nc bnc" id="L195" title="All 2 branches missed.">			if (request.getExtensions().containsKey(CODE_CHALLENGE)) {</span>
-<span class="nc" id="L196">				String challenge = (String) request.getExtensions().get(CODE_CHALLENGE);</span>
-<span class="nc" id="L197">				PKCEAlgorithm alg = PKCEAlgorithm.parse((String) request.getExtensions().get(CODE_CHALLENGE_METHOD));</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">			if (request.getExtensions().containsKey(CODE_CHALLENGE)) {</span>
+<span class="nc" id="L198">				String challenge = (String) request.getExtensions().get(CODE_CHALLENGE);</span>
+<span class="nc" id="L199">				PKCEAlgorithm alg = PKCEAlgorithm.parse((String) request.getExtensions().get(CODE_CHALLENGE_METHOD));</span>
 
-<span class="nc" id="L199">				String verifier = request.getRequestParameters().get(CODE_VERIFIER);</span>
+<span class="nc" id="L201">				String verifier = request.getRequestParameters().get(CODE_VERIFIER);</span>
 
-<span class="nc bnc" id="L201" title="All 2 branches missed.">				if (alg.equals(PKCEAlgorithm.plain)) {</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">				if (alg.equals(PKCEAlgorithm.plain)) {</span>
 					// do a direct string comparison
-<span class="nc bnc" id="L203" title="All 2 branches missed.">					if (!challenge.equals(verifier)) {</span>
-<span class="nc" id="L204">						throw new InvalidRequestException(&quot;Code challenge and verifier do not match&quot;);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">					if (!challenge.equals(verifier)) {</span>
+<span class="nc" id="L206">						throw new InvalidRequestException(&quot;Code challenge and verifier do not match&quot;);</span>
 					}
-<span class="nc bnc" id="L206" title="All 2 branches missed.">				} else if (alg.equals(PKCEAlgorithm.S256)) {</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">				} else if (alg.equals(PKCEAlgorithm.S256)) {</span>
 					// hash the verifier
 					try {
-<span class="nc" id="L209">						MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
-<span class="nc" id="L210">						String hash = Base64URL.encode(digest.digest(verifier.getBytes(StandardCharsets.US_ASCII))).toString();</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">						if (!challenge.equals(hash)) {</span>
-<span class="nc" id="L212">							throw new InvalidRequestException(&quot;Code challenge and verifier do not match&quot;);</span>
+<span class="nc" id="L211">						MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
+<span class="nc" id="L212">						String hash = Base64URL.encode(digest.digest(verifier.getBytes(StandardCharsets.US_ASCII))).toString();</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">						if (!challenge.equals(hash)) {</span>
+<span class="nc" id="L214">							throw new InvalidRequestException(&quot;Code challenge and verifier do not match&quot;);</span>
 						}
-<span class="nc" id="L214">					} catch (NoSuchAlgorithmException e) {</span>
-<span class="nc" id="L215">						logger.error(&quot;Unknown algorithm for PKCE digest&quot;, e);</span>
-<span class="nc" id="L216">					}</span>
+<span class="nc" id="L216">					} catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L217">						logger.error(&quot;Unknown algorithm for PKCE digest&quot;, e);</span>
+<span class="nc" id="L218">					}</span>
 				}
 
 			}
 
 
-<span class="nc" id="L222">			OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();//accessTokenFactory.createNewAccessToken();</span>
+<span class="nc" id="L224">			OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();//accessTokenFactory.createNewAccessToken();</span>
 
 			// attach the client
-<span class="nc" id="L225">			token.setClient(client);</span>
+<span class="nc" id="L227">			token.setClient(client);</span>
 
 			// inherit the scope from the auth, but make a new set so it is
 			//not unmodifiable. Unmodifiables don't play nicely with Eclipselink, which
 			//wants to use the clone operation.
-<span class="nc" id="L230">			Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(request.getScope());</span>
+<span class="nc" id="L232">			Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(request.getScope());</span>
 
 			// remove any of the special system scopes
-<span class="nc" id="L233">			scopes = scopeService.removeReservedScopes(scopes);</span>
+<span class="nc" id="L235">			scopes = scopeService.removeReservedScopes(scopes);</span>
 
-<span class="nc" id="L235">			token.setScope(scopeService.toStrings(scopes));</span>
+<span class="nc" id="L237">			token.setScope(scopeService.toStrings(scopes));</span>
 
 			// make it expire if necessary
-<span class="nc bnc" id="L238" title="All 4 branches missed.">			if (client.getAccessTokenValiditySeconds() != null &amp;&amp; client.getAccessTokenValiditySeconds() &gt; 0) {</span>
-<span class="nc" id="L239">				Date expiration = new Date(System.currentTimeMillis() + (client.getAccessTokenValiditySeconds() * 1000L));</span>
-<span class="nc" id="L240">				token.setExpiration(expiration);</span>
+<span class="nc bnc" id="L240" title="All 4 branches missed.">			if (client.getAccessTokenValiditySeconds() != null &amp;&amp; client.getAccessTokenValiditySeconds() &gt; 0) {</span>
+<span class="nc" id="L241">				Date expiration = new Date(System.currentTimeMillis() + (client.getAccessTokenValiditySeconds() * 1000L));</span>
+<span class="nc" id="L242">				token.setExpiration(expiration);</span>
 			}
 
 			// attach the authorization so that we can look it up later
-<span class="nc" id="L244">			AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
-<span class="nc" id="L245">			authHolder.setAuthentication(authentication);</span>
-<span class="nc" id="L246">			authHolder = authenticationHolderRepository.save(authHolder);</span>
+<span class="nc" id="L246">			AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L247">			authHolder.setAuthentication(authentication);</span>
+<span class="nc" id="L248">			authHolder = authenticationHolderRepository.save(authHolder);</span>
 
-<span class="nc" id="L248">			token.setAuthenticationHolder(authHolder);</span>
+<span class="nc" id="L250">			token.setAuthenticationHolder(authHolder);</span>
 
 			// attach a refresh token, if this client is allowed to request them and the user gets the offline scope
-<span class="nc bnc" id="L251" title="All 4 branches missed.">			if (client.isAllowRefresh() &amp;&amp; token.getScope().contains(SystemScopeService.OFFLINE_ACCESS)) {</span>
-<span class="nc" id="L252">				OAuth2RefreshTokenEntity savedRefreshToken = createRefreshToken(client, authHolder);</span>
+<span class="nc bnc" id="L253" title="All 4 branches missed.">			if (client.isAllowRefresh() &amp;&amp; token.getScope().contains(SystemScopeService.OFFLINE_ACCESS)) {</span>
+<span class="nc" id="L254">				OAuth2RefreshTokenEntity savedRefreshToken = createRefreshToken(client, authHolder);</span>
 
-<span class="nc" id="L254">				token.setRefreshToken(savedRefreshToken);</span>
+<span class="nc" id="L256">				token.setRefreshToken(savedRefreshToken);</span>
 			}
 
 			//Add approved site reference, if any
-<span class="nc" id="L258">			OAuth2Request originalAuthRequest = authHolder.getAuthentication().getOAuth2Request();</span>
+<span class="nc" id="L260">			OAuth2Request originalAuthRequest = authHolder.getAuthentication().getOAuth2Request();</span>
 
-<span class="nc bnc" id="L260" title="All 4 branches missed.">			if (originalAuthRequest.getExtensions() != null &amp;&amp; originalAuthRequest.getExtensions().containsKey(&quot;approved_site&quot;)) {</span>
+<span class="nc bnc" id="L262" title="All 4 branches missed.">			if (originalAuthRequest.getExtensions() != null &amp;&amp; originalAuthRequest.getExtensions().containsKey(&quot;approved_site&quot;)) {</span>
 
-<span class="nc" id="L262">				Long apId = Long.parseLong((String) originalAuthRequest.getExtensions().get(&quot;approved_site&quot;));</span>
-<span class="nc" id="L263">				ApprovedSite ap = approvedSiteService.getById(apId);</span>
+<span class="nc" id="L264">				Long apId = Long.parseLong((String) originalAuthRequest.getExtensions().get(&quot;approved_site&quot;));</span>
+<span class="nc" id="L265">				ApprovedSite ap = approvedSiteService.getById(apId);</span>
 
-<span class="nc" id="L265">				token.setApprovedSite(ap);</span>
+<span class="nc" id="L267">				token.setApprovedSite(ap);</span>
 			}
 
-<span class="nc" id="L268">			OAuth2AccessTokenEntity enhancedToken = (OAuth2AccessTokenEntity) tokenEnhancer.enhance(token, authentication);</span>
+<span class="nc" id="L270">			OAuth2AccessTokenEntity enhancedToken = (OAuth2AccessTokenEntity) tokenEnhancer.enhance(token, authentication);</span>
 
-<span class="nc" id="L270">			OAuth2AccessTokenEntity savedToken = saveAccessToken(enhancedToken);</span>
+<span class="nc" id="L272">			OAuth2AccessTokenEntity savedToken = saveAccessToken(enhancedToken);</span>
 
-<span class="nc bnc" id="L272" title="All 2 branches missed.">			if (savedToken.getRefreshToken() != null) {</span>
-<span class="nc" id="L273">				tokenRepository.saveRefreshToken(savedToken.getRefreshToken()); // make sure we save any changes that might have been enhanced</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">			if (savedToken.getRefreshToken() != null) {</span>
+<span class="nc" id="L275">				tokenRepository.saveRefreshToken(savedToken.getRefreshToken()); // make sure we save any changes that might have been enhanced</span>
 			}
 
-<span class="nc" id="L276">			return savedToken;</span>
+<span class="nc" id="L278">			return savedToken;</span>
 		}
 
-<span class="nc" id="L279">		throw new AuthenticationCredentialsNotFoundException(&quot;No authentication credentials found&quot;);</span>
+<span class="nc" id="L281">		throw new AuthenticationCredentialsNotFoundException(&quot;No authentication credentials found&quot;);</span>
 	}
 
 
 	private OAuth2RefreshTokenEntity createRefreshToken(ClientDetailsEntity client, AuthenticationHolderEntity authHolder) {
-<span class="nc" id="L284">		OAuth2RefreshTokenEntity refreshToken = new OAuth2RefreshTokenEntity(); //refreshTokenFactory.createNewRefreshToken();</span>
-<span class="nc" id="L285">		JWTClaimsSet.Builder refreshClaims = new JWTClaimsSet.Builder();</span>
+<span class="nc" id="L286">		OAuth2RefreshTokenEntity refreshToken = new OAuth2RefreshTokenEntity(); //refreshTokenFactory.createNewRefreshToken();</span>
+<span class="nc" id="L287">		JWTClaimsSet.Builder refreshClaims = new JWTClaimsSet.Builder();</span>
 
 
 		// make it expire if necessary
-<span class="nc bnc" id="L289" title="All 2 branches missed.">		if (client.getRefreshTokenValiditySeconds() != null) {</span>
-<span class="nc" id="L290">			Date expiration = new Date(System.currentTimeMillis() + (client.getRefreshTokenValiditySeconds() * 1000L));</span>
-<span class="nc" id="L291">			refreshToken.setExpiration(expiration);</span>
-<span class="nc" id="L292">			refreshClaims.expirationTime(expiration);</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">		if (client.getRefreshTokenValiditySeconds() != null) {</span>
+<span class="nc" id="L292">			Date expiration = new Date(System.currentTimeMillis() + (client.getRefreshTokenValiditySeconds() * 1000L));</span>
+<span class="nc" id="L293">			refreshToken.setExpiration(expiration);</span>
+<span class="nc" id="L294">			refreshClaims.expirationTime(expiration);</span>
 		}
 
 		// set a random identifier
-<span class="nc" id="L296">		refreshClaims.jwtID(UUID.randomUUID().toString());</span>
+<span class="nc" id="L298">		refreshClaims.jwtID(UUID.randomUUID().toString());</span>
 
 		// TODO: add issuer fields, signature to JWT
 
-<span class="nc" id="L300">		PlainJWT refreshJwt = new PlainJWT(refreshClaims.build());</span>
-<span class="nc" id="L301">		refreshToken.setJwt(refreshJwt);</span>
+<span class="nc" id="L302">		PlainJWT refreshJwt = new PlainJWT(refreshClaims.build());</span>
+<span class="nc" id="L303">		refreshToken.setJwt(refreshJwt);</span>
 
 		//Add the authentication
-<span class="nc" id="L304">		refreshToken.setAuthenticationHolder(authHolder);</span>
-<span class="nc" id="L305">		refreshToken.setClient(client);</span>
+<span class="nc" id="L306">		refreshToken.setAuthenticationHolder(authHolder);</span>
+<span class="nc" id="L307">		refreshToken.setClient(client);</span>
 
 
 
 		// save the token first so that we can set it to a member of the access token (NOTE: is this step necessary?)
-<span class="nc" id="L310">		OAuth2RefreshTokenEntity savedRefreshToken = tokenRepository.saveRefreshToken(refreshToken);</span>
-<span class="nc" id="L311">		return savedRefreshToken;</span>
+<span class="nc" id="L312">		OAuth2RefreshTokenEntity savedRefreshToken = tokenRepository.saveRefreshToken(refreshToken);</span>
+<span class="nc" id="L313">		return savedRefreshToken;</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2AccessTokenEntity refreshAccessToken(String refreshTokenValue, TokenRequest authRequest) throws AuthenticationException {
-
-<span class="nc" id="L318">		OAuth2RefreshTokenEntity refreshToken = clearExpiredRefreshToken(tokenRepository.getRefreshTokenByValue(refreshTokenValue));</span>
-
-<span class="nc bnc" id="L320" title="All 2 branches missed.">		if (refreshToken == null) {</span>
-<span class="nc" id="L321">			throw new InvalidTokenException(&quot;Invalid refresh token: &quot; + refreshTokenValue);</span>
+		
+<span class="nc bnc" id="L320" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(refreshTokenValue)) {</span>
+			// throw an invalid token exception if there's no refresh token value at all
+<span class="nc" id="L322">			throw new InvalidTokenException(&quot;Invalid refresh token: &quot; + refreshTokenValue);</span>
 		}
 
-<span class="nc" id="L324">		ClientDetailsEntity client = refreshToken.getClient();</span>
+<span class="nc" id="L325">		OAuth2RefreshTokenEntity refreshToken = clearExpiredRefreshToken(tokenRepository.getRefreshTokenByValue(refreshTokenValue));</span>
 
-<span class="nc" id="L326">		AuthenticationHolderEntity authHolder = refreshToken.getAuthenticationHolder();</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">		if (refreshToken == null) {</span>
+			// throw an invalid token exception if we couldn't find the token
+<span class="nc" id="L329">			throw new InvalidTokenException(&quot;Invalid refresh token: &quot; + refreshTokenValue);</span>
+		}
+
+<span class="nc" id="L332">		ClientDetailsEntity client = refreshToken.getClient();</span>
+
+<span class="nc" id="L334">		AuthenticationHolderEntity authHolder = refreshToken.getAuthenticationHolder();</span>
 
 		// make sure that the client requesting the token is the one who owns the refresh token
-<span class="nc" id="L329">		ClientDetailsEntity requestingClient = clientDetailsService.loadClientByClientId(authRequest.getClientId());</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">		if (!client.getClientId().equals(requestingClient.getClientId())) {</span>
-<span class="nc" id="L331">			tokenRepository.removeRefreshToken(refreshToken);</span>
-<span class="nc" id="L332">			throw new InvalidClientException(&quot;Client does not own the presented refresh token&quot;);</span>
+<span class="nc" id="L337">		ClientDetailsEntity requestingClient = clientDetailsService.loadClientByClientId(authRequest.getClientId());</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">		if (!client.getClientId().equals(requestingClient.getClientId())) {</span>
+<span class="nc" id="L339">			tokenRepository.removeRefreshToken(refreshToken);</span>
+<span class="nc" id="L340">			throw new InvalidClientException(&quot;Client does not own the presented refresh token&quot;);</span>
 		}
 
 		//Make sure this client allows access token refreshing
-<span class="nc bnc" id="L336" title="All 2 branches missed.">		if (!client.isAllowRefresh()) {</span>
-<span class="nc" id="L337">			throw new InvalidClientException(&quot;Client does not allow refreshing access token!&quot;);</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">		if (!client.isAllowRefresh()) {</span>
+<span class="nc" id="L345">			throw new InvalidClientException(&quot;Client does not allow refreshing access token!&quot;);</span>
 		}
 
 		// clear out any access tokens
-<span class="nc bnc" id="L341" title="All 2 branches missed.">		if (client.isClearAccessTokensOnRefresh()) {</span>
-<span class="nc" id="L342">			tokenRepository.clearAccessTokensForRefreshToken(refreshToken);</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">		if (client.isClearAccessTokensOnRefresh()) {</span>
+<span class="nc" id="L350">			tokenRepository.clearAccessTokensForRefreshToken(refreshToken);</span>
 		}
 
-<span class="nc bnc" id="L345" title="All 2 branches missed.">		if (refreshToken.isExpired()) {</span>
-<span class="nc" id="L346">			tokenRepository.removeRefreshToken(refreshToken);</span>
-<span class="nc" id="L347">			throw new InvalidTokenException(&quot;Expired refresh token: &quot; + refreshTokenValue);</span>
+<span class="nc bnc" id="L353" title="All 2 branches missed.">		if (refreshToken.isExpired()) {</span>
+<span class="nc" id="L354">			tokenRepository.removeRefreshToken(refreshToken);</span>
+<span class="nc" id="L355">			throw new InvalidTokenException(&quot;Expired refresh token: &quot; + refreshTokenValue);</span>
 		}
 
-<span class="nc" id="L350">		OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();</span>
+<span class="nc" id="L358">		OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();</span>
 
 		// get the stored scopes from the authentication holder's authorization request; these are the scopes associated with the refresh token
-<span class="nc" id="L353">		Set&lt;String&gt; refreshScopesRequested = new HashSet&lt;&gt;(refreshToken.getAuthenticationHolder().getAuthentication().getOAuth2Request().getScope());</span>
-<span class="nc" id="L354">		Set&lt;SystemScope&gt; refreshScopes = scopeService.fromStrings(refreshScopesRequested);</span>
+<span class="nc" id="L361">		Set&lt;String&gt; refreshScopesRequested = new HashSet&lt;&gt;(refreshToken.getAuthenticationHolder().getAuthentication().getOAuth2Request().getScope());</span>
+<span class="nc" id="L362">		Set&lt;SystemScope&gt; refreshScopes = scopeService.fromStrings(refreshScopesRequested);</span>
 		// remove any of the special system scopes
-<span class="nc" id="L356">		refreshScopes = scopeService.removeReservedScopes(refreshScopes);</span>
+<span class="nc" id="L364">		refreshScopes = scopeService.removeReservedScopes(refreshScopes);</span>
 
-<span class="nc bnc" id="L358" title="All 2 branches missed.">		Set&lt;String&gt; scopeRequested = authRequest.getScope() == null ? new HashSet&lt;String&gt;() : new HashSet&lt;&gt;(authRequest.getScope());</span>
-<span class="nc" id="L359">		Set&lt;SystemScope&gt; scope = scopeService.fromStrings(scopeRequested);</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">		Set&lt;String&gt; scopeRequested = authRequest.getScope() == null ? new HashSet&lt;String&gt;() : new HashSet&lt;&gt;(authRequest.getScope());</span>
+<span class="nc" id="L367">		Set&lt;SystemScope&gt; scope = scopeService.fromStrings(scopeRequested);</span>
 
 		// remove any of the special system scopes
-<span class="nc" id="L362">		scope = scopeService.removeReservedScopes(scope);</span>
+<span class="nc" id="L370">		scope = scopeService.removeReservedScopes(scope);</span>
 
-<span class="nc bnc" id="L364" title="All 4 branches missed.">		if (scope != null &amp;&amp; !scope.isEmpty()) {</span>
+<span class="nc bnc" id="L372" title="All 4 branches missed.">		if (scope != null &amp;&amp; !scope.isEmpty()) {</span>
 			// ensure a proper subset of scopes
-<span class="nc bnc" id="L366" title="All 4 branches missed.">			if (refreshScopes != null &amp;&amp; refreshScopes.containsAll(scope)) {</span>
+<span class="nc bnc" id="L374" title="All 4 branches missed.">			if (refreshScopes != null &amp;&amp; refreshScopes.containsAll(scope)) {</span>
 				// set the scope of the new access token if requested
-<span class="nc" id="L368">				token.setScope(scopeService.toStrings(scope));</span>
+<span class="nc" id="L376">				token.setScope(scopeService.toStrings(scope));</span>
 			} else {
-<span class="nc" id="L370">				String errorMsg = &quot;Up-scoping is not allowed.&quot;;</span>
-<span class="nc" id="L371">				logger.error(errorMsg);</span>
-<span class="nc" id="L372">				throw new InvalidScopeException(errorMsg);</span>
+<span class="nc" id="L378">				String errorMsg = &quot;Up-scoping is not allowed.&quot;;</span>
+<span class="nc" id="L379">				logger.error(errorMsg);</span>
+<span class="nc" id="L380">				throw new InvalidScopeException(errorMsg);</span>
 			}
 		} else {
 			// otherwise inherit the scope of the refresh token (if it's there -- this can return a null scope set)
-<span class="nc" id="L376">			token.setScope(scopeService.toStrings(refreshScopes));</span>
+<span class="nc" id="L384">			token.setScope(scopeService.toStrings(refreshScopes));</span>
 		}
 
-<span class="nc" id="L379">		token.setClient(client);</span>
+<span class="nc" id="L387">		token.setClient(client);</span>
 
-<span class="nc bnc" id="L381" title="All 2 branches missed.">		if (client.getAccessTokenValiditySeconds() != null) {</span>
-<span class="nc" id="L382">			Date expiration = new Date(System.currentTimeMillis() + (client.getAccessTokenValiditySeconds() * 1000L));</span>
-<span class="nc" id="L383">			token.setExpiration(expiration);</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">		if (client.getAccessTokenValiditySeconds() != null) {</span>
+<span class="nc" id="L390">			Date expiration = new Date(System.currentTimeMillis() + (client.getAccessTokenValiditySeconds() * 1000L));</span>
+<span class="nc" id="L391">			token.setExpiration(expiration);</span>
 		}
 
-<span class="nc bnc" id="L386" title="All 2 branches missed.">		if (client.isReuseRefreshToken()) {</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">		if (client.isReuseRefreshToken()) {</span>
 			// if the client re-uses refresh tokens, do that
-<span class="nc" id="L388">			token.setRefreshToken(refreshToken);</span>
+<span class="nc" id="L396">			token.setRefreshToken(refreshToken);</span>
 		} else {
 			// otherwise, make a new refresh token
-<span class="nc" id="L391">			OAuth2RefreshTokenEntity newRefresh = createRefreshToken(client, authHolder);</span>
-<span class="nc" id="L392">			token.setRefreshToken(newRefresh);</span>
+<span class="nc" id="L399">			OAuth2RefreshTokenEntity newRefresh = createRefreshToken(client, authHolder);</span>
+<span class="nc" id="L400">			token.setRefreshToken(newRefresh);</span>
 
 			// clean up the old refresh token
-<span class="nc" id="L395">			tokenRepository.removeRefreshToken(refreshToken);</span>
+<span class="nc" id="L403">			tokenRepository.removeRefreshToken(refreshToken);</span>
 		}
 
-<span class="nc" id="L398">		token.setAuthenticationHolder(authHolder);</span>
+<span class="nc" id="L406">		token.setAuthenticationHolder(authHolder);</span>
 
-<span class="nc" id="L400">		tokenEnhancer.enhance(token, authHolder.getAuthentication());</span>
+<span class="nc" id="L408">		tokenEnhancer.enhance(token, authHolder.getAuthentication());</span>
 
-<span class="nc" id="L402">		tokenRepository.saveAccessToken(token);</span>
+<span class="nc" id="L410">		tokenRepository.saveAccessToken(token);</span>
 
-<span class="nc" id="L404">		return token;</span>
+<span class="nc" id="L412">		return token;</span>
 
 	}
 
 	@Override
 	public OAuth2Authentication loadAuthentication(String accessTokenValue) throws AuthenticationException {
 
-<span class="nc" id="L411">		OAuth2AccessTokenEntity accessToken = clearExpiredAccessToken(tokenRepository.getAccessTokenByValue(accessTokenValue));</span>
+<span class="nc" id="L419">		OAuth2AccessTokenEntity accessToken = clearExpiredAccessToken(tokenRepository.getAccessTokenByValue(accessTokenValue));</span>
 
-<span class="nc bnc" id="L413" title="All 2 branches missed.">		if (accessToken == null) {</span>
-<span class="nc" id="L414">			throw new InvalidTokenException(&quot;Invalid access token: &quot; + accessTokenValue);</span>
+<span class="nc bnc" id="L421" title="All 2 branches missed.">		if (accessToken == null) {</span>
+<span class="nc" id="L422">			throw new InvalidTokenException(&quot;Invalid access token: &quot; + accessTokenValue);</span>
 		} else {
-<span class="nc" id="L416">			return accessToken.getAuthenticationHolder().getAuthentication();</span>
+<span class="nc" id="L424">			return accessToken.getAuthenticationHolder().getAuthentication();</span>
 		}
 	}
 
@@ -423,11 +431,11 @@ import com.nimbusds.jwt.PlainJWT;
 	 */
 	@Override
 	public OAuth2AccessTokenEntity readAccessToken(String accessTokenValue) throws AuthenticationException {
-<span class="nc" id="L426">		OAuth2AccessTokenEntity accessToken = clearExpiredAccessToken(tokenRepository.getAccessTokenByValue(accessTokenValue));</span>
-<span class="nc bnc" id="L427" title="All 2 branches missed.">		if (accessToken == null) {</span>
-<span class="nc" id="L428">			throw new InvalidTokenException(&quot;Access token for value &quot; + accessTokenValue + &quot; was not found&quot;);</span>
+<span class="nc" id="L434">		OAuth2AccessTokenEntity accessToken = clearExpiredAccessToken(tokenRepository.getAccessTokenByValue(accessTokenValue));</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">		if (accessToken == null) {</span>
+<span class="nc" id="L436">			throw new InvalidTokenException(&quot;Access token for value &quot; + accessTokenValue + &quot; was not found&quot;);</span>
 		} else {
-<span class="nc" id="L430">			return accessToken;</span>
+<span class="nc" id="L438">			return accessToken;</span>
 		}
 	}
 
@@ -437,7 +445,7 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	public OAuth2AccessTokenEntity getAccessToken(OAuth2Authentication authentication) {
 		// TODO: implement this against the new service (#825)
-<span class="nc" id="L440">		throw new UnsupportedOperationException(&quot;Unable to look up access token from authentication object.&quot;);</span>
+<span class="nc" id="L448">		throw new UnsupportedOperationException(&quot;Unable to look up access token from authentication object.&quot;);</span>
 	}
 
 	/**
@@ -445,12 +453,12 @@ import com.nimbusds.jwt.PlainJWT;
 	 */
 	@Override
 	public OAuth2RefreshTokenEntity getRefreshToken(String refreshTokenValue) throws AuthenticationException {
-<span class="nc" id="L448">		OAuth2RefreshTokenEntity refreshToken = tokenRepository.getRefreshTokenByValue(refreshTokenValue);</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">		if (refreshToken == null) {</span>
-<span class="nc" id="L450">			throw new InvalidTokenException(&quot;Refresh token for value &quot; + refreshTokenValue + &quot; was not found&quot;);</span>
+<span class="nc" id="L456">		OAuth2RefreshTokenEntity refreshToken = tokenRepository.getRefreshTokenByValue(refreshTokenValue);</span>
+<span class="nc bnc" id="L457" title="All 2 branches missed.">		if (refreshToken == null) {</span>
+<span class="nc" id="L458">			throw new InvalidTokenException(&quot;Refresh token for value &quot; + refreshTokenValue + &quot; was not found&quot;);</span>
 		}
 		else {
-<span class="nc" id="L453">			return refreshToken;</span>
+<span class="nc" id="L461">			return refreshToken;</span>
 		}
 	}
 
@@ -460,9 +468,9 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void revokeRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L463">		tokenRepository.clearAccessTokensForRefreshToken(refreshToken);</span>
-<span class="nc" id="L464">		tokenRepository.removeRefreshToken(refreshToken);</span>
-<span class="nc" id="L465">	}</span>
+<span class="nc" id="L471">		tokenRepository.clearAccessTokensForRefreshToken(refreshToken);</span>
+<span class="nc" id="L472">		tokenRepository.removeRefreshToken(refreshToken);</span>
+<span class="nc" id="L473">	}</span>
 
 	/**
 	 * Revoke an access token.
@@ -470,8 +478,8 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void revokeAccessToken(OAuth2AccessTokenEntity accessToken) {
-<span class="nc" id="L473">		tokenRepository.removeAccessToken(accessToken);</span>
-<span class="nc" id="L474">	}</span>
+<span class="nc" id="L481">		tokenRepository.removeAccessToken(accessToken);</span>
+<span class="nc" id="L482">	}</span>
 
 
 	/* (non-Javadoc)
@@ -479,7 +487,7 @@ import com.nimbusds.jwt.PlainJWT;
 	 */
 	@Override
 	public List&lt;OAuth2AccessTokenEntity&gt; getAccessTokensForClient(ClientDetailsEntity client) {
-<span class="nc" id="L482">		return tokenRepository.getAccessTokensForClient(client);</span>
+<span class="nc" id="L490">		return tokenRepository.getAccessTokensForClient(client);</span>
 	}
 
 	/* (non-Javadoc)
@@ -487,7 +495,7 @@ import com.nimbusds.jwt.PlainJWT;
 	 */
 	@Override
 	public List&lt;OAuth2RefreshTokenEntity&gt; getRefreshTokensForClient(ClientDetailsEntity client) {
-<span class="nc" id="L490">		return tokenRepository.getRefreshTokensForClient(client);</span>
+<span class="nc" id="L498">		return tokenRepository.getRefreshTokensForClient(client);</span>
 	}
 
 	/**
@@ -495,44 +503,44 @@ import com.nimbusds.jwt.PlainJWT;
 	 */
 	@Override
 	public void clearExpiredTokens() {
-<span class="nc" id="L498">		logger.debug(&quot;Cleaning out all expired tokens&quot;);</span>
+<span class="nc" id="L506">		logger.debug(&quot;Cleaning out all expired tokens&quot;);</span>
 
-<span class="nc" id="L500">		new AbstractPageOperationTemplate&lt;OAuth2AccessTokenEntity&gt;(&quot;clearExpiredAccessTokens&quot;) {</span>
+<span class="nc" id="L508">		new AbstractPageOperationTemplate&lt;OAuth2AccessTokenEntity&gt;(&quot;clearExpiredAccessTokens&quot;) {</span>
 			@Override
 			public Collection&lt;OAuth2AccessTokenEntity&gt; fetchPage() {
-<span class="nc" id="L503">				return tokenRepository.getAllExpiredAccessTokens(new DefaultPageCriteria());</span>
+<span class="nc" id="L511">				return tokenRepository.getAllExpiredAccessTokens(new DefaultPageCriteria());</span>
 			}
 
 			@Override
 			public void doOperation(OAuth2AccessTokenEntity item) {
-<span class="nc" id="L508">				revokeAccessToken(item);</span>
-<span class="nc" id="L509">			}</span>
-<span class="nc" id="L510">		}.execute();</span>
+<span class="nc" id="L516">				revokeAccessToken(item);</span>
+<span class="nc" id="L517">			}</span>
+<span class="nc" id="L518">		}.execute();</span>
 
-<span class="nc" id="L512">		new AbstractPageOperationTemplate&lt;OAuth2RefreshTokenEntity&gt;(&quot;clearExpiredRefreshTokens&quot;) {</span>
+<span class="nc" id="L520">		new AbstractPageOperationTemplate&lt;OAuth2RefreshTokenEntity&gt;(&quot;clearExpiredRefreshTokens&quot;) {</span>
 			@Override
 			public Collection&lt;OAuth2RefreshTokenEntity&gt; fetchPage() {
-<span class="nc" id="L515">				return tokenRepository.getAllExpiredRefreshTokens(new DefaultPageCriteria());</span>
+<span class="nc" id="L523">				return tokenRepository.getAllExpiredRefreshTokens(new DefaultPageCriteria());</span>
 			}
 
 			@Override
 			public void doOperation(OAuth2RefreshTokenEntity item) {
-<span class="nc" id="L520">				revokeRefreshToken(item);</span>
-<span class="nc" id="L521">			}</span>
-<span class="nc" id="L522">		}.execute();</span>
+<span class="nc" id="L528">				revokeRefreshToken(item);</span>
+<span class="nc" id="L529">			}</span>
+<span class="nc" id="L530">		}.execute();</span>
 
-<span class="nc" id="L524">		new AbstractPageOperationTemplate&lt;AuthenticationHolderEntity&gt;(&quot;clearExpiredAuthenticationHolders&quot;) {</span>
+<span class="nc" id="L532">		new AbstractPageOperationTemplate&lt;AuthenticationHolderEntity&gt;(&quot;clearExpiredAuthenticationHolders&quot;) {</span>
 			@Override
 			public Collection&lt;AuthenticationHolderEntity&gt; fetchPage() {
-<span class="nc" id="L527">				return authenticationHolderRepository.getOrphanedAuthenticationHolders(new DefaultPageCriteria());</span>
+<span class="nc" id="L535">				return authenticationHolderRepository.getOrphanedAuthenticationHolders(new DefaultPageCriteria());</span>
 			}
 
 			@Override
 			public void doOperation(AuthenticationHolderEntity item) {
-<span class="nc" id="L532">				authenticationHolderRepository.remove(item);</span>
-<span class="nc" id="L533">			}</span>
-<span class="nc" id="L534">		}.execute();</span>
-<span class="nc" id="L535">	}</span>
+<span class="nc" id="L540">				authenticationHolderRepository.remove(item);</span>
+<span class="nc" id="L541">			}</span>
+<span class="nc" id="L542">		}.execute();</span>
+<span class="nc" id="L543">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.service.OAuth2TokenEntityService#saveAccessToken(org.mitre.oauth2.model.OAuth2AccessTokenEntity)
@@ -540,14 +548,14 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2AccessTokenEntity saveAccessToken(OAuth2AccessTokenEntity accessToken) {
-<span class="nc" id="L543">		OAuth2AccessTokenEntity newToken = tokenRepository.saveAccessToken(accessToken);</span>
+<span class="nc" id="L551">		OAuth2AccessTokenEntity newToken = tokenRepository.saveAccessToken(accessToken);</span>
 
 		// if the old token has any additional information for the return from the token endpoint, carry it through here after save
-<span class="nc bnc" id="L546" title="All 4 branches missed.">		if (accessToken.getAdditionalInformation() != null &amp;&amp; !accessToken.getAdditionalInformation().isEmpty()) {</span>
-<span class="nc" id="L547">			newToken.getAdditionalInformation().putAll(accessToken.getAdditionalInformation());</span>
+<span class="nc bnc" id="L554" title="All 4 branches missed.">		if (accessToken.getAdditionalInformation() != null &amp;&amp; !accessToken.getAdditionalInformation().isEmpty()) {</span>
+<span class="nc" id="L555">			newToken.getAdditionalInformation().putAll(accessToken.getAdditionalInformation());</span>
 		}
 
-<span class="nc" id="L550">		return newToken;</span>
+<span class="nc" id="L558">		return newToken;</span>
 	}
 
 	/* (non-Javadoc)
@@ -556,36 +564,36 @@ import com.nimbusds.jwt.PlainJWT;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2RefreshTokenEntity saveRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L559">		return tokenRepository.saveRefreshToken(refreshToken);</span>
+<span class="nc" id="L567">		return tokenRepository.saveRefreshToken(refreshToken);</span>
 	}
 
 	/**
 	 * @return the tokenEnhancer
 	 */
 	public TokenEnhancer getTokenEnhancer() {
-<span class="nc" id="L566">		return tokenEnhancer;</span>
+<span class="nc" id="L574">		return tokenEnhancer;</span>
 	}
 
 	/**
 	 * @param tokenEnhancer the tokenEnhancer to set
 	 */
 	public void setTokenEnhancer(TokenEnhancer tokenEnhancer) {
-<span class="nc" id="L573">		this.tokenEnhancer = tokenEnhancer;</span>
-<span class="nc" id="L574">	}</span>
+<span class="nc" id="L581">		this.tokenEnhancer = tokenEnhancer;</span>
+<span class="nc" id="L582">	}</span>
 
 	@Override
 	public OAuth2AccessTokenEntity getRegistrationAccessTokenForClient(ClientDetailsEntity client) {
-<span class="nc" id="L578">		List&lt;OAuth2AccessTokenEntity&gt; allTokens = getAccessTokensForClient(client);</span>
+<span class="nc" id="L586">		List&lt;OAuth2AccessTokenEntity&gt; allTokens = getAccessTokensForClient(client);</span>
 
-<span class="nc bnc" id="L580" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : allTokens) {</span>
-<span class="nc bnc" id="L581" title="All 4 branches missed.">			if ((token.getScope().contains(SystemScopeService.REGISTRATION_TOKEN_SCOPE) || token.getScope().contains(SystemScopeService.RESOURCE_TOKEN_SCOPE))</span>
-<span class="nc bnc" id="L582" title="All 2 branches missed.">					&amp;&amp; token.getScope().size() == 1) {</span>
+<span class="nc bnc" id="L588" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : allTokens) {</span>
+<span class="nc bnc" id="L589" title="All 4 branches missed.">			if ((token.getScope().contains(SystemScopeService.REGISTRATION_TOKEN_SCOPE) || token.getScope().contains(SystemScopeService.RESOURCE_TOKEN_SCOPE))</span>
+<span class="nc bnc" id="L590" title="All 2 branches missed.">					&amp;&amp; token.getScope().size() == 1) {</span>
 				// if it only has the registration scope, then it's a registration token
-<span class="nc" id="L584">				return token;</span>
+<span class="nc" id="L592">				return token;</span>
 			}
-<span class="nc" id="L586">		}</span>
+<span class="nc" id="L594">		}</span>
 
-<span class="nc" id="L588">		return null;</span>
+<span class="nc" id="L596">		return null;</span>
 	}
 
 

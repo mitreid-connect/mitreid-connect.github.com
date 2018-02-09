@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationHolderEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">AuthenticationHolderEntity.java</span></div><h1>AuthenticationHolderEntity.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -84,54 +85,54 @@ public class AuthenticationHolderEntity {
 
 	private Map&lt;String, String&gt; requestParameters;
 
-<span class="nc" id="L87">	public AuthenticationHolderEntity() {</span>
+<span class="nc" id="L88">	public AuthenticationHolderEntity() {</span>
 
-<span class="nc" id="L89">	}</span>
+<span class="nc" id="L90">	}</span>
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L95">		return id;</span>
+<span class="nc" id="L96">		return id;</span>
 	}
 
 	public void setId(Long id) {
-<span class="nc" id="L99">		this.id = id;</span>
-<span class="nc" id="L100">	}</span>
+<span class="nc" id="L100">		this.id = id;</span>
+<span class="nc" id="L101">	}</span>
 
 	@Transient
 	public OAuth2Authentication getAuthentication() {
 		// TODO: memoize this
-<span class="nc" id="L105">		return new OAuth2Authentication(createOAuth2Request(), getUserAuth());</span>
+<span class="nc" id="L106">		return new OAuth2Authentication(createOAuth2Request(), getUserAuth());</span>
 	}
 
 	/**
 	 * @return
 	 */
 	private OAuth2Request createOAuth2Request() {
-<span class="nc" id="L112">		return new OAuth2Request(requestParameters, clientId, authorities, approved, scope, resourceIds, redirectUri, responseTypes, extensions);</span>
+<span class="nc" id="L113">		return new OAuth2Request(requestParameters, clientId, authorities, approved, scope, resourceIds, redirectUri, responseTypes, extensions);</span>
 	}
 
 	public void setAuthentication(OAuth2Authentication authentication) {
 
 		// pull apart the request and save its bits
-<span class="nc" id="L118">		OAuth2Request o2Request = authentication.getOAuth2Request();</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">		setAuthorities(o2Request.getAuthorities() == null ? null : new HashSet&lt;&gt;(o2Request.getAuthorities()));</span>
-<span class="nc" id="L120">		setClientId(o2Request.getClientId());</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">		setExtensions(o2Request.getExtensions() == null ? null : new HashMap&lt;&gt;(o2Request.getExtensions()));</span>
-<span class="nc" id="L122">		setRedirectUri(o2Request.getRedirectUri());</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">		setRequestParameters(o2Request.getRequestParameters() == null ? null : new HashMap&lt;&gt;(o2Request.getRequestParameters()));</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">		setResourceIds(o2Request.getResourceIds() == null ? null : new HashSet&lt;&gt;(o2Request.getResourceIds()));</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">		setResponseTypes(o2Request.getResponseTypes() == null ? null : new HashSet&lt;&gt;(o2Request.getResponseTypes()));</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">		setScope(o2Request.getScope() == null ? null : new HashSet&lt;&gt;(o2Request.getScope()));</span>
-<span class="nc" id="L127">		setApproved(o2Request.isApproved());</span>
+<span class="nc" id="L119">		OAuth2Request o2Request = authentication.getOAuth2Request();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">		setAuthorities(o2Request.getAuthorities() == null ? null : new HashSet&lt;&gt;(o2Request.getAuthorities()));</span>
+<span class="nc" id="L121">		setClientId(o2Request.getClientId());</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		setExtensions(o2Request.getExtensions() == null ? null : new HashMap&lt;&gt;(o2Request.getExtensions()));</span>
+<span class="nc" id="L123">		setRedirectUri(o2Request.getRedirectUri());</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		setRequestParameters(o2Request.getRequestParameters() == null ? null : new HashMap&lt;&gt;(o2Request.getRequestParameters()));</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">		setResourceIds(o2Request.getResourceIds() == null ? null : new HashSet&lt;&gt;(o2Request.getResourceIds()));</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">		setResponseTypes(o2Request.getResponseTypes() == null ? null : new HashSet&lt;&gt;(o2Request.getResponseTypes()));</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">		setScope(o2Request.getScope() == null ? null : new HashSet&lt;&gt;(o2Request.getScope()));</span>
+<span class="nc" id="L128">		setApproved(o2Request.isApproved());</span>
 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (authentication.getUserAuthentication() != null) {</span>
-<span class="nc" id="L130">			this.userAuth = new SavedUserAuthentication(authentication.getUserAuthentication());</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">		if (authentication.getUserAuthentication() != null) {</span>
+<span class="nc" id="L131">			this.userAuth = new SavedUserAuthentication(authentication.getUserAuthentication());</span>
 		} else {
-<span class="nc" id="L132">			this.userAuth = null;</span>
+<span class="nc" id="L133">			this.userAuth = null;</span>
 		}
-<span class="nc" id="L134">	}</span>
+<span class="nc" id="L135">	}</span>
 
 	/**
 	 * @return the userAuth
@@ -139,15 +140,15 @@ public class AuthenticationHolderEntity {
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = &quot;user_auth_id&quot;)
 	public SavedUserAuthentication getUserAuth() {
-<span class="nc" id="L142">		return userAuth;</span>
+<span class="nc" id="L143">		return userAuth;</span>
 	}
 
 	/**
 	 * @param userAuth the userAuth to set
 	 */
 	public void setUserAuth(SavedUserAuthentication userAuth) {
-<span class="nc" id="L149">		this.userAuth = userAuth;</span>
-<span class="nc" id="L150">	}</span>
+<span class="nc" id="L150">		this.userAuth = userAuth;</span>
+<span class="nc" id="L151">	}</span>
 
 	/**
 	 * @return the authorities
@@ -160,15 +161,15 @@ public class AuthenticationHolderEntity {
 	@Convert(converter = SimpleGrantedAuthorityStringConverter.class)
 	@Column(name=&quot;authority&quot;)
 	public Collection&lt;GrantedAuthority&gt; getAuthorities() {
-<span class="nc" id="L163">		return authorities;</span>
+<span class="nc" id="L164">		return authorities;</span>
 	}
 
 	/**
 	 * @param authorities the authorities to set
 	 */
 	public void setAuthorities(Collection&lt;GrantedAuthority&gt; authorities) {
-<span class="nc" id="L170">		this.authorities = authorities;</span>
-<span class="nc" id="L171">	}</span>
+<span class="nc" id="L171">		this.authorities = authorities;</span>
+<span class="nc" id="L172">	}</span>
 
 	/**
 	 * @return the resourceIds
@@ -180,15 +181,15 @@ public class AuthenticationHolderEntity {
 			)
 	@Column(name=&quot;resource_id&quot;)
 	public Set&lt;String&gt; getResourceIds() {
-<span class="nc" id="L183">		return resourceIds;</span>
+<span class="nc" id="L184">		return resourceIds;</span>
 	}
 
 	/**
 	 * @param resourceIds the resourceIds to set
 	 */
 	public void setResourceIds(Set&lt;String&gt; resourceIds) {
-<span class="nc" id="L190">		this.resourceIds = resourceIds;</span>
-<span class="nc" id="L191">	}</span>
+<span class="nc" id="L191">		this.resourceIds = resourceIds;</span>
+<span class="nc" id="L192">	}</span>
 
 	/**
 	 * @return the approved
@@ -196,15 +197,15 @@ public class AuthenticationHolderEntity {
 	@Basic
 	@Column(name=&quot;approved&quot;)
 	public boolean isApproved() {
-<span class="nc" id="L199">		return approved;</span>
+<span class="nc" id="L200">		return approved;</span>
 	}
 
 	/**
 	 * @param approved the approved to set
 	 */
 	public void setApproved(boolean approved) {
-<span class="nc" id="L206">		this.approved = approved;</span>
-<span class="nc" id="L207">	}</span>
+<span class="nc" id="L207">		this.approved = approved;</span>
+<span class="nc" id="L208">	}</span>
 
 	/**
 	 * @return the redirectUri
@@ -212,15 +213,15 @@ public class AuthenticationHolderEntity {
 	@Basic
 	@Column(name=&quot;redirect_uri&quot;)
 	public String getRedirectUri() {
-<span class="nc" id="L215">		return redirectUri;</span>
+<span class="nc" id="L216">		return redirectUri;</span>
 	}
 
 	/**
 	 * @param redirectUri the redirectUri to set
 	 */
 	public void setRedirectUri(String redirectUri) {
-<span class="nc" id="L222">		this.redirectUri = redirectUri;</span>
-<span class="nc" id="L223">	}</span>
+<span class="nc" id="L223">		this.redirectUri = redirectUri;</span>
+<span class="nc" id="L224">	}</span>
 
 	/**
 	 * @return the responseTypes
@@ -232,15 +233,15 @@ public class AuthenticationHolderEntity {
 			)
 	@Column(name=&quot;response_type&quot;)
 	public Set&lt;String&gt; getResponseTypes() {
-<span class="nc" id="L235">		return responseTypes;</span>
+<span class="nc" id="L236">		return responseTypes;</span>
 	}
 
 	/**
 	 * @param responseTypes the responseTypes to set
 	 */
 	public void setResponseTypes(Set&lt;String&gt; responseTypes) {
-<span class="nc" id="L242">		this.responseTypes = responseTypes;</span>
-<span class="nc" id="L243">	}</span>
+<span class="nc" id="L243">		this.responseTypes = responseTypes;</span>
+<span class="nc" id="L244">	}</span>
 
 	/**
 	 * @return the extensions
@@ -254,15 +255,15 @@ public class AuthenticationHolderEntity {
 	@MapKeyColumn(name=&quot;extension&quot;)
 	@Convert(converter=SerializableStringConverter.class)
 	public Map&lt;String, Serializable&gt; getExtensions() {
-<span class="nc" id="L257">		return extensions;</span>
+<span class="nc" id="L258">		return extensions;</span>
 	}
 
 	/**
 	 * @param extensions the extensions to set
 	 */
 	public void setExtensions(Map&lt;String, Serializable&gt; extensions) {
-<span class="nc" id="L264">		this.extensions = extensions;</span>
-<span class="nc" id="L265">	}</span>
+<span class="nc" id="L265">		this.extensions = extensions;</span>
+<span class="nc" id="L266">	}</span>
 
 	/**
 	 * @return the clientId
@@ -270,15 +271,15 @@ public class AuthenticationHolderEntity {
 	@Basic
 	@Column(name=&quot;client_id&quot;)
 	public String getClientId() {
-<span class="nc" id="L273">		return clientId;</span>
+<span class="nc" id="L274">		return clientId;</span>
 	}
 
 	/**
 	 * @param clientId the clientId to set
 	 */
 	public void setClientId(String clientId) {
-<span class="nc" id="L280">		this.clientId = clientId;</span>
-<span class="nc" id="L281">	}</span>
+<span class="nc" id="L281">		this.clientId = clientId;</span>
+<span class="nc" id="L282">	}</span>
 
 	/**
 	 * @return the scope
@@ -290,15 +291,15 @@ public class AuthenticationHolderEntity {
 			)
 	@Column(name=&quot;scope&quot;)
 	public Set&lt;String&gt; getScope() {
-<span class="nc" id="L293">		return scope;</span>
+<span class="nc" id="L294">		return scope;</span>
 	}
 
 	/**
 	 * @param scope the scope to set
 	 */
 	public void setScope(Set&lt;String&gt; scope) {
-<span class="nc" id="L300">		this.scope = scope;</span>
-<span class="nc" id="L301">	}</span>
+<span class="nc" id="L301">		this.scope = scope;</span>
+<span class="nc" id="L302">	}</span>
 
 	/**
 	 * @return the requestParameters
@@ -311,15 +312,15 @@ public class AuthenticationHolderEntity {
 	@Column(name=&quot;val&quot;)
 	@MapKeyColumn(name=&quot;param&quot;)
 	public Map&lt;String, String&gt; getRequestParameters() {
-<span class="nc" id="L314">		return requestParameters;</span>
+<span class="nc" id="L315">		return requestParameters;</span>
 	}
 
 	/**
 	 * @param requestParameters the requestParameters to set
 	 */
 	public void setRequestParameters(Map&lt;String, String&gt; requestParameters) {
-<span class="nc" id="L321">		this.requestParameters = requestParameters;</span>
-<span class="nc" id="L322">	}</span>
+<span class="nc" id="L322">		this.requestParameters = requestParameters;</span>
+<span class="nc" id="L323">	}</span>
 
 
 

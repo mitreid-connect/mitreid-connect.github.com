@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserInfoView.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.view</a> &gt; <span class="el_source">UserInfoView.java</span></div><h1>UserInfoView.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -45,7 +46,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @Component(UserInfoView.VIEWNAME)
-<span class="nc" id="L48">public class UserInfoView extends AbstractView {</span>
+<span class="nc" id="L49">public class UserInfoView extends AbstractView {</span>
 
 	public static final String REQUESTED_CLAIMS = &quot;requestedClaims&quot;;
 	public static final String AUTHORIZED_CLAIMS = &quot;authorizedClaims&quot;;
@@ -54,34 +55,34 @@ import com.google.gson.JsonParser;
 
 	public static final String VIEWNAME = &quot;userInfoView&quot;;
 
-<span class="nc" id="L57">	private static JsonParser jsonParser = new JsonParser();</span>
+<span class="nc" id="L58">	private static JsonParser jsonParser = new JsonParser();</span>
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L62">	private static final Logger logger = LoggerFactory.getLogger(UserInfoView.class);</span>
+<span class="nc" id="L63">	private static final Logger logger = LoggerFactory.getLogger(UserInfoView.class);</span>
 
 	@Autowired
 	private ScopeClaimTranslationService translator;
 
-<span class="nc" id="L67">	protected Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {</span>
+<span class="nc" id="L68">	protected Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {</span>
 
 		@Override
 		public boolean shouldSkipField(FieldAttributes f) {
 
-<span class="nc" id="L72">			return false;</span>
+<span class="nc" id="L73">			return false;</span>
 		}
 
 		@Override
 		public boolean shouldSkipClass(Class&lt;?&gt; clazz) {
 			// skip the JPA binding wrapper
-<span class="nc bnc" id="L78" title="All 2 branches missed.">			if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
-<span class="nc" id="L79">				return true;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">			if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
+<span class="nc" id="L80">				return true;</span>
 			}
-<span class="nc" id="L81">			return false;</span>
+<span class="nc" id="L82">			return false;</span>
 		}
 
-<span class="nc" id="L84">	}).create();</span>
+<span class="nc" id="L85">	}).create();</span>
 
 	/*
 	 * (non-Javadoc)
@@ -94,38 +95,38 @@ import com.google.gson.JsonParser;
 	@Override
 	protected void renderMergedOutputModel(Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {
 
-<span class="nc" id="L97">		UserInfo userInfo = (UserInfo) model.get(USER_INFO);</span>
+<span class="nc" id="L98">		UserInfo userInfo = (UserInfo) model.get(USER_INFO);</span>
 
-<span class="nc" id="L99">		Set&lt;String&gt; scope = (Set&lt;String&gt;) model.get(SCOPE);</span>
+<span class="nc" id="L100">		Set&lt;String&gt; scope = (Set&lt;String&gt;) model.get(SCOPE);</span>
 
-<span class="nc" id="L101">		response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
-<span class="nc" id="L102">		response.setCharacterEncoding(&quot;UTF-8&quot;);</span>
+<span class="nc" id="L102">		response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
+<span class="nc" id="L103">		response.setCharacterEncoding(&quot;UTF-8&quot;);</span>
 
 
-<span class="nc" id="L105">		JsonObject authorizedClaims = null;</span>
-<span class="nc" id="L106">		JsonObject requestedClaims = null;</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (model.get(AUTHORIZED_CLAIMS) != null) {</span>
-<span class="nc" id="L108">			authorizedClaims = jsonParser.parse((String) model.get(AUTHORIZED_CLAIMS)).getAsJsonObject();</span>
+<span class="nc" id="L106">		JsonObject authorizedClaims = null;</span>
+<span class="nc" id="L107">		JsonObject requestedClaims = null;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (model.get(AUTHORIZED_CLAIMS) != null) {</span>
+<span class="nc" id="L109">			authorizedClaims = jsonParser.parse((String) model.get(AUTHORIZED_CLAIMS)).getAsJsonObject();</span>
 		}
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (model.get(REQUESTED_CLAIMS) != null) {</span>
-<span class="nc" id="L111">			requestedClaims = jsonParser.parse((String) model.get(REQUESTED_CLAIMS)).getAsJsonObject();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (model.get(REQUESTED_CLAIMS) != null) {</span>
+<span class="nc" id="L112">			requestedClaims = jsonParser.parse((String) model.get(REQUESTED_CLAIMS)).getAsJsonObject();</span>
 		}
-<span class="nc" id="L113">		JsonObject json = toJsonFromRequestObj(userInfo, scope, authorizedClaims, requestedClaims);</span>
+<span class="nc" id="L114">		JsonObject json = toJsonFromRequestObj(userInfo, scope, authorizedClaims, requestedClaims);</span>
 
-<span class="nc" id="L115">		writeOut(json, model, request, response);</span>
-<span class="nc" id="L116">	}</span>
+<span class="nc" id="L116">		writeOut(json, model, request, response);</span>
+<span class="nc" id="L117">	}</span>
 
 	protected void writeOut(JsonObject json, Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {
 		try {
-<span class="nc" id="L120">			Writer out = response.getWriter();</span>
-<span class="nc" id="L121">			gson.toJson(json, out);</span>
-<span class="nc" id="L122">		} catch (IOException e) {</span>
+<span class="nc" id="L121">			Writer out = response.getWriter();</span>
+<span class="nc" id="L122">			gson.toJson(json, out);</span>
+<span class="nc" id="L123">		} catch (IOException e) {</span>
 
-<span class="nc" id="L124">			logger.error(&quot;IOException in UserInfoView.java: &quot;, e);</span>
+<span class="nc" id="L125">			logger.error(&quot;IOException in UserInfoView.java: &quot;, e);</span>
 
-<span class="nc" id="L126">		}</span>
+<span class="nc" id="L127">		}</span>
 
-<span class="nc" id="L128">	}</span>
+<span class="nc" id="L129">	}</span>
 
 	/**
 	 * Build a JSON response according to the request object received.
@@ -142,30 +143,30 @@ import com.google.gson.JsonParser;
 	private JsonObject toJsonFromRequestObj(UserInfo ui, Set&lt;String&gt; scope, JsonObject authorizedClaims, JsonObject requestedClaims) {
 
 		// get the base object
-<span class="nc" id="L145">		JsonObject obj = ui.toJson();</span>
+<span class="nc" id="L146">		JsonObject obj = ui.toJson();</span>
 
-<span class="nc" id="L147">		Set&lt;String&gt; allowedByScope = translator.getClaimsForScopeSet(scope);</span>
-<span class="nc" id="L148">		Set&lt;String&gt; authorizedByClaims = extractUserInfoClaimsIntoSet(authorizedClaims);</span>
-<span class="nc" id="L149">		Set&lt;String&gt; requestedByClaims = extractUserInfoClaimsIntoSet(requestedClaims);</span>
+<span class="nc" id="L148">		Set&lt;String&gt; allowedByScope = translator.getClaimsForScopeSet(scope);</span>
+<span class="nc" id="L149">		Set&lt;String&gt; authorizedByClaims = extractUserInfoClaimsIntoSet(authorizedClaims);</span>
+<span class="nc" id="L150">		Set&lt;String&gt; requestedByClaims = extractUserInfoClaimsIntoSet(requestedClaims);</span>
 
 		// Filter claims by performing a manual intersection of claims that are allowed by the given scope, requested, and authorized.
 		// We cannot use Sets.intersection() or similar because Entry&lt;&gt; objects will evaluate to being unequal if their values are
 		// different, whereas we are only interested in matching the Entry&lt;&gt;'s key values.
-<span class="nc" id="L154">		JsonObject result = new JsonObject();</span>
-<span class="nc bnc" id="L155" title="All 2 branches missed.">		for (Entry&lt;String, JsonElement&gt; entry : obj.entrySet()) {</span>
+<span class="nc" id="L155">		JsonObject result = new JsonObject();</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">		for (Entry&lt;String, JsonElement&gt; entry : obj.entrySet()) {</span>
 
-<span class="nc bnc" id="L157" title="All 2 branches missed.">			if (allowedByScope.contains(entry.getKey())</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">					|| authorizedByClaims.contains(entry.getKey())) {</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">			if (allowedByScope.contains(entry.getKey())</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">					|| authorizedByClaims.contains(entry.getKey())) {</span>
 				// it's allowed either by scope or by the authorized claims (either way is fine with us)
 
-<span class="nc bnc" id="L161" title="All 4 branches missed.">				if (requestedByClaims.isEmpty() || requestedByClaims.contains(entry.getKey())) {</span>
+<span class="nc bnc" id="L162" title="All 4 branches missed.">				if (requestedByClaims.isEmpty() || requestedByClaims.contains(entry.getKey())) {</span>
 					// the requested claims are empty (so we allow all), or they're not empty and this claim was specifically asked for
-<span class="nc" id="L163">					result.add(entry.getKey(), entry.getValue());</span>
+<span class="nc" id="L164">					result.add(entry.getKey(), entry.getValue());</span>
 				} // otherwise there were specific claims requested and this wasn't one of them
 			}
-<span class="nc" id="L166">		}</span>
+<span class="nc" id="L167">		}</span>
 
-<span class="nc" id="L168">		return result;</span>
+<span class="nc" id="L169">		return result;</span>
 	}
 
 	/**
@@ -174,16 +175,16 @@ import com.google.gson.JsonParser;
 	 * @param claims the claims request to process
 	 */
 	private Set&lt;String&gt; extractUserInfoClaimsIntoSet(JsonObject claims) {
-<span class="nc" id="L177">		Set&lt;String&gt; target = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">		if (claims != null) {</span>
-<span class="nc" id="L179">			JsonObject userinfoAuthorized = claims.getAsJsonObject(&quot;userinfo&quot;);</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">			if (userinfoAuthorized != null) {</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">				for (Entry&lt;String, JsonElement&gt; entry : userinfoAuthorized.entrySet()) {</span>
-<span class="nc" id="L182">					target.add(entry.getKey());</span>
-<span class="nc" id="L183">				}</span>
+<span class="nc" id="L178">		Set&lt;String&gt; target = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">		if (claims != null) {</span>
+<span class="nc" id="L180">			JsonObject userinfoAuthorized = claims.getAsJsonObject(&quot;userinfo&quot;);</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">			if (userinfoAuthorized != null) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">				for (Entry&lt;String, JsonElement&gt; entry : userinfoAuthorized.entrySet()) {</span>
+<span class="nc" id="L183">					target.add(entry.getKey());</span>
+<span class="nc" id="L184">				}</span>
 			}
 		}
-<span class="nc" id="L186">		return target;</span>
+<span class="nc" id="L187">		return target;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

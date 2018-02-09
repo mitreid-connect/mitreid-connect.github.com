@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClaimsCollectionEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.web</a> &gt; <span class="el_source">ClaimsCollectionEndpoint.java</span></div><h1>ClaimsCollectionEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -55,9 +54,9 @@ import com.google.gson.JsonPrimitive;
 @Controller
 @PreAuthorize(&quot;hasRole('ROLE_EXTERNAL_USER')&quot;)
 @RequestMapping(&quot;/&quot; + ClaimsCollectionEndpoint.URL)
-<span class="nc" id="L58">public class ClaimsCollectionEndpoint {</span>
+<span class="nc" id="L57">public class ClaimsCollectionEndpoint {</span>
 	// Logger for this class
-<span class="nc" id="L60">	private static final Logger logger = LoggerFactory.getLogger(ClaimsCollectionEndpoint.class);</span>
+<span class="nc" id="L59">	private static final Logger logger = LoggerFactory.getLogger(ClaimsCollectionEndpoint.class);</span>
 
 	public static final String URL = &quot;rqp_claims&quot;;
 
@@ -74,80 +73,80 @@ import com.google.gson.JsonPrimitive;
 			Model m, OIDCAuthenticationToken auth) {
 
 
-<span class="nc" id="L77">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L76">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc" id="L79">		PermissionTicket ticket = permissionService.getByTicket(ticketValue);</span>
+<span class="nc" id="L78">		PermissionTicket ticket = permissionService.getByTicket(ticketValue);</span>
 
-<span class="nc bnc" id="L81" title="All 4 branches missed.">		if (client == null || ticket == null) {</span>
-<span class="nc" id="L82">			logger.info(&quot;Client or ticket not found: &quot; + clientId + &quot; :: &quot; + ticketValue);</span>
-<span class="nc" id="L83">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L84">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">		if (client == null || ticket == null) {</span>
+<span class="nc" id="L81">			logger.info(&quot;Client or ticket not found: &quot; + clientId + &quot; :: &quot; + ticketValue);</span>
+<span class="nc" id="L82">			m.addAttribute(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L83">			return HttpCodeView.VIEWNAME;</span>
 		}
 
 		// we've got a client and ticket, let's attach the claims that we have from the token and userinfo
 
 		// subject
-<span class="nc" id="L90">		Set&lt;Claim&gt; claimsSupplied = Sets.newHashSet(ticket.getClaimsSupplied());</span>
+<span class="nc" id="L89">		Set&lt;Claim&gt; claimsSupplied = Sets.newHashSet(ticket.getClaimsSupplied());</span>
 
-<span class="nc" id="L92">		String issuer = auth.getIssuer();</span>
-<span class="nc" id="L93">		UserInfo userInfo = auth.getUserInfo();</span>
+<span class="nc" id="L91">		String issuer = auth.getIssuer();</span>
+<span class="nc" id="L92">		UserInfo userInfo = auth.getUserInfo();</span>
 
-<span class="nc" id="L95">		claimsSupplied.add(mkClaim(issuer, &quot;sub&quot;, new JsonPrimitive(auth.getSub())));</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (userInfo.getEmail() != null) {</span>
-<span class="nc" id="L97">			claimsSupplied.add(mkClaim(issuer, &quot;email&quot;, new JsonPrimitive(userInfo.getEmail())));</span>
+<span class="nc" id="L94">		claimsSupplied.add(mkClaim(issuer, &quot;sub&quot;, new JsonPrimitive(auth.getSub())));</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (userInfo.getEmail() != null) {</span>
+<span class="nc" id="L96">			claimsSupplied.add(mkClaim(issuer, &quot;email&quot;, new JsonPrimitive(userInfo.getEmail())));</span>
 		}
-<span class="nc bnc" id="L99" title="All 2 branches missed.">		if (userInfo.getEmailVerified() != null) {</span>
-<span class="nc" id="L100">			claimsSupplied.add(mkClaim(issuer, &quot;email_verified&quot;, new JsonPrimitive(userInfo.getEmailVerified())));</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (userInfo.getEmailVerified() != null) {</span>
+<span class="nc" id="L99">			claimsSupplied.add(mkClaim(issuer, &quot;email_verified&quot;, new JsonPrimitive(userInfo.getEmailVerified())));</span>
 		}
-<span class="nc bnc" id="L102" title="All 2 branches missed.">		if (userInfo.getPhoneNumber() != null) {</span>
-<span class="nc" id="L103">			claimsSupplied.add(mkClaim(issuer, &quot;phone_number&quot;, new JsonPrimitive(auth.getUserInfo().getPhoneNumber())));</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (userInfo.getPhoneNumber() != null) {</span>
+<span class="nc" id="L102">			claimsSupplied.add(mkClaim(issuer, &quot;phone_number&quot;, new JsonPrimitive(auth.getUserInfo().getPhoneNumber())));</span>
 		}
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (userInfo.getPhoneNumberVerified() != null) {</span>
-<span class="nc" id="L106">			claimsSupplied.add(mkClaim(issuer, &quot;phone_number_verified&quot;, new JsonPrimitive(auth.getUserInfo().getPhoneNumberVerified())));</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (userInfo.getPhoneNumberVerified() != null) {</span>
+<span class="nc" id="L105">			claimsSupplied.add(mkClaim(issuer, &quot;phone_number_verified&quot;, new JsonPrimitive(auth.getUserInfo().getPhoneNumberVerified())));</span>
 		}
-<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (userInfo.getPreferredUsername() != null) {</span>
-<span class="nc" id="L109">			claimsSupplied.add(mkClaim(issuer, &quot;preferred_username&quot;, new JsonPrimitive(auth.getUserInfo().getPreferredUsername())));</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (userInfo.getPreferredUsername() != null) {</span>
+<span class="nc" id="L108">			claimsSupplied.add(mkClaim(issuer, &quot;preferred_username&quot;, new JsonPrimitive(auth.getUserInfo().getPreferredUsername())));</span>
 		}
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (userInfo.getProfile() != null) {</span>
-<span class="nc" id="L112">			claimsSupplied.add(mkClaim(issuer, &quot;profile&quot;, new JsonPrimitive(auth.getUserInfo().getProfile())));</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (userInfo.getProfile() != null) {</span>
+<span class="nc" id="L111">			claimsSupplied.add(mkClaim(issuer, &quot;profile&quot;, new JsonPrimitive(auth.getUserInfo().getProfile())));</span>
 		}
 
-<span class="nc" id="L115">		ticket.setClaimsSupplied(claimsSupplied);</span>
+<span class="nc" id="L114">		ticket.setClaimsSupplied(claimsSupplied);</span>
 		
-<span class="nc" id="L117">		PermissionTicket updatedTicket = permissionService.updateTicket(ticket);</span>
+<span class="nc" id="L116">		PermissionTicket updatedTicket = permissionService.updateTicket(ticket);</span>
 		
-<span class="nc bnc" id="L119" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(redirectUri)) {</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">			if (client.getClaimsRedirectUris().size() == 1) {</span>
-<span class="nc" id="L121">				redirectUri = client.getClaimsRedirectUris().iterator().next(); // get the first (and only) redirect URI to use here</span>
-<span class="nc" id="L122">				logger.info(&quot;No redirect URI passed in, using registered value: &quot; + redirectUri);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(redirectUri)) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">			if (client.getClaimsRedirectUris().size() == 1) {</span>
+<span class="nc" id="L120">				redirectUri = client.getClaimsRedirectUris().iterator().next(); // get the first (and only) redirect URI to use here</span>
+<span class="nc" id="L121">				logger.info(&quot;No redirect URI passed in, using registered value: &quot; + redirectUri);</span>
 			} else {
-<span class="nc" id="L124">				throw new RedirectMismatchException(&quot;Unable to find redirect URI and none passed in.&quot;);</span>
+<span class="nc" id="L123">				throw new RedirectMismatchException(&quot;Unable to find redirect URI and none passed in.&quot;);</span>
 			}
 		} else {
-<span class="nc bnc" id="L127" title="All 2 branches missed.">			if (!client.getClaimsRedirectUris().contains(redirectUri)) {</span>
-<span class="nc" id="L128">				throw new RedirectMismatchException(&quot;Claims redirect did not match the registered values.&quot;);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">			if (!client.getClaimsRedirectUris().contains(redirectUri)) {</span>
+<span class="nc" id="L127">				throw new RedirectMismatchException(&quot;Claims redirect did not match the registered values.&quot;);</span>
 			}
 		}
 
-<span class="nc" id="L132">		UriComponentsBuilder template = UriComponentsBuilder.fromUriString(redirectUri);</span>
-<span class="nc" id="L133">		template.queryParam(&quot;authorization_state&quot;, &quot;claims_submitted&quot;);</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(state)) {</span>
-<span class="nc" id="L135">			template.queryParam(&quot;state&quot;, state);</span>
+<span class="nc" id="L131">		UriComponentsBuilder template = UriComponentsBuilder.fromUriString(redirectUri);</span>
+<span class="nc" id="L132">		template.queryParam(&quot;authorization_state&quot;, &quot;claims_submitted&quot;);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(state)) {</span>
+<span class="nc" id="L134">			template.queryParam(&quot;state&quot;, state);</span>
 		}
 
-<span class="nc" id="L138">		String uriString = template.toUriString();</span>
-<span class="nc" id="L139">		logger.info(&quot;Redirecting to &quot; + uriString);</span>
+<span class="nc" id="L137">		String uriString = template.toUriString();</span>
+<span class="nc" id="L138">		logger.info(&quot;Redirecting to &quot; + uriString);</span>
 
-<span class="nc" id="L141">		return &quot;redirect:&quot; + uriString;</span>
+<span class="nc" id="L140">		return &quot;redirect:&quot; + uriString;</span>
 	}
 
 
 	private Claim mkClaim(String issuer, String name, JsonElement value) {
-<span class="nc" id="L146">		Claim c = new Claim();</span>
-<span class="nc" id="L147">		c.setIssuer(Sets.newHashSet(issuer));</span>
-<span class="nc" id="L148">		c.setName(name);</span>
-<span class="nc" id="L149">		c.setValue(value);</span>
-<span class="nc" id="L150">		return c;</span>
+<span class="nc" id="L145">		Claim c = new Claim();</span>
+<span class="nc" id="L146">		c.setIssuer(Sets.newHashSet(issuer));</span>
+<span class="nc" id="L147">		c.setName(name);</span>
+<span class="nc" id="L148">		c.setValue(value);</span>
+<span class="nc" id="L149">		return c;</span>
 	}
 
 }

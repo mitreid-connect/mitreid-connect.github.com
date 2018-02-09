@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TokenAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.web</a> &gt; <span class="el_source">TokenAPI.java</span></div><h1>TokenAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -51,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping(&quot;/&quot; + TokenAPI.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L54">public class TokenAPI {</span>
+<span class="nc" id="L55">public class TokenAPI {</span>
 
 	public static final String URL = RootController.API_URL + &quot;/tokens&quot;;
 
@@ -67,56 +68,56 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L70">	private static final Logger logger = LoggerFactory.getLogger(TokenAPI.class);</span>
+<span class="nc" id="L71">	private static final Logger logger = LoggerFactory.getLogger(TokenAPI.class);</span>
 
 	@RequestMapping(value = &quot;/access&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAllAccessTokens(ModelMap m, Principal p) {
 
-<span class="nc" id="L75">		Set&lt;OAuth2AccessTokenEntity&gt; allTokens = tokenService.getAllAccessTokensForUser(p.getName());</span>
-<span class="nc" id="L76">		m.put(JsonEntityView.ENTITY, allTokens);</span>
-<span class="nc" id="L77">		return TokenApiView.VIEWNAME;</span>
+<span class="nc" id="L76">		Set&lt;OAuth2AccessTokenEntity&gt; allTokens = tokenService.getAllAccessTokensForUser(p.getName());</span>
+<span class="nc" id="L77">		m.put(JsonEntityView.ENTITY, allTokens);</span>
+<span class="nc" id="L78">		return TokenApiView.VIEWNAME;</span>
 	}
 
 	@RequestMapping(value = &quot;/access/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAccessTokenById(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
 
-<span class="nc" id="L83">		OAuth2AccessTokenEntity token = tokenService.getAccessTokenById(id);</span>
+<span class="nc" id="L84">		OAuth2AccessTokenEntity token = tokenService.getAccessTokenById(id);</span>
 
-<span class="nc bnc" id="L85" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L86">			logger.error(&quot;getToken failed; token not found: &quot; + id);</span>
-<span class="nc" id="L87">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L88">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L89">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
-<span class="nc" id="L91">			logger.error(&quot;getToken failed; token does not belong to principal &quot; + p.getName());</span>
-<span class="nc" id="L92">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L93">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
-<span class="nc" id="L94">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L87">			logger.error(&quot;getToken failed; token not found: &quot; + id);</span>
+<span class="nc" id="L88">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L89">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L90">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
+<span class="nc" id="L92">			logger.error(&quot;getToken failed; token does not belong to principal &quot; + p.getName());</span>
+<span class="nc" id="L93">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L94">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
+<span class="nc" id="L95">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L96">			m.put(JsonEntityView.ENTITY, token);</span>
-<span class="nc" id="L97">			return TokenApiView.VIEWNAME;</span>
+<span class="nc" id="L97">			m.put(JsonEntityView.ENTITY, token);</span>
+<span class="nc" id="L98">			return TokenApiView.VIEWNAME;</span>
 		}
 	}
 
 	@RequestMapping(value = &quot;/access/{id}&quot;, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteAccessTokenById(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
 
-<span class="nc" id="L104">		OAuth2AccessTokenEntity token = tokenService.getAccessTokenById(id);</span>
+<span class="nc" id="L105">		OAuth2AccessTokenEntity token = tokenService.getAccessTokenById(id);</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L107">			logger.error(&quot;getToken failed; token not found: &quot; + id);</span>
-<span class="nc" id="L108">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L109">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L110">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
-<span class="nc" id="L112">			logger.error(&quot;getToken failed; token does not belong to principal &quot; + p.getName());</span>
-<span class="nc" id="L113">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L114">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
-<span class="nc" id="L115">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L108">			logger.error(&quot;getToken failed; token not found: &quot; + id);</span>
+<span class="nc" id="L109">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L110">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L111">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
+<span class="nc" id="L113">			logger.error(&quot;getToken failed; token does not belong to principal &quot; + p.getName());</span>
+<span class="nc" id="L114">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L115">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
+<span class="nc" id="L116">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L117">			tokenService.revokeAccessToken(token);</span>
+<span class="nc" id="L118">			tokenService.revokeAccessToken(token);</span>
 
-<span class="nc" id="L119">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L120">			return HttpCodeView.VIEWNAME;</span>
 		}
 	}
 
@@ -124,17 +125,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@RequestMapping(value = &quot;/client/{clientId}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAccessTokensByClientId(@PathVariable(&quot;clientId&quot;) String clientId, ModelMap m, Principal p) {
 
-<span class="nc" id="L127">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L128">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (client != null) {</span>
-<span class="nc" id="L130">			List&lt;OAuth2AccessTokenEntity&gt; tokens = tokenService.getAccessTokensForClient(client);</span>
-<span class="nc" id="L131">			m.put(JsonEntityView.ENTITY, tokens);</span>
-<span class="nc" id="L132">			return TokenApiView.VIEWNAME;</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">		if (client != null) {</span>
+<span class="nc" id="L131">			List&lt;OAuth2AccessTokenEntity&gt; tokens = tokenService.getAccessTokensForClient(client);</span>
+<span class="nc" id="L132">			m.put(JsonEntityView.ENTITY, tokens);</span>
+<span class="nc" id="L133">			return TokenApiView.VIEWNAME;</span>
 		} else {
 			// client not found
-<span class="nc" id="L135">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L136">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L137">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L136">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L137">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L138">			return JsonErrorView.VIEWNAME;</span>
 		}
 
 	}
@@ -143,23 +144,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@RequestMapping(value = &quot;/registration/{clientId}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getRegistrationTokenByClientId(@PathVariable(&quot;clientId&quot;) String clientId, ModelMap m, Principal p) {
 
-<span class="nc" id="L146">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L147">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L148" title="All 2 branches missed.">		if (client != null) {</span>
-<span class="nc" id="L149">			OAuth2AccessTokenEntity token = tokenService.getRegistrationAccessTokenForClient(client);</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">			if (token != null) {</span>
-<span class="nc" id="L151">				m.put(JsonEntityView.ENTITY, token);</span>
-<span class="nc" id="L152">				return TokenApiView.VIEWNAME;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">		if (client != null) {</span>
+<span class="nc" id="L150">			OAuth2AccessTokenEntity token = tokenService.getRegistrationAccessTokenForClient(client);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">			if (token != null) {</span>
+<span class="nc" id="L152">				m.put(JsonEntityView.ENTITY, token);</span>
+<span class="nc" id="L153">				return TokenApiView.VIEWNAME;</span>
 			} else {
-<span class="nc" id="L154">				m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L155">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;No registration token could be found.&quot;);</span>
-<span class="nc" id="L156">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L155">				m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L156">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;No registration token could be found.&quot;);</span>
+<span class="nc" id="L157">				return JsonErrorView.VIEWNAME;</span>
 			}
 		} else {
 			// client not found
-<span class="nc" id="L160">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L161">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L162">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L161">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L162">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L163">			return JsonErrorView.VIEWNAME;</span>
 		}
 
 	}
@@ -167,25 +168,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
 	@RequestMapping(value = &quot;/registration/{clientId}&quot;, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String rotateRegistrationTokenByClientId(@PathVariable(&quot;clientId&quot;) String clientId, ModelMap m, Principal p) {
-<span class="nc" id="L170">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L171">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc bnc" id="L172" title="All 2 branches missed.">		if (client != null) {</span>
-<span class="nc" id="L173">			OAuth2AccessTokenEntity token = oidcTokenService.rotateRegistrationAccessTokenForClient(client);</span>
-<span class="nc" id="L174">			token = tokenService.saveAccessToken(token);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">		if (client != null) {</span>
+<span class="nc" id="L174">			OAuth2AccessTokenEntity token = oidcTokenService.rotateRegistrationAccessTokenForClient(client);</span>
+<span class="nc" id="L175">			token = tokenService.saveAccessToken(token);</span>
 
-<span class="nc bnc" id="L176" title="All 2 branches missed.">			if (token != null) {</span>
-<span class="nc" id="L177">				m.put(JsonEntityView.ENTITY, token);</span>
-<span class="nc" id="L178">				return TokenApiView.VIEWNAME;</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">			if (token != null) {</span>
+<span class="nc" id="L178">				m.put(JsonEntityView.ENTITY, token);</span>
+<span class="nc" id="L179">				return TokenApiView.VIEWNAME;</span>
 			} else {
-<span class="nc" id="L180">				m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L181">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;No registration token could be found.&quot;);</span>
-<span class="nc" id="L182">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L181">				m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L182">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;No registration token could be found.&quot;);</span>
+<span class="nc" id="L183">				return JsonErrorView.VIEWNAME;</span>
 			}
 		} else {
 			// client not found
-<span class="nc" id="L186">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L187">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L188">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L187">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L188">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested client with id &quot; + clientId + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L189">			return JsonErrorView.VIEWNAME;</span>
 		}
 
 	}
@@ -193,9 +194,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@RequestMapping(value = &quot;/refresh&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAllRefreshTokens(ModelMap m, Principal p) {
 
-<span class="nc" id="L196">		Set&lt;OAuth2RefreshTokenEntity&gt; allTokens = tokenService.getAllRefreshTokensForUser(p.getName());</span>
-<span class="nc" id="L197">		m.put(JsonEntityView.ENTITY, allTokens);</span>
-<span class="nc" id="L198">		return TokenApiView.VIEWNAME;</span>
+<span class="nc" id="L197">		Set&lt;OAuth2RefreshTokenEntity&gt; allTokens = tokenService.getAllRefreshTokensForUser(p.getName());</span>
+<span class="nc" id="L198">		m.put(JsonEntityView.ENTITY, allTokens);</span>
+<span class="nc" id="L199">		return TokenApiView.VIEWNAME;</span>
 
 
 	}
@@ -203,43 +204,43 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@RequestMapping(value = &quot;/refresh/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getRefreshTokenById(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
 
-<span class="nc" id="L206">		OAuth2RefreshTokenEntity token = tokenService.getRefreshTokenById(id);</span>
+<span class="nc" id="L207">		OAuth2RefreshTokenEntity token = tokenService.getRefreshTokenById(id);</span>
 
-<span class="nc bnc" id="L208" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L209">			logger.error(&quot;refresh token not found: &quot; + id);</span>
-<span class="nc" id="L210">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L211">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L212">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
-<span class="nc" id="L214">			logger.error(&quot;refresh token &quot; + id + &quot; does not belong to principal &quot; + p.getName());</span>
-<span class="nc" id="L215">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L216">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
-<span class="nc" id="L217">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L210">			logger.error(&quot;refresh token not found: &quot; + id);</span>
+<span class="nc" id="L211">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L212">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L213">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
+<span class="nc" id="L215">			logger.error(&quot;refresh token &quot; + id + &quot; does not belong to principal &quot; + p.getName());</span>
+<span class="nc" id="L216">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L217">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
+<span class="nc" id="L218">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L219">			m.put(JsonEntityView.ENTITY, token);</span>
-<span class="nc" id="L220">			return TokenApiView.VIEWNAME;</span>
+<span class="nc" id="L220">			m.put(JsonEntityView.ENTITY, token);</span>
+<span class="nc" id="L221">			return TokenApiView.VIEWNAME;</span>
 		}
 	}
 
 	@RequestMapping(value = &quot;/refresh/{id}&quot;, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteRefreshTokenById(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
 
-<span class="nc" id="L227">		OAuth2RefreshTokenEntity token = tokenService.getRefreshTokenById(id);</span>
+<span class="nc" id="L228">		OAuth2RefreshTokenEntity token = tokenService.getRefreshTokenById(id);</span>
 
-<span class="nc bnc" id="L229" title="All 2 branches missed.">		if (token == null) {</span>
-<span class="nc" id="L230">			logger.error(&quot;refresh token not found: &quot; + id);</span>
-<span class="nc" id="L231">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L232">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L233">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
-<span class="nc" id="L235">			logger.error(&quot;refresh token &quot; + id + &quot; does not belong to principal &quot; + p.getName());</span>
-<span class="nc" id="L236">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L237">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
-<span class="nc" id="L238">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">		if (token == null) {</span>
+<span class="nc" id="L231">			logger.error(&quot;refresh token not found: &quot; + id);</span>
+<span class="nc" id="L232">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L233">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested token with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L234">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">		} else if (!token.getAuthenticationHolder().getAuthentication().getName().equals(p.getName())) {</span>
+<span class="nc" id="L236">			logger.error(&quot;refresh token &quot; + id + &quot; does not belong to principal &quot; + p.getName());</span>
+<span class="nc" id="L237">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L238">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this token&quot;);</span>
+<span class="nc" id="L239">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L240">			tokenService.revokeRefreshToken(token);</span>
+<span class="nc" id="L241">			tokenService.revokeRefreshToken(token);</span>
 
-<span class="nc" id="L242">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L243">			return HttpCodeView.VIEWNAME;</span>
 		}
 	}
 }

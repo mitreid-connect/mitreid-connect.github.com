@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultJWTEncryptionAndDecryptionService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.jwt.encryption.service.impl</a> &gt; <span class="el_source">DefaultJWTEncryptionAndDecryptionService.java</span></div><h1>DefaultJWTEncryptionAndDecryptionService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -59,13 +60,13 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L62">	private static final Logger logger = LoggerFactory.getLogger(DefaultJWTEncryptionAndDecryptionService.class);</span>
+<span class="nc" id="L63">	private static final Logger logger = LoggerFactory.getLogger(DefaultJWTEncryptionAndDecryptionService.class);</span>
 
 	// map of identifier to encrypter
-<span class="nc" id="L65">	private Map&lt;String, JWEEncrypter&gt; encrypters = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L66">	private Map&lt;String, JWEEncrypter&gt; encrypters = new HashMap&lt;&gt;();</span>
 
 	// map of identifier to decrypter
-<span class="nc" id="L68">	private Map&lt;String, JWEDecrypter&gt; decrypters = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L69">	private Map&lt;String, JWEDecrypter&gt; decrypters = new HashMap&lt;&gt;();</span>
 
 	private String defaultEncryptionKeyId;
 
@@ -74,7 +75,7 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	private JWEAlgorithm defaultAlgorithm;
 
 	// map of identifier to key
-<span class="nc" id="L77">	private Map&lt;String, JWK&gt; keys = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L78">	private Map&lt;String, JWK&gt; keys = new HashMap&lt;&gt;();</span>
 
 	/**
 	 * Build this service based on the keys given. All public keys will be used to make encrypters,
@@ -85,10 +86,10 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	 * @throws InvalidKeySpecException
 	 * @throws JOSEException
 	 */
-<span class="nc" id="L88">	public DefaultJWTEncryptionAndDecryptionService(Map&lt;String, JWK&gt; keys) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {</span>
-<span class="nc" id="L89">		this.keys = keys;</span>
-<span class="nc" id="L90">		buildEncryptersAndDecrypters();</span>
-<span class="nc" id="L91">	}</span>
+<span class="nc" id="L89">	public DefaultJWTEncryptionAndDecryptionService(Map&lt;String, JWK&gt; keys) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {</span>
+<span class="nc" id="L90">		this.keys = keys;</span>
+<span class="nc" id="L91">		buildEncryptersAndDecrypters();</span>
+<span class="nc" id="L92">	}</span>
 
 	/**
 	 * Build this service based on the given keystore. All keys must have a key
@@ -99,116 +100,116 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	 * @throws InvalidKeySpecException
 	 * @throws JOSEException
 	 */
-<span class="nc" id="L102">	public DefaultJWTEncryptionAndDecryptionService(JWKSetKeyStore keyStore) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {</span>
+<span class="nc" id="L103">	public DefaultJWTEncryptionAndDecryptionService(JWKSetKeyStore keyStore) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {</span>
 
 		// convert all keys in the keystore to a map based on key id
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		for (JWK key : keyStore.getKeys()) {</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(key.getKeyID())) {</span>
-<span class="nc" id="L107">				this.keys.put(key.getKeyID(), key);</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		for (JWK key : keyStore.getKeys()) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(key.getKeyID())) {</span>
+<span class="nc" id="L108">				this.keys.put(key.getKeyID(), key);</span>
 			} else {
-<span class="nc" id="L109">				throw new IllegalArgumentException(&quot;Tried to load a key from a keystore without a 'kid' field: &quot; + key);</span>
+<span class="nc" id="L110">				throw new IllegalArgumentException(&quot;Tried to load a key from a keystore without a 'kid' field: &quot; + key);</span>
 			}
-<span class="nc" id="L111">		}</span>
+<span class="nc" id="L112">		}</span>
 
-<span class="nc" id="L113">		buildEncryptersAndDecrypters();</span>
+<span class="nc" id="L114">		buildEncryptersAndDecrypters();</span>
 
-<span class="nc" id="L115">	}</span>
+<span class="nc" id="L116">	}</span>
 
 
 	@PostConstruct
 	public void afterPropertiesSet() {
 
-<span class="nc bnc" id="L121" title="All 2 branches missed.">		if (keys == null) {</span>
-<span class="nc" id="L122">			throw new IllegalArgumentException(&quot;Encryption and decryption service must have at least one key configured.&quot;);</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		if (keys == null) {</span>
+<span class="nc" id="L123">			throw new IllegalArgumentException(&quot;Encryption and decryption service must have at least one key configured.&quot;);</span>
 		}
 		try {
-<span class="nc" id="L125">			buildEncryptersAndDecrypters();</span>
-<span class="nc" id="L126">		} catch (NoSuchAlgorithmException e) {</span>
-<span class="nc" id="L127">			throw new IllegalArgumentException(&quot;Encryption and decryption service could not find given algorithm.&quot;);</span>
-<span class="nc" id="L128">		} catch (InvalidKeySpecException e) {</span>
-<span class="nc" id="L129">			throw new IllegalArgumentException(&quot;Encryption and decryption service saw an invalid key specification.&quot;);</span>
-<span class="nc" id="L130">		} catch (JOSEException e) {</span>
-<span class="nc" id="L131">			throw new IllegalArgumentException(&quot;Encryption and decryption service was unable to process JOSE object.&quot;);</span>
-<span class="nc" id="L132">		}</span>
-<span class="nc" id="L133">	}</span>
+<span class="nc" id="L126">			buildEncryptersAndDecrypters();</span>
+<span class="nc" id="L127">		} catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L128">			throw new IllegalArgumentException(&quot;Encryption and decryption service could not find given algorithm.&quot;);</span>
+<span class="nc" id="L129">		} catch (InvalidKeySpecException e) {</span>
+<span class="nc" id="L130">			throw new IllegalArgumentException(&quot;Encryption and decryption service saw an invalid key specification.&quot;);</span>
+<span class="nc" id="L131">		} catch (JOSEException e) {</span>
+<span class="nc" id="L132">			throw new IllegalArgumentException(&quot;Encryption and decryption service was unable to process JOSE object.&quot;);</span>
+<span class="nc" id="L133">		}</span>
+<span class="nc" id="L134">	}</span>
 
 	public String getDefaultEncryptionKeyId() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (defaultEncryptionKeyId != null) {</span>
-<span class="nc" id="L137">			return defaultEncryptionKeyId;</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">		} else if (keys.size() == 1) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">		if (defaultEncryptionKeyId != null) {</span>
+<span class="nc" id="L138">			return defaultEncryptionKeyId;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">		} else if (keys.size() == 1) {</span>
 			// if there's only one key in the map, it's the default
-<span class="nc" id="L140">			return keys.keySet().iterator().next();</span>
+<span class="nc" id="L141">			return keys.keySet().iterator().next();</span>
 		} else {
-<span class="nc" id="L142">			return null;</span>
+<span class="nc" id="L143">			return null;</span>
 		}
 	}
 
 	public void setDefaultEncryptionKeyId(String defaultEncryptionKeyId) {
-<span class="nc" id="L147">		this.defaultEncryptionKeyId = defaultEncryptionKeyId;</span>
-<span class="nc" id="L148">	}</span>
+<span class="nc" id="L148">		this.defaultEncryptionKeyId = defaultEncryptionKeyId;</span>
+<span class="nc" id="L149">	}</span>
 
 	public String getDefaultDecryptionKeyId() {
-<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (defaultDecryptionKeyId != null) {</span>
-<span class="nc" id="L152">			return defaultDecryptionKeyId;</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">		} else if (keys.size() == 1) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">		if (defaultDecryptionKeyId != null) {</span>
+<span class="nc" id="L153">			return defaultDecryptionKeyId;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		} else if (keys.size() == 1) {</span>
 			// if there's only one key in the map, it's the default
-<span class="nc" id="L155">			return keys.keySet().iterator().next();</span>
+<span class="nc" id="L156">			return keys.keySet().iterator().next();</span>
 		} else {
-<span class="nc" id="L157">			return null;</span>
+<span class="nc" id="L158">			return null;</span>
 		}
 	}
 
 	public void setDefaultDecryptionKeyId(String defaultDecryptionKeyId) {
-<span class="nc" id="L162">		this.defaultDecryptionKeyId = defaultDecryptionKeyId;</span>
-<span class="nc" id="L163">	}</span>
+<span class="nc" id="L163">		this.defaultDecryptionKeyId = defaultDecryptionKeyId;</span>
+<span class="nc" id="L164">	}</span>
 
 	public JWEAlgorithm getDefaultAlgorithm() {
-<span class="nc" id="L166">		return defaultAlgorithm;</span>
+<span class="nc" id="L167">		return defaultAlgorithm;</span>
 	}
 
 	public void setDefaultAlgorithm(JWEAlgorithm defaultAlgorithm) {
-<span class="nc" id="L170">		this.defaultAlgorithm = defaultAlgorithm;</span>
-<span class="nc" id="L171">	}</span>
+<span class="nc" id="L171">		this.defaultAlgorithm = defaultAlgorithm;</span>
+<span class="nc" id="L172">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.jwt.encryption.service.JwtEncryptionAndDecryptionService#encryptJwt(com.nimbusds.jwt.EncryptedJWT)
 	 */
 	@Override
 	public void encryptJwt(JWEObject jwt) {
-<span class="nc bnc" id="L178" title="All 2 branches missed.">		if (getDefaultEncryptionKeyId() == null) {</span>
-<span class="nc" id="L179">			throw new IllegalStateException(&quot;Tried to call default encryption with no default encrypter ID set&quot;);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">		if (getDefaultEncryptionKeyId() == null) {</span>
+<span class="nc" id="L180">			throw new IllegalStateException(&quot;Tried to call default encryption with no default encrypter ID set&quot;);</span>
 		}
 
-<span class="nc" id="L182">		JWEEncrypter encrypter = encrypters.get(getDefaultEncryptionKeyId());</span>
+<span class="nc" id="L183">		JWEEncrypter encrypter = encrypters.get(getDefaultEncryptionKeyId());</span>
 
 		try {
-<span class="nc" id="L185">			jwt.encrypt(encrypter);</span>
-<span class="nc" id="L186">		} catch (JOSEException e) {</span>
+<span class="nc" id="L186">			jwt.encrypt(encrypter);</span>
+<span class="nc" id="L187">		} catch (JOSEException e) {</span>
 
-<span class="nc" id="L188">			logger.error(&quot;Failed to encrypt JWT, error was: &quot;, e);</span>
-<span class="nc" id="L189">		}</span>
+<span class="nc" id="L189">			logger.error(&quot;Failed to encrypt JWT, error was: &quot;, e);</span>
+<span class="nc" id="L190">		}</span>
 
-<span class="nc" id="L191">	}</span>
+<span class="nc" id="L192">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.jwt.encryption.service.JwtEncryptionAndDecryptionService#decryptJwt(com.nimbusds.jwt.EncryptedJWT)
 	 */
 	@Override
 	public void decryptJwt(JWEObject jwt) {
-<span class="nc bnc" id="L198" title="All 2 branches missed.">		if (getDefaultDecryptionKeyId() == null) {</span>
-<span class="nc" id="L199">			throw new IllegalStateException(&quot;Tried to call default decryption with no default decrypter ID set&quot;);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">		if (getDefaultDecryptionKeyId() == null) {</span>
+<span class="nc" id="L200">			throw new IllegalStateException(&quot;Tried to call default decryption with no default decrypter ID set&quot;);</span>
 		}
 
-<span class="nc" id="L202">		JWEDecrypter decrypter = decrypters.get(getDefaultDecryptionKeyId());</span>
+<span class="nc" id="L203">		JWEDecrypter decrypter = decrypters.get(getDefaultDecryptionKeyId());</span>
 
 		try {
-<span class="nc" id="L205">			jwt.decrypt(decrypter);</span>
-<span class="nc" id="L206">		} catch (JOSEException e) {</span>
+<span class="nc" id="L206">			jwt.decrypt(decrypter);</span>
+<span class="nc" id="L207">		} catch (JOSEException e) {</span>
 
-<span class="nc" id="L208">			logger.error(&quot;Failed to decrypt JWT, error was: &quot;, e);</span>
-<span class="nc" id="L209">		}</span>
+<span class="nc" id="L209">			logger.error(&quot;Failed to decrypt JWT, error was: &quot;, e);</span>
+<span class="nc" id="L210">		}</span>
 
-<span class="nc" id="L211">	}</span>
+<span class="nc" id="L212">	}</span>
 
 	/**
 	 * Builds all the encrypters and decrypters for this service based on the key map.
@@ -219,88 +220,88 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	 */
 	private void buildEncryptersAndDecrypters() throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
 
-<span class="nc bnc" id="L222" title="All 2 branches missed.">		for (Map.Entry&lt;String, JWK&gt; jwkEntry : keys.entrySet()) {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">		for (Map.Entry&lt;String, JWK&gt; jwkEntry : keys.entrySet()) {</span>
 
-<span class="nc" id="L224">			String id = jwkEntry.getKey();</span>
-<span class="nc" id="L225">			JWK jwk = jwkEntry.getValue();</span>
+<span class="nc" id="L225">			String id = jwkEntry.getKey();</span>
+<span class="nc" id="L226">			JWK jwk = jwkEntry.getValue();</span>
 
-<span class="nc bnc" id="L227" title="All 2 branches missed.">			if (jwk instanceof RSAKey) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">			if (jwk instanceof RSAKey) {</span>
 				// build RSA encrypters and decrypters
 
-<span class="nc" id="L230">				RSAEncrypter encrypter = new RSAEncrypter((RSAKey) jwk); // there should always at least be the public key</span>
-<span class="nc" id="L231">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
-<span class="nc" id="L232">				encrypters.put(id, encrypter);</span>
+<span class="nc" id="L231">				RSAEncrypter encrypter = new RSAEncrypter((RSAKey) jwk); // there should always at least be the public key</span>
+<span class="nc" id="L232">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L233">				encrypters.put(id, encrypter);</span>
 
-<span class="nc bnc" id="L234" title="All 2 branches missed.">				if (jwk.isPrivate()) { // we can decrypt!</span>
-<span class="nc" id="L235">					RSADecrypter decrypter = new RSADecrypter((RSAKey) jwk);</span>
-<span class="nc" id="L236">					decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
-<span class="nc" id="L237">					decrypters.put(id, decrypter);</span>
-<span class="nc" id="L238">				} else {</span>
-<span class="nc" id="L239">					logger.warn(&quot;No private key for key #&quot; + jwk.getKeyID());</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">				if (jwk.isPrivate()) { // we can decrypt!</span>
+<span class="nc" id="L236">					RSADecrypter decrypter = new RSADecrypter((RSAKey) jwk);</span>
+<span class="nc" id="L237">					decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L238">					decrypters.put(id, decrypter);</span>
+<span class="nc" id="L239">				} else {</span>
+<span class="nc" id="L240">					logger.warn(&quot;No private key for key #&quot; + jwk.getKeyID());</span>
 				}
-<span class="nc bnc" id="L241" title="All 2 branches missed.">			} else if (jwk instanceof ECKey) {</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">			} else if (jwk instanceof ECKey) {</span>
 
 				// build EC Encrypters and decrypters
 
-<span class="nc" id="L245">				ECDHEncrypter encrypter = new ECDHEncrypter((ECKey) jwk);</span>
-<span class="nc" id="L246">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
-<span class="nc" id="L247">				encrypters.put(id, encrypter);</span>
+<span class="nc" id="L246">				ECDHEncrypter encrypter = new ECDHEncrypter((ECKey) jwk);</span>
+<span class="nc" id="L247">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L248">				encrypters.put(id, encrypter);</span>
 
-<span class="nc bnc" id="L249" title="All 2 branches missed.">				if (jwk.isPrivate()) { // we can decrypt too</span>
-<span class="nc" id="L250">					ECDHDecrypter decrypter = new ECDHDecrypter((ECKey) jwk);</span>
-<span class="nc" id="L251">					decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
-<span class="nc" id="L252">					decrypters.put(id, decrypter);</span>
-<span class="nc" id="L253">				} else {</span>
-<span class="nc" id="L254">					logger.warn(&quot;No private key for key # &quot; + jwk.getKeyID());</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">				if (jwk.isPrivate()) { // we can decrypt too</span>
+<span class="nc" id="L251">					ECDHDecrypter decrypter = new ECDHDecrypter((ECKey) jwk);</span>
+<span class="nc" id="L252">					decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L253">					decrypters.put(id, decrypter);</span>
+<span class="nc" id="L254">				} else {</span>
+<span class="nc" id="L255">					logger.warn(&quot;No private key for key # &quot; + jwk.getKeyID());</span>
 				}
 
-<span class="nc bnc" id="L257" title="All 2 branches missed.">			} else if (jwk instanceof OctetSequenceKey) {</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">			} else if (jwk instanceof OctetSequenceKey) {</span>
 				// build symmetric encrypters and decrypters
 
-<span class="nc" id="L260">				DirectEncrypter encrypter = new DirectEncrypter((OctetSequenceKey) jwk);</span>
-<span class="nc" id="L261">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
-<span class="nc" id="L262">				DirectDecrypter decrypter = new DirectDecrypter((OctetSequenceKey) jwk);</span>
-<span class="nc" id="L263">				decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L261">				DirectEncrypter encrypter = new DirectEncrypter((OctetSequenceKey) jwk);</span>
+<span class="nc" id="L262">				encrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
+<span class="nc" id="L263">				DirectDecrypter decrypter = new DirectDecrypter((OctetSequenceKey) jwk);</span>
+<span class="nc" id="L264">				decrypter.getJCAContext().setProvider(BouncyCastleProviderSingleton.getInstance());</span>
 
-<span class="nc" id="L265">				encrypters.put(id, encrypter);</span>
-<span class="nc" id="L266">				decrypters.put(id, decrypter);</span>
+<span class="nc" id="L266">				encrypters.put(id, encrypter);</span>
+<span class="nc" id="L267">				decrypters.put(id, decrypter);</span>
 
-<span class="nc" id="L268">			} else {</span>
-<span class="nc" id="L269">				logger.warn(&quot;Unknown key type: &quot; + jwk);</span>
+<span class="nc" id="L269">			} else {</span>
+<span class="nc" id="L270">				logger.warn(&quot;Unknown key type: &quot; + jwk);</span>
 			}
 
-<span class="nc" id="L272">		}</span>
-<span class="nc" id="L273">	}</span>
+<span class="nc" id="L273">		}</span>
+<span class="nc" id="L274">	}</span>
 
 	@Override
 	public Map&lt;String, JWK&gt; getAllPublicKeys() {
-<span class="nc" id="L277">		Map&lt;String, JWK&gt; pubKeys = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L278">		Map&lt;String, JWK&gt; pubKeys = new HashMap&lt;&gt;();</span>
 
 		// pull out all public keys
-<span class="nc bnc" id="L280" title="All 2 branches missed.">		for (String keyId : keys.keySet()) {</span>
-<span class="nc" id="L281">			JWK key = keys.get(keyId);</span>
-<span class="nc" id="L282">			JWK pub = key.toPublicJWK();</span>
-<span class="nc bnc" id="L283" title="All 2 branches missed.">			if (pub != null) {</span>
-<span class="nc" id="L284">				pubKeys.put(keyId, pub);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">		for (String keyId : keys.keySet()) {</span>
+<span class="nc" id="L282">			JWK key = keys.get(keyId);</span>
+<span class="nc" id="L283">			JWK pub = key.toPublicJWK();</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">			if (pub != null) {</span>
+<span class="nc" id="L285">				pubKeys.put(keyId, pub);</span>
 			}
-<span class="nc" id="L286">		}</span>
+<span class="nc" id="L287">		}</span>
 
-<span class="nc" id="L288">		return pubKeys;</span>
+<span class="nc" id="L289">		return pubKeys;</span>
 	}
 
 	@Override
 	public Collection&lt;JWEAlgorithm&gt; getAllEncryptionAlgsSupported() {
-<span class="nc" id="L293">		Set&lt;JWEAlgorithm&gt; algs = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L294">		Set&lt;JWEAlgorithm&gt; algs = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L295" title="All 2 branches missed.">		for (JWEEncrypter encrypter : encrypters.values()) {</span>
-<span class="nc" id="L296">			algs.addAll(encrypter.supportedJWEAlgorithms());</span>
-<span class="nc" id="L297">		}</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">		for (JWEEncrypter encrypter : encrypters.values()) {</span>
+<span class="nc" id="L297">			algs.addAll(encrypter.supportedJWEAlgorithms());</span>
+<span class="nc" id="L298">		}</span>
 
-<span class="nc bnc" id="L299" title="All 2 branches missed.">		for (JWEDecrypter decrypter : decrypters.values()) {</span>
-<span class="nc" id="L300">			algs.addAll(decrypter.supportedJWEAlgorithms());</span>
-<span class="nc" id="L301">		}</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">		for (JWEDecrypter decrypter : decrypters.values()) {</span>
+<span class="nc" id="L301">			algs.addAll(decrypter.supportedJWEAlgorithms());</span>
+<span class="nc" id="L302">		}</span>
 
-<span class="nc" id="L303">		return algs;</span>
+<span class="nc" id="L304">		return algs;</span>
 	}
 
 	/* (non-Javadoc)
@@ -308,17 +309,17 @@ public class DefaultJWTEncryptionAndDecryptionService implements JWTEncryptionAn
 	 */
 	@Override
 	public Collection&lt;EncryptionMethod&gt; getAllEncryptionEncsSupported() {
-<span class="nc" id="L311">		Set&lt;EncryptionMethod&gt; encs = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L312">		Set&lt;EncryptionMethod&gt; encs = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L313" title="All 2 branches missed.">		for (JWEEncrypter encrypter : encrypters.values()) {</span>
-<span class="nc" id="L314">			encs.addAll(encrypter.supportedEncryptionMethods());</span>
-<span class="nc" id="L315">		}</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">		for (JWEEncrypter encrypter : encrypters.values()) {</span>
+<span class="nc" id="L315">			encs.addAll(encrypter.supportedEncryptionMethods());</span>
+<span class="nc" id="L316">		}</span>
 
-<span class="nc bnc" id="L317" title="All 2 branches missed.">		for (JWEDecrypter decrypter : decrypters.values()) {</span>
-<span class="nc" id="L318">			encs.addAll(decrypter.supportedEncryptionMethods());</span>
-<span class="nc" id="L319">		}</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">		for (JWEDecrypter decrypter : decrypters.values()) {</span>
+<span class="nc" id="L319">			encs.addAll(decrypter.supportedEncryptionMethods());</span>
+<span class="nc" id="L320">		}</span>
 
-<span class="nc" id="L321">		return encs;</span>
+<span class="nc" id="L322">		return encs;</span>
 	}
 
 

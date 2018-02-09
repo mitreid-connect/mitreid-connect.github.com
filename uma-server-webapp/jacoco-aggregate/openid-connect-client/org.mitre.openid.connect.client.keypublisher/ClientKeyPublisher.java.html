@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientKeyPublisher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.keypublisher</a> &gt; <span class="el_source">ClientKeyPublisher.java</span></div><h1>ClientKeyPublisher.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -35,7 +36,7 @@ import com.nimbusds.jose.jwk.JWK;
  * @author jricher
  *
  */
-<span class="nc" id="L38">public class ClientKeyPublisher implements BeanDefinitionRegistryPostProcessor {</span>
+<span class="nc" id="L39">public class ClientKeyPublisher implements BeanDefinitionRegistryPostProcessor {</span>
 
 	private JWTSigningAndValidationService signingAndValidationService;
 
@@ -43,47 +44,47 @@ import com.nimbusds.jose.jwk.JWK;
 
 	private BeanDefinitionRegistry registry;
 
-<span class="nc" id="L46">	private String jwkViewName = JWKSetView.VIEWNAME;</span>
+<span class="nc" id="L47">	private String jwkViewName = JWKSetView.VIEWNAME;</span>
 
 	/**
 	 * If the jwkPublishUrl field is set on this bean, set up a listener on that URL to publish keys.
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(getJwkPublishUrl())) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(getJwkPublishUrl())) {</span>
 
 			// add a mapping to this class
-<span class="nc" id="L56">			BeanDefinitionBuilder clientKeyMapping = BeanDefinitionBuilder.rootBeanDefinition(ClientKeyPublisherMapping.class);</span>
+<span class="nc" id="L57">			BeanDefinitionBuilder clientKeyMapping = BeanDefinitionBuilder.rootBeanDefinition(ClientKeyPublisherMapping.class);</span>
 			// custom view resolver
-<span class="nc" id="L58">			BeanDefinitionBuilder viewResolver = BeanDefinitionBuilder.rootBeanDefinition(JwkViewResolver.class);</span>
+<span class="nc" id="L59">			BeanDefinitionBuilder viewResolver = BeanDefinitionBuilder.rootBeanDefinition(JwkViewResolver.class);</span>
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(getJwkPublishUrl())) {</span>
-<span class="nc" id="L61">				clientKeyMapping.addPropertyValue(&quot;jwkPublishUrl&quot;, getJwkPublishUrl());</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(getJwkPublishUrl())) {</span>
+<span class="nc" id="L62">				clientKeyMapping.addPropertyValue(&quot;jwkPublishUrl&quot;, getJwkPublishUrl());</span>
 
 				// randomize view name to make sure it doesn't conflict with local views
-<span class="nc" id="L64">				jwkViewName = JWKSetView.VIEWNAME + &quot;-&quot; + UUID.randomUUID().toString();</span>
-<span class="nc" id="L65">				viewResolver.addPropertyValue(&quot;jwkViewName&quot;, jwkViewName);</span>
+<span class="nc" id="L65">				jwkViewName = JWKSetView.VIEWNAME + &quot;-&quot; + UUID.randomUUID().toString();</span>
+<span class="nc" id="L66">				viewResolver.addPropertyValue(&quot;jwkViewName&quot;, jwkViewName);</span>
 
 				// view bean
-<span class="nc" id="L68">				BeanDefinitionBuilder jwkView = BeanDefinitionBuilder.rootBeanDefinition(JWKSetView.class);</span>
-<span class="nc" id="L69">				registry.registerBeanDefinition(JWKSetView.VIEWNAME, jwkView.getBeanDefinition());</span>
-<span class="nc" id="L70">				viewResolver.addPropertyReference(&quot;jwk&quot;, JWKSetView.VIEWNAME);</span>
+<span class="nc" id="L69">				BeanDefinitionBuilder jwkView = BeanDefinitionBuilder.rootBeanDefinition(JWKSetView.class);</span>
+<span class="nc" id="L70">				registry.registerBeanDefinition(JWKSetView.VIEWNAME, jwkView.getBeanDefinition());</span>
+<span class="nc" id="L71">				viewResolver.addPropertyReference(&quot;jwk&quot;, JWKSetView.VIEWNAME);</span>
 			}
 
-<span class="nc" id="L73">			registry.registerBeanDefinition(&quot;clientKeyMapping&quot;, clientKeyMapping.getBeanDefinition());</span>
-<span class="nc" id="L74">			registry.registerBeanDefinition(&quot;jwkViewResolver&quot;, viewResolver.getBeanDefinition());</span>
+<span class="nc" id="L74">			registry.registerBeanDefinition(&quot;clientKeyMapping&quot;, clientKeyMapping.getBeanDefinition());</span>
+<span class="nc" id="L75">			registry.registerBeanDefinition(&quot;jwkViewResolver&quot;, viewResolver.getBeanDefinition());</span>
 
 		}
 
-<span class="nc" id="L78">	}</span>
+<span class="nc" id="L79">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-<span class="nc" id="L85">		this.registry = registry;</span>
-<span class="nc" id="L86">	}</span>
+<span class="nc" id="L86">		this.registry = registry;</span>
+<span class="nc" id="L87">	}</span>
 
 	/**
 	 * Return a view to publish all keys in JWK format. Only used if jwkPublishUrl is set.
@@ -92,38 +93,38 @@ import com.nimbusds.jose.jwk.JWK;
 	public ModelAndView publishClientJwk() {
 
 		// map from key id to key
-<span class="nc" id="L95">		Map&lt;String, JWK&gt; keys = signingAndValidationService.getAllPublicKeys();</span>
+<span class="nc" id="L96">		Map&lt;String, JWK&gt; keys = signingAndValidationService.getAllPublicKeys();</span>
 
-<span class="nc" id="L97">		return new ModelAndView(jwkViewName, &quot;keys&quot;, keys);</span>
+<span class="nc" id="L98">		return new ModelAndView(jwkViewName, &quot;keys&quot;, keys);</span>
 	}
 
 	/**
 	 * @return the jwkPublishUrl
 	 */
 	public String getJwkPublishUrl() {
-<span class="nc" id="L104">		return jwkPublishUrl;</span>
+<span class="nc" id="L105">		return jwkPublishUrl;</span>
 	}
 
 	/**
 	 * @param jwkPublishUrl the jwkPublishUrl to set
 	 */
 	public void setJwkPublishUrl(String jwkPublishUrl) {
-<span class="nc" id="L111">		this.jwkPublishUrl = jwkPublishUrl;</span>
-<span class="nc" id="L112">	}</span>
+<span class="nc" id="L112">		this.jwkPublishUrl = jwkPublishUrl;</span>
+<span class="nc" id="L113">	}</span>
 
 	/**
 	 * @return the signingAndValidationService
 	 */
 	public JWTSigningAndValidationService getSigningAndValidationService() {
-<span class="nc" id="L118">		return signingAndValidationService;</span>
+<span class="nc" id="L119">		return signingAndValidationService;</span>
 	}
 
 	/**
 	 * @param signingAndValidationService the signingAndValidationService to set
 	 */
 	public void setSigningAndValidationService(JWTSigningAndValidationService signingAndValidationService) {
-<span class="nc" id="L125">		this.signingAndValidationService = signingAndValidationService;</span>
-<span class="nc" id="L126">	}</span>
+<span class="nc" id="L126">		this.signingAndValidationService = signingAndValidationService;</span>
+<span class="nc" id="L127">	}</span>
 
 
 }

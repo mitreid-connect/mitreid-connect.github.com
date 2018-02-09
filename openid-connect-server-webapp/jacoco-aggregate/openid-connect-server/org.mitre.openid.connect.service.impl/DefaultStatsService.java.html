@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultStatsService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service.impl</a> &gt; <span class="el_source">DefaultStatsService.java</span></div><h1>DefaultStatsService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -41,19 +42,19 @@ import com.google.common.base.Suppliers;
  *
  */
 @Service
-<span class="nc" id="L44">public class DefaultStatsService implements StatsService {</span>
+<span class="nc" id="L45">public class DefaultStatsService implements StatsService {</span>
 
 	@Autowired
 	private ApprovedSiteService approvedSiteService;
 
 	// stats cache
-<span class="nc" id="L50">	private Supplier&lt;Map&lt;String, Integer&gt;&gt; summaryCache = createSummaryCache();</span>
+<span class="nc" id="L51">	private Supplier&lt;Map&lt;String, Integer&gt;&gt; summaryCache = createSummaryCache();</span>
 
 	private Supplier&lt;Map&lt;String, Integer&gt;&gt; createSummaryCache() {
-<span class="nc" id="L53">		return Suppliers.memoizeWithExpiration(new Supplier&lt;Map&lt;String, Integer&gt;&gt;() {</span>
+<span class="nc" id="L54">		return Suppliers.memoizeWithExpiration(new Supplier&lt;Map&lt;String, Integer&gt;&gt;() {</span>
 			@Override
 			public Map&lt;String, Integer&gt; get() {
-<span class="nc" id="L56">				return computeSummaryStats();</span>
+<span class="nc" id="L57">				return computeSummaryStats();</span>
 			}
 
 		}, 10, TimeUnit.MINUTES);
@@ -61,28 +62,28 @@ import com.google.common.base.Suppliers;
 
 	@Override
 	public Map&lt;String, Integer&gt; getSummaryStats() {
-<span class="nc" id="L64">		return summaryCache.get();</span>
+<span class="nc" id="L65">		return summaryCache.get();</span>
 	}
 
 	// do the actual computation
 	private Map&lt;String, Integer&gt; computeSummaryStats() {
 		// get all approved sites
-<span class="nc" id="L70">		Collection&lt;ApprovedSite&gt; allSites = approvedSiteService.getAll();</span>
+<span class="nc" id="L71">		Collection&lt;ApprovedSite&gt; allSites = approvedSiteService.getAll();</span>
 
 		// process to find number of unique users and sites
-<span class="nc" id="L73">		Set&lt;String&gt; userIds = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L74">		Set&lt;String&gt; clientIds = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">		for (ApprovedSite approvedSite : allSites) {</span>
-<span class="nc" id="L76">			userIds.add(approvedSite.getUserId());</span>
-<span class="nc" id="L77">			clientIds.add(approvedSite.getClientId());</span>
-<span class="nc" id="L78">		}</span>
+<span class="nc" id="L74">		Set&lt;String&gt; userIds = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L75">		Set&lt;String&gt; clientIds = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">		for (ApprovedSite approvedSite : allSites) {</span>
+<span class="nc" id="L77">			userIds.add(approvedSite.getUserId());</span>
+<span class="nc" id="L78">			clientIds.add(approvedSite.getClientId());</span>
+<span class="nc" id="L79">		}</span>
 
-<span class="nc" id="L80">		Map&lt;String, Integer&gt; e = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L81">		Map&lt;String, Integer&gt; e = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L82">		e.put(&quot;approvalCount&quot;, allSites.size());</span>
-<span class="nc" id="L83">		e.put(&quot;userCount&quot;, userIds.size());</span>
-<span class="nc" id="L84">		e.put(&quot;clientCount&quot;, clientIds.size());</span>
-<span class="nc" id="L85">		return e;</span>
+<span class="nc" id="L83">		e.put(&quot;approvalCount&quot;, allSites.size());</span>
+<span class="nc" id="L84">		e.put(&quot;userCount&quot;, userIds.size());</span>
+<span class="nc" id="L85">		e.put(&quot;clientCount&quot;, clientIds.size());</span>
+<span class="nc" id="L86">		return e;</span>
 	}
 
 	/* (non-Javadoc)
@@ -91,12 +92,12 @@ import com.google.common.base.Suppliers;
 	@Override
 	public ClientStat getCountForClientId(String clientId) {
 
-<span class="nc" id="L94">		Collection&lt;ApprovedSite&gt; approvedSites = approvedSiteService.getByClientId(clientId);</span>
+<span class="nc" id="L95">		Collection&lt;ApprovedSite&gt; approvedSites = approvedSiteService.getByClientId(clientId);</span>
 
-<span class="nc" id="L96">		ClientStat stat = new ClientStat();</span>
-<span class="nc" id="L97">		stat.setApprovedSiteCount(approvedSites.size());</span>
+<span class="nc" id="L97">		ClientStat stat = new ClientStat();</span>
+<span class="nc" id="L98">		stat.setApprovedSiteCount(approvedSites.size());</span>
 
-<span class="nc" id="L99">		return stat;</span>
+<span class="nc" id="L100">		return stat;</span>
 	}
 
 	/**
@@ -104,8 +105,8 @@ import com.google.common.base.Suppliers;
 	 */
 	@Override
 	public void resetCache() {
-<span class="nc" id="L107">		summaryCache = createSummaryCache();</span>
-<span class="nc" id="L108">	}</span>
+<span class="nc" id="L108">		summaryCache = createSummaryCache();</span>
+<span class="nc" id="L109">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

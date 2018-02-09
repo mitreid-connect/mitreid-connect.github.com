@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConnectTokenEnhancer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.token</a> &gt; <span class="el_source">ConnectTokenEnhancer.java</span></div><h1>ConnectTokenEnhancer.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -47,12 +48,12 @@ import com.nimbusds.jwt.JWTClaimsSet.Builder;
 import com.nimbusds.jwt.SignedJWT;
 
 @Service
-<span class="nc" id="L50">public class ConnectTokenEnhancer implements TokenEnhancer {</span>
+<span class="nc" id="L51">public class ConnectTokenEnhancer implements TokenEnhancer {</span>
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L55">	private static final Logger logger = LoggerFactory.getLogger(ConnectTokenEnhancer.class);</span>
+<span class="nc" id="L56">	private static final Logger logger = LoggerFactory.getLogger(ConnectTokenEnhancer.class);</span>
 
 	@Autowired
 	private ConfigurationPropertiesBean configBean;
@@ -72,36 +73,38 @@ import com.nimbusds.jwt.SignedJWT;
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken,	OAuth2Authentication authentication) {
 
-<span class="nc" id="L75">		OAuth2AccessTokenEntity token = (OAuth2AccessTokenEntity) accessToken;</span>
-<span class="nc" id="L76">		OAuth2Request originalAuthRequest = authentication.getOAuth2Request();</span>
+<span class="nc" id="L76">		OAuth2AccessTokenEntity token = (OAuth2AccessTokenEntity) accessToken;</span>
+<span class="nc" id="L77">		OAuth2Request originalAuthRequest = authentication.getOAuth2Request();</span>
 
-<span class="nc" id="L78">		String clientId = originalAuthRequest.getClientId();</span>
-<span class="nc" id="L79">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
+<span class="nc" id="L79">		String clientId = originalAuthRequest.getClientId();</span>
+<span class="nc" id="L80">		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);</span>
 
-<span class="nc" id="L81">		Builder builder = new JWTClaimsSet.Builder()</span>
-<span class="nc" id="L82">				.claim(&quot;azp&quot;, clientId)</span>
-<span class="nc" id="L83">				.issuer(configBean.getIssuer())</span>
-<span class="nc" id="L84">				.issueTime(new Date())</span>
-<span class="nc" id="L85">				.expirationTime(token.getExpiration())</span>
-<span class="nc" id="L86">				.subject(authentication.getName())</span>
-<span class="nc" id="L87">				.jwtID(UUID.randomUUID().toString()); // set a random NONCE in the middle of it</span>
+<span class="nc" id="L82">		Builder builder = new JWTClaimsSet.Builder()</span>
+<span class="nc" id="L83">				.claim(&quot;azp&quot;, clientId)</span>
+<span class="nc" id="L84">				.issuer(configBean.getIssuer())</span>
+<span class="nc" id="L85">				.issueTime(new Date())</span>
+<span class="nc" id="L86">				.expirationTime(token.getExpiration())</span>
+<span class="nc" id="L87">				.subject(authentication.getName())</span>
+<span class="nc" id="L88">				.jwtID(UUID.randomUUID().toString()); // set a random NONCE in the middle of it</span>
 
-<span class="nc" id="L89">		String audience = (String) authentication.getOAuth2Request().getExtensions().get(&quot;aud&quot;);</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(audience)) {</span>
-<span class="nc" id="L91">			builder.audience(Lists.newArrayList(audience));</span>
+<span class="nc" id="L90">		String audience = (String) authentication.getOAuth2Request().getExtensions().get(&quot;aud&quot;);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(audience)) {</span>
+<span class="nc" id="L92">			builder.audience(Lists.newArrayList(audience));</span>
 		}
 
-<span class="nc" id="L94">		JWTClaimsSet claims = builder.build();</span>
+<span class="nc" id="L95">		addCustomAccessTokenClaims(builder, token, authentication);</span>
 
-<span class="nc" id="L96">		JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm();</span>
-<span class="nc" id="L97">		JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
-<span class="nc" id="L98">				jwtService.getDefaultSignerKeyId(),</span>
+<span class="nc" id="L97">		JWTClaimsSet claims = builder.build();</span>
+
+<span class="nc" id="L99">		JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm();</span>
+<span class="nc" id="L100">		JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L101">				jwtService.getDefaultSignerKeyId(),</span>
 				null, null);
-<span class="nc" id="L100">		SignedJWT signed = new SignedJWT(header, claims);</span>
+<span class="nc" id="L103">		SignedJWT signed = new SignedJWT(header, claims);</span>
 
-<span class="nc" id="L102">		jwtService.signJwt(signed);</span>
+<span class="nc" id="L105">		jwtService.signJwt(signed);</span>
 
-<span class="nc" id="L104">		token.setJwt(signed);</span>
+<span class="nc" id="L107">		token.setJwt(signed);</span>
 
 		/**
 		 * Authorization request scope MUST include &quot;openid&quot; in OIDC, but access token request
@@ -112,53 +115,63 @@ import com.nimbusds.jwt.SignedJWT;
 		 * Also, there must be a user authentication involved in the request for it to be considered
 		 * OIDC and not OAuth, so we check for that as well.
 		 */
-<span class="nc bnc" id="L115" title="All 2 branches missed.">		if (originalAuthRequest.getScope().contains(SystemScopeService.OPENID_SCOPE)</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">				&amp;&amp; !authentication.isClientOnly()) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (originalAuthRequest.getScope().contains(SystemScopeService.OPENID_SCOPE)</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">				&amp;&amp; !authentication.isClientOnly()) {</span>
 
-<span class="nc" id="L118">			String username = authentication.getName();</span>
-<span class="nc" id="L119">			UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, clientId);</span>
+<span class="nc" id="L121">			String username = authentication.getName();</span>
+<span class="nc" id="L122">			UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, clientId);</span>
 
-<span class="nc bnc" id="L121" title="All 2 branches missed.">			if (userInfo != null) {</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">			if (userInfo != null) {</span>
 
-<span class="nc" id="L123">				JWT idToken = connectTokenService.createIdToken(client,</span>
-<span class="nc" id="L124">						originalAuthRequest, claims.getIssueTime(),</span>
-<span class="nc" id="L125">						userInfo.getSub(), token);</span>
+<span class="nc" id="L126">				JWT idToken = connectTokenService.createIdToken(client,</span>
+<span class="nc" id="L127">						originalAuthRequest, claims.getIssueTime(),</span>
+<span class="nc" id="L128">						userInfo.getSub(), token);</span>
 
 				// attach the id token to the parent access token
-<span class="nc" id="L128">				token.setIdToken(idToken);</span>
-<span class="nc" id="L129">			} else {</span>
+<span class="nc" id="L131">				token.setIdToken(idToken);</span>
+<span class="nc" id="L132">			} else {</span>
 				// can't create an id token if we can't find the user
-<span class="nc" id="L131">				logger.warn(&quot;Request for ID token when no user is present.&quot;);</span>
+<span class="nc" id="L134">				logger.warn(&quot;Request for ID token when no user is present.&quot;);</span>
 			}
 		}
 
-<span class="nc" id="L135">		return token;</span>
+<span class="nc" id="L138">		return token;</span>
 	}
 
 	public ConfigurationPropertiesBean getConfigBean() {
-<span class="nc" id="L139">		return configBean;</span>
+<span class="nc" id="L142">		return configBean;</span>
 	}
 
 	public void setConfigBean(ConfigurationPropertiesBean configBean) {
-<span class="nc" id="L143">		this.configBean = configBean;</span>
-<span class="nc" id="L144">	}</span>
+<span class="nc" id="L146">		this.configBean = configBean;</span>
+<span class="nc" id="L147">	}</span>
 
 	public JWTSigningAndValidationService getJwtService() {
-<span class="nc" id="L147">		return jwtService;</span>
+<span class="nc" id="L150">		return jwtService;</span>
 	}
 
 	public void setJwtService(JWTSigningAndValidationService jwtService) {
-<span class="nc" id="L151">		this.jwtService = jwtService;</span>
-<span class="nc" id="L152">	}</span>
+<span class="nc" id="L154">		this.jwtService = jwtService;</span>
+<span class="nc" id="L155">	}</span>
 
 	public ClientDetailsEntityService getClientService() {
-<span class="nc" id="L155">		return clientService;</span>
+<span class="nc" id="L158">		return clientService;</span>
 	}
 
 	public void setClientService(ClientDetailsEntityService clientService) {
-<span class="nc" id="L159">		this.clientService = clientService;</span>
-<span class="nc" id="L160">	}</span>
+<span class="nc" id="L162">		this.clientService = clientService;</span>
+<span class="nc" id="L163">	}</span>
 
+
+	/**
+	 * Hook for subclasses that allows adding custom claims to the JWT that will be used as access token.
+	 * @param builder the builder holding the current claims
+	 * @param token the un-enhanced token
+	 * @param authentication current authentication
+	 */
+    protected void addCustomAccessTokenClaims(JWTClaimsSet.Builder builder, OAuth2AccessTokenEntity token,
+	    OAuth2Authentication authentication) {
+<span class="nc" id="L174">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

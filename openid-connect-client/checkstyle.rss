@@ -6,7 +6,7 @@
     <link>https://github.com/mitreid-connect/openid-connect-client</link>
     <description>OpenID Connect Client - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2017</copyright>
+    <copyright>&#169;2018</copyright>
     <item>
       <title>File: 43,
              Errors: 8,
@@ -225,7 +225,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/AuthRequestUrlBuilder.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/StaticServerConfigurationService.java</a>
                 </td>
                 <td>
                   0
@@ -253,7 +253,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.StaticServerConfigurationService.java">org/mitre/openid/connect/client/service/impl/StaticServerConfigurationService.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.AuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/AuthRequestUrlBuilder.java</a>
                 </td>
                 <td>
                   0
@@ -267,7 +267,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.EncryptedAuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/impl/EncryptedAuthRequestUrlBuilder.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.SubjectIssuerGrantedAuthority.java">org/mitre/openid/connect/client/SubjectIssuerGrantedAuthority.java</a>
                 </td>
                 <td>
                   0
@@ -281,7 +281,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.SubjectIssuerGrantedAuthority.java">org/mitre/openid/connect/client/SubjectIssuerGrantedAuthority.java</a>
+                  <a href="https://github.com/mitreid-connect/openid-connect-client/checkstyle.html#org.mitre.openid.connect.client.service.impl.EncryptedAuthRequestUrlBuilder.java">org/mitre/openid/connect/client/service/impl/EncryptedAuthRequestUrlBuilder.java</a>
                 </td>
                 <td>
                   0

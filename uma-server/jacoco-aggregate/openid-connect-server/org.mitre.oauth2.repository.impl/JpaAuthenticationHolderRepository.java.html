@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JpaAuthenticationHolderRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.repository.impl</a> &gt; <span class="el_source">JpaAuthenticationHolderRepository.java</span></div><h1>JpaAuthenticationHolderRepository.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(value=&quot;defaultTransactionManager&quot;)
-<span class="nc" id="L35">public class JpaAuthenticationHolderRepository implements AuthenticationHolderRepository {</span>
+<span class="nc" id="L36">public class JpaAuthenticationHolderRepository implements AuthenticationHolderRepository {</span>
 
 	private static final int MAXEXPIREDRESULTS = 1000;
 
@@ -41,44 +42,44 @@ import org.springframework.transaction.annotation.Transactional;
 
 	@Override
 	public List&lt;AuthenticationHolderEntity&gt; getAll() {
-<span class="nc" id="L44">		TypedQuery&lt;AuthenticationHolderEntity&gt; query = manager.createNamedQuery(AuthenticationHolderEntity.QUERY_ALL, AuthenticationHolderEntity.class);</span>
-<span class="nc" id="L45">		return query.getResultList();</span>
+<span class="nc" id="L45">		TypedQuery&lt;AuthenticationHolderEntity&gt; query = manager.createNamedQuery(AuthenticationHolderEntity.QUERY_ALL, AuthenticationHolderEntity.class);</span>
+<span class="nc" id="L46">		return query.getResultList();</span>
 	}
 
 	@Override
 	public AuthenticationHolderEntity getById(Long id) {
-<span class="nc" id="L50">		return manager.find(AuthenticationHolderEntity.class, id);</span>
+<span class="nc" id="L51">		return manager.find(AuthenticationHolderEntity.class, id);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void remove(AuthenticationHolderEntity a) {
-<span class="nc" id="L56">		AuthenticationHolderEntity found = getById(a.getId());</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">		if (found != null) {</span>
-<span class="nc" id="L58">			manager.remove(found);</span>
+<span class="nc" id="L57">		AuthenticationHolderEntity found = getById(a.getId());</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc" id="L59">			manager.remove(found);</span>
 		} else {
-<span class="nc" id="L60">			throw new IllegalArgumentException(&quot;AuthenticationHolderEntity not found: &quot; + a);</span>
+<span class="nc" id="L61">			throw new IllegalArgumentException(&quot;AuthenticationHolderEntity not found: &quot; + a);</span>
 		}
-<span class="nc" id="L62">	}</span>
+<span class="nc" id="L63">	}</span>
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public AuthenticationHolderEntity save(AuthenticationHolderEntity a) {
-<span class="nc" id="L67">		return JpaUtil.saveOrUpdate(a.getId(), manager, a);</span>
+<span class="nc" id="L68">		return JpaUtil.saveOrUpdate(a.getId(), manager, a);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public List&lt;AuthenticationHolderEntity&gt; getOrphanedAuthenticationHolders() {
-<span class="nc" id="L73">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0,MAXEXPIREDRESULTS);</span>
-<span class="nc" id="L74">		return getOrphanedAuthenticationHolders(pageCriteria);</span>
+<span class="nc" id="L74">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0,MAXEXPIREDRESULTS);</span>
+<span class="nc" id="L75">		return getOrphanedAuthenticationHolders(pageCriteria);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public List&lt;AuthenticationHolderEntity&gt; getOrphanedAuthenticationHolders(PageCriteria pageCriteria) {
-<span class="nc" id="L80">		TypedQuery&lt;AuthenticationHolderEntity&gt; query = manager.createNamedQuery(AuthenticationHolderEntity.QUERY_GET_UNUSED, AuthenticationHolderEntity.class);</span>
-<span class="nc" id="L81">		return JpaUtil.getResultPage(query, pageCriteria);</span>
+<span class="nc" id="L81">		TypedQuery&lt;AuthenticationHolderEntity&gt; query = manager.createNamedQuery(AuthenticationHolderEntity.QUERY_GET_UNUSED, AuthenticationHolderEntity.class);</span>
+<span class="nc" id="L82">		return JpaUtil.getResultPage(query, pageCriteria);</span>
 	}
 
 }

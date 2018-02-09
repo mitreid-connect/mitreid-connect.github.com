@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WhitelistAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">WhitelistAPI.java</span></div><h1>WhitelistAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -52,7 +53,7 @@ import com.google.gson.JsonParser;
 @Controller
 @RequestMapping(&quot;/&quot; + WhitelistAPI.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L55">public class WhitelistAPI {</span>
+<span class="nc" id="L56">public class WhitelistAPI {</span>
 
 	public static final String URL = RootController.API_URL + &quot;/whitelist&quot;;
 
@@ -62,10 +63,10 @@ import com.google.gson.JsonParser;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L65">	private static final Logger logger = LoggerFactory.getLogger(WhitelistAPI.class);</span>
+<span class="nc" id="L66">	private static final Logger logger = LoggerFactory.getLogger(WhitelistAPI.class);</span>
 
-<span class="nc" id="L67">	private Gson gson = new Gson();</span>
-<span class="nc" id="L68">	private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L68">	private Gson gson = new Gson();</span>
+<span class="nc" id="L69">	private JsonParser parser = new JsonParser();</span>
 
 	/**
 	 * Get a list of all whitelisted sites
@@ -75,11 +76,11 @@ import com.google.gson.JsonParser;
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAllWhitelistedSites(ModelMap m) {
 
-<span class="nc" id="L78">		Collection&lt;WhitelistedSite&gt; all = whitelistService.getAll();</span>
+<span class="nc" id="L79">		Collection&lt;WhitelistedSite&gt; all = whitelistService.getAll();</span>
 
-<span class="nc" id="L80">		m.put(JsonEntityView.ENTITY, all);</span>
+<span class="nc" id="L81">		m.put(JsonEntityView.ENTITY, all);</span>
 
-<span class="nc" id="L82">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L83">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	/**
@@ -95,31 +96,31 @@ import com.google.gson.JsonParser;
 
 		JsonObject json;
 
-<span class="nc" id="L98">		WhitelistedSite whitelist = null;</span>
+<span class="nc" id="L99">		WhitelistedSite whitelist = null;</span>
 		try {
-<span class="nc" id="L100">			json = parser.parse(jsonString).getAsJsonObject();</span>
-<span class="nc" id="L101">			whitelist = gson.fromJson(json, WhitelistedSite.class);</span>
+<span class="nc" id="L101">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L102">			whitelist = gson.fromJson(json, WhitelistedSite.class);</span>
 
-<span class="nc" id="L103">		} catch (JsonParseException e) {</span>
-<span class="nc" id="L104">			logger.error(&quot;addNewWhitelistedSite failed due to JsonParseException&quot;, e);</span>
-<span class="nc" id="L105">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L106">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
-<span class="nc" id="L107">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L108">		} catch (IllegalStateException e) {</span>
-<span class="nc" id="L109">			logger.error(&quot;addNewWhitelistedSite failed due to IllegalStateException&quot;, e);</span>
-<span class="nc" id="L110">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L111">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
-<span class="nc" id="L112">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L113">		}</span>
+<span class="nc" id="L104">		} catch (JsonParseException e) {</span>
+<span class="nc" id="L105">			logger.error(&quot;addNewWhitelistedSite failed due to JsonParseException&quot;, e);</span>
+<span class="nc" id="L106">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L107">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L108">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L109">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L110">			logger.error(&quot;addNewWhitelistedSite failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L111">			m.addAttribute(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L112">			m.addAttribute(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L113">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L114">		}</span>
 
 		// save the id of the person who created this
-<span class="nc" id="L116">		whitelist.setCreatorUserId(p.getName());</span>
+<span class="nc" id="L117">		whitelist.setCreatorUserId(p.getName());</span>
 
-<span class="nc" id="L118">		WhitelistedSite newWhitelist = whitelistService.saveNew(whitelist);</span>
+<span class="nc" id="L119">		WhitelistedSite newWhitelist = whitelistService.saveNew(whitelist);</span>
 
-<span class="nc" id="L120">		m.put(JsonEntityView.ENTITY, newWhitelist);</span>
+<span class="nc" id="L121">		m.put(JsonEntityView.ENTITY, newWhitelist);</span>
 
-<span class="nc" id="L122">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L123">		return JsonEntityView.VIEWNAME;</span>
 
 	}
 
@@ -132,37 +133,37 @@ import com.google.gson.JsonParser;
 
 		JsonObject json;
 
-<span class="nc" id="L135">		WhitelistedSite whitelist = null;</span>
+<span class="nc" id="L136">		WhitelistedSite whitelist = null;</span>
 		try {
-<span class="nc" id="L137">			json = parser.parse(jsonString).getAsJsonObject();</span>
-<span class="nc" id="L138">			whitelist = gson.fromJson(json, WhitelistedSite.class);</span>
+<span class="nc" id="L138">			json = parser.parse(jsonString).getAsJsonObject();</span>
+<span class="nc" id="L139">			whitelist = gson.fromJson(json, WhitelistedSite.class);</span>
 
-<span class="nc" id="L140">		} catch (JsonParseException e) {</span>
-<span class="nc" id="L141">			logger.error(&quot;updateWhitelistedSite failed due to JsonParseException&quot;, e);</span>
-<span class="nc" id="L142">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L143">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
-<span class="nc" id="L144">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L145">		} catch (IllegalStateException e) {</span>
-<span class="nc" id="L146">			logger.error(&quot;updateWhitelistedSite failed due to IllegalStateException&quot;, e);</span>
-<span class="nc" id="L147">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L148">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
-<span class="nc" id="L149">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc" id="L150">		}</span>
+<span class="nc" id="L141">		} catch (JsonParseException e) {</span>
+<span class="nc" id="L142">			logger.error(&quot;updateWhitelistedSite failed due to JsonParseException&quot;, e);</span>
+<span class="nc" id="L143">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L144">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The server encountered a JSON syntax exception. Contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L145">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L146">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L147">			logger.error(&quot;updateWhitelistedSite failed due to IllegalStateException&quot;, e);</span>
+<span class="nc" id="L148">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L149">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The server encountered an IllegalStateException. Refresh and try again - if the problem persists, contact a system administrator for assistance.&quot;);</span>
+<span class="nc" id="L150">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L151">		}</span>
 
-<span class="nc" id="L152">		WhitelistedSite oldWhitelist = whitelistService.getById(id);</span>
+<span class="nc" id="L153">		WhitelistedSite oldWhitelist = whitelistService.getById(id);</span>
 
-<span class="nc bnc" id="L154" title="All 2 branches missed.">		if (oldWhitelist == null) {</span>
-<span class="nc" id="L155">			logger.error(&quot;updateWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L156">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L157">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
-<span class="nc" id="L158">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">		if (oldWhitelist == null) {</span>
+<span class="nc" id="L156">			logger.error(&quot;updateWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L157">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L158">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update whitelisted site. The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L159">			return JsonErrorView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L161">			WhitelistedSite newWhitelist = whitelistService.update(oldWhitelist, whitelist);</span>
+<span class="nc" id="L162">			WhitelistedSite newWhitelist = whitelistService.update(oldWhitelist, whitelist);</span>
 
-<span class="nc" id="L163">			m.put(JsonEntityView.ENTITY, newWhitelist);</span>
+<span class="nc" id="L164">			m.put(JsonEntityView.ENTITY, newWhitelist);</span>
 
-<span class="nc" id="L165">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L166">			return JsonEntityView.VIEWNAME;</span>
 		}
 	}
 
@@ -173,19 +174,19 @@ import com.google.gson.JsonParser;
 	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
 	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.DELETE)
 	public String deleteWhitelistedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
-<span class="nc" id="L176">		WhitelistedSite whitelist = whitelistService.getById(id);</span>
+<span class="nc" id="L177">		WhitelistedSite whitelist = whitelistService.getById(id);</span>
 
-<span class="nc bnc" id="L178" title="All 2 branches missed.">		if (whitelist == null) {</span>
-<span class="nc" id="L179">			logger.error(&quot;deleteWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L180">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L181">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete whitelisted site. The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
-<span class="nc" id="L182">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">		if (whitelist == null) {</span>
+<span class="nc" id="L180">			logger.error(&quot;deleteWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L181">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L182">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete whitelisted site. The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L183">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L184">			m.put(HttpCodeView.CODE, HttpStatus.OK);</span>
-<span class="nc" id="L185">			whitelistService.remove(whitelist);</span>
+<span class="nc" id="L185">			m.put(HttpCodeView.CODE, HttpStatus.OK);</span>
+<span class="nc" id="L186">			whitelistService.remove(whitelist);</span>
 		}
 
-<span class="nc" id="L188">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L189">		return HttpCodeView.VIEWNAME;</span>
 	}
 
 	/**
@@ -193,17 +194,17 @@ import com.google.gson.JsonParser;
 	 */
 	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getWhitelistedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
-<span class="nc" id="L196">		WhitelistedSite whitelist = whitelistService.getById(id);</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">		if (whitelist == null) {</span>
-<span class="nc" id="L198">			logger.error(&quot;getWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L199">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L200">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
-<span class="nc" id="L201">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L197">		WhitelistedSite whitelist = whitelistService.getById(id);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">		if (whitelist == null) {</span>
+<span class="nc" id="L199">			logger.error(&quot;getWhitelistedSite failed; whitelist with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L200">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L201">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested whitelisted site with id &quot; + id + &quot;could not be found.&quot;);</span>
+<span class="nc" id="L202">			return JsonErrorView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L204">			m.put(JsonEntityView.ENTITY, whitelist);</span>
+<span class="nc" id="L205">			m.put(JsonEntityView.ENTITY, whitelist);</span>
 
-<span class="nc" id="L206">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L207">			return JsonEntityView.VIEWNAME;</span>
 		}
 
 	}

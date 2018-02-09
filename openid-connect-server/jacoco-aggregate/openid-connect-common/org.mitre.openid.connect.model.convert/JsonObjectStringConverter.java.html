@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonObjectStringConverter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.model.convert</a> &gt; <span class="el_source">JsonObjectStringConverter.java</span></div><h1>JsonObjectStringConverter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -29,16 +28,16 @@ import com.google.gson.JsonParser;
  *
  */
 @Converter
-<span class="nc" id="L32">public class JsonObjectStringConverter implements AttributeConverter&lt;JsonObject, String&gt; {</span>
+<span class="nc" id="L31">public class JsonObjectStringConverter implements AttributeConverter&lt;JsonObject, String&gt; {</span>
 
-<span class="nc" id="L34">	private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L33">	private JsonParser parser = new JsonParser();</span>
 
 	@Override
 	public String convertToDatabaseColumn(JsonObject attribute) {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">		if (attribute != null) {</span>
-<span class="nc" id="L39">			return attribute.toString();</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">		if (attribute != null) {</span>
+<span class="nc" id="L38">			return attribute.toString();</span>
 		} else {
-<span class="nc" id="L41">			return null;</span>
+<span class="nc" id="L40">			return null;</span>
 		}
 	}
 
@@ -47,10 +46,10 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public JsonObject convertToEntityAttribute(String dbData) {
-<span class="nc bnc" id="L50" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(dbData)) {</span>
-<span class="nc" id="L51">			return parser.parse(dbData).getAsJsonObject();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(dbData)) {</span>
+<span class="nc" id="L50">			return parser.parse(dbData).getAsJsonObject();</span>
 		} else {
-<span class="nc" id="L53">			return null;</span>
+<span class="nc" id="L52">			return null;</span>
 		}
 	}
 

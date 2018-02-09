@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SimpleIntrospectionAuthorityGranter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.introspectingfilter.service.impl</a> &gt; <span class="el_source">SimpleIntrospectionAuthorityGranter.java</span></div><h1>SimpleIntrospectionAuthorityGranter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -34,31 +35,31 @@ import com.google.gson.JsonObject;
  * @author jricher
  *
  */
-<span class="nc" id="L37">public class SimpleIntrospectionAuthorityGranter implements IntrospectionAuthorityGranter {</span>
+<span class="nc" id="L38">public class SimpleIntrospectionAuthorityGranter implements IntrospectionAuthorityGranter {</span>
 
-<span class="nc" id="L39">	private List&lt;GrantedAuthority&gt; authorities = AuthorityUtils.createAuthorityList(&quot;ROLE_API&quot;);</span>
+<span class="nc" id="L40">	private List&lt;GrantedAuthority&gt; authorities = AuthorityUtils.createAuthorityList(&quot;ROLE_API&quot;);</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.introspectingfilter.IntrospectionAuthorityGranter#getAuthorities(net.minidev.json.JSONObject)
 	 */
 	@Override
 	public List&lt;GrantedAuthority&gt; getAuthorities(JsonObject introspectionResponse) {
-<span class="nc" id="L46">		return authorities;</span>
+<span class="nc" id="L47">		return authorities;</span>
 	}
 
 	/**
 	 * @return the authorities
 	 */
 	public List&lt;GrantedAuthority&gt; getAuthorities() {
-<span class="nc" id="L53">		return authorities;</span>
+<span class="nc" id="L54">		return authorities;</span>
 	}
 
 	/**
 	 * @param authorities the authorities to set
 	 */
 	public void setAuthorities(List&lt;GrantedAuthority&gt; authorities) {
-<span class="nc" id="L60">		this.authorities = authorities;</span>
-<span class="nc" id="L61">	}</span>
+<span class="nc" id="L61">		this.authorities = authorities;</span>
+<span class="nc" id="L62">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

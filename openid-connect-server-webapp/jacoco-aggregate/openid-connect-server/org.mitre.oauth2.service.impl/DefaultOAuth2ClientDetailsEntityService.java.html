@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOAuth2ClientDetailsEntityService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultOAuth2ClientDetailsEntityService.java</span></div><h1>DefaultOAuth2ClientDetailsEntityService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -65,12 +66,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 @Service
-<span class="nc" id="L68">public class DefaultOAuth2ClientDetailsEntityService implements ClientDetailsEntityService {</span>
+<span class="nc" id="L69">public class DefaultOAuth2ClientDetailsEntityService implements ClientDetailsEntityService {</span>
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L73">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2ClientDetailsEntityService.class);</span>
+<span class="nc" id="L74">	private static final Logger logger = LoggerFactory.getLogger(DefaultOAuth2ClientDetailsEntityService.class);</span>
 
 	@Autowired
 	private OAuth2ClientRepository clientRepository;
@@ -100,55 +101,55 @@ import com.google.gson.JsonParser;
 	private ConfigurationPropertiesBean config;
 
 	// map of sector URI -&gt; list of redirect URIs
-<span class="nc" id="L103">	private LoadingCache&lt;String, List&lt;String&gt;&gt; sectorRedirects = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L104">			.expireAfterAccess(1, TimeUnit.HOURS)</span>
-<span class="nc" id="L105">			.maximumSize(100)</span>
-<span class="nc" id="L106">			.build(new SectorIdentifierLoader(HttpClientBuilder.create().useSystemProperties().build()));</span>
+<span class="nc" id="L104">	private LoadingCache&lt;String, List&lt;String&gt;&gt; sectorRedirects = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L105">			.expireAfterAccess(1, TimeUnit.HOURS)</span>
+<span class="nc" id="L106">			.maximumSize(100)</span>
+<span class="nc" id="L107">			.build(new SectorIdentifierLoader(HttpClientBuilder.create().useSystemProperties().build()));</span>
 
 	@Override
 	public ClientDetailsEntity saveNewClient(ClientDetailsEntity client) {
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (client.getId() != null) { // if it's not null, it's already been saved, this is an error</span>
-<span class="nc" id="L111">			throw new IllegalArgumentException(&quot;Tried to save a new client with an existing ID: &quot; + client.getId());</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (client.getId() != null) { // if it's not null, it's already been saved, this is an error</span>
+<span class="nc" id="L112">			throw new IllegalArgumentException(&quot;Tried to save a new client with an existing ID: &quot; + client.getId());</span>
 		}
 
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (client.getRegisteredRedirectUri() != null) {</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">			for (String uri : client.getRegisteredRedirectUri()) {</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">				if (blacklistedSiteService.isBlacklisted(uri)) {</span>
-<span class="nc" id="L117">					throw new IllegalArgumentException(&quot;Client URI is blacklisted: &quot; + uri);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		if (client.getRegisteredRedirectUri() != null) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">			for (String uri : client.getRegisteredRedirectUri()) {</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">				if (blacklistedSiteService.isBlacklisted(uri)) {</span>
+<span class="nc" id="L118">					throw new IllegalArgumentException(&quot;Client URI is blacklisted: &quot; + uri);</span>
 				}
-<span class="nc" id="L119">			}</span>
+<span class="nc" id="L120">			}</span>
 		}
 
 		// assign a random clientid if it's empty
 		// NOTE: don't assign a random client secret without asking, since public clients have no secret
-<span class="nc bnc" id="L124" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(client.getClientId())) {</span>
-<span class="nc" id="L125">			client = generateClientId(client);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(client.getClientId())) {</span>
+<span class="nc" id="L126">			client = generateClientId(client);</span>
 		}
 
 		// make sure that clients with the &quot;refresh_token&quot; grant type have the &quot;offline_access&quot; scope, and vice versa
-<span class="nc" id="L129">		ensureRefreshTokenConsistency(client);</span>
+<span class="nc" id="L130">		ensureRefreshTokenConsistency(client);</span>
 
 		// make sure we don't have both a JWKS and a JWKS URI
-<span class="nc" id="L132">		ensureKeyConsistency(client);</span>
+<span class="nc" id="L133">		ensureKeyConsistency(client);</span>
 
 		// check consistency when using HEART mode
-<span class="nc" id="L135">		checkHeartMode(client);</span>
+<span class="nc" id="L136">		checkHeartMode(client);</span>
 
 		// timestamp this to right now
-<span class="nc" id="L138">		client.setCreatedAt(new Date());</span>
+<span class="nc" id="L139">		client.setCreatedAt(new Date());</span>
 
 
 		// check the sector URI
-<span class="nc" id="L142">		checkSectorIdentifierUri(client);</span>
+<span class="nc" id="L143">		checkSectorIdentifierUri(client);</span>
 
 
-<span class="nc" id="L145">		ensureNoReservedScopes(client);</span>
+<span class="nc" id="L146">		ensureNoReservedScopes(client);</span>
 
-<span class="nc" id="L147">		ClientDetailsEntity c = clientRepository.saveClient(client);</span>
+<span class="nc" id="L148">		ClientDetailsEntity c = clientRepository.saveClient(client);</span>
 
-<span class="nc" id="L149">		statsService.resetCache();</span>
+<span class="nc" id="L150">		statsService.resetCache();</span>
 
-<span class="nc" id="L151">		return c;</span>
+<span class="nc" id="L152">		return c;</span>
 	}
 
 	/**
@@ -156,58 +157,58 @@ import com.google.gson.JsonParser;
 	 * @param client
 	 */
 	private void ensureKeyConsistency(ClientDetailsEntity client) {
-<span class="nc bnc" id="L159" title="All 4 branches missed.">		if (client.getJwksUri() != null &amp;&amp; client.getJwks() != null) {</span>
+<span class="nc bnc" id="L160" title="All 4 branches missed.">		if (client.getJwksUri() != null &amp;&amp; client.getJwks() != null) {</span>
 			// a client can only have one key type or the other, not both
-<span class="nc" id="L161">			throw new IllegalArgumentException(&quot;A client cannot have both JWKS URI and JWKS value&quot;);</span>
+<span class="nc" id="L162">			throw new IllegalArgumentException(&quot;A client cannot have both JWKS URI and JWKS value&quot;);</span>
 		}
-<span class="nc" id="L163">	}</span>
+<span class="nc" id="L164">	}</span>
 
 	/**
 	 * Make sure the client doesn't request any system reserved scopes
 	 */
 	private void ensureNoReservedScopes(ClientDetailsEntity client) {
 		// make sure a client doesn't get any special system scopes
-<span class="nc" id="L170">		Set&lt;SystemScope&gt; requestedScope = scopeService.fromStrings(client.getScope());</span>
+<span class="nc" id="L171">		Set&lt;SystemScope&gt; requestedScope = scopeService.fromStrings(client.getScope());</span>
 
-<span class="nc" id="L172">		requestedScope = scopeService.removeReservedScopes(requestedScope);</span>
+<span class="nc" id="L173">		requestedScope = scopeService.removeReservedScopes(requestedScope);</span>
 
-<span class="nc" id="L174">		client.setScope(scopeService.toStrings(requestedScope));</span>
-<span class="nc" id="L175">	}</span>
+<span class="nc" id="L175">		client.setScope(scopeService.toStrings(requestedScope));</span>
+<span class="nc" id="L176">	}</span>
 
 	/**
 	 * Load the sector identifier URI if it exists and check the redirect URIs against it
 	 * @param client
 	 */
 	private void checkSectorIdentifierUri(ClientDetailsEntity client) {
-<span class="nc bnc" id="L182" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(client.getSectorIdentifierUri())) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(client.getSectorIdentifierUri())) {</span>
 			try {
-<span class="nc" id="L184">				List&lt;String&gt; redirects = sectorRedirects.get(client.getSectorIdentifierUri());</span>
+<span class="nc" id="L185">				List&lt;String&gt; redirects = sectorRedirects.get(client.getSectorIdentifierUri());</span>
 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">				if (client.getRegisteredRedirectUri() != null) {</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">					for (String uri : client.getRegisteredRedirectUri()) {</span>
-<span class="nc bnc" id="L188" title="All 2 branches missed.">						if (!redirects.contains(uri)) {</span>
-<span class="nc" id="L189">							throw new IllegalArgumentException(&quot;Requested Redirect URI &quot; + uri + &quot; is not listed at sector identifier &quot; + redirects);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">				if (client.getRegisteredRedirectUri() != null) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">					for (String uri : client.getRegisteredRedirectUri()) {</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">						if (!redirects.contains(uri)) {</span>
+<span class="nc" id="L190">							throw new IllegalArgumentException(&quot;Requested Redirect URI &quot; + uri + &quot; is not listed at sector identifier &quot; + redirects);</span>
 						}
-<span class="nc" id="L191">					}</span>
+<span class="nc" id="L192">					}</span>
 				}
 
-<span class="nc" id="L194">			} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L195">				throw new IllegalArgumentException(&quot;Unable to load sector identifier URI &quot; + client.getSectorIdentifierUri() + &quot;: &quot; + e.getMessage());</span>
-<span class="nc" id="L196">			}</span>
+<span class="nc" id="L195">			} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L196">				throw new IllegalArgumentException(&quot;Unable to load sector identifier URI &quot; + client.getSectorIdentifierUri() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L197">			}</span>
 		}
-<span class="nc" id="L198">	}</span>
+<span class="nc" id="L199">	}</span>
 
 	/**
 	 * Make sure the client has the appropriate scope and grant type.
 	 * @param client
 	 */
 	private void ensureRefreshTokenConsistency(ClientDetailsEntity client) {
-<span class="nc bnc" id="L205" title="All 2 branches missed.">		if (client.getAuthorizedGrantTypes().contains(&quot;refresh_token&quot;)</span>
-<span class="nc bnc" id="L206" title="All 2 branches missed.">				|| client.getScope().contains(SystemScopeService.OFFLINE_ACCESS)) {</span>
-<span class="nc" id="L207">			client.getScope().add(SystemScopeService.OFFLINE_ACCESS);</span>
-<span class="nc" id="L208">			client.getAuthorizedGrantTypes().add(&quot;refresh_token&quot;);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">		if (client.getAuthorizedGrantTypes().contains(&quot;refresh_token&quot;)</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">				|| client.getScope().contains(SystemScopeService.OFFLINE_ACCESS)) {</span>
+<span class="nc" id="L208">			client.getScope().add(SystemScopeService.OFFLINE_ACCESS);</span>
+<span class="nc" id="L209">			client.getAuthorizedGrantTypes().add(&quot;refresh_token&quot;);</span>
 		}
-<span class="nc" id="L210">	}</span>
+<span class="nc" id="L211">	}</span>
 
 	/**
 	 * If HEART mode is enabled, make sure the client meets the requirements:
@@ -219,115 +220,115 @@ import com.google.gson.JsonParser;
 	 * @param client
 	 */
 	private void checkHeartMode(ClientDetailsEntity client) {
-<span class="nc bnc" id="L222" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
-<span class="nc bnc" id="L223" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;authorization_code&quot;)) {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;authorization_code&quot;)) {</span>
 				// make sure we don't have incompatible grant types
-<span class="nc bnc" id="L225" title="All 4 branches missed.">				if (client.getGrantTypes().contains(&quot;implicit&quot;) || client.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
-<span class="nc" id="L226">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
+<span class="nc bnc" id="L226" title="All 4 branches missed.">				if (client.getGrantTypes().contains(&quot;implicit&quot;) || client.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
+<span class="nc" id="L227">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
 				}
 
 				// make sure we've got the right authentication method
-<span class="nc bnc" id="L230" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
-<span class="nc" id="L231">					throw new IllegalArgumentException(&quot;[HEART mode] Authorization code clients must use the private_key authentication method&quot;);</span>
+<span class="nc bnc" id="L231" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
+<span class="nc" id="L232">					throw new IllegalArgumentException(&quot;[HEART mode] Authorization code clients must use the private_key authentication method&quot;);</span>
 				}
 
 				// make sure we've got a redirect URI
-<span class="nc bnc" id="L235" title="All 2 branches missed.">				if (client.getRedirectUris().isEmpty()) {</span>
-<span class="nc" id="L236">					throw new IllegalArgumentException(&quot;[HEART mode] Authorization code clients must register at least one redirect URI&quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">				if (client.getRedirectUris().isEmpty()) {</span>
+<span class="nc" id="L237">					throw new IllegalArgumentException(&quot;[HEART mode] Authorization code clients must register at least one redirect URI&quot;);</span>
 				}
 			}
 
-<span class="nc bnc" id="L240" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;implicit&quot;)) {</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;implicit&quot;)) {</span>
 				// make sure we don't have incompatible grant types
-<span class="nc bnc" id="L242" title="All 6 branches missed.">				if (client.getGrantTypes().contains(&quot;authorization_code&quot;) || client.getGrantTypes().contains(&quot;client_credentials&quot;) || client.getGrantTypes().contains(&quot;refresh_token&quot;)) {</span>
-<span class="nc" id="L243">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
+<span class="nc bnc" id="L243" title="All 6 branches missed.">				if (client.getGrantTypes().contains(&quot;authorization_code&quot;) || client.getGrantTypes().contains(&quot;client_credentials&quot;) || client.getGrantTypes().contains(&quot;refresh_token&quot;)) {</span>
+<span class="nc" id="L244">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
 				}
 
 				// make sure we've got the right authentication method
-<span class="nc bnc" id="L247" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.NONE)) {</span>
-<span class="nc" id="L248">					throw new IllegalArgumentException(&quot;[HEART mode] Implicit clients must use the none authentication method&quot;);</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.NONE)) {</span>
+<span class="nc" id="L249">					throw new IllegalArgumentException(&quot;[HEART mode] Implicit clients must use the none authentication method&quot;);</span>
 				}
 
 				// make sure we've got a redirect URI
-<span class="nc bnc" id="L252" title="All 2 branches missed.">				if (client.getRedirectUris().isEmpty()) {</span>
-<span class="nc" id="L253">					throw new IllegalArgumentException(&quot;[HEART mode] Implicit clients must register at least one redirect URI&quot;);</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">				if (client.getRedirectUris().isEmpty()) {</span>
+<span class="nc" id="L254">					throw new IllegalArgumentException(&quot;[HEART mode] Implicit clients must register at least one redirect URI&quot;);</span>
 				}
 			}
 
-<span class="nc bnc" id="L257" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;client_credentials&quot;)) {</span>
 				// make sure we don't have incompatible grant types
-<span class="nc bnc" id="L259" title="All 6 branches missed.">				if (client.getGrantTypes().contains(&quot;authorization_code&quot;) || client.getGrantTypes().contains(&quot;implicit&quot;) || client.getGrantTypes().contains(&quot;refresh_token&quot;)) {</span>
-<span class="nc" id="L260">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
+<span class="nc bnc" id="L260" title="All 6 branches missed.">				if (client.getGrantTypes().contains(&quot;authorization_code&quot;) || client.getGrantTypes().contains(&quot;implicit&quot;) || client.getGrantTypes().contains(&quot;refresh_token&quot;)) {</span>
+<span class="nc" id="L261">					throw new IllegalArgumentException(&quot;[HEART mode] Incompatible grant types&quot;);</span>
 				}
 
 				// make sure we've got the right authentication method
-<span class="nc bnc" id="L264" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
-<span class="nc" id="L265">					throw new IllegalArgumentException(&quot;[HEART mode] Client credentials clients must use the private_key authentication method&quot;);</span>
+<span class="nc bnc" id="L265" title="All 4 branches missed.">				if (client.getTokenEndpointAuthMethod() == null || !client.getTokenEndpointAuthMethod().equals(AuthMethod.PRIVATE_KEY)) {</span>
+<span class="nc" id="L266">					throw new IllegalArgumentException(&quot;[HEART mode] Client credentials clients must use the private_key authentication method&quot;);</span>
 				}
 
 				// make sure we've got a redirect URI
-<span class="nc bnc" id="L269" title="All 2 branches missed.">				if (!client.getRedirectUris().isEmpty()) {</span>
-<span class="nc" id="L270">					throw new IllegalArgumentException(&quot;[HEART mode] Client credentials clients must not register a redirect URI&quot;);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">				if (!client.getRedirectUris().isEmpty()) {</span>
+<span class="nc" id="L271">					throw new IllegalArgumentException(&quot;[HEART mode] Client credentials clients must not register a redirect URI&quot;);</span>
 				}
 
 			}
 
-<span class="nc bnc" id="L275" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;password&quot;)) {</span>
-<span class="nc" id="L276">				throw new IllegalArgumentException(&quot;[HEART mode] Password grant type is forbidden&quot;);</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">			if (client.getGrantTypes().contains(&quot;password&quot;)) {</span>
+<span class="nc" id="L277">				throw new IllegalArgumentException(&quot;[HEART mode] Password grant type is forbidden&quot;);</span>
 			}
 
 			// make sure we don't have a client secret
-<span class="nc bnc" id="L280" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(client.getClientSecret())) {</span>
-<span class="nc" id="L281">				throw new IllegalArgumentException(&quot;[HEART mode] Client secrets are not allowed&quot;);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(client.getClientSecret())) {</span>
+<span class="nc" id="L282">				throw new IllegalArgumentException(&quot;[HEART mode] Client secrets are not allowed&quot;);</span>
 			}
 
 			// make sure we've got a key registered
-<span class="nc bnc" id="L285" title="All 4 branches missed.">			if (client.getJwks() == null &amp;&amp; Strings.isNullOrEmpty(client.getJwksUri())) {</span>
-<span class="nc" id="L286">				throw new IllegalArgumentException(&quot;[HEART mode] All clients must have a key registered&quot;);</span>
+<span class="nc bnc" id="L286" title="All 4 branches missed.">			if (client.getJwks() == null &amp;&amp; Strings.isNullOrEmpty(client.getJwksUri())) {</span>
+<span class="nc" id="L287">				throw new IllegalArgumentException(&quot;[HEART mode] All clients must have a key registered&quot;);</span>
 			}
 
 			// make sure our redirect URIs each fit one of the allowed categories
-<span class="nc bnc" id="L290" title="All 4 branches missed.">			if (client.getRedirectUris() != null &amp;&amp; !client.getRedirectUris().isEmpty()) {</span>
-<span class="nc" id="L291">				boolean localhost = false;</span>
-<span class="nc" id="L292">				boolean remoteHttps = false;</span>
-<span class="nc" id="L293">				boolean customScheme = false;</span>
-<span class="nc bnc" id="L294" title="All 2 branches missed.">				for (String uri : client.getRedirectUris()) {</span>
-<span class="nc" id="L295">					UriComponents components = UriComponentsBuilder.fromUriString(uri).build();</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">					if (components.getScheme() == null) {</span>
+<span class="nc bnc" id="L291" title="All 4 branches missed.">			if (client.getRedirectUris() != null &amp;&amp; !client.getRedirectUris().isEmpty()) {</span>
+<span class="nc" id="L292">				boolean localhost = false;</span>
+<span class="nc" id="L293">				boolean remoteHttps = false;</span>
+<span class="nc" id="L294">				boolean customScheme = false;</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">				for (String uri : client.getRedirectUris()) {</span>
+<span class="nc" id="L296">					UriComponents components = UriComponentsBuilder.fromUriString(uri).build();</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">					if (components.getScheme() == null) {</span>
 						// this is a very unknown redirect URI
-<span class="nc" id="L298">						customScheme = true;</span>
-<span class="nc bnc" id="L299" title="All 2 branches missed.">					} else if (components.getScheme().equals(&quot;http&quot;)) {</span>
+<span class="nc" id="L299">						customScheme = true;</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">					} else if (components.getScheme().equals(&quot;http&quot;)) {</span>
 						// http scheme, check for localhost
-<span class="nc bnc" id="L301" title="All 4 branches missed.">						if (components.getHost().equals(&quot;localhost&quot;) || components.getHost().equals(&quot;127.0.0.1&quot;)) {</span>
-<span class="nc" id="L302">							localhost = true;</span>
+<span class="nc bnc" id="L302" title="All 4 branches missed.">						if (components.getHost().equals(&quot;localhost&quot;) || components.getHost().equals(&quot;127.0.0.1&quot;)) {</span>
+<span class="nc" id="L303">							localhost = true;</span>
 						} else {
-<span class="nc" id="L304">							throw new IllegalArgumentException(&quot;[HEART mode] Can't have an http redirect URI on non-local host&quot;);</span>
+<span class="nc" id="L305">							throw new IllegalArgumentException(&quot;[HEART mode] Can't have an http redirect URI on non-local host&quot;);</span>
 						}
-<span class="nc bnc" id="L306" title="All 2 branches missed.">					} else if (components.getScheme().equals(&quot;https&quot;)) {</span>
-<span class="nc" id="L307">						remoteHttps = true;</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">					} else if (components.getScheme().equals(&quot;https&quot;)) {</span>
+<span class="nc" id="L308">						remoteHttps = true;</span>
 					} else {
-<span class="nc" id="L309">						customScheme = true;</span>
+<span class="nc" id="L310">						customScheme = true;</span>
 					}
-<span class="nc" id="L311">				}</span>
+<span class="nc" id="L312">				}</span>
 
 				// now we make sure the client has a URI in only one of each of the three categories
-<span class="nc bnc" id="L314" title="All 8 branches missed.">				if (!((localhost ^ remoteHttps ^ customScheme)</span>
+<span class="nc bnc" id="L315" title="All 8 branches missed.">				if (!((localhost ^ remoteHttps ^ customScheme)</span>
 						&amp;&amp; !(localhost &amp;&amp; remoteHttps &amp;&amp; customScheme))) {
-<span class="nc" id="L316">					throw new IllegalArgumentException(&quot;[HEART mode] Can't have more than one class of redirect URI&quot;);</span>
+<span class="nc" id="L317">					throw new IllegalArgumentException(&quot;[HEART mode] Can't have more than one class of redirect URI&quot;);</span>
 				}
 			}
 
 		}
-<span class="nc" id="L321">	}</span>
+<span class="nc" id="L322">	}</span>
 
 	/**
 	 * Get the client by its internal ID
 	 */
 	@Override
 	public ClientDetailsEntity getClientById(Long id) {
-<span class="nc" id="L328">		ClientDetailsEntity client = clientRepository.getById(id);</span>
+<span class="nc" id="L329">		ClientDetailsEntity client = clientRepository.getById(id);</span>
 
-<span class="nc" id="L330">		return client;</span>
+<span class="nc" id="L331">		return client;</span>
 	}
 
 	/**
@@ -335,17 +336,17 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public ClientDetailsEntity loadClientByClientId(String clientId) throws OAuth2Exception, InvalidClientException, IllegalArgumentException {
-<span class="nc bnc" id="L338" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(clientId)) {</span>
-<span class="nc" id="L339">			ClientDetailsEntity client = clientRepository.getClientByClientId(clientId);</span>
-<span class="nc bnc" id="L340" title="All 2 branches missed.">			if (client == null) {</span>
-<span class="nc" id="L341">				throw new InvalidClientException(&quot;Client with id &quot; + clientId + &quot; was not found&quot;);</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(clientId)) {</span>
+<span class="nc" id="L340">			ClientDetailsEntity client = clientRepository.getClientByClientId(clientId);</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">			if (client == null) {</span>
+<span class="nc" id="L342">				throw new InvalidClientException(&quot;Client with id &quot; + clientId + &quot; was not found&quot;);</span>
 			}
 			else {
-<span class="nc" id="L344">				return client;</span>
+<span class="nc" id="L345">				return client;</span>
 			}
 		}
 
-<span class="nc" id="L348">		throw new IllegalArgumentException(&quot;Client id must not be empty!&quot;);</span>
+<span class="nc" id="L349">		throw new IllegalArgumentException(&quot;Client id must not be empty!&quot;);</span>
 	}
 
 	/**
@@ -354,34 +355,34 @@ import com.google.gson.JsonParser;
 	@Override
 	public void deleteClient(ClientDetailsEntity client) throws InvalidClientException {
 
-<span class="nc bnc" id="L357" title="All 2 branches missed.">		if (clientRepository.getById(client.getId()) == null) {</span>
-<span class="nc" id="L358">			throw new InvalidClientException(&quot;Client with id &quot; + client.getClientId() + &quot; was not found&quot;);</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">		if (clientRepository.getById(client.getId()) == null) {</span>
+<span class="nc" id="L359">			throw new InvalidClientException(&quot;Client with id &quot; + client.getClientId() + &quot; was not found&quot;);</span>
 		}
 
 		// clean out any tokens that this client had issued
-<span class="nc" id="L362">		tokenRepository.clearTokensForClient(client);</span>
+<span class="nc" id="L363">		tokenRepository.clearTokensForClient(client);</span>
 
 		// clean out any approved sites for this client
-<span class="nc" id="L365">		approvedSiteService.clearApprovedSitesForClient(client);</span>
+<span class="nc" id="L366">		approvedSiteService.clearApprovedSitesForClient(client);</span>
 
 		// clear out any whitelisted sites for this client
-<span class="nc" id="L368">		WhitelistedSite whitelistedSite = whitelistedSiteService.getByClientId(client.getClientId());</span>
-<span class="nc bnc" id="L369" title="All 2 branches missed.">		if (whitelistedSite != null) {</span>
-<span class="nc" id="L370">			whitelistedSiteService.remove(whitelistedSite);</span>
+<span class="nc" id="L369">		WhitelistedSite whitelistedSite = whitelistedSiteService.getByClientId(client.getClientId());</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">		if (whitelistedSite != null) {</span>
+<span class="nc" id="L371">			whitelistedSiteService.remove(whitelistedSite);</span>
 		}
 
 		// clear out resource sets registered for this client
-<span class="nc" id="L374">		Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForClient(client);</span>
-<span class="nc bnc" id="L375" title="All 2 branches missed.">		for (ResourceSet rs : resourceSets) {</span>
-<span class="nc" id="L376">			resourceSetService.remove(rs);</span>
-<span class="nc" id="L377">		}</span>
+<span class="nc" id="L375">		Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForClient(client);</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">		for (ResourceSet rs : resourceSets) {</span>
+<span class="nc" id="L377">			resourceSetService.remove(rs);</span>
+<span class="nc" id="L378">		}</span>
 
 		// take care of the client itself
-<span class="nc" id="L380">		clientRepository.deleteClient(client);</span>
+<span class="nc" id="L381">		clientRepository.deleteClient(client);</span>
 
-<span class="nc" id="L382">		statsService.resetCache();</span>
+<span class="nc" id="L383">		statsService.resetCache();</span>
 
-<span class="nc" id="L384">	}</span>
+<span class="nc" id="L385">	}</span>
 
 	/**
 	 * Update the oldClient with information from the newClient. The
@@ -399,32 +400,32 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public ClientDetailsEntity updateClient(ClientDetailsEntity oldClient, ClientDetailsEntity newClient) throws IllegalArgumentException {
-<span class="nc bnc" id="L402" title="All 4 branches missed.">		if (oldClient != null &amp;&amp; newClient != null) {</span>
+<span class="nc bnc" id="L403" title="All 4 branches missed.">		if (oldClient != null &amp;&amp; newClient != null) {</span>
 
-<span class="nc bnc" id="L404" title="All 2 branches missed.">			for (String uri : newClient.getRegisteredRedirectUri()) {</span>
-<span class="nc bnc" id="L405" title="All 2 branches missed.">				if (blacklistedSiteService.isBlacklisted(uri)) {</span>
-<span class="nc" id="L406">					throw new IllegalArgumentException(&quot;Client URI is blacklisted: &quot; + uri);</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">			for (String uri : newClient.getRegisteredRedirectUri()) {</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">				if (blacklistedSiteService.isBlacklisted(uri)) {</span>
+<span class="nc" id="L407">					throw new IllegalArgumentException(&quot;Client URI is blacklisted: &quot; + uri);</span>
 				}
-<span class="nc" id="L408">			}</span>
+<span class="nc" id="L409">			}</span>
 
 			// if the client is flagged to allow for refresh tokens, make sure it's got the right scope
-<span class="nc" id="L411">			ensureRefreshTokenConsistency(newClient);</span>
+<span class="nc" id="L412">			ensureRefreshTokenConsistency(newClient);</span>
 
 			// make sure we don't have both a JWKS and a JWKS URI
-<span class="nc" id="L414">			ensureKeyConsistency(newClient);</span>
+<span class="nc" id="L415">			ensureKeyConsistency(newClient);</span>
 
 			// check consistency when using HEART mode
-<span class="nc" id="L417">			checkHeartMode(newClient);</span>
+<span class="nc" id="L418">			checkHeartMode(newClient);</span>
 
 			// check the sector URI
-<span class="nc" id="L420">			checkSectorIdentifierUri(newClient);</span>
+<span class="nc" id="L421">			checkSectorIdentifierUri(newClient);</span>
 
 			// make sure a client doesn't get any special system scopes
-<span class="nc" id="L423">			ensureNoReservedScopes(newClient);</span>
+<span class="nc" id="L424">			ensureNoReservedScopes(newClient);</span>
 
-<span class="nc" id="L425">			return clientRepository.updateClient(oldClient.getId(), newClient);</span>
+<span class="nc" id="L426">			return clientRepository.updateClient(oldClient.getId(), newClient);</span>
 		}
-<span class="nc" id="L427">		throw new IllegalArgumentException(&quot;Neither old client or new client can be null!&quot;);</span>
+<span class="nc" id="L428">		throw new IllegalArgumentException(&quot;Neither old client or new client can be null!&quot;);</span>
 	}
 
 	/**
@@ -432,7 +433,7 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public Collection&lt;ClientDetailsEntity&gt; getAllClients() {
-<span class="nc" id="L435">		return clientRepository.getAllClients();</span>
+<span class="nc" id="L436">		return clientRepository.getAllClients();</span>
 	}
 
 	/**
@@ -440,8 +441,8 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public ClientDetailsEntity generateClientId(ClientDetailsEntity client) {
-<span class="nc" id="L443">		client.setClientId(UUID.randomUUID().toString());</span>
-<span class="nc" id="L444">		return client;</span>
+<span class="nc" id="L444">		client.setClientId(UUID.randomUUID().toString());</span>
+<span class="nc" id="L445">		return client;</span>
 	}
 
 	/**
@@ -449,13 +450,13 @@ import com.google.gson.JsonParser;
 	 */
 	@Override
 	public ClientDetailsEntity generateClientSecret(ClientDetailsEntity client) {
-<span class="nc bnc" id="L452" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
-<span class="nc" id="L453">			logger.error(&quot;[HEART mode] Can't generate a client secret, skipping step; client won't be saved due to invalid configuration&quot;);</span>
-<span class="nc" id="L454">			client.setClientSecret(null);</span>
+<span class="nc bnc" id="L453" title="All 2 branches missed.">		if (config.isHeartMode()) {</span>
+<span class="nc" id="L454">			logger.error(&quot;[HEART mode] Can't generate a client secret, skipping step; client won't be saved due to invalid configuration&quot;);</span>
+<span class="nc" id="L455">			client.setClientSecret(null);</span>
 		} else {
-<span class="nc" id="L456">			client.setClientSecret(Base64.encodeBase64URLSafeString(new BigInteger(512, new SecureRandom()).toByteArray()).replace(&quot;=&quot;, &quot;&quot;));</span>
+<span class="nc" id="L457">			client.setClientSecret(Base64.encodeBase64URLSafeString(new BigInteger(512, new SecureRandom()).toByteArray()).replace(&quot;=&quot;, &quot;&quot;));</span>
 		}
-<span class="nc" id="L458">		return client;</span>
+<span class="nc" id="L459">		return client;</span>
 	}
 
 	/**
@@ -467,38 +468,38 @@ import com.google.gson.JsonParser;
 	private class SectorIdentifierLoader extends CacheLoader&lt;String, List&lt;String&gt;&gt; {
 		private HttpComponentsClientHttpRequestFactory httpFactory;
 		private RestTemplate restTemplate;
-<span class="nc" id="L470">		private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L471">		private JsonParser parser = new JsonParser();</span>
 
-<span class="nc" id="L472">		SectorIdentifierLoader(HttpClient httpClient) {</span>
-<span class="nc" id="L473">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
-<span class="nc" id="L474">			this.restTemplate = new RestTemplate(httpFactory);</span>
-<span class="nc" id="L475">		}</span>
+<span class="nc" id="L473">		SectorIdentifierLoader(HttpClient httpClient) {</span>
+<span class="nc" id="L474">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L475">			this.restTemplate = new RestTemplate(httpFactory);</span>
+<span class="nc" id="L476">		}</span>
 
 		@Override
 		public List&lt;String&gt; load(String key) throws Exception {
 
-<span class="nc bnc" id="L480" title="All 2 branches missed.">			if (!key.startsWith(&quot;https&quot;)) {</span>
-<span class="nc bnc" id="L481" title="All 2 branches missed.">				if (config.isForceHttps()) {</span>
-<span class="nc" id="L482">					throw new IllegalArgumentException(&quot;Sector identifier must start with https: &quot; + key);</span>
+<span class="nc bnc" id="L481" title="All 2 branches missed.">			if (!key.startsWith(&quot;https&quot;)) {</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">				if (config.isForceHttps()) {</span>
+<span class="nc" id="L483">					throw new IllegalArgumentException(&quot;Sector identifier must start with https: &quot; + key);</span>
 				}
-<span class="nc" id="L484">				logger.error(&quot;Sector identifier doesn't start with https, loading anyway...&quot;);</span>
+<span class="nc" id="L485">				logger.error(&quot;Sector identifier doesn't start with https, loading anyway...&quot;);</span>
 			}
 
 			// key is the sector URI
-<span class="nc" id="L488">			String jsonString = restTemplate.getForObject(key, String.class);</span>
-<span class="nc" id="L489">			JsonElement json = parser.parse(jsonString);</span>
+<span class="nc" id="L489">			String jsonString = restTemplate.getForObject(key, String.class);</span>
+<span class="nc" id="L490">			JsonElement json = parser.parse(jsonString);</span>
 
-<span class="nc bnc" id="L491" title="All 2 branches missed.">			if (json.isJsonArray()) {</span>
-<span class="nc" id="L492">				List&lt;String&gt; redirectUris = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L493" title="All 2 branches missed.">				for (JsonElement el : json.getAsJsonArray()) {</span>
-<span class="nc" id="L494">					redirectUris.add(el.getAsString());</span>
-<span class="nc" id="L495">				}</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">			if (json.isJsonArray()) {</span>
+<span class="nc" id="L493">				List&lt;String&gt; redirectUris = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">				for (JsonElement el : json.getAsJsonArray()) {</span>
+<span class="nc" id="L495">					redirectUris.add(el.getAsString());</span>
+<span class="nc" id="L496">				}</span>
 
-<span class="nc" id="L497">				logger.info(&quot;Found &quot; + redirectUris + &quot; for sector &quot; + key);</span>
+<span class="nc" id="L498">				logger.info(&quot;Found &quot; + redirectUris + &quot; for sector &quot; + key);</span>
 
-<span class="nc" id="L499">				return redirectUris;</span>
+<span class="nc" id="L500">				return redirectUris;</span>
 			} else {
-<span class="nc" id="L501">				throw new IllegalArgumentException(&quot;JSON Format Error&quot;);</span>
+<span class="nc" id="L502">				throw new IllegalArgumentException(&quot;JSON Format Error&quot;);</span>
 			}
 
 		}

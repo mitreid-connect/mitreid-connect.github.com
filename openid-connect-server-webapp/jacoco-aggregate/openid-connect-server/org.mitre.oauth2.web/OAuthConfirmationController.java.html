@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OAuthConfirmationController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.web</a> &gt; <span class="el_source">OAuthConfirmationController.java</span></div><h1>OAuthConfirmationController.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -90,15 +91,15 @@ public class OAuthConfirmationController {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L93">	private static final Logger logger = LoggerFactory.getLogger(OAuthConfirmationController.class);</span>
+<span class="nc" id="L94">	private static final Logger logger = LoggerFactory.getLogger(OAuthConfirmationController.class);</span>
 
-<span class="nc" id="L95">	public OAuthConfirmationController() {</span>
+<span class="nc" id="L96">	public OAuthConfirmationController() {</span>
 
-<span class="nc" id="L97">	}</span>
+<span class="nc" id="L98">	}</span>
 
-<span class="nc" id="L99">	public OAuthConfirmationController(ClientDetailsEntityService clientService) {</span>
-<span class="nc" id="L100">		this.clientService = clientService;</span>
-<span class="nc" id="L101">	}</span>
+<span class="nc" id="L100">	public OAuthConfirmationController(ClientDetailsEntityService clientService) {</span>
+<span class="nc" id="L101">		this.clientService = clientService;</span>
+<span class="nc" id="L102">	}</span>
 
 	@PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
 	@RequestMapping(&quot;/oauth/confirm_access&quot;)
@@ -107,135 +108,135 @@ public class OAuthConfirmationController {
 
 		// Check the &quot;prompt&quot; parameter to see if we need to do special processing
 
-<span class="nc" id="L110">		String prompt = (String)authRequest.getExtensions().get(PROMPT);</span>
-<span class="nc" id="L111">		List&lt;String&gt; prompts = Splitter.on(PROMPT_SEPARATOR).splitToList(Strings.nullToEmpty(prompt));</span>
-<span class="nc" id="L112">		ClientDetailsEntity client = null;</span>
+<span class="nc" id="L111">		String prompt = (String)authRequest.getExtensions().get(PROMPT);</span>
+<span class="nc" id="L112">		List&lt;String&gt; prompts = Splitter.on(PROMPT_SEPARATOR).splitToList(Strings.nullToEmpty(prompt));</span>
+<span class="nc" id="L113">		ClientDetailsEntity client = null;</span>
 
 		try {
-<span class="nc" id="L115">			client = clientService.loadClientByClientId(authRequest.getClientId());</span>
-<span class="nc" id="L116">		} catch (OAuth2Exception e) {</span>
-<span class="nc" id="L117">			logger.error(&quot;confirmAccess: OAuth2Exception was thrown when attempting to load client&quot;, e);</span>
-<span class="nc" id="L118">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L119">			return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L120">		} catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L121">			logger.error(&quot;confirmAccess: IllegalArgumentException was thrown when attempting to load client&quot;, e);</span>
-<span class="nc" id="L122">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L123">			return HttpCodeView.VIEWNAME;</span>
-<span class="nc" id="L124">		}</span>
+<span class="nc" id="L116">			client = clientService.loadClientByClientId(authRequest.getClientId());</span>
+<span class="nc" id="L117">		} catch (OAuth2Exception e) {</span>
+<span class="nc" id="L118">			logger.error(&quot;confirmAccess: OAuth2Exception was thrown when attempting to load client&quot;, e);</span>
+<span class="nc" id="L119">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L120">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L121">		} catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L122">			logger.error(&quot;confirmAccess: IllegalArgumentException was thrown when attempting to load client&quot;, e);</span>
+<span class="nc" id="L123">			model.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L124">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L125">		}</span>
 
-<span class="nc bnc" id="L126" title="All 2 branches missed.">		if (client == null) {</span>
-<span class="nc" id="L127">			logger.error(&quot;confirmAccess: could not find client &quot; + authRequest.getClientId());</span>
-<span class="nc" id="L128">			model.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L129">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">		if (client == null) {</span>
+<span class="nc" id="L128">			logger.error(&quot;confirmAccess: could not find client &quot; + authRequest.getClientId());</span>
+<span class="nc" id="L129">			model.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L130">			return HttpCodeView.VIEWNAME;</span>
 		}
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">		if (prompts.contains(&quot;none&quot;)) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">		if (prompts.contains(&quot;none&quot;)) {</span>
 			// if we've got a redirect URI then we'll send it
 
-<span class="nc" id="L135">			String url = redirectResolver.resolveRedirect(authRequest.getRedirectUri(), client);</span>
+<span class="nc" id="L136">			String url = redirectResolver.resolveRedirect(authRequest.getRedirectUri(), client);</span>
 
 			try {
-<span class="nc" id="L138">				URIBuilder uriBuilder = new URIBuilder(url);</span>
+<span class="nc" id="L139">				URIBuilder uriBuilder = new URIBuilder(url);</span>
 
-<span class="nc" id="L140">				uriBuilder.addParameter(&quot;error&quot;, &quot;interaction_required&quot;);</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">				if (!Strings.isNullOrEmpty(authRequest.getState())) {</span>
-<span class="nc" id="L142">					uriBuilder.addParameter(&quot;state&quot;, authRequest.getState()); // copy the state parameter if one was given</span>
+<span class="nc" id="L141">				uriBuilder.addParameter(&quot;error&quot;, &quot;interaction_required&quot;);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">				if (!Strings.isNullOrEmpty(authRequest.getState())) {</span>
+<span class="nc" id="L143">					uriBuilder.addParameter(&quot;state&quot;, authRequest.getState()); // copy the state parameter if one was given</span>
 				}
 
-<span class="nc" id="L145">				return &quot;redirect:&quot; + uriBuilder.toString();</span>
+<span class="nc" id="L146">				return &quot;redirect:&quot; + uriBuilder.toString();</span>
 
-<span class="nc" id="L147">			} catch (URISyntaxException e) {</span>
-<span class="nc" id="L148">				logger.error(&quot;Can't build redirect URI for prompt=none, sending error instead&quot;, e);</span>
-<span class="nc" id="L149">				model.put(&quot;code&quot;, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L150">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L148">			} catch (URISyntaxException e) {</span>
+<span class="nc" id="L149">				logger.error(&quot;Can't build redirect URI for prompt=none, sending error instead&quot;, e);</span>
+<span class="nc" id="L150">				model.put(&quot;code&quot;, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L151">				return HttpCodeView.VIEWNAME;</span>
 			}
 		}
 
-<span class="nc" id="L154">		model.put(&quot;auth_request&quot;, authRequest);</span>
-<span class="nc" id="L155">		model.put(&quot;client&quot;, client);</span>
+<span class="nc" id="L155">		model.put(&quot;auth_request&quot;, authRequest);</span>
+<span class="nc" id="L156">		model.put(&quot;client&quot;, client);</span>
 
-<span class="nc" id="L157">		String redirect_uri = authRequest.getRedirectUri();</span>
+<span class="nc" id="L158">		String redirect_uri = authRequest.getRedirectUri();</span>
 
-<span class="nc" id="L159">		model.put(&quot;redirect_uri&quot;, redirect_uri);</span>
+<span class="nc" id="L160">		model.put(&quot;redirect_uri&quot;, redirect_uri);</span>
 
 
 		// pre-process the scopes
-<span class="nc" id="L163">		Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(authRequest.getScope());</span>
+<span class="nc" id="L164">		Set&lt;SystemScope&gt; scopes = scopeService.fromStrings(authRequest.getScope());</span>
 
-<span class="nc" id="L165">		Set&lt;SystemScope&gt; sortedScopes = new LinkedHashSet&lt;&gt;(scopes.size());</span>
-<span class="nc" id="L166">		Set&lt;SystemScope&gt; systemScopes = scopeService.getAll();</span>
+<span class="nc" id="L166">		Set&lt;SystemScope&gt; sortedScopes = new LinkedHashSet&lt;&gt;(scopes.size());</span>
+<span class="nc" id="L167">		Set&lt;SystemScope&gt; systemScopes = scopeService.getAll();</span>
 
 		// sort scopes for display based on the inherent order of system scopes
-<span class="nc bnc" id="L169" title="All 2 branches missed.">		for (SystemScope s : systemScopes) {</span>
-<span class="nc bnc" id="L170" title="All 2 branches missed.">			if (scopes.contains(s)) {</span>
-<span class="nc" id="L171">				sortedScopes.add(s);</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">		for (SystemScope s : systemScopes) {</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">			if (scopes.contains(s)) {</span>
+<span class="nc" id="L172">				sortedScopes.add(s);</span>
 			}
-<span class="nc" id="L173">		}</span>
+<span class="nc" id="L174">		}</span>
 
 		// add in any scopes that aren't system scopes to the end of the list
-<span class="nc" id="L176">		sortedScopes.addAll(Sets.difference(scopes, systemScopes));</span>
+<span class="nc" id="L177">		sortedScopes.addAll(Sets.difference(scopes, systemScopes));</span>
 
-<span class="nc" id="L178">		model.put(&quot;scopes&quot;, sortedScopes);</span>
+<span class="nc" id="L179">		model.put(&quot;scopes&quot;, sortedScopes);</span>
 
 		// get the userinfo claims for each scope
-<span class="nc" id="L181">		UserInfo user = userInfoService.getByUsername(p.getName());</span>
-<span class="nc" id="L182">		Map&lt;String, Map&lt;String, String&gt;&gt; claimsForScopes = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">		if (user != null) {</span>
-<span class="nc" id="L184">			JsonObject userJson = user.toJson();</span>
+<span class="nc" id="L182">		UserInfo user = userInfoService.getByUsername(p.getName());</span>
+<span class="nc" id="L183">		Map&lt;String, Map&lt;String, String&gt;&gt; claimsForScopes = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">		if (user != null) {</span>
+<span class="nc" id="L185">			JsonObject userJson = user.toJson();</span>
 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">			for (SystemScope systemScope : sortedScopes) {</span>
-<span class="nc" id="L187">				Map&lt;String, String&gt; claimValues = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">			for (SystemScope systemScope : sortedScopes) {</span>
+<span class="nc" id="L188">				Map&lt;String, String&gt; claimValues = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L189">				Set&lt;String&gt; claims = scopeClaimTranslationService.getClaimsForScope(systemScope.getValue());</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">				for (String claim : claims) {</span>
-<span class="nc bnc" id="L191" title="All 4 branches missed.">					if (userJson.has(claim) &amp;&amp; userJson.get(claim).isJsonPrimitive()) {</span>
+<span class="nc" id="L190">				Set&lt;String&gt; claims = scopeClaimTranslationService.getClaimsForScope(systemScope.getValue());</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">				for (String claim : claims) {</span>
+<span class="nc bnc" id="L192" title="All 4 branches missed.">					if (userJson.has(claim) &amp;&amp; userJson.get(claim).isJsonPrimitive()) {</span>
 						// TODO: this skips the address claim
-<span class="nc" id="L193">						claimValues.put(claim, userJson.get(claim).getAsString());</span>
+<span class="nc" id="L194">						claimValues.put(claim, userJson.get(claim).getAsString());</span>
 					}
-<span class="nc" id="L195">				}</span>
+<span class="nc" id="L196">				}</span>
 
-<span class="nc" id="L197">				claimsForScopes.put(systemScope.getValue(), claimValues);</span>
-<span class="nc" id="L198">			}</span>
+<span class="nc" id="L198">				claimsForScopes.put(systemScope.getValue(), claimValues);</span>
+<span class="nc" id="L199">			}</span>
 		}
 
-<span class="nc" id="L201">		model.put(&quot;claims&quot;, claimsForScopes);</span>
+<span class="nc" id="L202">		model.put(&quot;claims&quot;, claimsForScopes);</span>
 
 		// client stats
-<span class="nc" id="L204">		Integer count = statsService.getCountForClientId(client.getClientId()).getApprovedSiteCount();</span>
-<span class="nc" id="L205">		model.put(&quot;count&quot;, count);</span>
+<span class="nc" id="L205">		Integer count = statsService.getCountForClientId(client.getClientId()).getApprovedSiteCount();</span>
+<span class="nc" id="L206">		model.put(&quot;count&quot;, count);</span>
 
 
 		// contacts
-<span class="nc bnc" id="L209" title="All 2 branches missed.">		if (client.getContacts() != null) {</span>
-<span class="nc" id="L210">			String contacts = Joiner.on(&quot;, &quot;).join(client.getContacts());</span>
-<span class="nc" id="L211">			model.put(&quot;contacts&quot;, contacts);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">		if (client.getContacts() != null) {</span>
+<span class="nc" id="L211">			String contacts = Joiner.on(&quot;, &quot;).join(client.getContacts());</span>
+<span class="nc" id="L212">			model.put(&quot;contacts&quot;, contacts);</span>
 		}
 
 		// if the client is over a week old and has more than one registration, don't give such a big warning
 		// instead, tag as &quot;Generally Recognized As Safe&quot; (gras)
-<span class="nc" id="L216">		Date lastWeek = new Date(System.currentTimeMillis() - (60 * 60 * 24 * 7 * 1000));</span>
-<span class="nc bnc" id="L217" title="All 6 branches missed.">		if (count &gt; 1 &amp;&amp; client.getCreatedAt() != null &amp;&amp; client.getCreatedAt().before(lastWeek)) {</span>
-<span class="nc" id="L218">			model.put(&quot;gras&quot;, true);</span>
+<span class="nc" id="L217">		Date lastWeek = new Date(System.currentTimeMillis() - (60 * 60 * 24 * 7 * 1000));</span>
+<span class="nc bnc" id="L218" title="All 6 branches missed.">		if (count &gt; 1 &amp;&amp; client.getCreatedAt() != null &amp;&amp; client.getCreatedAt().before(lastWeek)) {</span>
+<span class="nc" id="L219">			model.put(&quot;gras&quot;, true);</span>
 		} else {
-<span class="nc" id="L220">			model.put(&quot;gras&quot;, false);</span>
+<span class="nc" id="L221">			model.put(&quot;gras&quot;, false);</span>
 		}
 
-<span class="nc" id="L223">		return &quot;approve&quot;;</span>
+<span class="nc" id="L224">		return &quot;approve&quot;;</span>
 	}
 
 	/**
 	 * @return the clientService
 	 */
 	public ClientDetailsEntityService getClientService() {
-<span class="nc" id="L230">		return clientService;</span>
+<span class="nc" id="L231">		return clientService;</span>
 	}
 
 	/**
 	 * @param clientService the clientService to set
 	 */
 	public void setClientService(ClientDetailsEntityService clientService) {
-<span class="nc" id="L237">		this.clientService = clientService;</span>
-<span class="nc" id="L238">	}</span>
+<span class="nc" id="L238">		this.clientService = clientService;</span>
+<span class="nc" id="L239">	}</span>
 
 
 }

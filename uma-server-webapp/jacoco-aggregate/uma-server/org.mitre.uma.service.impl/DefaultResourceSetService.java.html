@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultResourceSetService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.service.impl</a> &gt; <span class="el_source">DefaultResourceSetService.java</span></div><h1>DefaultResourceSetService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -40,9 +39,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Primary
-<span class="nc" id="L43">public class DefaultResourceSetService implements ResourceSetService {</span>
+<span class="nc" id="L42">public class DefaultResourceSetService implements ResourceSetService {</span>
 
-<span class="nc" id="L45">	private static final Logger logger = LoggerFactory.getLogger(DefaultResourceSetService.class);</span>
+<span class="nc" id="L44">	private static final Logger logger = LoggerFactory.getLogger(DefaultResourceSetService.class);</span>
 
 	@Autowired
 	private ResourceSetRepository repository;
@@ -56,87 +55,87 @@ import org.springframework.stereotype.Service;
 	@Override
 	public ResourceSet saveNew(ResourceSet rs) {
 
-<span class="nc bnc" id="L59" title="All 2 branches missed.">		if (rs.getId() != null) {</span>
-<span class="nc" id="L60">			throw new IllegalArgumentException(&quot;Can't save a new resource set with an ID already set to it.&quot;);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (rs.getId() != null) {</span>
+<span class="nc" id="L59">			throw new IllegalArgumentException(&quot;Can't save a new resource set with an ID already set to it.&quot;);</span>
 		}
 
-<span class="nc bnc" id="L63" title="All 2 branches missed.">		if (!checkScopeConsistency(rs)) {</span>
-<span class="nc" id="L64">			throw new IllegalArgumentException(&quot;Can't save a resource set with inconsistent claims.&quot;);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (!checkScopeConsistency(rs)) {</span>
+<span class="nc" id="L63">			throw new IllegalArgumentException(&quot;Can't save a resource set with inconsistent claims.&quot;);</span>
 		}
 
-<span class="nc" id="L67">		ResourceSet saved = repository.save(rs);</span>
+<span class="nc" id="L66">		ResourceSet saved = repository.save(rs);</span>
 
-<span class="nc" id="L69">		return saved;</span>
+<span class="nc" id="L68">		return saved;</span>
 
 	}
 
 	@Override
 	public ResourceSet getById(Long id) {
-<span class="nc" id="L75">		return repository.getById(id);</span>
+<span class="nc" id="L74">		return repository.getById(id);</span>
 	}
 
 	@Override
 	public ResourceSet update(ResourceSet oldRs, ResourceSet newRs) {
 
-<span class="nc bnc" id="L81" title="All 4 branches missed.">		if (oldRs.getId() == null || newRs.getId() == null</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">				|| !oldRs.getId().equals(newRs.getId())) {</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">		if (oldRs.getId() == null || newRs.getId() == null</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">				|| !oldRs.getId().equals(newRs.getId())) {</span>
 
-<span class="nc" id="L84">			throw new IllegalArgumentException(&quot;Resource set IDs mismatched&quot;);</span>
+<span class="nc" id="L83">			throw new IllegalArgumentException(&quot;Resource set IDs mismatched&quot;);</span>
 
 		}
 
-<span class="nc bnc" id="L88" title="All 2 branches missed.">		if (!checkScopeConsistency(newRs)) {</span>
-<span class="nc" id="L89">			throw new IllegalArgumentException(&quot;Can't save a resource set with inconsistent claims.&quot;);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (!checkScopeConsistency(newRs)) {</span>
+<span class="nc" id="L88">			throw new IllegalArgumentException(&quot;Can't save a resource set with inconsistent claims.&quot;);</span>
 		}
 
-<span class="nc" id="L92">		newRs.setOwner(oldRs.getOwner()); // preserve the owner tag across updates</span>
-<span class="nc" id="L93">		newRs.setClientId(oldRs.getClientId()); // preserve the client id across updates</span>
+<span class="nc" id="L91">		newRs.setOwner(oldRs.getOwner()); // preserve the owner tag across updates</span>
+<span class="nc" id="L92">		newRs.setClientId(oldRs.getClientId()); // preserve the client id across updates</span>
 
-<span class="nc" id="L95">		ResourceSet saved = repository.save(newRs);</span>
+<span class="nc" id="L94">		ResourceSet saved = repository.save(newRs);</span>
 
-<span class="nc" id="L97">		return saved;</span>
+<span class="nc" id="L96">		return saved;</span>
 
 	}
 
 	@Override
 	public void remove(ResourceSet rs) {
 		// find all the access tokens issued against this resource set and revoke them
-<span class="nc" id="L104">		Collection&lt;OAuth2AccessTokenEntity&gt; tokens = tokenRepository.getAccessTokensForResourceSet(rs);</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : tokens) {</span>
-<span class="nc" id="L106">			tokenRepository.removeAccessToken(token);</span>
-<span class="nc" id="L107">		}</span>
+<span class="nc" id="L103">		Collection&lt;OAuth2AccessTokenEntity&gt; tokens = tokenRepository.getAccessTokensForResourceSet(rs);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity token : tokens) {</span>
+<span class="nc" id="L105">			tokenRepository.removeAccessToken(token);</span>
+<span class="nc" id="L106">		}</span>
 
 		// find all outstanding tickets issued against this resource set and revoke them too
-<span class="nc" id="L110">		Collection&lt;PermissionTicket&gt; tickets = ticketRepository.getPermissionTicketsForResourceSet(rs);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		for (PermissionTicket ticket : tickets) {</span>
-<span class="nc" id="L112">			ticketRepository.remove(ticket);</span>
-<span class="nc" id="L113">		}</span>
+<span class="nc" id="L109">		Collection&lt;PermissionTicket&gt; tickets = ticketRepository.getPermissionTicketsForResourceSet(rs);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">		for (PermissionTicket ticket : tickets) {</span>
+<span class="nc" id="L111">			ticketRepository.remove(ticket);</span>
+<span class="nc" id="L112">		}</span>
 
-<span class="nc" id="L115">		repository.remove(rs);</span>
-<span class="nc" id="L116">	}</span>
+<span class="nc" id="L114">		repository.remove(rs);</span>
+<span class="nc" id="L115">	}</span>
 
 	@Override
 	public Collection&lt;ResourceSet&gt; getAllForOwner(String owner) {
-<span class="nc" id="L120">		return repository.getAllForOwner(owner);</span>
+<span class="nc" id="L119">		return repository.getAllForOwner(owner);</span>
 	}
 
 	@Override
 	public Collection&lt;ResourceSet&gt; getAllForOwnerAndClient(String owner, String clientId) {
-<span class="nc" id="L125">		return repository.getAllForOwnerAndClient(owner, clientId);</span>
+<span class="nc" id="L124">		return repository.getAllForOwnerAndClient(owner, clientId);</span>
 	}
 
 	private boolean checkScopeConsistency(ResourceSet rs) {
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (rs.getPolicies() == null) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">		if (rs.getPolicies() == null) {</span>
 			// nothing to check, no problem!
-<span class="nc" id="L131">			return true;</span>
+<span class="nc" id="L130">			return true;</span>
 		}
-<span class="nc bnc" id="L133" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">			if (!rs.getScopes().containsAll(policy.getScopes())) {</span>
-<span class="nc" id="L135">				return false;</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">		for (Policy policy : rs.getPolicies()) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">			if (!rs.getScopes().containsAll(policy.getScopes())) {</span>
+<span class="nc" id="L134">				return false;</span>
 			}
-<span class="nc" id="L137">		}</span>
+<span class="nc" id="L136">		}</span>
 		// we've checked everything, we're good
-<span class="nc" id="L139">		return true;</span>
+<span class="nc" id="L138">		return true;</span>
 	}
 
 	/* (non-Javadoc)
@@ -144,7 +143,7 @@ import org.springframework.stereotype.Service;
 	 */
 	@Override
 	public Collection&lt;ResourceSet&gt; getAllForClient(ClientDetailsEntity client) {
-<span class="nc" id="L147">		return repository.getAllForClient(client.getClientId());</span>
+<span class="nc" id="L146">		return repository.getAllForClient(client.getClientId());</span>
 	}
 
 }

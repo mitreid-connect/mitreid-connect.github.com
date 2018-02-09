@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientKeyCacheService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Client</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.jwt.signer.service.impl</a> &gt; <span class="el_source">ClientKeyCacheService.java</span></div><h1>ClientKeyCacheService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -49,12 +48,12 @@ import com.nimbusds.jose.jwk.JWKSet;
 @Service
 public class ClientKeyCacheService {
 
-<span class="nc" id="L52">	private static Logger logger = LoggerFactory.getLogger(ClientKeyCacheService.class);</span>
+<span class="nc" id="L51">	private static Logger logger = LoggerFactory.getLogger(ClientKeyCacheService.class);</span>
 
-<span class="nc" id="L54">	@Autowired</span>
+<span class="nc" id="L53">	@Autowired</span>
 	private JWKSetCacheService jwksUriCache = new JWKSetCacheService();
 
-<span class="nc" id="L57">	@Autowired</span>
+<span class="nc" id="L56">	@Autowired</span>
 	private SymmetricKeyJWTValidatorCacheService symmetricCache = new SymmetricKeyJWTValidatorCacheService();
 
 	// cache of validators for by-value JWKs
@@ -63,55 +62,55 @@ public class ClientKeyCacheService {
 	// cache of encryptors for by-value JWKs
 	private LoadingCache&lt;JWKSet, JWTEncryptionAndDecryptionService&gt; jwksEncrypters;
 
-<span class="nc" id="L66">	public ClientKeyCacheService() {</span>
-<span class="nc" id="L67">		this.jwksValidators = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L68">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
-<span class="nc" id="L69">				.maximumSize(100)</span>
-<span class="nc" id="L70">				.build(new JWKSetVerifierBuilder());</span>
-<span class="nc" id="L71">		this.jwksEncrypters = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L72">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
-<span class="nc" id="L73">				.maximumSize(100)</span>
-<span class="nc" id="L74">				.build(new JWKSetEncryptorBuilder());</span>
-<span class="nc" id="L75">	}</span>
+<span class="nc" id="L65">	public ClientKeyCacheService() {</span>
+<span class="nc" id="L66">		this.jwksValidators = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L67">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
+<span class="nc" id="L68">				.maximumSize(100)</span>
+<span class="nc" id="L69">				.build(new JWKSetVerifierBuilder());</span>
+<span class="nc" id="L70">		this.jwksEncrypters = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L71">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
+<span class="nc" id="L72">				.maximumSize(100)</span>
+<span class="nc" id="L73">				.build(new JWKSetEncryptorBuilder());</span>
+<span class="nc" id="L74">	}</span>
 
 
 	public JWTSigningAndValidationService getValidator(ClientDetailsEntity client, JWSAlgorithm alg) {
 
 		try {
-<span class="nc bnc" id="L81" title="All 2 branches missed.">			if (alg.equals(JWSAlgorithm.RS256)</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.RS384)</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.RS512)</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES256)</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES384)</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES512)</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS256)</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS384)</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS512)) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">			if (alg.equals(JWSAlgorithm.RS256)</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.RS384)</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.RS512)</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES256)</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES384)</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.ES512)</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS256)</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS384)</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.PS512)) {</span>
 
 				// asymmetric key
-<span class="nc bnc" id="L92" title="All 2 branches missed.">				if (client.getJwks() != null) {</span>
-<span class="nc" id="L93">					return jwksValidators.get(client.getJwks());</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">				} else if (!Strings.isNullOrEmpty(client.getJwksUri())) {</span>
-<span class="nc" id="L95">					return jwksUriCache.getValidator(client.getJwksUri());</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">				if (client.getJwks() != null) {</span>
+<span class="nc" id="L92">					return jwksValidators.get(client.getJwks());</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">				} else if (!Strings.isNullOrEmpty(client.getJwksUri())) {</span>
+<span class="nc" id="L94">					return jwksUriCache.getValidator(client.getJwksUri());</span>
 				} else {
-<span class="nc" id="L97">					return null;</span>
+<span class="nc" id="L96">					return null;</span>
 				}
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">			} else if (alg.equals(JWSAlgorithm.HS256)</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.HS384)</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.HS512)) {</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">			} else if (alg.equals(JWSAlgorithm.HS256)</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.HS384)</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">					|| alg.equals(JWSAlgorithm.HS512)) {</span>
 
 				// symmetric key
 
-<span class="nc" id="L106">				return symmetricCache.getSymmetricValidtor(client);</span>
+<span class="nc" id="L105">				return symmetricCache.getSymmetricValidtor(client);</span>
 
 			} else {
 
-<span class="nc" id="L110">				return null;</span>
+<span class="nc" id="L109">				return null;</span>
 			}
-<span class="nc" id="L112">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L113">			logger.error(&quot;Problem loading client validator&quot;, e);</span>
-<span class="nc" id="L114">			return null;</span>
+<span class="nc" id="L111">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L112">			logger.error(&quot;Problem loading client validator&quot;, e);</span>
+<span class="nc" id="L113">			return null;</span>
 		}
 
 	}
@@ -119,35 +118,35 @@ public class ClientKeyCacheService {
 	public JWTEncryptionAndDecryptionService getEncrypter(ClientDetailsEntity client) {
 
 		try {
-<span class="nc bnc" id="L122" title="All 2 branches missed.">			if (client.getJwks() != null) {</span>
-<span class="nc" id="L123">				return jwksEncrypters.get(client.getJwks());</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">			} else if (!Strings.isNullOrEmpty(client.getJwksUri())) {</span>
-<span class="nc" id="L125">				return jwksUriCache.getEncrypter(client.getJwksUri());</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">			if (client.getJwks() != null) {</span>
+<span class="nc" id="L122">				return jwksEncrypters.get(client.getJwks());</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">			} else if (!Strings.isNullOrEmpty(client.getJwksUri())) {</span>
+<span class="nc" id="L124">				return jwksUriCache.getEncrypter(client.getJwksUri());</span>
 			} else {
-<span class="nc" id="L127">				return null;</span>
+<span class="nc" id="L126">				return null;</span>
 			}
-<span class="nc" id="L129">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L130">			logger.error(&quot;Problem loading client encrypter&quot;, e);</span>
-<span class="nc" id="L131">			return null;</span>
+<span class="nc" id="L128">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L129">			logger.error(&quot;Problem loading client encrypter&quot;, e);</span>
+<span class="nc" id="L130">			return null;</span>
 		}
 
 	}
 
 
-<span class="nc" id="L137">	private class JWKSetEncryptorBuilder extends CacheLoader&lt;JWKSet, JWTEncryptionAndDecryptionService&gt; {</span>
+<span class="nc" id="L136">	private class JWKSetEncryptorBuilder extends CacheLoader&lt;JWKSet, JWTEncryptionAndDecryptionService&gt; {</span>
 
 		@Override
 		public JWTEncryptionAndDecryptionService load(JWKSet key) throws Exception {
-<span class="nc" id="L141">			return new DefaultJWTEncryptionAndDecryptionService(new JWKSetKeyStore(key));</span>
+<span class="nc" id="L140">			return new DefaultJWTEncryptionAndDecryptionService(new JWKSetKeyStore(key));</span>
 		}
 
 	}
 
-<span class="nc" id="L146">	private class JWKSetVerifierBuilder extends CacheLoader&lt;JWKSet, JWTSigningAndValidationService&gt; {</span>
+<span class="nc" id="L145">	private class JWKSetVerifierBuilder extends CacheLoader&lt;JWKSet, JWTSigningAndValidationService&gt; {</span>
 
 		@Override
 		public JWTSigningAndValidationService load(JWKSet key) throws Exception {
-<span class="nc" id="L150">			return new DefaultJWTSigningAndValidationService(new JWKSetKeyStore(key));</span>
+<span class="nc" id="L149">			return new DefaultJWTSigningAndValidationService(new JWKSetKeyStore(key));</span>
 		}
 
 	}

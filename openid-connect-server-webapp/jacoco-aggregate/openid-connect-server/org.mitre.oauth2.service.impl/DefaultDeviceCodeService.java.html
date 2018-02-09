@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultDeviceCodeService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.service.impl</a> &gt; <span class="el_source">DefaultDeviceCodeService.java</span></div><h1>DefaultDeviceCodeService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -41,12 +40,12 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Service(&quot;defaultDeviceCodeService&quot;)
-<span class="nc" id="L44">public class DefaultDeviceCodeService implements DeviceCodeService {</span>
+<span class="nc" id="L43">public class DefaultDeviceCodeService implements DeviceCodeService {</span>
 
 	@Autowired
 	private DeviceCodeRepository repository;
 
-<span class="nc" id="L49">	private RandomValueStringGenerator randomGenerator = new RandomValueStringGenerator();</span>
+<span class="nc" id="L48">	private RandomValueStringGenerator randomGenerator = new RandomValueStringGenerator();</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.service.DeviceCodeService#save(org.mitre.oauth2.model.DeviceCode)
@@ -55,20 +54,20 @@ import org.springframework.transaction.annotation.Transactional;
 	public DeviceCode createNewDeviceCode(Set&lt;String&gt; requestedScopes, ClientDetailsEntity client, Map&lt;String, String&gt; parameters) {
 
 		// create a device code, should be big and random
-<span class="nc" id="L58">		String deviceCode = UUID.randomUUID().toString();</span>
+<span class="nc" id="L57">		String deviceCode = UUID.randomUUID().toString();</span>
 
 		// create a user code, should be random but small and typable, and always uppercase (lookup is case insensitive)
-<span class="nc" id="L61">		String userCode = randomGenerator.generate().toUpperCase();</span>
+<span class="nc" id="L60">		String userCode = randomGenerator.generate().toUpperCase();</span>
 
-<span class="nc" id="L63">		DeviceCode dc = new DeviceCode(deviceCode, userCode, requestedScopes, client.getClientId(), parameters);</span>
+<span class="nc" id="L62">		DeviceCode dc = new DeviceCode(deviceCode, userCode, requestedScopes, client.getClientId(), parameters);</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">		if (client.getDeviceCodeValiditySeconds() != null) {</span>
-<span class="nc" id="L66">			dc.setExpiration(new Date(System.currentTimeMillis() + client.getDeviceCodeValiditySeconds() * 1000L));</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		if (client.getDeviceCodeValiditySeconds() != null) {</span>
+<span class="nc" id="L65">			dc.setExpiration(new Date(System.currentTimeMillis() + client.getDeviceCodeValiditySeconds() * 1000L));</span>
 		}
 
-<span class="nc" id="L69">		dc.setApproved(false);</span>
+<span class="nc" id="L68">		dc.setApproved(false);</span>
 
-<span class="nc" id="L71">		return repository.save(dc);</span>
+<span class="nc" id="L70">		return repository.save(dc);</span>
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +76,7 @@ import org.springframework.transaction.annotation.Transactional;
 	@Override
 	public DeviceCode lookUpByUserCode(String userCode) {
 		// always up-case the code for lookup
-<span class="nc" id="L80">		return repository.getByUserCode(userCode.toUpperCase());</span>
+<span class="nc" id="L79">		return repository.getByUserCode(userCode.toUpperCase());</span>
 	}
 
 	/* (non-Javadoc)
@@ -85,16 +84,16 @@ import org.springframework.transaction.annotation.Transactional;
 	 */
 	@Override
 	public DeviceCode approveDeviceCode(DeviceCode dc, OAuth2Authentication auth) {
-<span class="nc" id="L88">		DeviceCode found = repository.getById(dc.getId());</span>
+<span class="nc" id="L87">		DeviceCode found = repository.getById(dc.getId());</span>
 
-<span class="nc" id="L90">		found.setApproved(true);</span>
+<span class="nc" id="L89">		found.setApproved(true);</span>
 
-<span class="nc" id="L92">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
-<span class="nc" id="L93">		authHolder.setAuthentication(auth);</span>
+<span class="nc" id="L91">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L92">		authHolder.setAuthentication(auth);</span>
 
-<span class="nc" id="L95">		found.setAuthenticationHolder(authHolder);</span>
+<span class="nc" id="L94">		found.setAuthenticationHolder(authHolder);</span>
 
-<span class="nc" id="L97">		return repository.save(found);</span>
+<span class="nc" id="L96">		return repository.save(found);</span>
 	}
 
 	/* (non-Javadoc)
@@ -102,19 +101,19 @@ import org.springframework.transaction.annotation.Transactional;
 	 */
 	@Override
 	public DeviceCode findDeviceCode(String deviceCode, ClientDetails client) {
-<span class="nc" id="L105">		DeviceCode found = repository.getByDeviceCode(deviceCode);</span>
+<span class="nc" id="L104">		DeviceCode found = repository.getByDeviceCode(deviceCode);</span>
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (found != null) {</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">			if (found.getClientId().equals(client.getClientId())) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">			if (found.getClientId().equals(client.getClientId())) {</span>
 				// make sure the client matches, if so, we're good
-<span class="nc" id="L110">				return found;</span>
+<span class="nc" id="L109">				return found;</span>
 			} else {
 				// if the clients don't match, pretend the code wasn't found
-<span class="nc" id="L113">				return null;</span>
+<span class="nc" id="L112">				return null;</span>
 			}
 		} else {
 			// didn't find the code, return null
-<span class="nc" id="L117">			return null;</span>
+<span class="nc" id="L116">			return null;</span>
 		}
 
 	}
@@ -128,32 +127,32 @@ import org.springframework.transaction.annotation.Transactional;
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearExpiredDeviceCodes() {
 
-<span class="nc" id="L131">		new AbstractPageOperationTemplate&lt;DeviceCode&gt;(&quot;clearExpiredDeviceCodes&quot;){</span>
+<span class="nc" id="L130">		new AbstractPageOperationTemplate&lt;DeviceCode&gt;(&quot;clearExpiredDeviceCodes&quot;){</span>
 			@Override
 			public Collection&lt;DeviceCode&gt; fetchPage() {
-<span class="nc" id="L134">				return repository.getExpiredCodes();</span>
+<span class="nc" id="L133">				return repository.getExpiredCodes();</span>
 			}
 
 			@Override
 			protected void doOperation(DeviceCode item) {
-<span class="nc" id="L139">				repository.remove(item);</span>
-<span class="nc" id="L140">			}</span>
-<span class="nc" id="L141">		}.execute();</span>
-<span class="nc" id="L142">	}</span>
+<span class="nc" id="L138">				repository.remove(item);</span>
+<span class="nc" id="L139">			}</span>
+<span class="nc" id="L140">		}.execute();</span>
+<span class="nc" id="L141">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.service.DeviceCodeService#clearDeviceCode(java.lang.String, org.springframework.security.oauth2.provider.ClientDetails)
 	 */
 	@Override
 	public void clearDeviceCode(String deviceCode, ClientDetails client) {
-<span class="nc" id="L149">		DeviceCode found = findDeviceCode(deviceCode, client);</span>
+<span class="nc" id="L148">		DeviceCode found = findDeviceCode(deviceCode, client);</span>
 		
-<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (found != null) {</span>
 			// make sure it's not used twice
-<span class="nc" id="L153">			repository.remove(found);</span>
+<span class="nc" id="L152">			repository.remove(found);</span>
 		}
 
-<span class="nc" id="L156">	}</span>
+<span class="nc" id="L155">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

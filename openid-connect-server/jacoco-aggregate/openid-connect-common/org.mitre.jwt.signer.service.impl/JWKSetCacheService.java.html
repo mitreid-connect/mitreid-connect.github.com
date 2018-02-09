@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JWKSetCacheService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.jwt.signer.service.impl</a> &gt; <span class="el_source">JWKSetCacheService.java</span></div><h1>JWKSetCacheService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -56,7 +57,7 @@ public class JWKSetCacheService {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L59">	private static final Logger logger = LoggerFactory.getLogger(JWKSetCacheService.class);</span>
+<span class="nc" id="L60">	private static final Logger logger = LoggerFactory.getLogger(JWKSetCacheService.class);</span>
 
 	// map of jwk set uri -&gt; signing/validation service built on the keys found in that jwk set
 	private LoadingCache&lt;String, JWTSigningAndValidationService&gt; validators;
@@ -64,16 +65,16 @@ public class JWKSetCacheService {
 	// map of jwk set uri -&gt; encryption/decryption service built on the keys found in that jwk set
 	private LoadingCache&lt;String, JWTEncryptionAndDecryptionService&gt; encrypters;
 
-<span class="nc" id="L67">	public JWKSetCacheService() {</span>
-<span class="nc" id="L68">		this.validators = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L69">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
-<span class="nc" id="L70">				.maximumSize(100)</span>
-<span class="nc" id="L71">				.build(new JWKSetVerifierFetcher(HttpClientBuilder.create().useSystemProperties().build()));</span>
-<span class="nc" id="L72">		this.encrypters = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L73">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
-<span class="nc" id="L74">				.maximumSize(100)</span>
-<span class="nc" id="L75">				.build(new JWKSetEncryptorFetcher(HttpClientBuilder.create().useSystemProperties().build()));</span>
-<span class="nc" id="L76">	}</span>
+<span class="nc" id="L68">	public JWKSetCacheService() {</span>
+<span class="nc" id="L69">		this.validators = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L70">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
+<span class="nc" id="L71">				.maximumSize(100)</span>
+<span class="nc" id="L72">				.build(new JWKSetVerifierFetcher(HttpClientBuilder.create().useSystemProperties().build()));</span>
+<span class="nc" id="L73">		this.encrypters = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L74">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
+<span class="nc" id="L75">				.maximumSize(100)</span>
+<span class="nc" id="L76">				.build(new JWKSetEncryptorFetcher(HttpClientBuilder.create().useSystemProperties().build()));</span>
+<span class="nc" id="L77">	}</span>
 
 	/**
 	 * @param jwksUri
@@ -83,19 +84,19 @@ public class JWKSetCacheService {
 	 */
 	public JWTSigningAndValidationService getValidator(String jwksUri) {
 		try {
-<span class="nc" id="L86">			return validators.get(jwksUri);</span>
-<span class="nc" id="L87">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L88">			logger.warn(&quot;Couldn't load JWK Set from &quot; + jwksUri + &quot;: &quot; + e.getMessage());</span>
-<span class="nc" id="L89">			return null;</span>
+<span class="nc" id="L87">			return validators.get(jwksUri);</span>
+<span class="nc" id="L88">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L89">			logger.warn(&quot;Couldn't load JWK Set from &quot; + jwksUri + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L90">			return null;</span>
 		}
 	}
 
 	public JWTEncryptionAndDecryptionService getEncrypter(String jwksUri) {
 		try {
-<span class="nc" id="L95">			return encrypters.get(jwksUri);</span>
-<span class="nc" id="L96">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L97">			logger.warn(&quot;Couldn't load JWK Set from &quot; + jwksUri + &quot;: &quot; + e.getMessage());</span>
-<span class="nc" id="L98">			return null;</span>
+<span class="nc" id="L96">			return encrypters.get(jwksUri);</span>
+<span class="nc" id="L97">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L98">			logger.warn(&quot;Couldn't load JWK Set from &quot; + jwksUri + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L99">			return null;</span>
 		}
 	}
 
@@ -107,24 +108,24 @@ public class JWKSetCacheService {
 		private HttpComponentsClientHttpRequestFactory httpFactory;
 		private RestTemplate restTemplate;
 
-<span class="nc" id="L110">		JWKSetVerifierFetcher(HttpClient httpClient) {</span>
-<span class="nc" id="L111">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
-<span class="nc" id="L112">			this.restTemplate = new RestTemplate(httpFactory);</span>
-<span class="nc" id="L113">		}</span>
+<span class="nc" id="L111">		JWKSetVerifierFetcher(HttpClient httpClient) {</span>
+<span class="nc" id="L112">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L113">			this.restTemplate = new RestTemplate(httpFactory);</span>
+<span class="nc" id="L114">		}</span>
 
 		/**
 		 * Load the JWK Set and build the appropriate signing service.
 		 */
 		@Override
 		public JWTSigningAndValidationService load(String key) throws Exception {
-<span class="nc" id="L120">			String jsonString = restTemplate.getForObject(key, String.class);</span>
-<span class="nc" id="L121">			JWKSet jwkSet = JWKSet.parse(jsonString);</span>
+<span class="nc" id="L121">			String jsonString = restTemplate.getForObject(key, String.class);</span>
+<span class="nc" id="L122">			JWKSet jwkSet = JWKSet.parse(jsonString);</span>
 
-<span class="nc" id="L123">			JWKSetKeyStore keyStore = new JWKSetKeyStore(jwkSet);</span>
+<span class="nc" id="L124">			JWKSetKeyStore keyStore = new JWKSetKeyStore(jwkSet);</span>
 
-<span class="nc" id="L125">			JWTSigningAndValidationService service = new DefaultJWTSigningAndValidationService(keyStore);</span>
+<span class="nc" id="L126">			JWTSigningAndValidationService service = new DefaultJWTSigningAndValidationService(keyStore);</span>
 
-<span class="nc" id="L127">			return service;</span>
+<span class="nc" id="L128">			return service;</span>
 		}
 
 	}
@@ -137,10 +138,10 @@ public class JWKSetCacheService {
 		private HttpComponentsClientHttpRequestFactory httpFactory;
 		private RestTemplate restTemplate;
 
-<span class="nc" id="L140">		public JWKSetEncryptorFetcher(HttpClient httpClient) {</span>
-<span class="nc" id="L141">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
-<span class="nc" id="L142">			this.restTemplate = new RestTemplate(httpFactory);</span>
-<span class="nc" id="L143">		}</span>
+<span class="nc" id="L141">		public JWKSetEncryptorFetcher(HttpClient httpClient) {</span>
+<span class="nc" id="L142">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L143">			this.restTemplate = new RestTemplate(httpFactory);</span>
+<span class="nc" id="L144">		}</span>
 
 		/* (non-Javadoc)
 		 * @see com.google.common.cache.CacheLoader#load(java.lang.Object)
@@ -148,16 +149,16 @@ public class JWKSetCacheService {
 		@Override
 		public JWTEncryptionAndDecryptionService load(String key) throws Exception {
 			try {
-<span class="nc" id="L151">				String jsonString = restTemplate.getForObject(key, String.class);</span>
-<span class="nc" id="L152">				JWKSet jwkSet = JWKSet.parse(jsonString);</span>
+<span class="nc" id="L152">				String jsonString = restTemplate.getForObject(key, String.class);</span>
+<span class="nc" id="L153">				JWKSet jwkSet = JWKSet.parse(jsonString);</span>
 
-<span class="nc" id="L154">				JWKSetKeyStore keyStore = new JWKSetKeyStore(jwkSet);</span>
+<span class="nc" id="L155">				JWKSetKeyStore keyStore = new JWKSetKeyStore(jwkSet);</span>
 
-<span class="nc" id="L156">				JWTEncryptionAndDecryptionService service = new DefaultJWTEncryptionAndDecryptionService(keyStore);</span>
+<span class="nc" id="L157">				JWTEncryptionAndDecryptionService service = new DefaultJWTEncryptionAndDecryptionService(keyStore);</span>
 
-<span class="nc" id="L158">				return service;</span>
-<span class="nc" id="L159">			} catch (JsonParseException | RestClientException e) {</span>
-<span class="nc" id="L160">				throw new IllegalArgumentException(&quot;Unable to load JWK Set&quot;);</span>
+<span class="nc" id="L159">				return service;</span>
+<span class="nc" id="L160">			} catch (JsonParseException | RestClientException e) {</span>
+<span class="nc" id="L161">				throw new IllegalArgumentException(&quot;Unable to load JWK Set&quot;);</span>
 			}
 		}
 	}

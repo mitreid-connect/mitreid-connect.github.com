@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultBlacklistedSiteService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.service.impl</a> &gt; <span class="el_source">DefaultBlacklistedSiteService.java</span></div><h1>DefaultBlacklistedSiteService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -36,7 +37,7 @@ import com.google.common.base.Strings;
  */
 @Service
 @Transactional(value=&quot;defaultTransactionManager&quot;)
-<span class="nc" id="L39">public class DefaultBlacklistedSiteService implements BlacklistedSiteService {</span>
+<span class="nc" id="L40">public class DefaultBlacklistedSiteService implements BlacklistedSiteService {</span>
 
 	@Autowired
 	private BlacklistedSiteRepository repository;
@@ -46,7 +47,7 @@ import com.google.common.base.Strings;
 	 */
 	@Override
 	public Collection&lt;BlacklistedSite&gt; getAll() {
-<span class="nc" id="L49">		return repository.getAll();</span>
+<span class="nc" id="L50">		return repository.getAll();</span>
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +55,7 @@ import com.google.common.base.Strings;
 	 */
 	@Override
 	public BlacklistedSite getById(Long id) {
-<span class="nc" id="L57">		return repository.getById(id);</span>
+<span class="nc" id="L58">		return repository.getById(id);</span>
 	}
 
 	/* (non-Javadoc)
@@ -62,15 +63,15 @@ import com.google.common.base.Strings;
 	 */
 	@Override
 	public void remove(BlacklistedSite blacklistedSite) {
-<span class="nc" id="L65">		repository.remove(blacklistedSite);</span>
-<span class="nc" id="L66">	}</span>
+<span class="nc" id="L66">		repository.remove(blacklistedSite);</span>
+<span class="nc" id="L67">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.service.BlacklistedSiteService#saveNew(org.mitre.openid.connect.model.BlacklistedSite)
 	 */
 	@Override
 	public BlacklistedSite saveNew(BlacklistedSite blacklistedSite) {
-<span class="nc" id="L73">		return repository.save(blacklistedSite);</span>
+<span class="nc" id="L74">		return repository.save(blacklistedSite);</span>
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +79,7 @@ import com.google.common.base.Strings;
 	 */
 	@Override
 	public BlacklistedSite update(BlacklistedSite oldBlacklistedSite, BlacklistedSite blacklistedSite) {
-<span class="nc" id="L81">		return repository.update(oldBlacklistedSite, blacklistedSite);</span>
+<span class="nc" id="L82">		return repository.update(oldBlacklistedSite, blacklistedSite);</span>
 	}
 
 	/* (non-Javadoc)
@@ -87,21 +88,21 @@ import com.google.common.base.Strings;
 	@Override
 	public boolean isBlacklisted(String uri) {
 
-<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(uri)) {</span>
-<span class="nc" id="L91">			return false; // can't be blacklisted if you don't exist</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(uri)) {</span>
+<span class="nc" id="L92">			return false; // can't be blacklisted if you don't exist</span>
 		}
 
-<span class="nc" id="L94">		Collection&lt;BlacklistedSite&gt; sites = getAll();</span>
+<span class="nc" id="L95">		Collection&lt;BlacklistedSite&gt; sites = getAll();</span>
 
 		// TODO: rewrite this to do regex matching and use the Guava predicates collection
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">		for (BlacklistedSite blacklistedSite : sites) {</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">			if (Strings.nullToEmpty(blacklistedSite.getUri()).equals(uri)) {</span>
-<span class="nc" id="L100">				return true;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">		for (BlacklistedSite blacklistedSite : sites) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">			if (Strings.nullToEmpty(blacklistedSite.getUri()).equals(uri)) {</span>
+<span class="nc" id="L101">				return true;</span>
 			}
-<span class="nc" id="L102">		}</span>
+<span class="nc" id="L103">		}</span>
 
-<span class="nc" id="L104">		return false;</span>
+<span class="nc" id="L105">		return false;</span>
 	}
 
 }

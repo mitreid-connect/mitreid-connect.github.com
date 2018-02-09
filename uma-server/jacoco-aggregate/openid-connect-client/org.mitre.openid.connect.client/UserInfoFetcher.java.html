@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserInfoFetcher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client</a> &gt; <span class="el_source">UserInfoFetcher.java</span></div><h1>UserInfoFetcher.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -57,27 +58,27 @@ public class UserInfoFetcher {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L60">	private static final Logger logger = LoggerFactory.getLogger(UserInfoFetcher.class);</span>
+<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(UserInfoFetcher.class);</span>
 
 	private LoadingCache&lt;PendingOIDCAuthenticationToken, UserInfo&gt; cache;
 
 	public UserInfoFetcher() {
-<span class="nc" id="L65">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
-<span class="nc" id="L66">	}</span>
+<span class="nc" id="L66">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L67">	}</span>
 
-<span class="nc" id="L68">	public UserInfoFetcher(HttpClient httpClient) {</span>
-<span class="nc" id="L69">		cache = CacheBuilder.newBuilder()</span>
-<span class="nc" id="L70">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
-<span class="nc" id="L71">				.maximumSize(100)</span>
-<span class="nc" id="L72">				.build(new UserInfoLoader(httpClient));</span>
-<span class="nc" id="L73">	}</span>
+<span class="nc" id="L69">	public UserInfoFetcher(HttpClient httpClient) {</span>
+<span class="nc" id="L70">		cache = CacheBuilder.newBuilder()</span>
+<span class="nc" id="L71">				.expireAfterWrite(1, TimeUnit.HOURS) // expires 1 hour after fetch</span>
+<span class="nc" id="L72">				.maximumSize(100)</span>
+<span class="nc" id="L73">				.build(new UserInfoLoader(httpClient));</span>
+<span class="nc" id="L74">	}</span>
 
 	public UserInfo loadUserInfo(final PendingOIDCAuthenticationToken token) {
 		try {
-<span class="nc" id="L77">			return cache.get(token);</span>
-<span class="nc" id="L78">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L79">			logger.warn(&quot;Couldn't load User Info from token: &quot; + e.getMessage());</span>
-<span class="nc" id="L80">			return null;</span>
+<span class="nc" id="L78">			return cache.get(token);</span>
+<span class="nc" id="L79">		} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L80">			logger.warn(&quot;Couldn't load User Info from token: &quot; + e.getMessage());</span>
+<span class="nc" id="L81">			return null;</span>
 		}
 
 	}
@@ -86,72 +87,72 @@ public class UserInfoFetcher {
 	private class UserInfoLoader extends CacheLoader&lt;PendingOIDCAuthenticationToken, UserInfo&gt; {
 		private HttpComponentsClientHttpRequestFactory factory;
 
-<span class="nc" id="L89">		UserInfoLoader(HttpClient httpClient) {</span>
-<span class="nc" id="L90">			this.factory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
-<span class="nc" id="L91">		}</span>
+<span class="nc" id="L90">		UserInfoLoader(HttpClient httpClient) {</span>
+<span class="nc" id="L91">			this.factory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L92">		}</span>
 
 		@Override
 		public UserInfo load(final PendingOIDCAuthenticationToken token) throws URISyntaxException {
 
-<span class="nc" id="L96">			ServerConfiguration serverConfiguration = token.getServerConfiguration();</span>
+<span class="nc" id="L97">			ServerConfiguration serverConfiguration = token.getServerConfiguration();</span>
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">			if (serverConfiguration == null) {</span>
-<span class="nc" id="L99">				logger.warn(&quot;No server configuration found.&quot;);</span>
-<span class="nc" id="L100">				return null;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">			if (serverConfiguration == null) {</span>
+<span class="nc" id="L100">				logger.warn(&quot;No server configuration found.&quot;);</span>
+<span class="nc" id="L101">				return null;</span>
 			}
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(serverConfiguration.getUserInfoUri())) {</span>
-<span class="nc" id="L104">				logger.warn(&quot;No userinfo endpoint, not fetching.&quot;);</span>
-<span class="nc" id="L105">				return null;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(serverConfiguration.getUserInfoUri())) {</span>
+<span class="nc" id="L105">				logger.warn(&quot;No userinfo endpoint, not fetching.&quot;);</span>
+<span class="nc" id="L106">				return null;</span>
 			}
 
-<span class="nc" id="L108">			String userInfoString = null;</span>
+<span class="nc" id="L109">			String userInfoString = null;</span>
 
-<span class="nc bnc" id="L110" title="All 4 branches missed.">			if (serverConfiguration.getUserInfoTokenMethod() == null || serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.HEADER)) {</span>
-<span class="nc" id="L111">				RestTemplate restTemplate = new RestTemplate(factory) {</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">			if (serverConfiguration.getUserInfoTokenMethod() == null || serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.HEADER)) {</span>
+<span class="nc" id="L112">				RestTemplate restTemplate = new RestTemplate(factory) {</span>
 
 					@Override
 					protected ClientHttpRequest createRequest(URI url, HttpMethod method) throws IOException {
-<span class="nc" id="L115">						ClientHttpRequest httpRequest = super.createRequest(url, method);</span>
-<span class="nc" id="L116">						httpRequest.getHeaders().add(&quot;Authorization&quot;, String.format(&quot;Bearer %s&quot;, token.getAccessTokenValue()));</span>
-<span class="nc" id="L117">						return httpRequest;</span>
+<span class="nc" id="L116">						ClientHttpRequest httpRequest = super.createRequest(url, method);</span>
+<span class="nc" id="L117">						httpRequest.getHeaders().add(&quot;Authorization&quot;, String.format(&quot;Bearer %s&quot;, token.getAccessTokenValue()));</span>
+<span class="nc" id="L118">						return httpRequest;</span>
 					}
 				};
 
-<span class="nc" id="L121">				userInfoString = restTemplate.getForObject(serverConfiguration.getUserInfoUri(), String.class);</span>
+<span class="nc" id="L122">				userInfoString = restTemplate.getForObject(serverConfiguration.getUserInfoUri(), String.class);</span>
 
-<span class="nc bnc" id="L123" title="All 2 branches missed.">			} else if (serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.FORM)) {</span>
-<span class="nc" id="L124">				MultiValueMap&lt;String, String&gt; form = new LinkedMultiValueMap&lt;&gt;();</span>
-<span class="nc" id="L125">				form.add(&quot;access_token&quot;, token.getAccessTokenValue());</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">			} else if (serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.FORM)) {</span>
+<span class="nc" id="L125">				MultiValueMap&lt;String, String&gt; form = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="nc" id="L126">				form.add(&quot;access_token&quot;, token.getAccessTokenValue());</span>
 
-<span class="nc" id="L127">				RestTemplate restTemplate = new RestTemplate(factory);</span>
-<span class="nc" id="L128">				userInfoString = restTemplate.postForObject(serverConfiguration.getUserInfoUri(), form, String.class);</span>
-<span class="nc bnc" id="L129" title="All 2 branches missed.">			} else if (serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.QUERY)) {</span>
-<span class="nc" id="L130">				URIBuilder builder = new URIBuilder(serverConfiguration.getUserInfoUri());</span>
-<span class="nc" id="L131">				builder.setParameter(&quot;access_token&quot;,  token.getAccessTokenValue());</span>
+<span class="nc" id="L128">				RestTemplate restTemplate = new RestTemplate(factory);</span>
+<span class="nc" id="L129">				userInfoString = restTemplate.postForObject(serverConfiguration.getUserInfoUri(), form, String.class);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">			} else if (serverConfiguration.getUserInfoTokenMethod().equals(UserInfoTokenMethod.QUERY)) {</span>
+<span class="nc" id="L131">				URIBuilder builder = new URIBuilder(serverConfiguration.getUserInfoUri());</span>
+<span class="nc" id="L132">				builder.setParameter(&quot;access_token&quot;,  token.getAccessTokenValue());</span>
 
-<span class="nc" id="L133">				RestTemplate restTemplate = new RestTemplate(factory);</span>
-<span class="nc" id="L134">				userInfoString = restTemplate.getForObject(builder.toString(), String.class);</span>
+<span class="nc" id="L134">				RestTemplate restTemplate = new RestTemplate(factory);</span>
+<span class="nc" id="L135">				userInfoString = restTemplate.getForObject(builder.toString(), String.class);</span>
 			}
 
 
-<span class="nc bnc" id="L138" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(userInfoString)) {</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(userInfoString)) {</span>
 
-<span class="nc" id="L140">				JsonObject userInfoJson = new JsonParser().parse(userInfoString).getAsJsonObject();</span>
+<span class="nc" id="L141">				JsonObject userInfoJson = new JsonParser().parse(userInfoString).getAsJsonObject();</span>
 
-<span class="nc" id="L142">				UserInfo userInfo = fromJson(userInfoJson);</span>
+<span class="nc" id="L143">				UserInfo userInfo = fromJson(userInfoJson);</span>
 
-<span class="nc" id="L144">				return userInfo;</span>
+<span class="nc" id="L145">				return userInfo;</span>
 			} else {
 				// didn't get anything throw exception
-<span class="nc" id="L147">				throw new IllegalArgumentException(&quot;Unable to load user info&quot;);</span>
+<span class="nc" id="L148">				throw new IllegalArgumentException(&quot;Unable to load user info&quot;);</span>
 			}
 
 		}
 	}
 
 	protected UserInfo fromJson(JsonObject userInfoJson) {
-<span class="nc" id="L154">		return DefaultUserInfo.fromJson(userInfoJson);</span>
+<span class="nc" id="L155">		return DefaultUserInfo.fromJson(userInfoJson);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ScopeAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.web</a> &gt; <span class="el_source">ScopeAPI.java</span></div><h1>ScopeAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -49,7 +50,7 @@ import com.google.gson.Gson;
 @Controller
 @RequestMapping(&quot;/&quot; + ScopeAPI.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L52">public class ScopeAPI {</span>
+<span class="nc" id="L53">public class ScopeAPI {</span>
 
 	public static final String URL = RootController.API_URL + &quot;/scopes&quot;;
 
@@ -59,37 +60,37 @@ import com.google.gson.Gson;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L62">	private static final Logger logger = LoggerFactory.getLogger(ScopeAPI.class);</span>
+<span class="nc" id="L63">	private static final Logger logger = LoggerFactory.getLogger(ScopeAPI.class);</span>
 
-<span class="nc" id="L64">	private Gson gson = new Gson();</span>
+<span class="nc" id="L65">	private Gson gson = new Gson();</span>
 
 	@RequestMapping(value = &quot;&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAll(ModelMap m) {
 
-<span class="nc" id="L69">		Set&lt;SystemScope&gt; allScopes = scopeService.getAll();</span>
+<span class="nc" id="L70">		Set&lt;SystemScope&gt; allScopes = scopeService.getAll();</span>
 
-<span class="nc" id="L71">		m.put(JsonEntityView.ENTITY, allScopes);</span>
+<span class="nc" id="L72">		m.put(JsonEntityView.ENTITY, allScopes);</span>
 
-<span class="nc" id="L73">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L74">		return JsonEntityView.VIEWNAME;</span>
 	}
 
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getScope(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
 
-<span class="nc" id="L79">		SystemScope scope = scopeService.getById(id);</span>
+<span class="nc" id="L80">		SystemScope scope = scopeService.getById(id);</span>
 
-<span class="nc bnc" id="L81" title="All 2 branches missed.">		if (scope != null) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">		if (scope != null) {</span>
 
-<span class="nc" id="L83">			m.put(JsonEntityView.ENTITY, scope);</span>
+<span class="nc" id="L84">			m.put(JsonEntityView.ENTITY, scope);</span>
 
-<span class="nc" id="L85">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L86">			return JsonEntityView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L88">			logger.error(&quot;getScope failed; scope not found: &quot; + id);</span>
+<span class="nc" id="L89">			logger.error(&quot;getScope failed; scope not found: &quot; + id);</span>
 
-<span class="nc" id="L90">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L91">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested scope with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L92">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L91">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L92">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested scope with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L93">			return JsonErrorView.VIEWNAME;</span>
 		}
 	}
 
@@ -97,67 +98,67 @@ import com.google.gson.Gson;
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String updateScope(@PathVariable(&quot;id&quot;) Long id, @RequestBody String json, ModelMap m) {
 
-<span class="nc" id="L100">		SystemScope existing = scopeService.getById(id);</span>
+<span class="nc" id="L101">		SystemScope existing = scopeService.getById(id);</span>
 
-<span class="nc" id="L102">		SystemScope scope = gson.fromJson(json, SystemScope.class);</span>
+<span class="nc" id="L103">		SystemScope scope = gson.fromJson(json, SystemScope.class);</span>
 
-<span class="nc bnc" id="L104" title="All 4 branches missed.">		if (existing != null &amp;&amp; scope != null) {</span>
+<span class="nc bnc" id="L105" title="All 4 branches missed.">		if (existing != null &amp;&amp; scope != null) {</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">			if (existing.getId().equals(scope.getId())) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">			if (existing.getId().equals(scope.getId())) {</span>
 				// sanity check
 
-<span class="nc" id="L109">				scope = scopeService.save(scope);</span>
+<span class="nc" id="L110">				scope = scopeService.save(scope);</span>
 
-<span class="nc" id="L111">				m.put(JsonEntityView.ENTITY, scope);</span>
+<span class="nc" id="L112">				m.put(JsonEntityView.ENTITY, scope);</span>
 
-<span class="nc" id="L113">				return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L114">				return JsonEntityView.VIEWNAME;</span>
 			} else {
 
-<span class="nc" id="L116">				logger.error(&quot;updateScope failed; scope ids to not match: got &quot;</span>
-<span class="nc" id="L117">						+ existing.getId() + &quot; and &quot; + scope.getId());</span>
+<span class="nc" id="L117">				logger.error(&quot;updateScope failed; scope ids to not match: got &quot;</span>
+<span class="nc" id="L118">						+ existing.getId() + &quot; and &quot; + scope.getId());</span>
 
-<span class="nc" id="L119">				m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L120">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update scope. Scope ids to not match: got &quot;</span>
-<span class="nc" id="L121">						+ existing.getId() + &quot; and &quot; + scope.getId());</span>
-<span class="nc" id="L122">				return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L120">				m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L121">				m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update scope. Scope ids to not match: got &quot;</span>
+<span class="nc" id="L122">						+ existing.getId() + &quot; and &quot; + scope.getId());</span>
+<span class="nc" id="L123">				return JsonErrorView.VIEWNAME;</span>
 			}
 
 		} else {
 
-<span class="nc" id="L127">			logger.error(&quot;updateScope failed; scope with id &quot; + id + &quot; not found.&quot;);</span>
-<span class="nc" id="L128">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L129">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update scope. The scope with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L130">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L128">			logger.error(&quot;updateScope failed; scope with id &quot; + id + &quot; not found.&quot;);</span>
+<span class="nc" id="L129">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L130">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not update scope. The scope with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L131">			return JsonErrorView.VIEWNAME;</span>
 		}
 	}
 
 	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
 	@RequestMapping(value = &quot;&quot;, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String createScope(@RequestBody String json, ModelMap m) {
-<span class="nc" id="L137">		SystemScope scope = gson.fromJson(json, SystemScope.class);</span>
+<span class="nc" id="L138">		SystemScope scope = gson.fromJson(json, SystemScope.class);</span>
 
-<span class="nc" id="L139">		SystemScope alreadyExists = scopeService.getByValue(scope.getValue());</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">		if (alreadyExists != null) {</span>
+<span class="nc" id="L140">		SystemScope alreadyExists = scopeService.getByValue(scope.getValue());</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		if (alreadyExists != null) {</span>
 			//Error, cannot save a scope with the same value as an existing one
-<span class="nc" id="L142">			logger.error(&quot;Error: attempting to save a scope with a value that already exists: &quot; + scope.getValue());</span>
-<span class="nc" id="L143">			m.put(HttpCodeView.CODE, HttpStatus.CONFLICT);</span>
-<span class="nc" id="L144">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;A scope with value &quot; + scope.getValue() + &quot; already exists, please choose a different value.&quot;);</span>
-<span class="nc" id="L145">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L143">			logger.error(&quot;Error: attempting to save a scope with a value that already exists: &quot; + scope.getValue());</span>
+<span class="nc" id="L144">			m.put(HttpCodeView.CODE, HttpStatus.CONFLICT);</span>
+<span class="nc" id="L145">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;A scope with value &quot; + scope.getValue() + &quot; already exists, please choose a different value.&quot;);</span>
+<span class="nc" id="L146">			return JsonErrorView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L148">		scope = scopeService.save(scope);</span>
+<span class="nc" id="L149">		scope = scopeService.save(scope);</span>
 
-<span class="nc bnc" id="L150" title="All 4 branches missed.">		if (scope != null &amp;&amp; scope.getId() != null) {</span>
+<span class="nc bnc" id="L151" title="All 4 branches missed.">		if (scope != null &amp;&amp; scope.getId() != null) {</span>
 
-<span class="nc" id="L152">			m.put(JsonEntityView.ENTITY, scope);</span>
+<span class="nc" id="L153">			m.put(JsonEntityView.ENTITY, scope);</span>
 
-<span class="nc" id="L154">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L155">			return JsonEntityView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L157">			logger.error(&quot;createScope failed; JSON was invalid: &quot; + json);</span>
-<span class="nc" id="L158">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L159">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new scope &quot; + scope + &quot;. The scope service failed to return a saved entity.&quot;);</span>
-<span class="nc" id="L160">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L158">			logger.error(&quot;createScope failed; JSON was invalid: &quot; + json);</span>
+<span class="nc" id="L159">			m.put(HttpCodeView.CODE, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L160">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not save new scope &quot; + scope + &quot;. The scope service failed to return a saved entity.&quot;);</span>
+<span class="nc" id="L161">			return JsonErrorView.VIEWNAME;</span>
 
 		}
 	}
@@ -165,19 +166,19 @@ import com.google.gson.Gson;
 	@PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
 	@RequestMapping(value = &quot;/{id}&quot;, method = RequestMethod.DELETE)
 	public String deleteScope(@PathVariable(&quot;id&quot;) Long id, ModelMap m) {
-<span class="nc" id="L168">		SystemScope existing = scopeService.getById(id);</span>
+<span class="nc" id="L169">		SystemScope existing = scopeService.getById(id);</span>
 
-<span class="nc bnc" id="L170" title="All 2 branches missed.">		if (existing != null) {</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">		if (existing != null) {</span>
 
-<span class="nc" id="L172">			scopeService.remove(existing);</span>
+<span class="nc" id="L173">			scopeService.remove(existing);</span>
 
-<span class="nc" id="L174">			return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L175">			return HttpCodeView.VIEWNAME;</span>
 		} else {
 
-<span class="nc" id="L177">			logger.error(&quot;deleteScope failed; scope with id &quot; + id + &quot; not found.&quot;);</span>
-<span class="nc" id="L178">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L179">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete scope. The requested scope with id &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L180">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L178">			logger.error(&quot;deleteScope failed; scope with id &quot; + id + &quot; not found.&quot;);</span>
+<span class="nc" id="L179">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L180">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete scope. The requested scope with id &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L181">			return JsonErrorView.VIEWNAME;</span>
 		}
 	}
 }

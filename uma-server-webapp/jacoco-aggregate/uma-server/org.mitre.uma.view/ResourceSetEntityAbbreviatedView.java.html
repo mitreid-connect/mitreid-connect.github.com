@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceSetEntityAbbreviatedView.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.view</a> &gt; <span class="el_source">ResourceSetEntityAbbreviatedView.java</span></div><h1>ResourceSetEntityAbbreviatedView.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -45,8 +44,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.LongSerializationPolicy;
 
 @Component(ResourceSetEntityAbbreviatedView.VIEWNAME)
-<span class="nc" id="L48">public class ResourceSetEntityAbbreviatedView extends AbstractView {</span>
-<span class="nc" id="L49">	private static Logger logger = LoggerFactory.getLogger(JsonEntityView.class);</span>
+<span class="nc" id="L47">public class ResourceSetEntityAbbreviatedView extends AbstractView {</span>
+<span class="nc" id="L48">	private static Logger logger = LoggerFactory.getLogger(JsonEntityView.class);</span>
 
 	public static final String VIEWNAME = &quot;resourceSetEntityAbbreviatedView&quot;;
 
@@ -55,67 +54,67 @@ import com.google.gson.LongSerializationPolicy;
 	@Autowired
 	private ConfigurationPropertiesBean config;
 
-<span class="nc" id="L58">	private Gson gson = new GsonBuilder()</span>
-<span class="nc" id="L59">			.setExclusionStrategies(new ExclusionStrategy() {</span>
+<span class="nc" id="L57">	private Gson gson = new GsonBuilder()</span>
+<span class="nc" id="L58">			.setExclusionStrategies(new ExclusionStrategy() {</span>
 
 				@Override
 				public boolean shouldSkipField(FieldAttributes f) {
 
-<span class="nc" id="L64">					return false;</span>
+<span class="nc" id="L63">					return false;</span>
 				}
 
 				@Override
 				public boolean shouldSkipClass(Class&lt;?&gt; clazz) {
 					// skip the JPA binding wrapper
-<span class="nc bnc" id="L70" title="All 2 branches missed.">					if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
-<span class="nc" id="L71">						return true;</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">					if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
+<span class="nc" id="L70">						return true;</span>
 					}
-<span class="nc" id="L73">					return false;</span>
+<span class="nc" id="L72">					return false;</span>
 				}
 
 			})
-<span class="nc" id="L77">			.serializeNulls()</span>
-<span class="nc" id="L78">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
-<span class="nc" id="L79">			.setLongSerializationPolicy(LongSerializationPolicy.STRING)</span>
-<span class="nc" id="L80">			.create();</span>
+<span class="nc" id="L76">			.serializeNulls()</span>
+<span class="nc" id="L77">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
+<span class="nc" id="L78">			.setLongSerializationPolicy(LongSerializationPolicy.STRING)</span>
+<span class="nc" id="L79">			.create();</span>
 
 	@Override
 	protected void renderMergedOutputModel(Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {
 
-<span class="nc" id="L85">		response.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L84">		response.setContentType(&quot;application/json&quot;);</span>
 
 
-<span class="nc" id="L88">		HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">		if (code == null) {</span>
-<span class="nc" id="L90">			code = HttpStatus.OK; // default to 200</span>
+<span class="nc" id="L87">		HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">		if (code == null) {</span>
+<span class="nc" id="L89">			code = HttpStatus.OK; // default to 200</span>
 		}
 
-<span class="nc" id="L93">		response.setStatus(code.value());</span>
+<span class="nc" id="L92">		response.setStatus(code.value());</span>
 
-<span class="nc" id="L95">		String location = (String) model.get(LOCATION);</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(location)) {</span>
-<span class="nc" id="L97">			response.setHeader(HttpHeaders.LOCATION, location);</span>
+<span class="nc" id="L94">		String location = (String) model.get(LOCATION);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(location)) {</span>
+<span class="nc" id="L96">			response.setHeader(HttpHeaders.LOCATION, location);</span>
 		}
 
 		try {
 
-<span class="nc" id="L102">			Writer out = response.getWriter();</span>
-<span class="nc" id="L103">			ResourceSet rs = (ResourceSet) model.get(JsonEntityView.ENTITY);</span>
+<span class="nc" id="L101">			Writer out = response.getWriter();</span>
+<span class="nc" id="L102">			ResourceSet rs = (ResourceSet) model.get(JsonEntityView.ENTITY);</span>
 
-<span class="nc" id="L105">			JsonObject o = new JsonObject();</span>
+<span class="nc" id="L104">			JsonObject o = new JsonObject();</span>
 
-<span class="nc" id="L107">			o.addProperty(&quot;_id&quot;, rs.getId().toString()); // set the ID to a string</span>
-<span class="nc" id="L108">			o.addProperty(&quot;user_access_policy_uri&quot;, config.getIssuer() + &quot;manage/user/policy/&quot; + rs.getId());</span>
+<span class="nc" id="L106">			o.addProperty(&quot;_id&quot;, rs.getId().toString()); // set the ID to a string</span>
+<span class="nc" id="L107">			o.addProperty(&quot;user_access_policy_uri&quot;, config.getIssuer() + &quot;manage/user/policy/&quot; + rs.getId());</span>
 
 
-<span class="nc" id="L111">			gson.toJson(o, out);</span>
+<span class="nc" id="L110">			gson.toJson(o, out);</span>
 
-<span class="nc" id="L113">		} catch (IOException e) {</span>
+<span class="nc" id="L112">		} catch (IOException e) {</span>
 
-<span class="nc" id="L115">			logger.error(&quot;IOException in ResourceSetEntityView.java: &quot;, e);</span>
+<span class="nc" id="L114">			logger.error(&quot;IOException in ResourceSetEntityView.java: &quot;, e);</span>
 
-<span class="nc" id="L117">		}</span>
-<span class="nc" id="L118">	}</span>
+<span class="nc" id="L116">		}</span>
+<span class="nc" id="L117">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

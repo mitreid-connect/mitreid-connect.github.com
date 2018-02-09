@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserInfoJWTView.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.view</a> &gt; <span class="el_source">UserInfoJWTView.java</span></div><h1>UserInfoJWTView.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -58,19 +57,19 @@ import com.nimbusds.jwt.SignedJWT;
  *
  */
 @Component(UserInfoJWTView.VIEWNAME)
-<span class="nc" id="L61">public class UserInfoJWTView extends UserInfoView {</span>
+<span class="nc" id="L60">public class UserInfoJWTView extends UserInfoView {</span>
 
 	public static final String CLIENT = &quot;client&quot;;
 
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L68">	private static final Logger logger = LoggerFactory.getLogger(UserInfoJWTView.class);</span>
+<span class="nc" id="L67">	private static final Logger logger = LoggerFactory.getLogger(UserInfoJWTView.class);</span>
 
 	public static final String VIEWNAME = &quot;userInfoJwtView&quot;;
 
 	public static final String JOSE_MEDIA_TYPE_VALUE = &quot;application/jwt&quot;;
-<span class="nc" id="L73">	public static final MediaType JOSE_MEDIA_TYPE = new MediaType(&quot;application&quot;, &quot;jwt&quot;);</span>
+<span class="nc" id="L72">	public static final MediaType JOSE_MEDIA_TYPE = new MediaType(&quot;application&quot;, &quot;jwt&quot;);</span>
 
 
 	@Autowired
@@ -90,77 +89,77 @@ import com.nimbusds.jwt.SignedJWT;
 			HttpServletRequest request, HttpServletResponse response) {
 
 		try {
-<span class="nc" id="L93">			ClientDetailsEntity client = (ClientDetailsEntity)model.get(CLIENT);</span>
+<span class="nc" id="L92">			ClientDetailsEntity client = (ClientDetailsEntity)model.get(CLIENT);</span>
 
 			// use the parser to import the user claims into the object
-<span class="nc" id="L96">			StringWriter writer = new StringWriter();</span>
-<span class="nc" id="L97">			gson.toJson(json, writer);</span>
+<span class="nc" id="L95">			StringWriter writer = new StringWriter();</span>
+<span class="nc" id="L96">			gson.toJson(json, writer);</span>
 
-<span class="nc" id="L99">			response.setContentType(JOSE_MEDIA_TYPE_VALUE);</span>
+<span class="nc" id="L98">			response.setContentType(JOSE_MEDIA_TYPE_VALUE);</span>
 
-<span class="nc" id="L101">			JWTClaimsSet claims = new JWTClaimsSet.Builder(JWTClaimsSet.parse(writer.toString()))</span>
-<span class="nc" id="L102">					.audience(Lists.newArrayList(client.getClientId()))</span>
-<span class="nc" id="L103">					.issuer(config.getIssuer())</span>
-<span class="nc" id="L104">					.issueTime(new Date())</span>
-<span class="nc" id="L105">					.jwtID(UUID.randomUUID().toString()) // set a random NONCE in the middle of it</span>
-<span class="nc" id="L106">					.build();</span>
+<span class="nc" id="L100">			JWTClaimsSet claims = new JWTClaimsSet.Builder(JWTClaimsSet.parse(writer.toString()))</span>
+<span class="nc" id="L101">					.audience(Lists.newArrayList(client.getClientId()))</span>
+<span class="nc" id="L102">					.issuer(config.getIssuer())</span>
+<span class="nc" id="L103">					.issueTime(new Date())</span>
+<span class="nc" id="L104">					.jwtID(UUID.randomUUID().toString()) // set a random NONCE in the middle of it</span>
+<span class="nc" id="L105">					.build();</span>
 
 
-<span class="nc bnc" id="L109" title="All 4 branches missed.">			if (client.getUserInfoEncryptedResponseAlg() != null &amp;&amp; !client.getUserInfoEncryptedResponseAlg().equals(Algorithm.NONE)</span>
-<span class="nc bnc" id="L110" title="All 4 branches missed.">					&amp;&amp; client.getUserInfoEncryptedResponseEnc() != null &amp;&amp; !client.getUserInfoEncryptedResponseEnc().equals(Algorithm.NONE)</span>
-<span class="nc bnc" id="L111" title="All 4 branches missed.">					&amp;&amp; (!Strings.isNullOrEmpty(client.getJwksUri()) || client.getJwks() != null)) {</span>
+<span class="nc bnc" id="L108" title="All 4 branches missed.">			if (client.getUserInfoEncryptedResponseAlg() != null &amp;&amp; !client.getUserInfoEncryptedResponseAlg().equals(Algorithm.NONE)</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">					&amp;&amp; client.getUserInfoEncryptedResponseEnc() != null &amp;&amp; !client.getUserInfoEncryptedResponseEnc().equals(Algorithm.NONE)</span>
+<span class="nc bnc" id="L110" title="All 4 branches missed.">					&amp;&amp; (!Strings.isNullOrEmpty(client.getJwksUri()) || client.getJwks() != null)) {</span>
 
 				// encrypt it to the client's key
 
-<span class="nc" id="L115">				JWTEncryptionAndDecryptionService encrypter = encrypters.getEncrypter(client);</span>
+<span class="nc" id="L114">				JWTEncryptionAndDecryptionService encrypter = encrypters.getEncrypter(client);</span>
 
-<span class="nc bnc" id="L117" title="All 2 branches missed.">				if (encrypter != null) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">				if (encrypter != null) {</span>
 
-<span class="nc" id="L119">					EncryptedJWT encrypted = new EncryptedJWT(new JWEHeader(client.getUserInfoEncryptedResponseAlg(), client.getUserInfoEncryptedResponseEnc()), claims);</span>
+<span class="nc" id="L118">					EncryptedJWT encrypted = new EncryptedJWT(new JWEHeader(client.getUserInfoEncryptedResponseAlg(), client.getUserInfoEncryptedResponseEnc()), claims);</span>
 
-<span class="nc" id="L121">					encrypter.encryptJwt(encrypted);</span>
+<span class="nc" id="L120">					encrypter.encryptJwt(encrypted);</span>
 
 
-<span class="nc" id="L124">					Writer out = response.getWriter();</span>
-<span class="nc" id="L125">					out.write(encrypted.serialize());</span>
+<span class="nc" id="L123">					Writer out = response.getWriter();</span>
+<span class="nc" id="L124">					out.write(encrypted.serialize());</span>
 
-<span class="nc" id="L127">				} else {</span>
-<span class="nc" id="L128">					logger.error(&quot;Couldn't find encrypter for client: &quot; + client.getClientId());</span>
+<span class="nc" id="L126">				} else {</span>
+<span class="nc" id="L127">					logger.error(&quot;Couldn't find encrypter for client: &quot; + client.getClientId());</span>
 				}
-<span class="nc" id="L130">			} else {</span>
+<span class="nc" id="L129">			} else {</span>
 
-<span class="nc" id="L132">				JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm(); // default to the server's preference</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">				if (client.getUserInfoSignedResponseAlg() != null) {</span>
-<span class="nc" id="L134">					signingAlg = client.getUserInfoSignedResponseAlg(); // override with the client's preference if available</span>
+<span class="nc" id="L131">				JWSAlgorithm signingAlg = jwtService.getDefaultSigningAlgorithm(); // default to the server's preference</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">				if (client.getUserInfoSignedResponseAlg() != null) {</span>
+<span class="nc" id="L133">					signingAlg = client.getUserInfoSignedResponseAlg(); // override with the client's preference if available</span>
 				}
-<span class="nc" id="L136">				JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
-<span class="nc" id="L137">						jwtService.getDefaultSignerKeyId(),</span>
+<span class="nc" id="L135">				JWSHeader header = new JWSHeader(signingAlg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L136">						jwtService.getDefaultSignerKeyId(),</span>
 						null, null);
-<span class="nc" id="L139">				SignedJWT signed = new SignedJWT(header, claims);</span>
+<span class="nc" id="L138">				SignedJWT signed = new SignedJWT(header, claims);</span>
 
-<span class="nc bnc" id="L141" title="All 2 branches missed.">				if (signingAlg.equals(JWSAlgorithm.HS256)</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS384)</span>
-<span class="nc bnc" id="L143" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS512)) {</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">				if (signingAlg.equals(JWSAlgorithm.HS256)</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS384)</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">						|| signingAlg.equals(JWSAlgorithm.HS512)) {</span>
 
 					// sign it with the client's secret
-<span class="nc" id="L146">					JWTSigningAndValidationService signer = symmetricCacheService.getSymmetricValidtor(client);</span>
-<span class="nc" id="L147">					signer.signJwt(signed);</span>
+<span class="nc" id="L145">					JWTSigningAndValidationService signer = symmetricCacheService.getSymmetricValidtor(client);</span>
+<span class="nc" id="L146">					signer.signJwt(signed);</span>
 
-<span class="nc" id="L149">				} else {</span>
+<span class="nc" id="L148">				} else {</span>
 					// sign it with the server's key
-<span class="nc" id="L151">					jwtService.signJwt(signed);</span>
+<span class="nc" id="L150">					jwtService.signJwt(signed);</span>
 				}
 
-<span class="nc" id="L154">				Writer out = response.getWriter();</span>
-<span class="nc" id="L155">				out.write(signed.serialize());</span>
+<span class="nc" id="L153">				Writer out = response.getWriter();</span>
+<span class="nc" id="L154">				out.write(signed.serialize());</span>
 			}
-<span class="nc" id="L157">		} catch (IOException e) {</span>
-<span class="nc" id="L158">			logger.error(&quot;IO Exception in UserInfoJwtView&quot;, e);</span>
-<span class="nc" id="L159">		} catch (ParseException e) {</span>
+<span class="nc" id="L156">		} catch (IOException e) {</span>
+<span class="nc" id="L157">			logger.error(&quot;IO Exception in UserInfoJwtView&quot;, e);</span>
+<span class="nc" id="L158">		} catch (ParseException e) {</span>
 			// TODO Auto-generated catch block
-<span class="nc" id="L161">			e.printStackTrace();</span>
-<span class="nc" id="L162">		}</span>
+<span class="nc" id="L160">			e.printStackTrace();</span>
+<span class="nc" id="L161">		}</span>
 
-<span class="nc" id="L164">	}</span>
+<span class="nc" id="L163">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

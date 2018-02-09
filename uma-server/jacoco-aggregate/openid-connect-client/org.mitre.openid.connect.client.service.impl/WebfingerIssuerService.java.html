@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WebfingerIssuerService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">WebfingerIssuerService.java</span></div><h1>WebfingerIssuerService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -60,7 +61,7 @@ public class WebfingerIssuerService implements IssuerService {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L63">	private static final Logger logger = LoggerFactory.getLogger(WebfingerIssuerService.class);</span>
+<span class="nc" id="L64">	private static final Logger logger = LoggerFactory.getLogger(WebfingerIssuerService.class);</span>
 
 	// map of user input -&gt; issuer, loaded dynamically from webfinger discover
 	private LoadingCache&lt;String, LoadingResult&gt; issuers;
@@ -69,19 +70,19 @@ public class WebfingerIssuerService implements IssuerService {
 	private class LoadingResult {
 		public String loginHint;
 		public String issuer;
-<span class="nc" id="L72">		public LoadingResult(String loginHint, String issuer) {</span>
-<span class="nc" id="L73">			this.loginHint = loginHint;</span>
-<span class="nc" id="L74">			this.issuer = issuer;</span>
-<span class="nc" id="L75">		}</span>
+<span class="nc" id="L73">		public LoadingResult(String loginHint, String issuer) {</span>
+<span class="nc" id="L74">			this.loginHint = loginHint;</span>
+<span class="nc" id="L75">			this.issuer = issuer;</span>
+<span class="nc" id="L76">		}</span>
 	}
 
-<span class="nc" id="L78">	private Set&lt;String&gt; whitelist = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L79">	private Set&lt;String&gt; blacklist = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L79">	private Set&lt;String&gt; whitelist = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L80">	private Set&lt;String&gt; blacklist = new HashSet&lt;&gt;();</span>
 
 	/**
 	 * Name of the incoming parameter to check for discovery purposes.
 	 */
-<span class="nc" id="L84">	private String parameterName = &quot;identifier&quot;;</span>
+<span class="nc" id="L85">	private String parameterName = &quot;identifier&quot;;</span>
 
 	/**
 	 * URL of the page to forward to if no identifier is given.
@@ -91,15 +92,15 @@ public class WebfingerIssuerService implements IssuerService {
 	/**
 	 * Strict enfocement of &quot;https&quot;
 	 */
-<span class="nc" id="L94">	private boolean forceHttps = true;</span>
+<span class="nc" id="L95">	private boolean forceHttps = true;</span>
 
 	public WebfingerIssuerService() {
-<span class="nc" id="L97">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
-<span class="nc" id="L98">	}</span>
+<span class="nc" id="L98">		this(HttpClientBuilder.create().useSystemProperties().build());</span>
+<span class="nc" id="L99">	}</span>
 
-<span class="nc" id="L100">	public WebfingerIssuerService(HttpClient httpClient) {</span>
-<span class="nc" id="L101">		issuers = CacheBuilder.newBuilder().build(new WebfingerIssuerFetcher(httpClient));</span>
-<span class="nc" id="L102">	}</span>
+<span class="nc" id="L101">	public WebfingerIssuerService(HttpClient httpClient) {</span>
+<span class="nc" id="L102">		issuers = CacheBuilder.newBuilder().build(new WebfingerIssuerFetcher(httpClient));</span>
+<span class="nc" id="L103">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.openid.connect.client.service.IssuerService#getIssuer(javax.servlet.http.HttpServletRequest)
@@ -107,27 +108,27 @@ public class WebfingerIssuerService implements IssuerService {
 	@Override
 	public IssuerServiceResponse getIssuer(HttpServletRequest request) {
 
-<span class="nc" id="L110">		String identifier = request.getParameter(parameterName);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(identifier)) {</span>
+<span class="nc" id="L111">		String identifier = request.getParameter(parameterName);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(identifier)) {</span>
 			try {
-<span class="nc" id="L113">				LoadingResult lr = issuers.get(identifier);</span>
-<span class="nc bnc" id="L114" title="All 4 branches missed.">				if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(lr.issuer)) {</span>
-<span class="nc" id="L115">					throw new AuthenticationServiceException(&quot;Whitelist was nonempty, issuer was not in whitelist: &quot; + lr.issuer);</span>
+<span class="nc" id="L114">				LoadingResult lr = issuers.get(identifier);</span>
+<span class="nc bnc" id="L115" title="All 4 branches missed.">				if (!whitelist.isEmpty() &amp;&amp; !whitelist.contains(lr.issuer)) {</span>
+<span class="nc" id="L116">					throw new AuthenticationServiceException(&quot;Whitelist was nonempty, issuer was not in whitelist: &quot; + lr.issuer);</span>
 				}
 
-<span class="nc bnc" id="L118" title="All 2 branches missed.">				if (blacklist.contains(lr.issuer)) {</span>
-<span class="nc" id="L119">					throw new AuthenticationServiceException(&quot;Issuer was in blacklist: &quot; + lr.issuer);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">				if (blacklist.contains(lr.issuer)) {</span>
+<span class="nc" id="L120">					throw new AuthenticationServiceException(&quot;Issuer was in blacklist: &quot; + lr.issuer);</span>
 				}
 
-<span class="nc" id="L122">				return new IssuerServiceResponse(lr.issuer, lr.loginHint, request.getParameter(&quot;target_link_uri&quot;));</span>
-<span class="nc" id="L123">			} catch (UncheckedExecutionException | ExecutionException e) {</span>
-<span class="nc" id="L124">				logger.warn(&quot;Issue fetching issuer for user input: &quot; + identifier + &quot;: &quot; + e.getMessage());</span>
-<span class="nc" id="L125">				return null;</span>
+<span class="nc" id="L123">				return new IssuerServiceResponse(lr.issuer, lr.loginHint, request.getParameter(&quot;target_link_uri&quot;));</span>
+<span class="nc" id="L124">			} catch (UncheckedExecutionException | ExecutionException e) {</span>
+<span class="nc" id="L125">				logger.warn(&quot;Issue fetching issuer for user input: &quot; + identifier + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L126">				return null;</span>
 			}
 
 		} else {
-<span class="nc" id="L129">			logger.warn(&quot;No user input given, directing to login page: &quot; + loginPageUrl);</span>
-<span class="nc" id="L130">			return new IssuerServiceResponse(loginPageUrl);</span>
+<span class="nc" id="L130">			logger.warn(&quot;No user input given, directing to login page: &quot; + loginPageUrl);</span>
+<span class="nc" id="L131">			return new IssuerServiceResponse(loginPageUrl);</span>
 		}
 	}
 
@@ -135,72 +136,72 @@ public class WebfingerIssuerService implements IssuerService {
 	 * @return the parameterName
 	 */
 	public String getParameterName() {
-<span class="nc" id="L138">		return parameterName;</span>
+<span class="nc" id="L139">		return parameterName;</span>
 	}
 
 	/**
 	 * @param parameterName the parameterName to set
 	 */
 	public void setParameterName(String parameterName) {
-<span class="nc" id="L145">		this.parameterName = parameterName;</span>
-<span class="nc" id="L146">	}</span>
+<span class="nc" id="L146">		this.parameterName = parameterName;</span>
+<span class="nc" id="L147">	}</span>
 
 
 	/**
 	 * @return the loginPageUrl
 	 */
 	public String getLoginPageUrl() {
-<span class="nc" id="L153">		return loginPageUrl;</span>
+<span class="nc" id="L154">		return loginPageUrl;</span>
 	}
 
 	/**
 	 * @param loginPageUrl the loginPageUrl to set
 	 */
 	public void setLoginPageUrl(String loginPageUrl) {
-<span class="nc" id="L160">		this.loginPageUrl = loginPageUrl;</span>
-<span class="nc" id="L161">	}</span>
+<span class="nc" id="L161">		this.loginPageUrl = loginPageUrl;</span>
+<span class="nc" id="L162">	}</span>
 
 	/**
 	 * @return the whitelist
 	 */
 	public Set&lt;String&gt; getWhitelist() {
-<span class="nc" id="L167">		return whitelist;</span>
+<span class="nc" id="L168">		return whitelist;</span>
 	}
 
 	/**
 	 * @param whitelist the whitelist to set
 	 */
 	public void setWhitelist(Set&lt;String&gt; whitelist) {
-<span class="nc" id="L174">		this.whitelist = whitelist;</span>
-<span class="nc" id="L175">	}</span>
+<span class="nc" id="L175">		this.whitelist = whitelist;</span>
+<span class="nc" id="L176">	}</span>
 
 	/**
 	 * @return the blacklist
 	 */
 	public Set&lt;String&gt; getBlacklist() {
-<span class="nc" id="L181">		return blacklist;</span>
+<span class="nc" id="L182">		return blacklist;</span>
 	}
 
 	/**
 	 * @param blacklist the blacklist to set
 	 */
 	public void setBlacklist(Set&lt;String&gt; blacklist) {
-<span class="nc" id="L188">		this.blacklist = blacklist;</span>
-<span class="nc" id="L189">	}</span>
+<span class="nc" id="L189">		this.blacklist = blacklist;</span>
+<span class="nc" id="L190">	}</span>
 
 	/**
 	 * @return the forceHttps
 	 */
 	public boolean isForceHttps() {
-<span class="nc" id="L195">		return forceHttps;</span>
+<span class="nc" id="L196">		return forceHttps;</span>
 	}
 
 	/**
 	 * @param forceHttps the forceHttps to set
 	 */
 	public void setForceHttps(boolean forceHttps) {
-<span class="nc" id="L202">		this.forceHttps = forceHttps;</span>
-<span class="nc" id="L203">	}</span>
+<span class="nc" id="L203">		this.forceHttps = forceHttps;</span>
+<span class="nc" id="L204">	}</span>
 
 	/**
 	 * @author jricher
@@ -208,93 +209,93 @@ public class WebfingerIssuerService implements IssuerService {
 	 */
 	private class WebfingerIssuerFetcher extends CacheLoader&lt;String, LoadingResult&gt; {
 		private HttpComponentsClientHttpRequestFactory httpFactory;
-<span class="nc" id="L211">		private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L212">		private JsonParser parser = new JsonParser();</span>
 
-<span class="nc" id="L213">		WebfingerIssuerFetcher(HttpClient httpClient) {</span>
-<span class="nc" id="L214">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
-<span class="nc" id="L215">		}</span>
+<span class="nc" id="L214">		WebfingerIssuerFetcher(HttpClient httpClient) {</span>
+<span class="nc" id="L215">			this.httpFactory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L216">		}</span>
 
 		@Override
 		public LoadingResult load(String identifier) throws Exception {
 
-<span class="nc" id="L220">			UriComponents key = WebfingerURLNormalizer.normalizeResource(identifier);</span>
+<span class="nc" id="L221">			UriComponents key = WebfingerURLNormalizer.normalizeResource(identifier);</span>
 
-<span class="nc" id="L222">			RestTemplate restTemplate = new RestTemplate(httpFactory);</span>
+<span class="nc" id="L223">			RestTemplate restTemplate = new RestTemplate(httpFactory);</span>
 			// construct the URL to go to
 
-<span class="nc" id="L225">			String scheme = key.getScheme();</span>
+<span class="nc" id="L226">			String scheme = key.getScheme();</span>
 
 			// preserving http scheme is strictly for demo system use only.
-<span class="nc bnc" id="L228" title="All 4 branches missed.">			if (!Strings.isNullOrEmpty(scheme) &amp;&amp;scheme.equals(&quot;http&quot;)) {</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">				if (forceHttps) {</span>
-<span class="nc" id="L230">					throw new IllegalArgumentException(&quot;Scheme must not be 'http'&quot;);</span>
+<span class="nc bnc" id="L229" title="All 4 branches missed.">			if (!Strings.isNullOrEmpty(scheme) &amp;&amp;scheme.equals(&quot;http&quot;)) {</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">				if (forceHttps) {</span>
+<span class="nc" id="L231">					throw new IllegalArgumentException(&quot;Scheme must not be 'http'&quot;);</span>
 				} else {
-<span class="nc" id="L232">					logger.warn(&quot;Webfinger endpoint MUST use the https URI scheme, overriding by configuration&quot;);</span>
-<span class="nc" id="L233">					scheme = &quot;http://&quot;; // add on colon and slashes.</span>
+<span class="nc" id="L233">					logger.warn(&quot;Webfinger endpoint MUST use the https URI scheme, overriding by configuration&quot;);</span>
+<span class="nc" id="L234">					scheme = &quot;http://&quot;; // add on colon and slashes.</span>
 				}
 			} else {
 				// otherwise we don't know the scheme, assume HTTPS
-<span class="nc" id="L237">				scheme = &quot;https://&quot;;</span>
+<span class="nc" id="L238">				scheme = &quot;https://&quot;;</span>
 			}
 
 			// do a webfinger lookup
-<span class="nc" id="L241">			URIBuilder builder = new URIBuilder(scheme</span>
-<span class="nc" id="L242">					+ key.getHost()</span>
-<span class="nc bnc" id="L243" title="All 2 branches missed.">					+ (key.getPort() &gt;= 0 ? &quot;:&quot; + key.getPort() : &quot;&quot;)</span>
-<span class="nc" id="L244">					+ Strings.nullToEmpty(key.getPath())</span>
+<span class="nc" id="L242">			URIBuilder builder = new URIBuilder(scheme</span>
+<span class="nc" id="L243">					+ key.getHost()</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">					+ (key.getPort() &gt;= 0 ? &quot;:&quot; + key.getPort() : &quot;&quot;)</span>
+<span class="nc" id="L245">					+ Strings.nullToEmpty(key.getPath())</span>
 					+ &quot;/.well-known/webfinger&quot;
-<span class="nc bnc" id="L246" title="All 2 branches missed.">					+ (Strings.isNullOrEmpty(key.getQuery()) ? &quot;&quot; : &quot;?&quot; + key.getQuery())</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">					+ (Strings.isNullOrEmpty(key.getQuery()) ? &quot;&quot; : &quot;?&quot; + key.getQuery())</span>
 					);
-<span class="nc" id="L248">			builder.addParameter(&quot;resource&quot;, identifier);</span>
-<span class="nc" id="L249">			builder.addParameter(&quot;rel&quot;, &quot;http://openid.net/specs/connect/1.0/issuer&quot;);</span>
+<span class="nc" id="L249">			builder.addParameter(&quot;resource&quot;, identifier);</span>
+<span class="nc" id="L250">			builder.addParameter(&quot;rel&quot;, &quot;http://openid.net/specs/connect/1.0/issuer&quot;);</span>
 
 			try {
 
 				// do the fetch
-<span class="nc" id="L254">				logger.info(&quot;Loading: &quot; + builder.toString());</span>
-<span class="nc" id="L255">				String webfingerResponse = restTemplate.getForObject(builder.build(), String.class);</span>
+<span class="nc" id="L255">				logger.info(&quot;Loading: &quot; + builder.toString());</span>
+<span class="nc" id="L256">				String webfingerResponse = restTemplate.getForObject(builder.build(), String.class);</span>
 
-<span class="nc" id="L257">				JsonElement json = parser.parse(webfingerResponse);</span>
+<span class="nc" id="L258">				JsonElement json = parser.parse(webfingerResponse);</span>
 
-<span class="nc bnc" id="L259" title="All 4 branches missed.">				if (json != null &amp;&amp; json.isJsonObject()) {</span>
+<span class="nc bnc" id="L260" title="All 4 branches missed.">				if (json != null &amp;&amp; json.isJsonObject()) {</span>
 					// find the issuer
-<span class="nc" id="L261">					JsonArray links = json.getAsJsonObject().get(&quot;links&quot;).getAsJsonArray();</span>
-<span class="nc bnc" id="L262" title="All 2 branches missed.">					for (JsonElement link : links) {</span>
-<span class="nc bnc" id="L263" title="All 2 branches missed.">						if (link.isJsonObject()) {</span>
-<span class="nc" id="L264">							JsonObject linkObj = link.getAsJsonObject();</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">							if (linkObj.has(&quot;href&quot;)</span>
-<span class="nc bnc" id="L266" title="All 2 branches missed.">									&amp;&amp; linkObj.has(&quot;rel&quot;)</span>
-<span class="nc bnc" id="L267" title="All 2 branches missed.">									&amp;&amp; linkObj.get(&quot;rel&quot;).getAsString().equals(&quot;http://openid.net/specs/connect/1.0/issuer&quot;)) {</span>
+<span class="nc" id="L262">					JsonArray links = json.getAsJsonObject().get(&quot;links&quot;).getAsJsonArray();</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">					for (JsonElement link : links) {</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">						if (link.isJsonObject()) {</span>
+<span class="nc" id="L265">							JsonObject linkObj = link.getAsJsonObject();</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">							if (linkObj.has(&quot;href&quot;)</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">									&amp;&amp; linkObj.has(&quot;rel&quot;)</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">									&amp;&amp; linkObj.get(&quot;rel&quot;).getAsString().equals(&quot;http://openid.net/specs/connect/1.0/issuer&quot;)) {</span>
 
 								// we found the issuer, return it
-<span class="nc" id="L270">								String href = linkObj.get(&quot;href&quot;).getAsString();</span>
+<span class="nc" id="L271">								String href = linkObj.get(&quot;href&quot;).getAsString();</span>
 
-<span class="nc bnc" id="L272" title="All 2 branches missed.">								if (identifier.equals(href)</span>
-<span class="nc bnc" id="L273" title="All 2 branches missed.">										|| identifier.startsWith(&quot;http&quot;)) {</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">								if (identifier.equals(href)</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">										|| identifier.startsWith(&quot;http&quot;)) {</span>
 									// try to avoid sending a URL as the login hint
-<span class="nc" id="L275">									return new LoadingResult(null, href);</span>
+<span class="nc" id="L276">									return new LoadingResult(null, href);</span>
 								} else {
 									// otherwise pass back whatever the user typed as a login hint
-<span class="nc" id="L278">									return new LoadingResult(identifier, href);</span>
+<span class="nc" id="L279">									return new LoadingResult(identifier, href);</span>
 								}
 							}
 						}
-<span class="nc" id="L282">					}</span>
+<span class="nc" id="L283">					}</span>
 				}
-<span class="nc" id="L284">			} catch (JsonParseException | RestClientException e) {</span>
-<span class="nc" id="L285">				logger.warn(&quot;Failure in fetching webfinger input&quot;, e.getMessage());</span>
-<span class="nc" id="L286">			}</span>
+<span class="nc" id="L285">			} catch (JsonParseException | RestClientException e) {</span>
+<span class="nc" id="L286">				logger.warn(&quot;Failure in fetching webfinger input&quot;, e.getMessage());</span>
+<span class="nc" id="L287">			}</span>
 
 			// we couldn't find it!
 
-<span class="nc bnc" id="L290" title="All 4 branches missed.">			if (key.getScheme().equals(&quot;http&quot;) || key.getScheme().equals(&quot;https&quot;)) {</span>
+<span class="nc bnc" id="L291" title="All 4 branches missed.">			if (key.getScheme().equals(&quot;http&quot;) || key.getScheme().equals(&quot;https&quot;)) {</span>
 				// if it looks like HTTP then punt: return the input, hope for the best
-<span class="nc" id="L292">				logger.warn(&quot;Returning normalized input string as issuer, hoping for the best: &quot; + identifier);</span>
-<span class="nc" id="L293">				return new LoadingResult(null, identifier);</span>
+<span class="nc" id="L293">				logger.warn(&quot;Returning normalized input string as issuer, hoping for the best: &quot; + identifier);</span>
+<span class="nc" id="L294">				return new LoadingResult(null, identifier);</span>
 			} else {
 				// if it's not HTTP, give up
-<span class="nc" id="L296">				logger.warn(&quot;Couldn't find issuer: &quot; + identifier);</span>
-<span class="nc" id="L297">				throw new IllegalArgumentException();</span>
+<span class="nc" id="L297">				logger.warn(&quot;Couldn't find issuer: &quot; + identifier);</span>
+<span class="nc" id="L298">				throw new IllegalArgumentException();</span>
 			}
 
 		}

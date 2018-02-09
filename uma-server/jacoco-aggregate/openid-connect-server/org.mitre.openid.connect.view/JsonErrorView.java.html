@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonErrorView.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.view</a> &gt; <span class="el_source">JsonErrorView.java</span></div><h1>JsonErrorView.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -43,7 +44,7 @@ import com.google.gson.JsonObject;
  *
  */
 @Component(JsonErrorView.VIEWNAME)
-<span class="nc" id="L46">public class JsonErrorView extends AbstractView {</span>
+<span class="nc" id="L47">public class JsonErrorView extends AbstractView {</span>
 
 	/**
 	 *
@@ -58,66 +59,66 @@ import com.google.gson.JsonObject;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(JsonErrorView.class);</span>
+<span class="nc" id="L62">	private static final Logger logger = LoggerFactory.getLogger(JsonErrorView.class);</span>
 
 	public static final String VIEWNAME = &quot;jsonErrorView&quot;;
 
-<span class="nc" id="L65">	private Gson gson = new GsonBuilder()</span>
-<span class="nc" id="L66">			.setExclusionStrategies(new ExclusionStrategy() {</span>
+<span class="nc" id="L66">	private Gson gson = new GsonBuilder()</span>
+<span class="nc" id="L67">			.setExclusionStrategies(new ExclusionStrategy() {</span>
 
 				@Override
 				public boolean shouldSkipField(FieldAttributes f) {
 
-<span class="nc" id="L71">					return false;</span>
+<span class="nc" id="L72">					return false;</span>
 				}
 
 				@Override
 				public boolean shouldSkipClass(Class&lt;?&gt; clazz) {
 					// skip the JPA binding wrapper
-<span class="nc bnc" id="L77" title="All 2 branches missed.">					if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
-<span class="nc" id="L78">						return true;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">					if (clazz.equals(BeanPropertyBindingResult.class)) {</span>
+<span class="nc" id="L79">						return true;</span>
 					}
-<span class="nc" id="L80">					return false;</span>
+<span class="nc" id="L81">					return false;</span>
 				}
 
 			})
-<span class="nc" id="L84">			.serializeNulls()</span>
-<span class="nc" id="L85">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
-<span class="nc" id="L86">			.create();</span>
+<span class="nc" id="L85">			.serializeNulls()</span>
+<span class="nc" id="L86">			.setDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ssZ&quot;)</span>
+<span class="nc" id="L87">			.create();</span>
 
 	@Override
 	protected void renderMergedOutputModel(Map&lt;String, Object&gt; model, HttpServletRequest request, HttpServletResponse response) {
 
-<span class="nc" id="L91">		response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
+<span class="nc" id="L92">		response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
 
 
-<span class="nc" id="L94">		HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (code == null) {</span>
-<span class="nc" id="L96">			code = HttpStatus.INTERNAL_SERVER_ERROR; // default to 500</span>
+<span class="nc" id="L95">		HttpStatus code = (HttpStatus) model.get(HttpCodeView.CODE);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (code == null) {</span>
+<span class="nc" id="L97">			code = HttpStatus.INTERNAL_SERVER_ERROR; // default to 500</span>
 		}
 
-<span class="nc" id="L99">		response.setStatus(code.value());</span>
+<span class="nc" id="L100">		response.setStatus(code.value());</span>
 
 		try {
 
-<span class="nc" id="L103">			Writer out = response.getWriter();</span>
+<span class="nc" id="L104">			Writer out = response.getWriter();</span>
 
-<span class="nc" id="L105">			String errorTitle = (String) model.get(ERROR);</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(errorTitle)) {</span>
-<span class="nc" id="L107">				errorTitle = &quot;mitreid_error&quot;;</span>
+<span class="nc" id="L106">			String errorTitle = (String) model.get(ERROR);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(errorTitle)) {</span>
+<span class="nc" id="L108">				errorTitle = &quot;mitreid_error&quot;;</span>
 			}
-<span class="nc" id="L109">			String errorMessage = (String) model.get(ERROR_MESSAGE);</span>
-<span class="nc" id="L110">			JsonObject obj = new JsonObject();</span>
-<span class="nc" id="L111">			obj.addProperty(&quot;error&quot;, errorTitle);</span>
-<span class="nc" id="L112">			obj.addProperty(&quot;error_description&quot;, errorMessage);</span>
-<span class="nc" id="L113">			gson.toJson(obj, out);</span>
+<span class="nc" id="L110">			String errorMessage = (String) model.get(ERROR_MESSAGE);</span>
+<span class="nc" id="L111">			JsonObject obj = new JsonObject();</span>
+<span class="nc" id="L112">			obj.addProperty(&quot;error&quot;, errorTitle);</span>
+<span class="nc" id="L113">			obj.addProperty(&quot;error_description&quot;, errorMessage);</span>
+<span class="nc" id="L114">			gson.toJson(obj, out);</span>
 
-<span class="nc" id="L115">		} catch (IOException e) {</span>
+<span class="nc" id="L116">		} catch (IOException e) {</span>
 
-<span class="nc" id="L117">			logger.error(&quot;IOException in JsonErrorView.java: &quot;, e);</span>
+<span class="nc" id="L118">			logger.error(&quot;IOException in JsonErrorView.java: &quot;, e);</span>
 
-<span class="nc" id="L119">		}</span>
-<span class="nc" id="L120">	}</span>
+<span class="nc" id="L120">		}</span>
+<span class="nc" id="L121">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

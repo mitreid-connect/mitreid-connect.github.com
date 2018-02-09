@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IntrospectionEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.web</a> &gt; <span class="el_source">IntrospectionEndpoint.java</span></div><h1>IntrospectionEndpoint.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -77,64 +78,64 @@ public class IntrospectionEndpoint {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L80">	private static final Logger logger = LoggerFactory.getLogger(IntrospectionEndpoint.class);</span>
+<span class="nc" id="L81">	private static final Logger logger = LoggerFactory.getLogger(IntrospectionEndpoint.class);</span>
 
-<span class="nc" id="L82">	public IntrospectionEndpoint() {</span>
+<span class="nc" id="L83">	public IntrospectionEndpoint() {</span>
 
-<span class="nc" id="L84">	}</span>
+<span class="nc" id="L85">	}</span>
 
-<span class="nc" id="L86">	public IntrospectionEndpoint(OAuth2TokenEntityService tokenServices) {</span>
-<span class="nc" id="L87">		this.tokenServices = tokenServices;</span>
-<span class="nc" id="L88">	}</span>
+<span class="nc" id="L87">	public IntrospectionEndpoint(OAuth2TokenEntityService tokenServices) {</span>
+<span class="nc" id="L88">		this.tokenServices = tokenServices;</span>
+<span class="nc" id="L89">	}</span>
 
 	@RequestMapping(&quot;/&quot; + URL)
 	public String verify(@RequestParam(&quot;token&quot;) String tokenValue,
 			@RequestParam(value = &quot;token_type_hint&quot;, required = false) String tokenType,
 			Authentication auth, Model model) {
 
-<span class="nc" id="L95">		ClientDetailsEntity authClient = null;</span>
-<span class="nc" id="L96">		Set&lt;String&gt; authScopes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L96">		ClientDetailsEntity authClient = null;</span>
+<span class="nc" id="L97">		Set&lt;String&gt; authScopes = new HashSet&lt;&gt;();</span>
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">		if (auth instanceof OAuth2Authentication) {</span>
 			// the client authenticated with OAuth, do our UMA checks
-<span class="nc" id="L100">			ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
+<span class="nc" id="L101">			ensureOAuthScope(auth, SystemScopeService.UMA_PROTECTION_SCOPE);</span>
 
 			// get out the client that was issued the access token (not the token being introspected)
-<span class="nc" id="L103">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
+<span class="nc" id="L104">			OAuth2Authentication o2a = (OAuth2Authentication) auth;</span>
 
-<span class="nc" id="L105">			String authClientId = o2a.getOAuth2Request().getClientId();</span>
-<span class="nc" id="L106">			authClient = clientService.loadClientByClientId(authClientId);</span>
+<span class="nc" id="L106">			String authClientId = o2a.getOAuth2Request().getClientId();</span>
+<span class="nc" id="L107">			authClient = clientService.loadClientByClientId(authClientId);</span>
 
 			// the owner is the user who authorized the token in the first place
-<span class="nc" id="L109">			String ownerId = o2a.getUserAuthentication().getName();</span>
+<span class="nc" id="L110">			String ownerId = o2a.getUserAuthentication().getName();</span>
 
-<span class="nc" id="L111">			authScopes.addAll(authClient.getScope());</span>
+<span class="nc" id="L112">			authScopes.addAll(authClient.getScope());</span>
 
 			// UMA style clients also get a subset of scopes of all the resource sets they've registered
-<span class="nc" id="L114">			Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForOwnerAndClient(ownerId, authClientId);</span>
+<span class="nc" id="L115">			Collection&lt;ResourceSet&gt; resourceSets = resourceSetService.getAllForOwnerAndClient(ownerId, authClientId);</span>
 
 			// collect all the scopes
-<span class="nc bnc" id="L117" title="All 2 branches missed.">			for (ResourceSet rs : resourceSets) {</span>
-<span class="nc" id="L118">				authScopes.addAll(rs.getScopes());</span>
-<span class="nc" id="L119">			}</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">			for (ResourceSet rs : resourceSets) {</span>
+<span class="nc" id="L119">				authScopes.addAll(rs.getScopes());</span>
+<span class="nc" id="L120">			}</span>
 
-<span class="nc" id="L121">		} else {</span>
+<span class="nc" id="L122">		} else {</span>
 			// the client authenticated directly, make sure it's got the right access
 
-<span class="nc" id="L124">			String authClientId = auth.getName(); // direct authentication puts the client_id into the authentication's name field</span>
-<span class="nc" id="L125">			authClient = clientService.loadClientByClientId(authClientId);</span>
+<span class="nc" id="L125">			String authClientId = auth.getName(); // direct authentication puts the client_id into the authentication's name field</span>
+<span class="nc" id="L126">			authClient = clientService.loadClientByClientId(authClientId);</span>
 
 			// directly authenticated clients get a subset of any scopes that they've registered for
-<span class="nc" id="L128">			authScopes.addAll(authClient.getScope());</span>
+<span class="nc" id="L129">			authScopes.addAll(authClient.getScope());</span>
 
-<span class="nc bnc" id="L130" title="All 2 branches missed.">			if (!AuthenticationUtilities.hasRole(auth, &quot;ROLE_CLIENT&quot;)</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">					|| !authClient.isAllowIntrospection()) {</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">			if (!AuthenticationUtilities.hasRole(auth, &quot;ROLE_CLIENT&quot;)</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">					|| !authClient.isAllowIntrospection()) {</span>
 
 				// this client isn't allowed to do direct introspection
 
-<span class="nc" id="L135">				logger.error(&quot;Client &quot; + authClient.getClientId() + &quot; is not allowed to call introspection endpoint&quot;);</span>
-<span class="nc" id="L136">				model.addAttribute(&quot;code&quot;, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L137">				return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L136">				logger.error(&quot;Client &quot; + authClient.getClientId() + &quot; is not allowed to call introspection endpoint&quot;);</span>
+<span class="nc" id="L137">				model.addAttribute(&quot;code&quot;, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L138">				return HttpCodeView.VIEWNAME;</span>
 
 			}
 
@@ -143,67 +144,67 @@ public class IntrospectionEndpoint {
 		// by here we're allowed to introspect, now we need to look up the token in our token stores
 
 		// first make sure the token is there
-<span class="nc bnc" id="L146" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(tokenValue)) {</span>
-<span class="nc" id="L147">			logger.error(&quot;Verify failed; token value is null&quot;);</span>
-<span class="nc" id="L148">			Map&lt;String,Boolean&gt; entity = ImmutableMap.of(&quot;active&quot;, Boolean.FALSE);</span>
-<span class="nc" id="L149">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
-<span class="nc" id="L150">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(tokenValue)) {</span>
+<span class="nc" id="L148">			logger.error(&quot;Verify failed; token value is null&quot;);</span>
+<span class="nc" id="L149">			Map&lt;String,Boolean&gt; entity = ImmutableMap.of(&quot;active&quot;, Boolean.FALSE);</span>
+<span class="nc" id="L150">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc" id="L151">			return JsonEntityView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L153">		OAuth2AccessTokenEntity accessToken = null;</span>
-<span class="nc" id="L154">		OAuth2RefreshTokenEntity refreshToken = null;</span>
+<span class="nc" id="L154">		OAuth2AccessTokenEntity accessToken = null;</span>
+<span class="nc" id="L155">		OAuth2RefreshTokenEntity refreshToken = null;</span>
 		ClientDetailsEntity tokenClient;
 		UserInfo user;
 
 		try {
 
 			// check access tokens first (includes ID tokens)
-<span class="nc" id="L161">			accessToken = tokenServices.readAccessToken(tokenValue);</span>
+<span class="nc" id="L162">			accessToken = tokenServices.readAccessToken(tokenValue);</span>
 
-<span class="nc" id="L163">			tokenClient = accessToken.getClient();</span>
+<span class="nc" id="L164">			tokenClient = accessToken.getClient();</span>
 
 			// get the user information of the user that authorized this token in the first place
-<span class="nc" id="L166">			String userName = accessToken.getAuthenticationHolder().getAuthentication().getName();</span>
-<span class="nc" id="L167">			user = userInfoService.getByUsernameAndClientId(userName, tokenClient.getClientId());</span>
+<span class="nc" id="L167">			String userName = accessToken.getAuthenticationHolder().getAuthentication().getName();</span>
+<span class="nc" id="L168">			user = userInfoService.getByUsernameAndClientId(userName, tokenClient.getClientId());</span>
 
-<span class="nc" id="L169">		} catch (InvalidTokenException e) {</span>
-<span class="nc" id="L170">			logger.info(&quot;Invalid access token. Checking refresh token.&quot;);</span>
+<span class="nc" id="L170">		} catch (InvalidTokenException e) {</span>
+<span class="nc" id="L171">			logger.info(&quot;Invalid access token. Checking refresh token.&quot;);</span>
 			try {
 
 				// check refresh tokens next
-<span class="nc" id="L174">				refreshToken = tokenServices.getRefreshToken(tokenValue);</span>
+<span class="nc" id="L175">				refreshToken = tokenServices.getRefreshToken(tokenValue);</span>
 
-<span class="nc" id="L176">				tokenClient = refreshToken.getClient();</span>
+<span class="nc" id="L177">				tokenClient = refreshToken.getClient();</span>
 
 				// get the user information of the user that authorized this token in the first place
-<span class="nc" id="L179">				String userName = refreshToken.getAuthenticationHolder().getAuthentication().getName();</span>
-<span class="nc" id="L180">				user = userInfoService.getByUsernameAndClientId(userName, tokenClient.getClientId());</span>
+<span class="nc" id="L180">				String userName = refreshToken.getAuthenticationHolder().getAuthentication().getName();</span>
+<span class="nc" id="L181">				user = userInfoService.getByUsernameAndClientId(userName, tokenClient.getClientId());</span>
 
-<span class="nc" id="L182">			} catch (InvalidTokenException e2) {</span>
-<span class="nc" id="L183">				logger.error(&quot;Invalid refresh token&quot;);</span>
-<span class="nc" id="L184">				Map&lt;String,Boolean&gt; entity = ImmutableMap.of(IntrospectionResultAssembler.ACTIVE, Boolean.FALSE);</span>
-<span class="nc" id="L185">				model.addAttribute(JsonEntityView.ENTITY, entity);</span>
-<span class="nc" id="L186">				return JsonEntityView.VIEWNAME;</span>
-<span class="nc" id="L187">			}</span>
-<span class="nc" id="L188">		}</span>
+<span class="nc" id="L183">			} catch (InvalidTokenException e2) {</span>
+<span class="nc" id="L184">				logger.error(&quot;Invalid refresh token&quot;);</span>
+<span class="nc" id="L185">				Map&lt;String,Boolean&gt; entity = ImmutableMap.of(IntrospectionResultAssembler.ACTIVE, Boolean.FALSE);</span>
+<span class="nc" id="L186">				model.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc" id="L187">				return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L188">			}</span>
+<span class="nc" id="L189">		}</span>
 
 		// if it's a valid token, we'll print out information on it
 
-<span class="nc bnc" id="L192" title="All 2 branches missed.">		if (accessToken != null) {</span>
-<span class="nc" id="L193">			Map&lt;String, Object&gt; entity = introspectionResultAssembler.assembleFrom(accessToken, user, authScopes);</span>
-<span class="nc" id="L194">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">		} else if (refreshToken != null) {</span>
-<span class="nc" id="L196">			Map&lt;String, Object&gt; entity = introspectionResultAssembler.assembleFrom(refreshToken, user, authScopes);</span>
-<span class="nc" id="L197">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
-<span class="nc" id="L198">		} else {</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">		if (accessToken != null) {</span>
+<span class="nc" id="L194">			Map&lt;String, Object&gt; entity = introspectionResultAssembler.assembleFrom(accessToken, user, authScopes);</span>
+<span class="nc" id="L195">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">		} else if (refreshToken != null) {</span>
+<span class="nc" id="L197">			Map&lt;String, Object&gt; entity = introspectionResultAssembler.assembleFrom(refreshToken, user, authScopes);</span>
+<span class="nc" id="L198">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc" id="L199">		} else {</span>
 			// no tokens were found (we shouldn't get here)
-<span class="nc" id="L200">			logger.error(&quot;Verify failed; Invalid access/refresh token&quot;);</span>
-<span class="nc" id="L201">			Map&lt;String,Boolean&gt; entity = ImmutableMap.of(IntrospectionResultAssembler.ACTIVE, Boolean.FALSE);</span>
-<span class="nc" id="L202">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
-<span class="nc" id="L203">			return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L201">			logger.error(&quot;Verify failed; Invalid access/refresh token&quot;);</span>
+<span class="nc" id="L202">			Map&lt;String,Boolean&gt; entity = ImmutableMap.of(IntrospectionResultAssembler.ACTIVE, Boolean.FALSE);</span>
+<span class="nc" id="L203">			model.addAttribute(JsonEntityView.ENTITY, entity);</span>
+<span class="nc" id="L204">			return JsonEntityView.VIEWNAME;</span>
 		}
 
-<span class="nc" id="L206">		return JsonEntityView.VIEWNAME;</span>
+<span class="nc" id="L207">		return JsonEntityView.VIEWNAME;</span>
 
 	}
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OIDCAuthenticationFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client</a> &gt; <span class="el_source">OIDCAuthenticationFilter.java</span></div><h1>OIDCAuthenticationFilter.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -105,7 +106,7 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	public final static String FILTER_PROCESSES_URL = &quot;/openid_connect_login&quot;;
 
 	// Allow for time sync issues by having a window of X seconds.
-<span class="nc" id="L108">	private int timeSkewAllowance = 300;</span>
+<span class="nc" id="L109">	private int timeSkewAllowance = 300;</span>
 
 	// fetches and caches public keys for servers
 	@Autowired(required=false)
@@ -132,40 +133,40 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	// holds client information (client ID, redirect URI, etc.), indexed by issuer of the server
 	private ClientConfigurationService clients;
 	// provides extra options to inject into the outbound request
-<span class="nc" id="L135">	private AuthRequestOptionsService authOptions = new StaticAuthRequestOptionsService(); // initialize with an empty set of options</span>
+<span class="nc" id="L136">	private AuthRequestOptionsService authOptions = new StaticAuthRequestOptionsService(); // initialize with an empty set of options</span>
 	// builds the actual request URI based on input from all other services
 	private AuthRequestUrlBuilder authRequestBuilder;
 
 	// private helpers to handle target link URLs
-<span class="nc" id="L140">	private TargetLinkURIAuthenticationSuccessHandler targetSuccessHandler = new TargetLinkURIAuthenticationSuccessHandler();</span>
+<span class="nc" id="L141">	private TargetLinkURIAuthenticationSuccessHandler targetSuccessHandler = new TargetLinkURIAuthenticationSuccessHandler();</span>
 	private TargetLinkURIChecker deepLinkFilter;
 
-<span class="nc" id="L143">	protected int httpSocketTimeout = HTTP_SOCKET_TIMEOUT;</span>
+<span class="nc" id="L144">	protected int httpSocketTimeout = HTTP_SOCKET_TIMEOUT;</span>
 
 	/**
 	 * OpenIdConnectAuthenticationFilter constructor
 	 */
 	public OIDCAuthenticationFilter() {
-<span class="nc" id="L149">		super(FILTER_PROCESSES_URL);</span>
-<span class="nc" id="L150">		targetSuccessHandler.passthrough = super.getSuccessHandler();</span>
-<span class="nc" id="L151">		super.setAuthenticationSuccessHandler(targetSuccessHandler);</span>
-<span class="nc" id="L152">	}</span>
+<span class="nc" id="L150">		super(FILTER_PROCESSES_URL);</span>
+<span class="nc" id="L151">		targetSuccessHandler.passthrough = super.getSuccessHandler();</span>
+<span class="nc" id="L152">		super.setAuthenticationSuccessHandler(targetSuccessHandler);</span>
+<span class="nc" id="L153">	}</span>
 
 	@Override
 	public void afterPropertiesSet() {
-<span class="nc" id="L156">		super.afterPropertiesSet();</span>
+<span class="nc" id="L157">		super.afterPropertiesSet();</span>
 
 		// if our JOSE validators don't get wired in, drop defaults into place
 
-<span class="nc bnc" id="L160" title="All 2 branches missed.">		if (validationServices == null) {</span>
-<span class="nc" id="L161">			validationServices = new JWKSetCacheService();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (validationServices == null) {</span>
+<span class="nc" id="L162">			validationServices = new JWKSetCacheService();</span>
 		}
 
-<span class="nc bnc" id="L164" title="All 2 branches missed.">		if (symmetricCacheService == null) {</span>
-<span class="nc" id="L165">			symmetricCacheService = new SymmetricKeyJWTValidatorCacheService();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (symmetricCacheService == null) {</span>
+<span class="nc" id="L166">			symmetricCacheService = new SymmetricKeyJWTValidatorCacheService();</span>
 		}
 
-<span class="nc" id="L168">	}</span>
+<span class="nc" id="L169">	}</span>
 
 	/*
 	 * This is the main entry point for the filter.
@@ -180,24 +181,24 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-<span class="nc bnc" id="L183" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(request.getParameter(&quot;error&quot;))) {</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">		if (!Strings.isNullOrEmpty(request.getParameter(&quot;error&quot;))) {</span>
 
 			// there's an error coming back from the server, need to handle this
-<span class="nc" id="L186">			handleError(request, response);</span>
-<span class="nc" id="L187">			return null; // no auth, response is sent to display page or something</span>
+<span class="nc" id="L187">			handleError(request, response);</span>
+<span class="nc" id="L188">			return null; // no auth, response is sent to display page or something</span>
 
-<span class="nc bnc" id="L189" title="All 2 branches missed.">		} else if (!Strings.isNullOrEmpty(request.getParameter(&quot;code&quot;))) {</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">		} else if (!Strings.isNullOrEmpty(request.getParameter(&quot;code&quot;))) {</span>
 
 			// we got back the code, need to process this to get our tokens
-<span class="nc" id="L192">			Authentication auth = handleAuthorizationCodeResponse(request, response);</span>
-<span class="nc" id="L193">			return auth;</span>
+<span class="nc" id="L193">			Authentication auth = handleAuthorizationCodeResponse(request, response);</span>
+<span class="nc" id="L194">			return auth;</span>
 
 		} else {
 
 			// not an error, not a code, must be an initial login of some type
-<span class="nc" id="L198">			handleAuthorizationRequest(request, response);</span>
+<span class="nc" id="L199">			handleAuthorizationRequest(request, response);</span>
 
-<span class="nc" id="L200">			return null; // no auth, response redirected to the server's Auth Endpoint (or possibly to the account chooser)</span>
+<span class="nc" id="L201">			return null; // no auth, response redirected to the server's Auth Endpoint (or possibly to the account chooser)</span>
 		}
 
 	}
@@ -214,90 +215,90 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 */
 	protected void handleAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-<span class="nc" id="L217">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L218">		HttpSession session = request.getSession();</span>
 
-<span class="nc" id="L219">		IssuerServiceResponse issResp = issuerService.getIssuer(request);</span>
+<span class="nc" id="L220">		IssuerServiceResponse issResp = issuerService.getIssuer(request);</span>
 
-<span class="nc bnc" id="L221" title="All 2 branches missed.">		if (issResp == null) {</span>
-<span class="nc" id="L222">			logger.error(&quot;Null issuer response returned from service.&quot;);</span>
-<span class="nc" id="L223">			throw new AuthenticationServiceException(&quot;No issuer found.&quot;);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">		if (issResp == null) {</span>
+<span class="nc" id="L223">			logger.error(&quot;Null issuer response returned from service.&quot;);</span>
+<span class="nc" id="L224">			throw new AuthenticationServiceException(&quot;No issuer found.&quot;);</span>
 		}
 
-<span class="nc bnc" id="L226" title="All 2 branches missed.">		if (issResp.shouldRedirect()) {</span>
-<span class="nc" id="L227">			response.sendRedirect(issResp.getRedirectUrl());</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">		if (issResp.shouldRedirect()) {</span>
+<span class="nc" id="L228">			response.sendRedirect(issResp.getRedirectUrl());</span>
 		} else {
-<span class="nc" id="L229">			String issuer = issResp.getIssuer();</span>
+<span class="nc" id="L230">			String issuer = issResp.getIssuer();</span>
 
-<span class="nc bnc" id="L231" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(issResp.getTargetLinkUri())) {</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(issResp.getTargetLinkUri())) {</span>
 				// there's a target URL in the response, we should save this so we can forward to it later
-<span class="nc" id="L233">				session.setAttribute(TARGET_SESSION_VARIABLE, issResp.getTargetLinkUri());</span>
+<span class="nc" id="L234">				session.setAttribute(TARGET_SESSION_VARIABLE, issResp.getTargetLinkUri());</span>
 			}
 
-<span class="nc bnc" id="L236" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(issuer)) {</span>
-<span class="nc" id="L237">				logger.error(&quot;No issuer found: &quot; + issuer);</span>
-<span class="nc" id="L238">				throw new AuthenticationServiceException(&quot;No issuer found: &quot; + issuer);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">			if (Strings.isNullOrEmpty(issuer)) {</span>
+<span class="nc" id="L238">				logger.error(&quot;No issuer found: &quot; + issuer);</span>
+<span class="nc" id="L239">				throw new AuthenticationServiceException(&quot;No issuer found: &quot; + issuer);</span>
 			}
 
-<span class="nc" id="L241">			ServerConfiguration serverConfig = servers.getServerConfiguration(issuer);</span>
-<span class="nc bnc" id="L242" title="All 2 branches missed.">			if (serverConfig == null) {</span>
-<span class="nc" id="L243">				logger.error(&quot;No server configuration found for issuer: &quot; + issuer);</span>
-<span class="nc" id="L244">				throw new AuthenticationServiceException(&quot;No server configuration found for issuer: &quot; + issuer);</span>
+<span class="nc" id="L242">			ServerConfiguration serverConfig = servers.getServerConfiguration(issuer);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">			if (serverConfig == null) {</span>
+<span class="nc" id="L244">				logger.error(&quot;No server configuration found for issuer: &quot; + issuer);</span>
+<span class="nc" id="L245">				throw new AuthenticationServiceException(&quot;No server configuration found for issuer: &quot; + issuer);</span>
 			}
 
 
-<span class="nc" id="L248">			session.setAttribute(ISSUER_SESSION_VARIABLE, serverConfig.getIssuer());</span>
+<span class="nc" id="L249">			session.setAttribute(ISSUER_SESSION_VARIABLE, serverConfig.getIssuer());</span>
 
-<span class="nc" id="L250">			RegisteredClient clientConfig = clients.getClientConfiguration(serverConfig);</span>
-<span class="nc bnc" id="L251" title="All 2 branches missed.">			if (clientConfig == null) {</span>
-<span class="nc" id="L252">				logger.error(&quot;No client configuration found for issuer: &quot; + issuer);</span>
-<span class="nc" id="L253">				throw new AuthenticationServiceException(&quot;No client configuration found for issuer: &quot; + issuer);</span>
+<span class="nc" id="L251">			RegisteredClient clientConfig = clients.getClientConfiguration(serverConfig);</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">			if (clientConfig == null) {</span>
+<span class="nc" id="L253">				logger.error(&quot;No client configuration found for issuer: &quot; + issuer);</span>
+<span class="nc" id="L254">				throw new AuthenticationServiceException(&quot;No client configuration found for issuer: &quot; + issuer);</span>
 			}
 
-<span class="nc" id="L256">			String redirectUri = null;</span>
-<span class="nc bnc" id="L257" title="All 4 branches missed.">			if (clientConfig.getRegisteredRedirectUri() != null &amp;&amp; clientConfig.getRegisteredRedirectUri().size() == 1) {</span>
+<span class="nc" id="L257">			String redirectUri = null;</span>
+<span class="nc bnc" id="L258" title="All 4 branches missed.">			if (clientConfig.getRegisteredRedirectUri() != null &amp;&amp; clientConfig.getRegisteredRedirectUri().size() == 1) {</span>
 				// if there's a redirect uri configured (and only one), use that
-<span class="nc" id="L259">				redirectUri = Iterables.getOnlyElement(clientConfig.getRegisteredRedirectUri());</span>
+<span class="nc" id="L260">				redirectUri = Iterables.getOnlyElement(clientConfig.getRegisteredRedirectUri());</span>
 			} else {
 				// otherwise our redirect URI is this current URL, with no query parameters
-<span class="nc" id="L262">				redirectUri = request.getRequestURL().toString();</span>
+<span class="nc" id="L263">				redirectUri = request.getRequestURL().toString();</span>
 			}
-<span class="nc" id="L264">			session.setAttribute(REDIRECT_URI_SESION_VARIABLE, redirectUri);</span>
+<span class="nc" id="L265">			session.setAttribute(REDIRECT_URI_SESION_VARIABLE, redirectUri);</span>
 
 			// this value comes back in the id token and is checked there
-<span class="nc" id="L267">			String nonce = createNonce(session);</span>
+<span class="nc" id="L268">			String nonce = createNonce(session);</span>
 
 			// this value comes back in the auth code response
-<span class="nc" id="L270">			String state = createState(session);</span>
+<span class="nc" id="L271">			String state = createState(session);</span>
 
-<span class="nc" id="L272">			Map&lt;String, String&gt; options = authOptions.getOptions(serverConfig, clientConfig, request);</span>
+<span class="nc" id="L273">			Map&lt;String, String&gt; options = authOptions.getOptions(serverConfig, clientConfig, request);</span>
 
 			// if we're using PKCE, handle the challenge here
-<span class="nc bnc" id="L275" title="All 2 branches missed.">			if (clientConfig.getCodeChallengeMethod() != null) {</span>
-<span class="nc" id="L276">				String codeVerifier = createCodeVerifier(session);</span>
-<span class="nc" id="L277">				options.put(&quot;code_challenge_method&quot;, clientConfig.getCodeChallengeMethod().getName());</span>
-<span class="nc bnc" id="L278" title="All 2 branches missed.">				if (clientConfig.getCodeChallengeMethod().equals(PKCEAlgorithm.plain)) {</span>
-<span class="nc" id="L279">					options.put(&quot;code_challenge&quot;, codeVerifier);</span>
-<span class="nc bnc" id="L280" title="All 2 branches missed.">				} else if (clientConfig.getCodeChallengeMethod().equals(PKCEAlgorithm.S256)) {</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">			if (clientConfig.getCodeChallengeMethod() != null) {</span>
+<span class="nc" id="L277">				String codeVerifier = createCodeVerifier(session);</span>
+<span class="nc" id="L278">				options.put(&quot;code_challenge_method&quot;, clientConfig.getCodeChallengeMethod().getName());</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">				if (clientConfig.getCodeChallengeMethod().equals(PKCEAlgorithm.plain)) {</span>
+<span class="nc" id="L280">					options.put(&quot;code_challenge&quot;, codeVerifier);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">				} else if (clientConfig.getCodeChallengeMethod().equals(PKCEAlgorithm.S256)) {</span>
 					try {
-<span class="nc" id="L282">						MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
-<span class="nc" id="L283">						String hash = Base64URL.encode(digest.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII))).toString();</span>
-<span class="nc" id="L284">						options.put(&quot;code_challenge&quot;, hash);</span>
-<span class="nc" id="L285">					} catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L283">						MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
+<span class="nc" id="L284">						String hash = Base64URL.encode(digest.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII))).toString();</span>
+<span class="nc" id="L285">						options.put(&quot;code_challenge&quot;, hash);</span>
+<span class="nc" id="L286">					} catch (NoSuchAlgorithmException e) {</span>
 						// TODO Auto-generated catch block
-<span class="nc" id="L287">						e.printStackTrace();</span>
-<span class="nc" id="L288">					}</span>
+<span class="nc" id="L288">						e.printStackTrace();</span>
+<span class="nc" id="L289">					}</span>
 
 
 				}
 			}
 
-<span class="nc" id="L294">			String authRequest = authRequestBuilder.buildAuthRequestUrl(serverConfig, clientConfig, redirectUri, nonce, state, options, issResp.getLoginHint());</span>
+<span class="nc" id="L295">			String authRequest = authRequestBuilder.buildAuthRequestUrl(serverConfig, clientConfig, redirectUri, nonce, state, options, issResp.getLoginHint());</span>
 
-<span class="nc" id="L296">			logger.debug(&quot;Auth Request:  &quot; + authRequest);</span>
+<span class="nc" id="L297">			logger.debug(&quot;Auth Request:  &quot; + authRequest);</span>
 
-<span class="nc" id="L298">			response.sendRedirect(authRequest);</span>
+<span class="nc" id="L299">			response.sendRedirect(authRequest);</span>
 		}
-<span class="nc" id="L300">	}</span>
+<span class="nc" id="L301">	}</span>
 
 	/**
 	 * @param request
@@ -308,168 +309,168 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 */
 	protected Authentication handleAuthorizationCodeResponse(HttpServletRequest request, HttpServletResponse response) {
 
-<span class="nc" id="L311">		String authorizationCode = request.getParameter(&quot;code&quot;);</span>
+<span class="nc" id="L312">		String authorizationCode = request.getParameter(&quot;code&quot;);</span>
 
-<span class="nc" id="L313">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L314">		HttpSession session = request.getSession();</span>
 
 		// check for state, if it doesn't match we bail early
-<span class="nc" id="L316">		String storedState = getStoredState(session);</span>
-<span class="nc" id="L317">		String requestState = request.getParameter(&quot;state&quot;);</span>
-<span class="nc bnc" id="L318" title="All 4 branches missed.">		if (storedState == null || !storedState.equals(requestState)) {</span>
-<span class="nc" id="L319">			throw new AuthenticationServiceException(&quot;State parameter mismatch on return. Expected &quot; + storedState + &quot; got &quot; + requestState);</span>
+<span class="nc" id="L317">		String storedState = getStoredState(session);</span>
+<span class="nc" id="L318">		String requestState = request.getParameter(&quot;state&quot;);</span>
+<span class="nc bnc" id="L319" title="All 4 branches missed.">		if (storedState == null || !storedState.equals(requestState)) {</span>
+<span class="nc" id="L320">			throw new AuthenticationServiceException(&quot;State parameter mismatch on return. Expected &quot; + storedState + &quot; got &quot; + requestState);</span>
 		}
 
 		// look up the issuer that we set out to talk to
-<span class="nc" id="L323">		String issuer = getStoredSessionString(session, ISSUER_SESSION_VARIABLE);</span>
+<span class="nc" id="L324">		String issuer = getStoredSessionString(session, ISSUER_SESSION_VARIABLE);</span>
 
 		// pull the configurations based on that issuer
-<span class="nc" id="L326">		ServerConfiguration serverConfig = servers.getServerConfiguration(issuer);</span>
-<span class="nc" id="L327">		final RegisteredClient clientConfig = clients.getClientConfiguration(serverConfig);</span>
+<span class="nc" id="L327">		ServerConfiguration serverConfig = servers.getServerConfiguration(issuer);</span>
+<span class="nc" id="L328">		final RegisteredClient clientConfig = clients.getClientConfiguration(serverConfig);</span>
 
-<span class="nc" id="L329">		MultiValueMap&lt;String, String&gt; form = new LinkedMultiValueMap&lt;&gt;();</span>
-<span class="nc" id="L330">		form.add(&quot;grant_type&quot;, &quot;authorization_code&quot;);</span>
-<span class="nc" id="L331">		form.add(&quot;code&quot;, authorizationCode);</span>
-<span class="nc" id="L332">		form.setAll(authOptions.getTokenOptions(serverConfig, clientConfig, request));</span>
+<span class="nc" id="L330">		MultiValueMap&lt;String, String&gt; form = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="nc" id="L331">		form.add(&quot;grant_type&quot;, &quot;authorization_code&quot;);</span>
+<span class="nc" id="L332">		form.add(&quot;code&quot;, authorizationCode);</span>
+<span class="nc" id="L333">		form.setAll(authOptions.getTokenOptions(serverConfig, clientConfig, request));</span>
 
-<span class="nc" id="L334">		String codeVerifier = getStoredCodeVerifier(session);</span>
-<span class="nc bnc" id="L335" title="All 2 branches missed.">		if (codeVerifier != null) {</span>
-<span class="nc" id="L336">			form.add(&quot;code_verifier&quot;, codeVerifier);</span>
+<span class="nc" id="L335">		String codeVerifier = getStoredCodeVerifier(session);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">		if (codeVerifier != null) {</span>
+<span class="nc" id="L337">			form.add(&quot;code_verifier&quot;, codeVerifier);</span>
 		}
 
-<span class="nc" id="L339">		String redirectUri = getStoredSessionString(session, REDIRECT_URI_SESION_VARIABLE);</span>
-<span class="nc bnc" id="L340" title="All 2 branches missed.">		if (redirectUri != null) {</span>
-<span class="nc" id="L341">			form.add(&quot;redirect_uri&quot;, redirectUri);</span>
+<span class="nc" id="L340">		String redirectUri = getStoredSessionString(session, REDIRECT_URI_SESION_VARIABLE);</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">		if (redirectUri != null) {</span>
+<span class="nc" id="L342">			form.add(&quot;redirect_uri&quot;, redirectUri);</span>
 		}
 
 		// Handle Token Endpoint interaction
 
-<span class="nc bnc" id="L346" title="All 2 branches missed.">		if(httpClient == null) {</span>
-<span class="nc" id="L347">			httpClient = HttpClientBuilder.create()</span>
-<span class="nc" id="L348">					.useSystemProperties()</span>
-<span class="nc" id="L349">					.setDefaultRequestConfig(RequestConfig.custom()</span>
-<span class="nc" id="L350">							.setSocketTimeout(httpSocketTimeout)</span>
-<span class="nc" id="L351">							.build())</span>
-<span class="nc" id="L352">					.build();</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">		if(httpClient == null) {</span>
+<span class="nc" id="L348">			httpClient = HttpClientBuilder.create()</span>
+<span class="nc" id="L349">					.useSystemProperties()</span>
+<span class="nc" id="L350">					.setDefaultRequestConfig(RequestConfig.custom()</span>
+<span class="nc" id="L351">							.setSocketTimeout(httpSocketTimeout)</span>
+<span class="nc" id="L352">							.build())</span>
+<span class="nc" id="L353">					.build();</span>
 		}
 
-<span class="nc" id="L355">		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
+<span class="nc" id="L356">		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);</span>
 
 		RestTemplate restTemplate;
 
-<span class="nc bnc" id="L359" title="All 2 branches missed.">		if (SECRET_BASIC.equals(clientConfig.getTokenEndpointAuthMethod())){</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">		if (SECRET_BASIC.equals(clientConfig.getTokenEndpointAuthMethod())){</span>
 			// use BASIC auth if configured to do so
-<span class="nc" id="L361">			restTemplate = new RestTemplate(factory) {</span>
+<span class="nc" id="L362">			restTemplate = new RestTemplate(factory) {</span>
 
 				@Override
 				protected ClientHttpRequest createRequest(URI url, HttpMethod method) throws IOException {
-<span class="nc" id="L365">					ClientHttpRequest httpRequest = super.createRequest(url, method);</span>
-<span class="nc" id="L366">					httpRequest.getHeaders().add(&quot;Authorization&quot;,</span>
-<span class="nc" id="L367">							String.format(&quot;Basic %s&quot;, Base64.encode(String.format(&quot;%s:%s&quot;,</span>
-<span class="nc" id="L368">									UriUtils.encodePathSegment(clientConfig.getClientId(), &quot;UTF-8&quot;),</span>
-<span class="nc" id="L369">									UriUtils.encodePathSegment(clientConfig.getClientSecret(), &quot;UTF-8&quot;)))));</span>
+<span class="nc" id="L366">					ClientHttpRequest httpRequest = super.createRequest(url, method);</span>
+<span class="nc" id="L367">					httpRequest.getHeaders().add(&quot;Authorization&quot;,</span>
+<span class="nc" id="L368">							String.format(&quot;Basic %s&quot;, Base64.encode(String.format(&quot;%s:%s&quot;,</span>
+<span class="nc" id="L369">									UriUtils.encodePathSegment(clientConfig.getClientId(), &quot;UTF-8&quot;),</span>
+<span class="nc" id="L370">									UriUtils.encodePathSegment(clientConfig.getClientSecret(), &quot;UTF-8&quot;)))));</span>
 
-<span class="nc" id="L371">					return httpRequest;</span>
+<span class="nc" id="L372">					return httpRequest;</span>
 				}
 			};
 		} else {
 			// we're not doing basic auth, figure out what other flavor we have
-<span class="nc" id="L376">			restTemplate = new RestTemplate(factory);</span>
+<span class="nc" id="L377">			restTemplate = new RestTemplate(factory);</span>
 
-<span class="nc bnc" id="L378" title="All 4 branches missed.">			if (SECRET_JWT.equals(clientConfig.getTokenEndpointAuthMethod()) || PRIVATE_KEY.equals(clientConfig.getTokenEndpointAuthMethod())) {</span>
+<span class="nc bnc" id="L379" title="All 4 branches missed.">			if (SECRET_JWT.equals(clientConfig.getTokenEndpointAuthMethod()) || PRIVATE_KEY.equals(clientConfig.getTokenEndpointAuthMethod())) {</span>
 				// do a symmetric secret signed JWT for auth
 
 
-<span class="nc" id="L382">				JWTSigningAndValidationService signer = null;</span>
-<span class="nc" id="L383">				JWSAlgorithm alg = clientConfig.getTokenEndpointAuthSigningAlg();</span>
+<span class="nc" id="L383">				JWTSigningAndValidationService signer = null;</span>
+<span class="nc" id="L384">				JWSAlgorithm alg = clientConfig.getTokenEndpointAuthSigningAlg();</span>
 
-<span class="nc bnc" id="L385" title="All 2 branches missed.">				if (SECRET_JWT.equals(clientConfig.getTokenEndpointAuthMethod()) &amp;&amp;</span>
-<span class="nc bnc" id="L386" title="All 2 branches missed.">						(JWSAlgorithm.HS256.equals(alg)</span>
-<span class="nc bnc" id="L387" title="All 2 branches missed.">								|| JWSAlgorithm.HS384.equals(alg)</span>
-<span class="nc bnc" id="L388" title="All 2 branches missed.">								|| JWSAlgorithm.HS512.equals(alg))) {</span>
+<span class="nc bnc" id="L386" title="All 2 branches missed.">				if (SECRET_JWT.equals(clientConfig.getTokenEndpointAuthMethod()) &amp;&amp;</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">						(JWSAlgorithm.HS256.equals(alg)</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">								|| JWSAlgorithm.HS384.equals(alg)</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">								|| JWSAlgorithm.HS512.equals(alg))) {</span>
 
 					// generate one based on client secret
-<span class="nc" id="L391">					signer = symmetricCacheService.getSymmetricValidtor(clientConfig.getClient());</span>
+<span class="nc" id="L392">					signer = symmetricCacheService.getSymmetricValidtor(clientConfig.getClient());</span>
 
-<span class="nc bnc" id="L393" title="All 2 branches missed.">				} else if (PRIVATE_KEY.equals(clientConfig.getTokenEndpointAuthMethod())) {</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">				} else if (PRIVATE_KEY.equals(clientConfig.getTokenEndpointAuthMethod())) {</span>
 
 					// needs to be wired in to the bean
-<span class="nc" id="L396">					signer = authenticationSignerService;</span>
+<span class="nc" id="L397">					signer = authenticationSignerService;</span>
 
-<span class="nc bnc" id="L398" title="All 2 branches missed.">					if (alg == null) {</span>
-<span class="nc" id="L399">						alg = authenticationSignerService.getDefaultSigningAlgorithm();</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">					if (alg == null) {</span>
+<span class="nc" id="L400">						alg = authenticationSignerService.getDefaultSigningAlgorithm();</span>
 					}
 				}
 
-<span class="nc bnc" id="L403" title="All 2 branches missed.">				if (signer == null) {</span>
-<span class="nc" id="L404">					throw new AuthenticationServiceException(&quot;Couldn't find required signer service for use with private key auth.&quot;);</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">				if (signer == null) {</span>
+<span class="nc" id="L405">					throw new AuthenticationServiceException(&quot;Couldn't find required signer service for use with private key auth.&quot;);</span>
 				}
 
-<span class="nc" id="L407">				JWTClaimsSet.Builder claimsSet = new JWTClaimsSet.Builder();</span>
+<span class="nc" id="L408">				JWTClaimsSet.Builder claimsSet = new JWTClaimsSet.Builder();</span>
 
-<span class="nc" id="L409">				claimsSet.issuer(clientConfig.getClientId());</span>
-<span class="nc" id="L410">				claimsSet.subject(clientConfig.getClientId());</span>
-<span class="nc" id="L411">				claimsSet.audience(Lists.newArrayList(serverConfig.getTokenEndpointUri()));</span>
-<span class="nc" id="L412">				claimsSet.jwtID(UUID.randomUUID().toString());</span>
+<span class="nc" id="L410">				claimsSet.issuer(clientConfig.getClientId());</span>
+<span class="nc" id="L411">				claimsSet.subject(clientConfig.getClientId());</span>
+<span class="nc" id="L412">				claimsSet.audience(Lists.newArrayList(serverConfig.getTokenEndpointUri()));</span>
+<span class="nc" id="L413">				claimsSet.jwtID(UUID.randomUUID().toString());</span>
 
 				// TODO: make this configurable
-<span class="nc" id="L415">				Date exp = new Date(System.currentTimeMillis() + (60 * 1000)); // auth good for 60 seconds</span>
-<span class="nc" id="L416">				claimsSet.expirationTime(exp);</span>
+<span class="nc" id="L416">				Date exp = new Date(System.currentTimeMillis() + (60 * 1000)); // auth good for 60 seconds</span>
+<span class="nc" id="L417">				claimsSet.expirationTime(exp);</span>
 
-<span class="nc" id="L418">				Date now = new Date(System.currentTimeMillis());</span>
-<span class="nc" id="L419">				claimsSet.issueTime(now);</span>
-<span class="nc" id="L420">				claimsSet.notBeforeTime(now);</span>
+<span class="nc" id="L419">				Date now = new Date(System.currentTimeMillis());</span>
+<span class="nc" id="L420">				claimsSet.issueTime(now);</span>
+<span class="nc" id="L421">				claimsSet.notBeforeTime(now);</span>
 
-<span class="nc" id="L422">				JWSHeader header = new JWSHeader(alg, null, null, null, null, null, null, null, null, null,</span>
-<span class="nc" id="L423">						signer.getDefaultSignerKeyId(),</span>
+<span class="nc" id="L423">				JWSHeader header = new JWSHeader(alg, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L424">						signer.getDefaultSignerKeyId(),</span>
 						null, null);
-<span class="nc" id="L425">				SignedJWT jwt = new SignedJWT(header, claimsSet.build());</span>
+<span class="nc" id="L426">				SignedJWT jwt = new SignedJWT(header, claimsSet.build());</span>
 
-<span class="nc" id="L427">				signer.signJwt(jwt, alg);</span>
+<span class="nc" id="L428">				signer.signJwt(jwt, alg);</span>
 
-<span class="nc" id="L429">				form.add(&quot;client_assertion_type&quot;, &quot;urn:ietf:params:oauth:client-assertion-type:jwt-bearer&quot;);</span>
-<span class="nc" id="L430">				form.add(&quot;client_assertion&quot;, jwt.serialize());</span>
-<span class="nc" id="L431">			} else {</span>
+<span class="nc" id="L430">				form.add(&quot;client_assertion_type&quot;, &quot;urn:ietf:params:oauth:client-assertion-type:jwt-bearer&quot;);</span>
+<span class="nc" id="L431">				form.add(&quot;client_assertion&quot;, jwt.serialize());</span>
+<span class="nc" id="L432">			} else {</span>
 				//Alternatively use form based auth
-<span class="nc" id="L433">				form.add(&quot;client_id&quot;, clientConfig.getClientId());</span>
-<span class="nc" id="L434">				form.add(&quot;client_secret&quot;, clientConfig.getClientSecret());</span>
+<span class="nc" id="L434">				form.add(&quot;client_id&quot;, clientConfig.getClientId());</span>
+<span class="nc" id="L435">				form.add(&quot;client_secret&quot;, clientConfig.getClientSecret());</span>
 			}
 
 		}
 
-<span class="nc" id="L439">		logger.debug(&quot;tokenEndpointURI = &quot; + serverConfig.getTokenEndpointUri());</span>
-<span class="nc" id="L440">		logger.debug(&quot;form = &quot; + form);</span>
+<span class="nc" id="L440">		logger.debug(&quot;tokenEndpointURI = &quot; + serverConfig.getTokenEndpointUri());</span>
+<span class="nc" id="L441">		logger.debug(&quot;form = &quot; + form);</span>
 
-<span class="nc" id="L442">		String jsonString = null;</span>
+<span class="nc" id="L443">		String jsonString = null;</span>
 
 		try {
-<span class="nc" id="L445">			jsonString = restTemplate.postForObject(serverConfig.getTokenEndpointUri(), form, String.class);</span>
-<span class="nc" id="L446">		} catch (RestClientException e) {</span>
+<span class="nc" id="L446">			jsonString = restTemplate.postForObject(serverConfig.getTokenEndpointUri(), form, String.class);</span>
+<span class="nc" id="L447">		} catch (RestClientException e) {</span>
 
 			// Handle error
 
-<span class="nc" id="L450">			logger.error(&quot;Token Endpoint error response:  &quot; + e.getMessage());</span>
+<span class="nc" id="L451">			logger.error(&quot;Token Endpoint error response:  &quot; + e.getMessage());</span>
 
-<span class="nc" id="L452">			throw new AuthenticationServiceException(&quot;Unable to obtain Access Token: &quot; + e.getMessage());</span>
-<span class="nc" id="L453">		}</span>
+<span class="nc" id="L453">			throw new AuthenticationServiceException(&quot;Unable to obtain Access Token: &quot; + e.getMessage());</span>
+<span class="nc" id="L454">		}</span>
 
-<span class="nc" id="L455">		logger.debug(&quot;from TokenEndpoint jsonString = &quot; + jsonString);</span>
+<span class="nc" id="L456">		logger.debug(&quot;from TokenEndpoint jsonString = &quot; + jsonString);</span>
 
-<span class="nc" id="L457">		JsonElement jsonRoot = new JsonParser().parse(jsonString);</span>
-<span class="nc bnc" id="L458" title="All 2 branches missed.">		if (!jsonRoot.isJsonObject()) {</span>
-<span class="nc" id="L459">			throw new AuthenticationServiceException(&quot;Token Endpoint did not return a JSON object: &quot; + jsonRoot);</span>
+<span class="nc" id="L458">		JsonElement jsonRoot = new JsonParser().parse(jsonString);</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">		if (!jsonRoot.isJsonObject()) {</span>
+<span class="nc" id="L460">			throw new AuthenticationServiceException(&quot;Token Endpoint did not return a JSON object: &quot; + jsonRoot);</span>
 		}
 
-<span class="nc" id="L462">		JsonObject tokenResponse = jsonRoot.getAsJsonObject();</span>
+<span class="nc" id="L463">		JsonObject tokenResponse = jsonRoot.getAsJsonObject();</span>
 
-<span class="nc bnc" id="L464" title="All 2 branches missed.">		if (tokenResponse.get(&quot;error&quot;) != null) {</span>
+<span class="nc bnc" id="L465" title="All 2 branches missed.">		if (tokenResponse.get(&quot;error&quot;) != null) {</span>
 
 			// Handle error
 
-<span class="nc" id="L468">			String error = tokenResponse.get(&quot;error&quot;).getAsString();</span>
+<span class="nc" id="L469">			String error = tokenResponse.get(&quot;error&quot;).getAsString();</span>
 
-<span class="nc" id="L470">			logger.error(&quot;Token Endpoint returned: &quot; + error);</span>
+<span class="nc" id="L471">			logger.error(&quot;Token Endpoint returned: &quot; + error);</span>
 
-<span class="nc" id="L472">			throw new AuthenticationServiceException(&quot;Unable to obtain Access Token.  Token Endpoint returned: &quot; + error);</span>
+<span class="nc" id="L473">			throw new AuthenticationServiceException(&quot;Unable to obtain Access Token.  Token Endpoint returned: &quot; + error);</span>
 
 		} else {
 
@@ -477,154 +478,154 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 			// OIDCAuthenticationToken
 
 			// get out all the token strings
-<span class="nc" id="L480">			String accessTokenValue = null;</span>
-<span class="nc" id="L481">			String idTokenValue = null;</span>
-<span class="nc" id="L482">			String refreshTokenValue = null;</span>
+<span class="nc" id="L481">			String accessTokenValue = null;</span>
+<span class="nc" id="L482">			String idTokenValue = null;</span>
+<span class="nc" id="L483">			String refreshTokenValue = null;</span>
 
-<span class="nc bnc" id="L484" title="All 2 branches missed.">			if (tokenResponse.has(&quot;access_token&quot;)) {</span>
-<span class="nc" id="L485">				accessTokenValue = tokenResponse.get(&quot;access_token&quot;).getAsString();</span>
+<span class="nc bnc" id="L485" title="All 2 branches missed.">			if (tokenResponse.has(&quot;access_token&quot;)) {</span>
+<span class="nc" id="L486">				accessTokenValue = tokenResponse.get(&quot;access_token&quot;).getAsString();</span>
 			} else {
-<span class="nc" id="L487">				throw new AuthenticationServiceException(&quot;Token Endpoint did not return an access_token: &quot; + jsonString);</span>
+<span class="nc" id="L488">				throw new AuthenticationServiceException(&quot;Token Endpoint did not return an access_token: &quot; + jsonString);</span>
 			}
 
-<span class="nc bnc" id="L490" title="All 2 branches missed.">			if (tokenResponse.has(&quot;id_token&quot;)) {</span>
-<span class="nc" id="L491">				idTokenValue = tokenResponse.get(&quot;id_token&quot;).getAsString();</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">			if (tokenResponse.has(&quot;id_token&quot;)) {</span>
+<span class="nc" id="L492">				idTokenValue = tokenResponse.get(&quot;id_token&quot;).getAsString();</span>
 			} else {
-<span class="nc" id="L493">				logger.error(&quot;Token Endpoint did not return an id_token&quot;);</span>
-<span class="nc" id="L494">				throw new AuthenticationServiceException(&quot;Token Endpoint did not return an id_token&quot;);</span>
+<span class="nc" id="L494">				logger.error(&quot;Token Endpoint did not return an id_token&quot;);</span>
+<span class="nc" id="L495">				throw new AuthenticationServiceException(&quot;Token Endpoint did not return an id_token&quot;);</span>
 			}
 
-<span class="nc bnc" id="L497" title="All 2 branches missed.">			if (tokenResponse.has(&quot;refresh_token&quot;)) {</span>
-<span class="nc" id="L498">				refreshTokenValue = tokenResponse.get(&quot;refresh_token&quot;).getAsString();</span>
+<span class="nc bnc" id="L498" title="All 2 branches missed.">			if (tokenResponse.has(&quot;refresh_token&quot;)) {</span>
+<span class="nc" id="L499">				refreshTokenValue = tokenResponse.get(&quot;refresh_token&quot;).getAsString();</span>
 			}
 
 			try {
-<span class="nc" id="L502">				JWT idToken = JWTParser.parse(idTokenValue);</span>
+<span class="nc" id="L503">				JWT idToken = JWTParser.parse(idTokenValue);</span>
 
 				// validate our ID Token over a number of tests
-<span class="nc" id="L505">				JWTClaimsSet idClaims = idToken.getJWTClaimsSet();</span>
+<span class="nc" id="L506">				JWTClaimsSet idClaims = idToken.getJWTClaimsSet();</span>
 
 				// check the signature
-<span class="nc" id="L508">				JWTSigningAndValidationService jwtValidator = null;</span>
+<span class="nc" id="L509">				JWTSigningAndValidationService jwtValidator = null;</span>
 
-<span class="nc" id="L510">				Algorithm tokenAlg = idToken.getHeader().getAlgorithm();</span>
+<span class="nc" id="L511">				Algorithm tokenAlg = idToken.getHeader().getAlgorithm();</span>
 
-<span class="nc" id="L512">				Algorithm clientAlg = clientConfig.getIdTokenSignedResponseAlg();</span>
+<span class="nc" id="L513">				Algorithm clientAlg = clientConfig.getIdTokenSignedResponseAlg();</span>
 
-<span class="nc bnc" id="L514" title="All 2 branches missed.">				if (clientAlg != null) {</span>
-<span class="nc bnc" id="L515" title="All 2 branches missed.">					if (!clientAlg.equals(tokenAlg)) {</span>
-<span class="nc" id="L516">						throw new AuthenticationServiceException(&quot;Token algorithm &quot; + tokenAlg + &quot; does not match expected algorithm &quot; + clientAlg);</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">				if (clientAlg != null) {</span>
+<span class="nc bnc" id="L516" title="All 2 branches missed.">					if (!clientAlg.equals(tokenAlg)) {</span>
+<span class="nc" id="L517">						throw new AuthenticationServiceException(&quot;Token algorithm &quot; + tokenAlg + &quot; does not match expected algorithm &quot; + clientAlg);</span>
 					}
 				}
 
-<span class="nc bnc" id="L520" title="All 2 branches missed.">				if (idToken instanceof PlainJWT) {</span>
+<span class="nc bnc" id="L521" title="All 2 branches missed.">				if (idToken instanceof PlainJWT) {</span>
 
-<span class="nc bnc" id="L522" title="All 2 branches missed.">					if (clientAlg == null) {</span>
-<span class="nc" id="L523">						throw new AuthenticationServiceException(&quot;Unsigned ID tokens can only be used if explicitly configured in client.&quot;);</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">					if (clientAlg == null) {</span>
+<span class="nc" id="L524">						throw new AuthenticationServiceException(&quot;Unsigned ID tokens can only be used if explicitly configured in client.&quot;);</span>
 					}
 
-<span class="nc bnc" id="L526" title="All 4 branches missed.">					if (tokenAlg != null &amp;&amp; !tokenAlg.equals(Algorithm.NONE)) {</span>
-<span class="nc" id="L527">						throw new AuthenticationServiceException(&quot;Unsigned token received, expected signature with &quot; + tokenAlg);</span>
+<span class="nc bnc" id="L527" title="All 4 branches missed.">					if (tokenAlg != null &amp;&amp; !tokenAlg.equals(Algorithm.NONE)) {</span>
+<span class="nc" id="L528">						throw new AuthenticationServiceException(&quot;Unsigned token received, expected signature with &quot; + tokenAlg);</span>
 					}
-<span class="nc bnc" id="L529" title="All 2 branches missed.">				} else if (idToken instanceof SignedJWT) {</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">				} else if (idToken instanceof SignedJWT) {</span>
 
-<span class="nc" id="L531">					SignedJWT signedIdToken = (SignedJWT)idToken;</span>
+<span class="nc" id="L532">					SignedJWT signedIdToken = (SignedJWT)idToken;</span>
 
-<span class="nc bnc" id="L533" title="All 2 branches missed.">					if (tokenAlg.equals(JWSAlgorithm.HS256)</span>
-<span class="nc bnc" id="L534" title="All 2 branches missed.">							|| tokenAlg.equals(JWSAlgorithm.HS384)</span>
-<span class="nc bnc" id="L535" title="All 2 branches missed.">							|| tokenAlg.equals(JWSAlgorithm.HS512)) {</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">					if (tokenAlg.equals(JWSAlgorithm.HS256)</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">							|| tokenAlg.equals(JWSAlgorithm.HS384)</span>
+<span class="nc bnc" id="L536" title="All 2 branches missed.">							|| tokenAlg.equals(JWSAlgorithm.HS512)) {</span>
 
 						// generate one based on client secret
-<span class="nc" id="L538">						jwtValidator = symmetricCacheService.getSymmetricValidtor(clientConfig.getClient());</span>
+<span class="nc" id="L539">						jwtValidator = symmetricCacheService.getSymmetricValidtor(clientConfig.getClient());</span>
 					} else {
 						// otherwise load from the server's public key
-<span class="nc" id="L541">						jwtValidator = validationServices.getValidator(serverConfig.getJwksUri());</span>
+<span class="nc" id="L542">						jwtValidator = validationServices.getValidator(serverConfig.getJwksUri());</span>
 					}
 
-<span class="nc bnc" id="L544" title="All 2 branches missed.">					if (jwtValidator != null) {</span>
-<span class="nc bnc" id="L545" title="All 2 branches missed.">						if(!jwtValidator.validateSignature(signedIdToken)) {</span>
-<span class="nc" id="L546">							throw new AuthenticationServiceException(&quot;Signature validation failed&quot;);</span>
+<span class="nc bnc" id="L545" title="All 2 branches missed.">					if (jwtValidator != null) {</span>
+<span class="nc bnc" id="L546" title="All 2 branches missed.">						if(!jwtValidator.validateSignature(signedIdToken)) {</span>
+<span class="nc" id="L547">							throw new AuthenticationServiceException(&quot;Signature validation failed&quot;);</span>
 						}
 					} else {
-<span class="nc" id="L549">						logger.error(&quot;No validation service found. Skipping signature validation&quot;);</span>
-<span class="nc" id="L550">						throw new AuthenticationServiceException(&quot;Unable to find an appropriate signature validator for ID Token.&quot;);</span>
+<span class="nc" id="L550">						logger.error(&quot;No validation service found. Skipping signature validation&quot;);</span>
+<span class="nc" id="L551">						throw new AuthenticationServiceException(&quot;Unable to find an appropriate signature validator for ID Token.&quot;);</span>
 					}
 				} // TODO: encrypted id tokens
 
 				// check the issuer
-<span class="nc bnc" id="L555" title="All 2 branches missed.">				if (idClaims.getIssuer() == null) {</span>
-<span class="nc" id="L556">					throw new AuthenticationServiceException(&quot;Id Token Issuer is null&quot;);</span>
-<span class="nc bnc" id="L557" title="All 2 branches missed.">				} else if (!idClaims.getIssuer().equals(serverConfig.getIssuer())){</span>
-<span class="nc" id="L558">					throw new AuthenticationServiceException(&quot;Issuers do not match, expected &quot; + serverConfig.getIssuer() + &quot; got &quot; + idClaims.getIssuer());</span>
+<span class="nc bnc" id="L556" title="All 2 branches missed.">				if (idClaims.getIssuer() == null) {</span>
+<span class="nc" id="L557">					throw new AuthenticationServiceException(&quot;Id Token Issuer is null&quot;);</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">				} else if (!idClaims.getIssuer().equals(serverConfig.getIssuer())){</span>
+<span class="nc" id="L559">					throw new AuthenticationServiceException(&quot;Issuers do not match, expected &quot; + serverConfig.getIssuer() + &quot; got &quot; + idClaims.getIssuer());</span>
 				}
 
 				// check expiration
-<span class="nc bnc" id="L562" title="All 2 branches missed.">				if (idClaims.getExpirationTime() == null) {</span>
-<span class="nc" id="L563">					throw new AuthenticationServiceException(&quot;Id Token does not have required expiration claim&quot;);</span>
+<span class="nc bnc" id="L563" title="All 2 branches missed.">				if (idClaims.getExpirationTime() == null) {</span>
+<span class="nc" id="L564">					throw new AuthenticationServiceException(&quot;Id Token does not have required expiration claim&quot;);</span>
 				} else {
 					// it's not null, see if it's expired
-<span class="nc" id="L566">					Date now = new Date(System.currentTimeMillis() - (timeSkewAllowance * 1000));</span>
-<span class="nc bnc" id="L567" title="All 2 branches missed.">					if (now.after(idClaims.getExpirationTime())) {</span>
-<span class="nc" id="L568">						throw new AuthenticationServiceException(&quot;Id Token is expired: &quot; + idClaims.getExpirationTime());</span>
+<span class="nc" id="L567">					Date now = new Date(System.currentTimeMillis() - (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L568" title="All 2 branches missed.">					if (now.after(idClaims.getExpirationTime())) {</span>
+<span class="nc" id="L569">						throw new AuthenticationServiceException(&quot;Id Token is expired: &quot; + idClaims.getExpirationTime());</span>
 					}
 				}
 
 				// check not before
-<span class="nc bnc" id="L573" title="All 2 branches missed.">				if (idClaims.getNotBeforeTime() != null) {</span>
-<span class="nc" id="L574">					Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
-<span class="nc bnc" id="L575" title="All 2 branches missed.">					if (now.before(idClaims.getNotBeforeTime())){</span>
-<span class="nc" id="L576">						throw new AuthenticationServiceException(&quot;Id Token not valid untill: &quot; + idClaims.getNotBeforeTime());</span>
+<span class="nc bnc" id="L574" title="All 2 branches missed.">				if (idClaims.getNotBeforeTime() != null) {</span>
+<span class="nc" id="L575">					Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L576" title="All 2 branches missed.">					if (now.before(idClaims.getNotBeforeTime())){</span>
+<span class="nc" id="L577">						throw new AuthenticationServiceException(&quot;Id Token not valid untill: &quot; + idClaims.getNotBeforeTime());</span>
 					}
 				}
 
 				// check issued at
-<span class="nc bnc" id="L581" title="All 2 branches missed.">				if (idClaims.getIssueTime() == null) {</span>
-<span class="nc" id="L582">					throw new AuthenticationServiceException(&quot;Id Token does not have required issued-at claim&quot;);</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">				if (idClaims.getIssueTime() == null) {</span>
+<span class="nc" id="L583">					throw new AuthenticationServiceException(&quot;Id Token does not have required issued-at claim&quot;);</span>
 				} else {
 					// since it's not null, see if it was issued in the future
-<span class="nc" id="L585">					Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
-<span class="nc bnc" id="L586" title="All 2 branches missed.">					if (now.before(idClaims.getIssueTime())) {</span>
-<span class="nc" id="L587">						throw new AuthenticationServiceException(&quot;Id Token was issued in the future: &quot; + idClaims.getIssueTime());</span>
+<span class="nc" id="L586">					Date now = new Date(System.currentTimeMillis() + (timeSkewAllowance * 1000));</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">					if (now.before(idClaims.getIssueTime())) {</span>
+<span class="nc" id="L588">						throw new AuthenticationServiceException(&quot;Id Token was issued in the future: &quot; + idClaims.getIssueTime());</span>
 					}
 				}
 
 				// check audience
-<span class="nc bnc" id="L592" title="All 2 branches missed.">				if (idClaims.getAudience() == null) {</span>
-<span class="nc" id="L593">					throw new AuthenticationServiceException(&quot;Id token audience is null&quot;);</span>
-<span class="nc bnc" id="L594" title="All 2 branches missed.">				} else if (!idClaims.getAudience().contains(clientConfig.getClientId())) {</span>
-<span class="nc" id="L595">					throw new AuthenticationServiceException(&quot;Audience does not match, expected &quot; + clientConfig.getClientId() + &quot; got &quot; + idClaims.getAudience());</span>
+<span class="nc bnc" id="L593" title="All 2 branches missed.">				if (idClaims.getAudience() == null) {</span>
+<span class="nc" id="L594">					throw new AuthenticationServiceException(&quot;Id token audience is null&quot;);</span>
+<span class="nc bnc" id="L595" title="All 2 branches missed.">				} else if (!idClaims.getAudience().contains(clientConfig.getClientId())) {</span>
+<span class="nc" id="L596">					throw new AuthenticationServiceException(&quot;Audience does not match, expected &quot; + clientConfig.getClientId() + &quot; got &quot; + idClaims.getAudience());</span>
 				}
 
 				// compare the nonce to our stored claim
-<span class="nc" id="L599">				String nonce = idClaims.getStringClaim(&quot;nonce&quot;);</span>
-<span class="nc bnc" id="L600" title="All 2 branches missed.">				if (Strings.isNullOrEmpty(nonce)) {</span>
+<span class="nc" id="L600">				String nonce = idClaims.getStringClaim(&quot;nonce&quot;);</span>
+<span class="nc bnc" id="L601" title="All 2 branches missed.">				if (Strings.isNullOrEmpty(nonce)) {</span>
 
-<span class="nc" id="L602">					logger.error(&quot;ID token did not contain a nonce claim.&quot;);</span>
+<span class="nc" id="L603">					logger.error(&quot;ID token did not contain a nonce claim.&quot;);</span>
 
-<span class="nc" id="L604">					throw new AuthenticationServiceException(&quot;ID token did not contain a nonce claim.&quot;);</span>
+<span class="nc" id="L605">					throw new AuthenticationServiceException(&quot;ID token did not contain a nonce claim.&quot;);</span>
 				}
 
-<span class="nc" id="L607">				String storedNonce = getStoredNonce(session);</span>
-<span class="nc bnc" id="L608" title="All 2 branches missed.">				if (!nonce.equals(storedNonce)) {</span>
-<span class="nc" id="L609">					logger.error(&quot;Possible replay attack detected! The comparison of the nonce in the returned &quot;</span>
+<span class="nc" id="L608">				String storedNonce = getStoredNonce(session);</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">				if (!nonce.equals(storedNonce)) {</span>
+<span class="nc" id="L610">					logger.error(&quot;Possible replay attack detected! The comparison of the nonce in the returned &quot;</span>
 							+ &quot;ID Token to the session &quot; + NONCE_SESSION_VARIABLE + &quot; failed. Expected &quot; + storedNonce + &quot; got &quot; + nonce + &quot;.&quot;);
 
-<span class="nc" id="L612">					throw new AuthenticationServiceException(</span>
+<span class="nc" id="L613">					throw new AuthenticationServiceException(</span>
 							&quot;Possible replay attack detected! The comparison of the nonce in the returned &quot;
 									+ &quot;ID Token to the session &quot; + NONCE_SESSION_VARIABLE + &quot; failed. Expected &quot; + storedNonce + &quot; got &quot; + nonce + &quot;.&quot;);
 				}
 
 				// construct an PendingOIDCAuthenticationToken and return a Authentication object w/the userId and the idToken
 
-<span class="nc" id="L619">				PendingOIDCAuthenticationToken token = new PendingOIDCAuthenticationToken(idClaims.getSubject(), idClaims.getIssuer(),</span>
+<span class="nc" id="L620">				PendingOIDCAuthenticationToken token = new PendingOIDCAuthenticationToken(idClaims.getSubject(), idClaims.getIssuer(),</span>
 						serverConfig,
 						idToken, accessTokenValue, refreshTokenValue);
 
-<span class="nc" id="L623">				Authentication authentication = this.getAuthenticationManager().authenticate(token);</span>
+<span class="nc" id="L624">				Authentication authentication = this.getAuthenticationManager().authenticate(token);</span>
 
-<span class="nc" id="L625">				return authentication;</span>
-<span class="nc" id="L626">			} catch (ParseException e) {</span>
-<span class="nc" id="L627">				throw new AuthenticationServiceException(&quot;Couldn't parse idToken: &quot;, e);</span>
+<span class="nc" id="L626">				return authentication;</span>
+<span class="nc" id="L627">			} catch (ParseException e) {</span>
+<span class="nc" id="L628">				throw new AuthenticationServiceException(&quot;Couldn't parse idToken: &quot;, e);</span>
 			}
 
 
@@ -645,11 +646,11 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 */
 	protected void handleError(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-<span class="nc" id="L648">		String error = request.getParameter(&quot;error&quot;);</span>
-<span class="nc" id="L649">		String errorDescription = request.getParameter(&quot;error_description&quot;);</span>
-<span class="nc" id="L650">		String errorURI = request.getParameter(&quot;error_uri&quot;);</span>
+<span class="nc" id="L649">		String error = request.getParameter(&quot;error&quot;);</span>
+<span class="nc" id="L650">		String errorDescription = request.getParameter(&quot;error_description&quot;);</span>
+<span class="nc" id="L651">		String errorURI = request.getParameter(&quot;error_uri&quot;);</span>
 
-<span class="nc" id="L652">		throw new AuthorizationEndpointException(error, errorDescription, errorURI);</span>
+<span class="nc" id="L653">		throw new AuthorizationEndpointException(error, errorDescription, errorURI);</span>
 	}
 
 	/**
@@ -659,11 +660,11 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	private static String getStoredSessionString(HttpSession session, String key) {
-<span class="nc" id="L662">		Object o = session.getAttribute(key);</span>
-<span class="nc bnc" id="L663" title="All 4 branches missed.">		if (o != null &amp;&amp; o instanceof String) {</span>
-<span class="nc" id="L664">			return o.toString();</span>
+<span class="nc" id="L663">		Object o = session.getAttribute(key);</span>
+<span class="nc bnc" id="L664" title="All 4 branches missed.">		if (o != null &amp;&amp; o instanceof String) {</span>
+<span class="nc" id="L665">			return o.toString();</span>
 		} else {
-<span class="nc" id="L666">			return null;</span>
+<span class="nc" id="L667">			return null;</span>
 		}
 	}
 
@@ -673,10 +674,10 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String createNonce(HttpSession session) {
-<span class="nc" id="L676">		String nonce = new BigInteger(50, new SecureRandom()).toString(16);</span>
-<span class="nc" id="L677">		session.setAttribute(NONCE_SESSION_VARIABLE, nonce);</span>
+<span class="nc" id="L677">		String nonce = new BigInteger(50, new SecureRandom()).toString(16);</span>
+<span class="nc" id="L678">		session.setAttribute(NONCE_SESSION_VARIABLE, nonce);</span>
 
-<span class="nc" id="L679">		return nonce;</span>
+<span class="nc" id="L680">		return nonce;</span>
 	}
 
 	/**
@@ -685,7 +686,7 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String getStoredNonce(HttpSession session) {
-<span class="nc" id="L688">		return getStoredSessionString(session, NONCE_SESSION_VARIABLE);</span>
+<span class="nc" id="L689">		return getStoredSessionString(session, NONCE_SESSION_VARIABLE);</span>
 	}
 
 	/**
@@ -694,10 +695,10 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String createState(HttpSession session) {
-<span class="nc" id="L697">		String state = new BigInteger(50, new SecureRandom()).toString(16);</span>
-<span class="nc" id="L698">		session.setAttribute(STATE_SESSION_VARIABLE, state);</span>
+<span class="nc" id="L698">		String state = new BigInteger(50, new SecureRandom()).toString(16);</span>
+<span class="nc" id="L699">		session.setAttribute(STATE_SESSION_VARIABLE, state);</span>
 
-<span class="nc" id="L700">		return state;</span>
+<span class="nc" id="L701">		return state;</span>
 	}
 
 	/**
@@ -706,7 +707,7 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String getStoredState(HttpSession session) {
-<span class="nc" id="L709">		return getStoredSessionString(session, STATE_SESSION_VARIABLE);</span>
+<span class="nc" id="L710">		return getStoredSessionString(session, STATE_SESSION_VARIABLE);</span>
 	}
 
 	/**
@@ -715,9 +716,9 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String createCodeVerifier(HttpSession session) {
-<span class="nc" id="L718">		String challenge = new BigInteger(50, new SecureRandom()).toString(16);</span>
-<span class="nc" id="L719">		session.setAttribute(CODE_VERIFIER_SESSION_VARIABLE, challenge);</span>
-<span class="nc" id="L720">		return challenge;</span>
+<span class="nc" id="L719">		String challenge = new BigInteger(50, new SecureRandom()).toString(16);</span>
+<span class="nc" id="L720">		session.setAttribute(CODE_VERIFIER_SESSION_VARIABLE, challenge);</span>
+<span class="nc" id="L721">		return challenge;</span>
 	}
 
 	/**
@@ -726,15 +727,15 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * @return
 	 */
 	protected static String getStoredCodeVerifier(HttpSession session) {
-<span class="nc" id="L729">		return getStoredSessionString(session, CODE_VERIFIER_SESSION_VARIABLE);</span>
+<span class="nc" id="L730">		return getStoredSessionString(session, CODE_VERIFIER_SESSION_VARIABLE);</span>
 	}
 
 
 	@Override
 	public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler successHandler) {
-<span class="nc" id="L735">		targetSuccessHandler.passthrough = successHandler;</span>
-<span class="nc" id="L736">		super.setAuthenticationSuccessHandler(targetSuccessHandler);</span>
-<span class="nc" id="L737">	}</span>
+<span class="nc" id="L736">		targetSuccessHandler.passthrough = successHandler;</span>
+<span class="nc" id="L737">		super.setAuthenticationSuccessHandler(targetSuccessHandler);</span>
+<span class="nc" id="L738">	}</span>
 
 
 
@@ -744,7 +745,7 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 * a target URL, we'll go to that. Otherwise we'll let the superclass handle
 	 * it for us with the configured behavior.
 	 */
-<span class="nc" id="L747">	protected class TargetLinkURIAuthenticationSuccessHandler implements AuthenticationSuccessHandler {</span>
+<span class="nc" id="L748">	protected class TargetLinkURIAuthenticationSuccessHandler implements AuthenticationSuccessHandler {</span>
 
 		private AuthenticationSuccessHandler passthrough;
 
@@ -753,25 +754,25 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 				HttpServletResponse response, Authentication authentication)
 						throws IOException, ServletException {
 
-<span class="nc" id="L756">			HttpSession session = request.getSession();</span>
+<span class="nc" id="L757">			HttpSession session = request.getSession();</span>
 
 			// check to see if we've got a target
-<span class="nc" id="L759">			String target = getStoredSessionString(session, TARGET_SESSION_VARIABLE);</span>
+<span class="nc" id="L760">			String target = getStoredSessionString(session, TARGET_SESSION_VARIABLE);</span>
 
-<span class="nc bnc" id="L761" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(target)) {</span>
-<span class="nc" id="L762">				session.removeAttribute(TARGET_SESSION_VARIABLE);</span>
+<span class="nc bnc" id="L762" title="All 2 branches missed.">			if (!Strings.isNullOrEmpty(target)) {</span>
+<span class="nc" id="L763">				session.removeAttribute(TARGET_SESSION_VARIABLE);</span>
 
-<span class="nc bnc" id="L764" title="All 2 branches missed.">				if (deepLinkFilter != null) {</span>
-<span class="nc" id="L765">					target = deepLinkFilter.filter(target);</span>
+<span class="nc bnc" id="L765" title="All 2 branches missed.">				if (deepLinkFilter != null) {</span>
+<span class="nc" id="L766">					target = deepLinkFilter.filter(target);</span>
 				}
 
-<span class="nc" id="L768">				response.sendRedirect(target);</span>
+<span class="nc" id="L769">				response.sendRedirect(target);</span>
 			} else {
 				// if the target was blank, use the default behavior here
-<span class="nc" id="L771">				passthrough.onAuthenticationSuccess(request, response, authentication);</span>
+<span class="nc" id="L772">				passthrough.onAuthenticationSuccess(request, response, authentication);</span>
 			}
 
-<span class="nc" id="L774">		}</span>
+<span class="nc" id="L775">		}</span>
 
 	}
 
@@ -782,121 +783,121 @@ public class OIDCAuthenticationFilter extends AbstractAuthenticationProcessingFi
 
 
 	public int getTimeSkewAllowance() {
-<span class="nc" id="L785">		return timeSkewAllowance;</span>
+<span class="nc" id="L786">		return timeSkewAllowance;</span>
 	}
 
 	public void setTimeSkewAllowance(int timeSkewAllowance) {
-<span class="nc" id="L789">		this.timeSkewAllowance = timeSkewAllowance;</span>
-<span class="nc" id="L790">	}</span>
+<span class="nc" id="L790">		this.timeSkewAllowance = timeSkewAllowance;</span>
+<span class="nc" id="L791">	}</span>
 
 	/**
 	 * @return the validationServices
 	 */
 	public JWKSetCacheService getValidationServices() {
-<span class="nc" id="L796">		return validationServices;</span>
+<span class="nc" id="L797">		return validationServices;</span>
 	}
 
 	/**
 	 * @param validationServices the validationServices to set
 	 */
 	public void setValidationServices(JWKSetCacheService validationServices) {
-<span class="nc" id="L803">		this.validationServices = validationServices;</span>
-<span class="nc" id="L804">	}</span>
+<span class="nc" id="L804">		this.validationServices = validationServices;</span>
+<span class="nc" id="L805">	}</span>
 
 	/**
 	 * @return the servers
 	 */
 	public ServerConfigurationService getServerConfigurationService() {
-<span class="nc" id="L810">		return servers;</span>
+<span class="nc" id="L811">		return servers;</span>
 	}
 
 	/**
 	 * @param servers the servers to set
 	 */
 	public void setServerConfigurationService(ServerConfigurationService servers) {
-<span class="nc" id="L817">		this.servers = servers;</span>
-<span class="nc" id="L818">	}</span>
+<span class="nc" id="L818">		this.servers = servers;</span>
+<span class="nc" id="L819">	}</span>
 
 	/**
 	 * @return the clients
 	 */
 	public ClientConfigurationService getClientConfigurationService() {
-<span class="nc" id="L824">		return clients;</span>
+<span class="nc" id="L825">		return clients;</span>
 	}
 
 	/**
 	 * @param clients the clients to set
 	 */
 	public void setClientConfigurationService(ClientConfigurationService clients) {
-<span class="nc" id="L831">		this.clients = clients;</span>
-<span class="nc" id="L832">	}</span>
+<span class="nc" id="L832">		this.clients = clients;</span>
+<span class="nc" id="L833">	}</span>
 
 	/**
 	 * @return the issuerService
 	 */
 	public IssuerService getIssuerService() {
-<span class="nc" id="L838">		return issuerService;</span>
+<span class="nc" id="L839">		return issuerService;</span>
 	}
 
 	/**
 	 * @param issuerService the issuerService to set
 	 */
 	public void setIssuerService(IssuerService issuerService) {
-<span class="nc" id="L845">		this.issuerService = issuerService;</span>
-<span class="nc" id="L846">	}</span>
+<span class="nc" id="L846">		this.issuerService = issuerService;</span>
+<span class="nc" id="L847">	}</span>
 
 	/**
 	 * @return the authRequestBuilder
 	 */
 	public AuthRequestUrlBuilder getAuthRequestUrlBuilder() {
-<span class="nc" id="L852">		return authRequestBuilder;</span>
+<span class="nc" id="L853">		return authRequestBuilder;</span>
 	}
 
 	/**
 	 * @param authRequestBuilder the authRequestBuilder to set
 	 */
 	public void setAuthRequestUrlBuilder(AuthRequestUrlBuilder authRequestBuilder) {
-<span class="nc" id="L859">		this.authRequestBuilder = authRequestBuilder;</span>
-<span class="nc" id="L860">	}</span>
+<span class="nc" id="L860">		this.authRequestBuilder = authRequestBuilder;</span>
+<span class="nc" id="L861">	}</span>
 
 	/**
 	 * @return the authOptions
 	 */
 	public AuthRequestOptionsService getAuthRequestOptionsService() {
-<span class="nc" id="L866">		return authOptions;</span>
+<span class="nc" id="L867">		return authOptions;</span>
 	}
 
 	/**
 	 * @param authOptions the authOptions to set
 	 */
 	public void setAuthRequestOptionsService(AuthRequestOptionsService authOptions) {
-<span class="nc" id="L873">		this.authOptions = authOptions;</span>
-<span class="nc" id="L874">	}</span>
+<span class="nc" id="L874">		this.authOptions = authOptions;</span>
+<span class="nc" id="L875">	}</span>
 
 	public SymmetricKeyJWTValidatorCacheService getSymmetricCacheService() {
-<span class="nc" id="L877">		return symmetricCacheService;</span>
+<span class="nc" id="L878">		return symmetricCacheService;</span>
 	}
 
 	public void setSymmetricCacheService(SymmetricKeyJWTValidatorCacheService symmetricCacheService) {
-<span class="nc" id="L881">		this.symmetricCacheService = symmetricCacheService;</span>
-<span class="nc" id="L882">	}</span>
+<span class="nc" id="L882">		this.symmetricCacheService = symmetricCacheService;</span>
+<span class="nc" id="L883">	}</span>
 
 	public TargetLinkURIAuthenticationSuccessHandler getTargetLinkURIAuthenticationSuccessHandler() {
-<span class="nc" id="L885">		return targetSuccessHandler;</span>
+<span class="nc" id="L886">		return targetSuccessHandler;</span>
 	}
 
 	public void setTargetLinkURIAuthenticationSuccessHandler(
 			TargetLinkURIAuthenticationSuccessHandler targetSuccessHandler) {
-<span class="nc" id="L890">		this.targetSuccessHandler = targetSuccessHandler;</span>
-<span class="nc" id="L891">	}</span>
+<span class="nc" id="L891">		this.targetSuccessHandler = targetSuccessHandler;</span>
+<span class="nc" id="L892">	}</span>
 
 	public TargetLinkURIChecker targetLinkURIChecker() {
-<span class="nc" id="L894">		return deepLinkFilter;</span>
+<span class="nc" id="L895">		return deepLinkFilter;</span>
 	}
 
 	public void setTargetLinkURIChecker(TargetLinkURIChecker deepLinkFilter) {
-<span class="nc" id="L898">		this.deepLinkFilter = deepLinkFilter;</span>
-<span class="nc" id="L899">	}</span>
+<span class="nc" id="L899">		this.deepLinkFilter = deepLinkFilter;</span>
+<span class="nc" id="L900">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

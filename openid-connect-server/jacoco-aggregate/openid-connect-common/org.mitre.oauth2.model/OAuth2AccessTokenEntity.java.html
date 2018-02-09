@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OAuth2AccessTokenEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-common</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.model</a> &gt; <span class="el_source">OAuth2AccessTokenEntity.java</span></div><h1>OAuth2AccessTokenEntity.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -105,7 +106,7 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 
 	private Date expiration;
 
-<span class="nc" id="L108">	private String tokenType = OAuth2AccessToken.BEARER_TYPE;</span>
+<span class="nc" id="L109">	private String tokenType = OAuth2AccessToken.BEARER_TYPE;</span>
 
 	private OAuth2RefreshTokenEntity refreshToken;
 
@@ -115,14 +116,14 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 
 	private ApprovedSite approvedSite;
 
-<span class="nc" id="L118">	private Map&lt;String, Object&gt; additionalInformation = new HashMap&lt;&gt;(); // ephemeral map of items to be added to the OAuth token response</span>
+<span class="nc" id="L119">	private Map&lt;String, Object&gt; additionalInformation = new HashMap&lt;&gt;(); // ephemeral map of items to be added to the OAuth token response</span>
 
 	/**
 	 * Create a new, blank access token
 	 */
-<span class="nc" id="L123">	public OAuth2AccessTokenEntity() {</span>
+<span class="nc" id="L124">	public OAuth2AccessTokenEntity() {</span>
 
-<span class="nc" id="L125">	}</span>
+<span class="nc" id="L126">	}</span>
 
 	/**
 	 * @return the id
@@ -131,15 +132,15 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = &quot;id&quot;)
 	public Long getId() {
-<span class="nc" id="L134">		return id;</span>
+<span class="nc" id="L135">		return id;</span>
 	}
 
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
-<span class="nc" id="L141">		this.id = id;</span>
-<span class="nc" id="L142">	}</span>
+<span class="nc" id="L142">		this.id = id;</span>
+<span class="nc" id="L143">	}</span>
 
 	/**
 	 * Get all additional information to be sent to the serializer as part of the token response.
@@ -148,7 +149,7 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@Override
 	@Transient
 	public Map&lt;String, Object&gt; getAdditionalInformation() {
-<span class="nc" id="L151">		return additionalInformation;</span>
+<span class="nc" id="L152">		return additionalInformation;</span>
 	}
 
 	/**
@@ -158,15 +159,15 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@ManyToOne
 	@JoinColumn(name = &quot;auth_holder_id&quot;)
 	public AuthenticationHolderEntity getAuthenticationHolder() {
-<span class="nc" id="L161">		return authenticationHolder;</span>
+<span class="nc" id="L162">		return authenticationHolder;</span>
 	}
 
 	/**
 	 * @param authentication the authentication to set
 	 */
 	public void setAuthenticationHolder(AuthenticationHolderEntity authenticationHolder) {
-<span class="nc" id="L168">		this.authenticationHolder = authenticationHolder;</span>
-<span class="nc" id="L169">	}</span>
+<span class="nc" id="L169">		this.authenticationHolder = authenticationHolder;</span>
+<span class="nc" id="L170">	}</span>
 
 	/**
 	 * @return the client
@@ -174,15 +175,15 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@ManyToOne
 	@JoinColumn(name = &quot;client_id&quot;)
 	public ClientDetailsEntity getClient() {
-<span class="nc" id="L177">		return client;</span>
+<span class="nc" id="L178">		return client;</span>
 	}
 
 	/**
 	 * @param client the client to set
 	 */
 	public void setClient(ClientDetailsEntity client) {
-<span class="nc" id="L184">		this.client = client;</span>
-<span class="nc" id="L185">	}</span>
+<span class="nc" id="L185">		this.client = client;</span>
+<span class="nc" id="L186">	}</span>
 
 	/**
 	 * Get the string-encoded value of this access token.
@@ -190,7 +191,7 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@Override
 	@Transient
 	public String getValue() {
-<span class="nc" id="L193">		return jwtValue.serialize();</span>
+<span class="nc" id="L194">		return jwtValue.serialize();</span>
 	}
 
 	@Override
@@ -198,42 +199,42 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = &quot;expiration&quot;)
 	public Date getExpiration() {
-<span class="nc" id="L201">		return expiration;</span>
+<span class="nc" id="L202">		return expiration;</span>
 	}
 
 	public void setExpiration(Date expiration) {
-<span class="nc" id="L205">		this.expiration = expiration;</span>
-<span class="nc" id="L206">	}</span>
+<span class="nc" id="L206">		this.expiration = expiration;</span>
+<span class="nc" id="L207">	}</span>
 
 	@Override
 	@Basic
 	@Column(name=&quot;token_type&quot;)
 	public String getTokenType() {
-<span class="nc" id="L212">		return tokenType;</span>
+<span class="nc" id="L213">		return tokenType;</span>
 	}
 
 	public void setTokenType(String tokenType) {
-<span class="nc" id="L216">		this.tokenType = tokenType;</span>
-<span class="nc" id="L217">	}</span>
+<span class="nc" id="L217">		this.tokenType = tokenType;</span>
+<span class="nc" id="L218">	}</span>
 
 	@Override
 	@ManyToOne
 	@JoinColumn(name=&quot;refresh_token_id&quot;)
 	public OAuth2RefreshTokenEntity getRefreshToken() {
-<span class="nc" id="L223">		return refreshToken;</span>
+<span class="nc" id="L224">		return refreshToken;</span>
 	}
 
 	public void setRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L227">		this.refreshToken = refreshToken;</span>
-<span class="nc" id="L228">	}</span>
+<span class="nc" id="L228">		this.refreshToken = refreshToken;</span>
+<span class="nc" id="L229">	}</span>
 
 	public void setRefreshToken(OAuth2RefreshToken refreshToken) {
-<span class="nc bnc" id="L231" title="All 2 branches missed.">		if (!(refreshToken instanceof OAuth2RefreshTokenEntity)) {</span>
-<span class="nc" id="L232">			throw new IllegalArgumentException(&quot;Not a storable refresh token entity!&quot;);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">		if (!(refreshToken instanceof OAuth2RefreshTokenEntity)) {</span>
+<span class="nc" id="L233">			throw new IllegalArgumentException(&quot;Not a storable refresh token entity!&quot;);</span>
 		}
 		// force a pass through to the entity version
-<span class="nc" id="L235">		setRefreshToken((OAuth2RefreshTokenEntity)refreshToken);</span>
-<span class="nc" id="L236">	}</span>
+<span class="nc" id="L236">		setRefreshToken((OAuth2RefreshTokenEntity)refreshToken);</span>
+<span class="nc" id="L237">	}</span>
 
 	@Override
 	@ElementCollection(fetch=FetchType.EAGER)
@@ -242,17 +243,17 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 			name=&quot;token_scope&quot;
 			)
 	public Set&lt;String&gt; getScope() {
-<span class="nc" id="L245">		return scope;</span>
+<span class="nc" id="L246">		return scope;</span>
 	}
 
 	public void setScope(Set&lt;String&gt; scope) {
-<span class="nc" id="L249">		this.scope = scope;</span>
-<span class="nc" id="L250">	}</span>
+<span class="nc" id="L250">		this.scope = scope;</span>
+<span class="nc" id="L251">	}</span>
 
 	@Override
 	@Transient
 	public boolean isExpired() {
-<span class="nc bnc" id="L255" title="All 4 branches missed.">		return getExpiration() == null ? false : System.currentTimeMillis() &gt; getExpiration().getTime();</span>
+<span class="nc bnc" id="L256" title="All 4 branches missed.">		return getExpiration() == null ? false : System.currentTimeMillis() &gt; getExpiration().getTime();</span>
 	}
 
 	/**
@@ -262,28 +263,28 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@Column(name=&quot;token_value&quot;)
 	@Convert(converter = JWTStringConverter.class)
 	public JWT getJwt() {
-<span class="nc" id="L265">		return jwtValue;</span>
+<span class="nc" id="L266">		return jwtValue;</span>
 	}
 
 	/**
 	 * @param jwtValue the jwtValue to set
 	 */
 	public void setJwt(JWT jwt) {
-<span class="nc" id="L272">		this.jwtValue = jwt;</span>
-<span class="nc" id="L273">	}</span>
+<span class="nc" id="L273">		this.jwtValue = jwt;</span>
+<span class="nc" id="L274">	}</span>
 
 	@Override
 	@Transient
 	public int getExpiresIn() {
 
-<span class="nc bnc" id="L279" title="All 2 branches missed.">		if (getExpiration() == null) {</span>
-<span class="nc" id="L280">			return -1; // no expiration time</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">		if (getExpiration() == null) {</span>
+<span class="nc" id="L281">			return -1; // no expiration time</span>
 		} else {
-<span class="nc" id="L282">			int secondsRemaining = (int) ((getExpiration().getTime() - System.currentTimeMillis()) / 1000);</span>
-<span class="nc bnc" id="L283" title="All 2 branches missed.">			if (isExpired()) {</span>
-<span class="nc" id="L284">				return 0; // has an expiration time and expired</span>
+<span class="nc" id="L283">			int secondsRemaining = (int) ((getExpiration().getTime() - System.currentTimeMillis()) / 1000);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">			if (isExpired()) {</span>
+<span class="nc" id="L285">				return 0; // has an expiration time and expired</span>
 			} else { // has an expiration time and not expired
-<span class="nc" id="L286">				return secondsRemaining;</span>
+<span class="nc" id="L287">				return secondsRemaining;</span>
 			}
 		}
 	}
@@ -298,25 +299,25 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 			inverseJoinColumns = @JoinColumn(name = &quot;permission_id&quot;)
 			)
 	public Set&lt;Permission&gt; getPermissions() {
-<span class="nc" id="L301">		return permissions;</span>
+<span class="nc" id="L302">		return permissions;</span>
 	}
 
 	/**
 	 * @param permissions the permissions to set
 	 */
 	public void setPermissions(Set&lt;Permission&gt; permissions) {
-<span class="nc" id="L308">		this.permissions = permissions;</span>
-<span class="nc" id="L309">	}</span>
+<span class="nc" id="L309">		this.permissions = permissions;</span>
+<span class="nc" id="L310">	}</span>
 
 	@ManyToOne
 	@JoinColumn(name=&quot;approved_site_id&quot;)
 	public ApprovedSite getApprovedSite() {
-<span class="nc" id="L314">		return approvedSite;</span>
+<span class="nc" id="L315">		return approvedSite;</span>
 	}
 
 	public void setApprovedSite(ApprovedSite approvedSite) {
-<span class="nc" id="L318">		this.approvedSite = approvedSite;</span>
-<span class="nc" id="L319">	}</span>
+<span class="nc" id="L319">		this.approvedSite = approvedSite;</span>
+<span class="nc" id="L320">	}</span>
 
 	/**
 	 * Add the ID Token to the additionalInformation map for a token response.
@@ -324,9 +325,9 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	 */
 	@Transient
 	public void setIdToken(JWT idToken) {
-<span class="nc bnc" id="L327" title="All 2 branches missed.">		if (idToken != null) {</span>
-<span class="nc" id="L328">			additionalInformation.put(ID_TOKEN_FIELD_NAME, idToken.serialize());</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">		if (idToken != null) {</span>
+<span class="nc" id="L329">			additionalInformation.put(ID_TOKEN_FIELD_NAME, idToken.serialize());</span>
 		}
-<span class="nc" id="L330">	}</span>
+<span class="nc" id="L331">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

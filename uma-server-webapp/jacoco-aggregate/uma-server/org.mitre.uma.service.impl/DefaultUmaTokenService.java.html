@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultUmaTokenService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">uma-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.uma.service.impl</a> &gt; <span class="el_source">DefaultUmaTokenService.java</span></div><h1>DefaultUmaTokenService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -50,7 +49,7 @@ import com.nimbusds.jwt.SignedJWT;
  *
  */
 @Service(&quot;defaultUmaTokenService&quot;)
-<span class="nc" id="L53">public class DefaultUmaTokenService implements UmaTokenService {</span>
+<span class="nc" id="L52">public class DefaultUmaTokenService implements UmaTokenService {</span>
 
 	@Autowired
 	private AuthenticationHolderRepository authenticationHolderRepository;
@@ -70,52 +69,52 @@ import com.nimbusds.jwt.SignedJWT;
 
 	@Override
 	public OAuth2AccessTokenEntity createRequestingPartyToken(OAuth2Authentication o2auth, PermissionTicket ticket, Policy policy) {
-<span class="nc" id="L73">		OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();</span>
-<span class="nc" id="L74">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
-<span class="nc" id="L75">		authHolder.setAuthentication(o2auth);</span>
-<span class="nc" id="L76">		authHolder = authenticationHolderRepository.save(authHolder);</span>
+<span class="nc" id="L72">		OAuth2AccessTokenEntity token = new OAuth2AccessTokenEntity();</span>
+<span class="nc" id="L73">		AuthenticationHolderEntity authHolder = new AuthenticationHolderEntity();</span>
+<span class="nc" id="L74">		authHolder.setAuthentication(o2auth);</span>
+<span class="nc" id="L75">		authHolder = authenticationHolderRepository.save(authHolder);</span>
 
-<span class="nc" id="L78">		token.setAuthenticationHolder(authHolder);</span>
+<span class="nc" id="L77">		token.setAuthenticationHolder(authHolder);</span>
 
-<span class="nc" id="L80">		ClientDetailsEntity client = clientService.loadClientByClientId(o2auth.getOAuth2Request().getClientId());</span>
-<span class="nc" id="L81">		token.setClient(client);</span>
+<span class="nc" id="L79">		ClientDetailsEntity client = clientService.loadClientByClientId(o2auth.getOAuth2Request().getClientId());</span>
+<span class="nc" id="L80">		token.setClient(client);</span>
 
-<span class="nc" id="L83">		Set&lt;String&gt; ticketScopes = ticket.getPermission().getScopes();</span>
-<span class="nc" id="L84">		Set&lt;String&gt; policyScopes = policy.getScopes();</span>
+<span class="nc" id="L82">		Set&lt;String&gt; ticketScopes = ticket.getPermission().getScopes();</span>
+<span class="nc" id="L83">		Set&lt;String&gt; policyScopes = policy.getScopes();</span>
 
-<span class="nc" id="L86">		Permission perm = new Permission();</span>
-<span class="nc" id="L87">		perm.setResourceSet(ticket.getPermission().getResourceSet());</span>
-<span class="nc" id="L88">		perm.setScopes(new HashSet&lt;&gt;(Sets.intersection(ticketScopes, policyScopes)));</span>
+<span class="nc" id="L85">		Permission perm = new Permission();</span>
+<span class="nc" id="L86">		perm.setResourceSet(ticket.getPermission().getResourceSet());</span>
+<span class="nc" id="L87">		perm.setScopes(new HashSet&lt;&gt;(Sets.intersection(ticketScopes, policyScopes)));</span>
 
-<span class="nc" id="L90">		token.setPermissions(Sets.newHashSet(perm));</span>
+<span class="nc" id="L89">		token.setPermissions(Sets.newHashSet(perm));</span>
 
-<span class="nc" id="L92">		JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder();</span>
+<span class="nc" id="L91">		JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder();</span>
 
-<span class="nc" id="L94">		claims.audience(Lists.newArrayList(ticket.getPermission().getResourceSet().getId().toString()));</span>
-<span class="nc" id="L95">		claims.issuer(config.getIssuer());</span>
-<span class="nc" id="L96">		claims.jwtID(UUID.randomUUID().toString());</span>
+<span class="nc" id="L93">		claims.audience(Lists.newArrayList(ticket.getPermission().getResourceSet().getId().toString()));</span>
+<span class="nc" id="L94">		claims.issuer(config.getIssuer());</span>
+<span class="nc" id="L95">		claims.jwtID(UUID.randomUUID().toString());</span>
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (config.getRqpTokenLifeTime() != null) {</span>
-<span class="nc" id="L99">			Date exp = new Date(System.currentTimeMillis() + config.getRqpTokenLifeTime() * 1000L);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		if (config.getRqpTokenLifeTime() != null) {</span>
+<span class="nc" id="L98">			Date exp = new Date(System.currentTimeMillis() + config.getRqpTokenLifeTime() * 1000L);</span>
 
-<span class="nc" id="L101">			claims.expirationTime(exp);</span>
-<span class="nc" id="L102">			token.setExpiration(exp);</span>
+<span class="nc" id="L100">			claims.expirationTime(exp);</span>
+<span class="nc" id="L101">			token.setExpiration(exp);</span>
 		}
 
 
-<span class="nc" id="L106">		JWSAlgorithm signingAlgorithm = jwtService.getDefaultSigningAlgorithm();</span>
-<span class="nc" id="L107">		JWSHeader header = new JWSHeader(signingAlgorithm, null, null, null, null, null, null, null, null, null,</span>
-<span class="nc" id="L108">				jwtService.getDefaultSignerKeyId(),</span>
+<span class="nc" id="L105">		JWSAlgorithm signingAlgorithm = jwtService.getDefaultSigningAlgorithm();</span>
+<span class="nc" id="L106">		JWSHeader header = new JWSHeader(signingAlgorithm, null, null, null, null, null, null, null, null, null,</span>
+<span class="nc" id="L107">				jwtService.getDefaultSignerKeyId(),</span>
 				null, null);
-<span class="nc" id="L110">		SignedJWT signed = new SignedJWT(header, claims.build());</span>
+<span class="nc" id="L109">		SignedJWT signed = new SignedJWT(header, claims.build());</span>
 
-<span class="nc" id="L112">		jwtService.signJwt(signed);</span>
+<span class="nc" id="L111">		jwtService.signJwt(signed);</span>
 
-<span class="nc" id="L114">		token.setJwt(signed);</span>
+<span class="nc" id="L113">		token.setJwt(signed);</span>
 
-<span class="nc" id="L116">		tokenService.saveAccessToken(token);</span>
+<span class="nc" id="L115">		tokenService.saveAccessToken(token);</span>
 
-<span class="nc" id="L118">		return token;</span>
+<span class="nc" id="L117">		return token;</span>
 	}
 
 }

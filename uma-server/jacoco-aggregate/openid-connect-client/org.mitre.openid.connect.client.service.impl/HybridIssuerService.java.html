@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HybridIssuerService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-client</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.client.service.impl</a> &gt; <span class="el_source">HybridIssuerService.java</span></div><h1>HybridIssuerService.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -34,14 +35,14 @@ import com.google.common.collect.Sets;
  * @author jricher
  *
  */
-<span class="nc" id="L37">public class HybridIssuerService implements IssuerService {</span>
+<span class="nc" id="L38">public class HybridIssuerService implements IssuerService {</span>
 
 	/**
 	 * @return
 	 * @see org.mitre.openid.connect.client.service.impl.ThirdPartyIssuerService#getAccountChooserUrl()
 	 */
 	public String getAccountChooserUrl() {
-<span class="nc" id="L44">		return thirdPartyIssuerService.getAccountChooserUrl();</span>
+<span class="nc" id="L45">		return thirdPartyIssuerService.getAccountChooserUrl();</span>
 	}
 
 	/**
@@ -49,15 +50,15 @@ import com.google.common.collect.Sets;
 	 * @see org.mitre.openid.connect.client.service.impl.ThirdPartyIssuerService#setAccountChooserUrl(java.lang.String)
 	 */
 	public void setAccountChooserUrl(String accountChooserUrl) {
-<span class="nc" id="L52">		thirdPartyIssuerService.setAccountChooserUrl(accountChooserUrl);</span>
-<span class="nc" id="L53">	}</span>
+<span class="nc" id="L53">		thirdPartyIssuerService.setAccountChooserUrl(accountChooserUrl);</span>
+<span class="nc" id="L54">	}</span>
 
 	/**
 	 * @return
 	 * @see org.mitre.openid.connect.client.service.impl.WebfingerIssuerService#isForceHttps()
 	 */
 	public boolean isForceHttps() {
-<span class="nc" id="L60">		return webfingerIssuerService.isForceHttps();</span>
+<span class="nc" id="L61">		return webfingerIssuerService.isForceHttps();</span>
 	}
 
 	/**
@@ -65,59 +66,59 @@ import com.google.common.collect.Sets;
 	 * @see org.mitre.openid.connect.client.service.impl.WebfingerIssuerService#setForceHttps(boolean)
 	 */
 	public void setForceHttps(boolean forceHttps) {
-<span class="nc" id="L68">		webfingerIssuerService.setForceHttps(forceHttps);</span>
-<span class="nc" id="L69">	}</span>
+<span class="nc" id="L69">		webfingerIssuerService.setForceHttps(forceHttps);</span>
+<span class="nc" id="L70">	}</span>
 
-<span class="nc" id="L71">	private ThirdPartyIssuerService thirdPartyIssuerService = new ThirdPartyIssuerService();</span>
-<span class="nc" id="L72">	private WebfingerIssuerService webfingerIssuerService = new WebfingerIssuerService();</span>
+<span class="nc" id="L72">	private ThirdPartyIssuerService thirdPartyIssuerService = new ThirdPartyIssuerService();</span>
+<span class="nc" id="L73">	private WebfingerIssuerService webfingerIssuerService = new WebfingerIssuerService();</span>
 
 	@Override
 	public IssuerServiceResponse getIssuer(HttpServletRequest request) {
 
-<span class="nc" id="L77">		IssuerServiceResponse resp = thirdPartyIssuerService.getIssuer(request);</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">		if (resp.shouldRedirect()) {</span>
+<span class="nc" id="L78">		IssuerServiceResponse resp = thirdPartyIssuerService.getIssuer(request);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">		if (resp.shouldRedirect()) {</span>
 			// if it wants us to redirect, try the webfinger approach first
-<span class="nc" id="L80">			return webfingerIssuerService.getIssuer(request);</span>
+<span class="nc" id="L81">			return webfingerIssuerService.getIssuer(request);</span>
 		} else {
-<span class="nc" id="L82">			return resp;</span>
+<span class="nc" id="L83">			return resp;</span>
 		}
 
 	}
 
 	public Set&lt;String&gt; getWhitelist() {
-<span class="nc" id="L88">		return Sets.union(thirdPartyIssuerService.getWhitelist(), webfingerIssuerService.getWhitelist());</span>
+<span class="nc" id="L89">		return Sets.union(thirdPartyIssuerService.getWhitelist(), webfingerIssuerService.getWhitelist());</span>
 	}
 
 	public void setWhitelist(Set&lt;String&gt; whitelist) {
-<span class="nc" id="L92">		thirdPartyIssuerService.setWhitelist(whitelist);</span>
-<span class="nc" id="L93">		webfingerIssuerService.setWhitelist(whitelist);</span>
-<span class="nc" id="L94">	}</span>
+<span class="nc" id="L93">		thirdPartyIssuerService.setWhitelist(whitelist);</span>
+<span class="nc" id="L94">		webfingerIssuerService.setWhitelist(whitelist);</span>
+<span class="nc" id="L95">	}</span>
 
 	public Set&lt;String&gt; getBlacklist() {
-<span class="nc" id="L97">		return Sets.union(thirdPartyIssuerService.getBlacklist(), webfingerIssuerService.getWhitelist());</span>
+<span class="nc" id="L98">		return Sets.union(thirdPartyIssuerService.getBlacklist(), webfingerIssuerService.getWhitelist());</span>
 	}
 
 	public void setBlacklist(Set&lt;String&gt; blacklist) {
-<span class="nc" id="L101">		thirdPartyIssuerService.setBlacklist(blacklist);</span>
-<span class="nc" id="L102">		webfingerIssuerService.setBlacklist(blacklist);</span>
-<span class="nc" id="L103">	}</span>
+<span class="nc" id="L102">		thirdPartyIssuerService.setBlacklist(blacklist);</span>
+<span class="nc" id="L103">		webfingerIssuerService.setBlacklist(blacklist);</span>
+<span class="nc" id="L104">	}</span>
 
 	public String getParameterName() {
-<span class="nc" id="L106">		return webfingerIssuerService.getParameterName();</span>
+<span class="nc" id="L107">		return webfingerIssuerService.getParameterName();</span>
 	}
 
 	public void setParameterName(String parameterName) {
-<span class="nc" id="L110">		webfingerIssuerService.setParameterName(parameterName);</span>
-<span class="nc" id="L111">	}</span>
+<span class="nc" id="L111">		webfingerIssuerService.setParameterName(parameterName);</span>
+<span class="nc" id="L112">	}</span>
 
 	public String getLoginPageUrl() {
-<span class="nc" id="L114">		return webfingerIssuerService.getLoginPageUrl();</span>
+<span class="nc" id="L115">		return webfingerIssuerService.getLoginPageUrl();</span>
 	}
 
 	public void setLoginPageUrl(String loginPageUrl) {
-<span class="nc" id="L118">		webfingerIssuerService.setLoginPageUrl(loginPageUrl);</span>
-<span class="nc" id="L119">		thirdPartyIssuerService.setAccountChooserUrl(loginPageUrl); // set the same URL on both, but this one gets ignored</span>
-<span class="nc" id="L120">	}</span>
+<span class="nc" id="L119">		webfingerIssuerService.setLoginPageUrl(loginPageUrl);</span>
+<span class="nc" id="L120">		thirdPartyIssuerService.setAccountChooserUrl(loginPageUrl); // set the same URL on both, but this one gets ignored</span>
+<span class="nc" id="L121">	}</span>
 
 
 }

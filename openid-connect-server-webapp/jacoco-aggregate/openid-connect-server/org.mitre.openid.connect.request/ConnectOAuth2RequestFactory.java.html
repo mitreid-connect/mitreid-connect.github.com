@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConnectOAuth2RequestFactory.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">OpenID Connect Server Webapp</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.request</a> &gt; <span class="el_source">ConnectOAuth2RequestFactory.java</span></div><h1>ConnectOAuth2RequestFactory.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -75,7 +76,7 @@ public class ConnectOAuth2RequestFactory extends DefaultOAuth2RequestFactory {
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L78">	private static final Logger logger = LoggerFactory.getLogger(ConnectOAuth2RequestFactory.class);</span>
+<span class="nc" id="L79">	private static final Logger logger = LoggerFactory.getLogger(ConnectOAuth2RequestFactory.class);</span>
 
 	private ClientDetailsEntityService clientDetailsService;
 
@@ -85,7 +86,7 @@ public class ConnectOAuth2RequestFactory extends DefaultOAuth2RequestFactory {
 	@Autowired
 	private JWTEncryptionAndDecryptionService encryptionService;
 
-<span class="nc" id="L88">	private JsonParser parser = new JsonParser();</span>
+<span class="nc" id="L89">	private JsonParser parser = new JsonParser();</span>
 
 	/**
 	 * Constructor with arguments
@@ -94,83 +95,83 @@ public class ConnectOAuth2RequestFactory extends DefaultOAuth2RequestFactory {
 	 */
 	@Autowired
 	public ConnectOAuth2RequestFactory(ClientDetailsEntityService clientDetailsService) {
-<span class="nc" id="L97">		super(clientDetailsService);</span>
-<span class="nc" id="L98">		this.clientDetailsService = clientDetailsService;</span>
-<span class="nc" id="L99">	}</span>
+<span class="nc" id="L98">		super(clientDetailsService);</span>
+<span class="nc" id="L99">		this.clientDetailsService = clientDetailsService;</span>
+<span class="nc" id="L100">	}</span>
 
 	@Override
 	public AuthorizationRequest createAuthorizationRequest(Map&lt;String, String&gt; inputParams) {
 
 
-<span class="nc" id="L105">		AuthorizationRequest request = new AuthorizationRequest(inputParams, Collections.&lt;String, String&gt; emptyMap(),</span>
-<span class="nc" id="L106">				inputParams.get(OAuth2Utils.CLIENT_ID),</span>
-<span class="nc" id="L107">				OAuth2Utils.parseParameterList(inputParams.get(OAuth2Utils.SCOPE)), null,</span>
-<span class="nc" id="L108">				null, false, inputParams.get(OAuth2Utils.STATE),</span>
-<span class="nc" id="L109">				inputParams.get(OAuth2Utils.REDIRECT_URI),</span>
-<span class="nc" id="L110">				OAuth2Utils.parseParameterList(inputParams.get(OAuth2Utils.RESPONSE_TYPE)));</span>
+<span class="nc" id="L106">		AuthorizationRequest request = new AuthorizationRequest(inputParams, Collections.&lt;String, String&gt; emptyMap(),</span>
+<span class="nc" id="L107">				inputParams.get(OAuth2Utils.CLIENT_ID),</span>
+<span class="nc" id="L108">				OAuth2Utils.parseParameterList(inputParams.get(OAuth2Utils.SCOPE)), null,</span>
+<span class="nc" id="L109">				null, false, inputParams.get(OAuth2Utils.STATE),</span>
+<span class="nc" id="L110">				inputParams.get(OAuth2Utils.REDIRECT_URI),</span>
+<span class="nc" id="L111">				OAuth2Utils.parseParameterList(inputParams.get(OAuth2Utils.RESPONSE_TYPE)));</span>
 
 		//Add extension parameters to the 'extensions' map
 
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (inputParams.containsKey(PROMPT)) {</span>
-<span class="nc" id="L115">			request.getExtensions().put(PROMPT, inputParams.get(PROMPT));</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		if (inputParams.containsKey(PROMPT)) {</span>
+<span class="nc" id="L116">			request.getExtensions().put(PROMPT, inputParams.get(PROMPT));</span>
 		}
-<span class="nc bnc" id="L117" title="All 2 branches missed.">		if (inputParams.containsKey(NONCE)) {</span>
-<span class="nc" id="L118">			request.getExtensions().put(NONCE, inputParams.get(NONCE));</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (inputParams.containsKey(NONCE)) {</span>
+<span class="nc" id="L119">			request.getExtensions().put(NONCE, inputParams.get(NONCE));</span>
 		}
 
-<span class="nc bnc" id="L121" title="All 2 branches missed.">		if (inputParams.containsKey(CLAIMS)) {</span>
-<span class="nc" id="L122">			JsonObject claimsRequest = parseClaimRequest(inputParams.get(CLAIMS));</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">			if (claimsRequest != null) {</span>
-<span class="nc" id="L124">				request.getExtensions().put(CLAIMS, claimsRequest.toString());</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		if (inputParams.containsKey(CLAIMS)) {</span>
+<span class="nc" id="L123">			JsonObject claimsRequest = parseClaimRequest(inputParams.get(CLAIMS));</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">			if (claimsRequest != null) {</span>
+<span class="nc" id="L125">				request.getExtensions().put(CLAIMS, claimsRequest.toString());</span>
 			}
 		}
 
-<span class="nc bnc" id="L128" title="All 2 branches missed.">		if (inputParams.containsKey(MAX_AGE)) {</span>
-<span class="nc" id="L129">			request.getExtensions().put(MAX_AGE, inputParams.get(MAX_AGE));</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (inputParams.containsKey(MAX_AGE)) {</span>
+<span class="nc" id="L130">			request.getExtensions().put(MAX_AGE, inputParams.get(MAX_AGE));</span>
 		}
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">		if (inputParams.containsKey(LOGIN_HINT)) {</span>
-<span class="nc" id="L133">			request.getExtensions().put(LOGIN_HINT, inputParams.get(LOGIN_HINT));</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">		if (inputParams.containsKey(LOGIN_HINT)) {</span>
+<span class="nc" id="L134">			request.getExtensions().put(LOGIN_HINT, inputParams.get(LOGIN_HINT));</span>
 		}
 
-<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (inputParams.containsKey(AUD)) {</span>
-<span class="nc" id="L137">			request.getExtensions().put(AUD, inputParams.get(AUD));</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">		if (inputParams.containsKey(AUD)) {</span>
+<span class="nc" id="L138">			request.getExtensions().put(AUD, inputParams.get(AUD));</span>
 		}
 
-<span class="nc bnc" id="L140" title="All 2 branches missed.">		if (inputParams.containsKey(CODE_CHALLENGE)) {</span>
-<span class="nc" id="L141">			request.getExtensions().put(CODE_CHALLENGE, inputParams.get(CODE_CHALLENGE));</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">			if (inputParams.containsKey(CODE_CHALLENGE_METHOD)) {</span>
-<span class="nc" id="L143">				request.getExtensions().put(CODE_CHALLENGE_METHOD, inputParams.get(CODE_CHALLENGE_METHOD));</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		if (inputParams.containsKey(CODE_CHALLENGE)) {</span>
+<span class="nc" id="L142">			request.getExtensions().put(CODE_CHALLENGE, inputParams.get(CODE_CHALLENGE));</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">			if (inputParams.containsKey(CODE_CHALLENGE_METHOD)) {</span>
+<span class="nc" id="L144">				request.getExtensions().put(CODE_CHALLENGE_METHOD, inputParams.get(CODE_CHALLENGE_METHOD));</span>
 			} else {
 				// if the client doesn't specify a code challenge transformation method, it's &quot;plain&quot;
-<span class="nc" id="L146">				request.getExtensions().put(CODE_CHALLENGE_METHOD, PKCEAlgorithm.plain.getName());</span>
+<span class="nc" id="L147">				request.getExtensions().put(CODE_CHALLENGE_METHOD, PKCEAlgorithm.plain.getName());</span>
 			}
 
 		}
 
-<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (inputParams.containsKey(REQUEST)) {</span>
-<span class="nc" id="L152">			request.getExtensions().put(REQUEST, inputParams.get(REQUEST));</span>
-<span class="nc" id="L153">			processRequestObject(inputParams.get(REQUEST), request);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">		if (inputParams.containsKey(REQUEST)) {</span>
+<span class="nc" id="L153">			request.getExtensions().put(REQUEST, inputParams.get(REQUEST));</span>
+<span class="nc" id="L154">			processRequestObject(inputParams.get(REQUEST), request);</span>
 		}
 
-<span class="nc bnc" id="L156" title="All 2 branches missed.">		if (request.getClientId() != null) {</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">		if (request.getClientId() != null) {</span>
 			try {
-<span class="nc" id="L158">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
+<span class="nc" id="L159">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
 
-<span class="nc bnc" id="L160" title="All 4 branches missed.">				if ((request.getScope() == null || request.getScope().isEmpty())) {</span>
-<span class="nc" id="L161">					Set&lt;String&gt; clientScopes = client.getScope();</span>
-<span class="nc" id="L162">					request.setScope(clientScopes);</span>
+<span class="nc bnc" id="L161" title="All 4 branches missed.">				if ((request.getScope() == null || request.getScope().isEmpty())) {</span>
+<span class="nc" id="L162">					Set&lt;String&gt; clientScopes = client.getScope();</span>
+<span class="nc" id="L163">					request.setScope(clientScopes);</span>
 				}
 
-<span class="nc bnc" id="L165" title="All 4 branches missed.">				if (request.getExtensions().get(MAX_AGE) == null &amp;&amp; client.getDefaultMaxAge() != null) {</span>
-<span class="nc" id="L166">					request.getExtensions().put(MAX_AGE, client.getDefaultMaxAge().toString());</span>
+<span class="nc bnc" id="L166" title="All 4 branches missed.">				if (request.getExtensions().get(MAX_AGE) == null &amp;&amp; client.getDefaultMaxAge() != null) {</span>
+<span class="nc" id="L167">					request.getExtensions().put(MAX_AGE, client.getDefaultMaxAge().toString());</span>
 				}
-<span class="nc" id="L168">			} catch (OAuth2Exception e) {</span>
-<span class="nc" id="L169">				logger.error(&quot;Caught OAuth2 exception trying to test client scopes and max age:&quot;, e);</span>
-<span class="nc" id="L170">			}</span>
+<span class="nc" id="L169">			} catch (OAuth2Exception e) {</span>
+<span class="nc" id="L170">				logger.error(&quot;Caught OAuth2 exception trying to test client scopes and max age:&quot;, e);</span>
+<span class="nc" id="L171">			}</span>
 		}
 
-<span class="nc" id="L173">		return request;</span>
+<span class="nc" id="L174">		return request;</span>
 	}
 
 	/**
@@ -182,87 +183,87 @@ public class ConnectOAuth2RequestFactory extends DefaultOAuth2RequestFactory {
 
 		// parse the request object
 		try {
-<span class="nc" id="L185">			JWT jwt = JWTParser.parse(jwtString);</span>
+<span class="nc" id="L186">			JWT jwt = JWTParser.parse(jwtString);</span>
 
-<span class="nc bnc" id="L187" title="All 2 branches missed.">			if (jwt instanceof SignedJWT) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">			if (jwt instanceof SignedJWT) {</span>
 				// it's a signed JWT, check the signature
 
-<span class="nc" id="L190">				SignedJWT signedJwt = (SignedJWT)jwt;</span>
+<span class="nc" id="L191">				SignedJWT signedJwt = (SignedJWT)jwt;</span>
 
 				// need to check clientId first so that we can load the client to check other fields
-<span class="nc bnc" id="L193" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
-<span class="nc" id="L194">					request.setClientId(signedJwt.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
+<span class="nc" id="L195">					request.setClientId(signedJwt.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
 				}
 
-<span class="nc" id="L197">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
+<span class="nc" id="L198">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
 
-<span class="nc bnc" id="L199" title="All 2 branches missed.">				if (client == null) {</span>
-<span class="nc" id="L200">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">				if (client == null) {</span>
+<span class="nc" id="L201">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
 				}
 
 
-<span class="nc" id="L204">				JWSAlgorithm alg = signedJwt.getHeader().getAlgorithm();</span>
+<span class="nc" id="L205">				JWSAlgorithm alg = signedJwt.getHeader().getAlgorithm();</span>
 
-<span class="nc bnc" id="L206" title="All 2 branches missed.">				if (client.getRequestObjectSigningAlg() == null ||</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">						!client.getRequestObjectSigningAlg().equals(alg)) {</span>
-<span class="nc" id="L208">					throw new InvalidClientException(&quot;Client's registered request object signing algorithm (&quot; + client.getRequestObjectSigningAlg() + &quot;) does not match request object's actual algorithm (&quot; + alg.getName() + &quot;)&quot;);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">				if (client.getRequestObjectSigningAlg() == null ||</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">						!client.getRequestObjectSigningAlg().equals(alg)) {</span>
+<span class="nc" id="L209">					throw new InvalidClientException(&quot;Client's registered request object signing algorithm (&quot; + client.getRequestObjectSigningAlg() + &quot;) does not match request object's actual algorithm (&quot; + alg.getName() + &quot;)&quot;);</span>
 				}
 
-<span class="nc" id="L211">				JWTSigningAndValidationService validator = validators.getValidator(client, alg);</span>
+<span class="nc" id="L212">				JWTSigningAndValidationService validator = validators.getValidator(client, alg);</span>
 
-<span class="nc bnc" id="L213" title="All 2 branches missed.">				if (validator == null) {</span>
-<span class="nc" id="L214">					throw new InvalidClientException(&quot;Unable to create signature validator for client &quot; + client + &quot; and algorithm &quot; + alg);</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">				if (validator == null) {</span>
+<span class="nc" id="L215">					throw new InvalidClientException(&quot;Unable to create signature validator for client &quot; + client + &quot; and algorithm &quot; + alg);</span>
 				}
 
-<span class="nc bnc" id="L217" title="All 2 branches missed.">				if (!validator.validateSignature(signedJwt)) {</span>
-<span class="nc" id="L218">					throw new InvalidClientException(&quot;Signature did not validate for presented JWT request object.&quot;);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">				if (!validator.validateSignature(signedJwt)) {</span>
+<span class="nc" id="L219">					throw new InvalidClientException(&quot;Signature did not validate for presented JWT request object.&quot;);</span>
 				}
 
-<span class="nc bnc" id="L221" title="All 2 branches missed.">			} else if (jwt instanceof PlainJWT) {</span>
-<span class="nc" id="L222">				PlainJWT plainJwt = (PlainJWT)jwt;</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">			} else if (jwt instanceof PlainJWT) {</span>
+<span class="nc" id="L223">				PlainJWT plainJwt = (PlainJWT)jwt;</span>
 
 				// need to check clientId first so that we can load the client to check other fields
-<span class="nc bnc" id="L225" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
-<span class="nc" id="L226">					request.setClientId(plainJwt.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
+<span class="nc" id="L227">					request.setClientId(plainJwt.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
 				}
 
-<span class="nc" id="L229">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
+<span class="nc" id="L230">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
 
-<span class="nc bnc" id="L231" title="All 2 branches missed.">				if (client == null) {</span>
-<span class="nc" id="L232">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">				if (client == null) {</span>
+<span class="nc" id="L233">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
 				}
 
-<span class="nc bnc" id="L235" title="All 2 branches missed.">				if (client.getRequestObjectSigningAlg() == null) {</span>
-<span class="nc" id="L236">					throw new InvalidClientException(&quot;Client is not registered for unsigned request objects (no request_object_signing_alg registered)&quot;);</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">				} else if (!client.getRequestObjectSigningAlg().equals(Algorithm.NONE)) {</span>
-<span class="nc" id="L238">					throw new InvalidClientException(&quot;Client is not registered for unsigned request objects (request_object_signing_alg is &quot; + client.getRequestObjectSigningAlg() +&quot;)&quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">				if (client.getRequestObjectSigningAlg() == null) {</span>
+<span class="nc" id="L237">					throw new InvalidClientException(&quot;Client is not registered for unsigned request objects (no request_object_signing_alg registered)&quot;);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">				} else if (!client.getRequestObjectSigningAlg().equals(Algorithm.NONE)) {</span>
+<span class="nc" id="L239">					throw new InvalidClientException(&quot;Client is not registered for unsigned request objects (request_object_signing_alg is &quot; + client.getRequestObjectSigningAlg() +&quot;)&quot;);</span>
 				}
 
 				// if we got here, we're OK, keep processing
 
-<span class="nc bnc" id="L243" title="All 2 branches missed.">			} else if (jwt instanceof EncryptedJWT) {</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">			} else if (jwt instanceof EncryptedJWT) {</span>
 
-<span class="nc" id="L245">				EncryptedJWT encryptedJWT = (EncryptedJWT)jwt;</span>
+<span class="nc" id="L246">				EncryptedJWT encryptedJWT = (EncryptedJWT)jwt;</span>
 
 				// decrypt the jwt if we can
 
-<span class="nc" id="L249">				encryptionService.decryptJwt(encryptedJWT);</span>
+<span class="nc" id="L250">				encryptionService.decryptJwt(encryptedJWT);</span>
 
 				// TODO: what if the content is a signed JWT? (#525)
 
-<span class="nc bnc" id="L253" title="All 2 branches missed.">				if (!encryptedJWT.getState().equals(State.DECRYPTED)) {</span>
-<span class="nc" id="L254">					throw new InvalidClientException(&quot;Unable to decrypt the request object&quot;);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">				if (!encryptedJWT.getState().equals(State.DECRYPTED)) {</span>
+<span class="nc" id="L255">					throw new InvalidClientException(&quot;Unable to decrypt the request object&quot;);</span>
 				}
 
 				// need to check clientId first so that we can load the client to check other fields
-<span class="nc bnc" id="L258" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
-<span class="nc" id="L259">					request.setClientId(encryptedJWT.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">				if (request.getClientId() == null) {</span>
+<span class="nc" id="L260">					request.setClientId(encryptedJWT.getJWTClaimsSet().getStringClaim(CLIENT_ID));</span>
 				}
 
-<span class="nc" id="L262">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
+<span class="nc" id="L263">				ClientDetailsEntity client = clientDetailsService.loadClientByClientId(request.getClientId());</span>
 
-<span class="nc bnc" id="L264" title="All 2 branches missed.">				if (client == null) {</span>
-<span class="nc" id="L265">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">				if (client == null) {</span>
+<span class="nc" id="L266">					throw new InvalidClientException(&quot;Client not found: &quot; + request.getClientId());</span>
 				}
 
 
@@ -275,100 +276,100 @@ public class ConnectOAuth2RequestFactory extends DefaultOAuth2RequestFactory {
 
 			// now that we've got the JWT, and it's been parsed, validated, and/or decrypted, we can process the claims
 
-<span class="nc" id="L278">			JWTClaimsSet claims = jwt.getJWTClaimsSet();</span>
+<span class="nc" id="L279">			JWTClaimsSet claims = jwt.getJWTClaimsSet();</span>
 
-<span class="nc" id="L280">			Set&lt;String&gt; responseTypes = OAuth2Utils.parseParameterList(claims.getStringClaim(RESPONSE_TYPE));</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">			if (!responseTypes.isEmpty()) {</span>
-<span class="nc bnc" id="L282" title="All 2 branches missed.">				if (!responseTypes.equals(request.getResponseTypes())) {</span>
-<span class="nc" id="L283">					logger.info(&quot;Mismatch between request object and regular parameter for response_type, using request object&quot;);</span>
+<span class="nc" id="L281">			Set&lt;String&gt; responseTypes = OAuth2Utils.parseParameterList(claims.getStringClaim(RESPONSE_TYPE));</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">			if (!responseTypes.isEmpty()) {</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">				if (!responseTypes.equals(request.getResponseTypes())) {</span>
+<span class="nc" id="L284">					logger.info(&quot;Mismatch between request object and regular parameter for response_type, using request object&quot;);</span>
 				}
-<span class="nc" id="L285">				request.setResponseTypes(responseTypes);</span>
+<span class="nc" id="L286">				request.setResponseTypes(responseTypes);</span>
 			}
 
-<span class="nc" id="L288">			String redirectUri = claims.getStringClaim(REDIRECT_URI);</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">			if (redirectUri != null) {</span>
-<span class="nc bnc" id="L290" title="All 2 branches missed.">				if (!redirectUri.equals(request.getRedirectUri())) {</span>
-<span class="nc" id="L291">					logger.info(&quot;Mismatch between request object and regular parameter for redirect_uri, using request object&quot;);</span>
+<span class="nc" id="L289">			String redirectUri = claims.getStringClaim(REDIRECT_URI);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">			if (redirectUri != null) {</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">				if (!redirectUri.equals(request.getRedirectUri())) {</span>
+<span class="nc" id="L292">					logger.info(&quot;Mismatch between request object and regular parameter for redirect_uri, using request object&quot;);</span>
 				}
-<span class="nc" id="L293">				request.setRedirectUri(redirectUri);</span>
+<span class="nc" id="L294">				request.setRedirectUri(redirectUri);</span>
 			}
 
-<span class="nc" id="L296">			String state = claims.getStringClaim(STATE);</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">			if(state != null) {</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">				if (!state.equals(request.getState())) {</span>
-<span class="nc" id="L299">					logger.info(&quot;Mismatch between request object and regular parameter for state, using request object&quot;);</span>
+<span class="nc" id="L297">			String state = claims.getStringClaim(STATE);</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">			if(state != null) {</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">				if (!state.equals(request.getState())) {</span>
+<span class="nc" id="L300">					logger.info(&quot;Mismatch between request object and regular parameter for state, using request object&quot;);</span>
 				}
-<span class="nc" id="L301">				request.setState(state);</span>
+<span class="nc" id="L302">				request.setState(state);</span>
 			}
 
-<span class="nc" id="L304">			String nonce = claims.getStringClaim(NONCE);</span>
-<span class="nc bnc" id="L305" title="All 2 branches missed.">			if(nonce != null) {</span>
-<span class="nc bnc" id="L306" title="All 2 branches missed.">				if (!nonce.equals(request.getExtensions().get(NONCE))) {</span>
-<span class="nc" id="L307">					logger.info(&quot;Mismatch between request object and regular parameter for nonce, using request object&quot;);</span>
+<span class="nc" id="L305">			String nonce = claims.getStringClaim(NONCE);</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">			if(nonce != null) {</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">				if (!nonce.equals(request.getExtensions().get(NONCE))) {</span>
+<span class="nc" id="L308">					logger.info(&quot;Mismatch between request object and regular parameter for nonce, using request object&quot;);</span>
 				}
-<span class="nc" id="L309">				request.getExtensions().put(NONCE, nonce);</span>
+<span class="nc" id="L310">				request.getExtensions().put(NONCE, nonce);</span>
 			}
 
-<span class="nc" id="L312">			String display = claims.getStringClaim(DISPLAY);</span>
-<span class="nc bnc" id="L313" title="All 2 branches missed.">			if (display != null) {</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">				if (!display.equals(request.getExtensions().get(DISPLAY))) {</span>
-<span class="nc" id="L315">					logger.info(&quot;Mismatch between request object and regular parameter for display, using request object&quot;);</span>
+<span class="nc" id="L313">			String display = claims.getStringClaim(DISPLAY);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">			if (display != null) {</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">				if (!display.equals(request.getExtensions().get(DISPLAY))) {</span>
+<span class="nc" id="L316">					logger.info(&quot;Mismatch between request object and regular parameter for display, using request object&quot;);</span>
 				}
-<span class="nc" id="L317">				request.getExtensions().put(DISPLAY, display);</span>
+<span class="nc" id="L318">				request.getExtensions().put(DISPLAY, display);</span>
 			}
 
-<span class="nc" id="L320">			String prompt = claims.getStringClaim(PROMPT);</span>
-<span class="nc bnc" id="L321" title="All 2 branches missed.">			if (prompt != null) {</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">				if (!prompt.equals(request.getExtensions().get(PROMPT))) {</span>
-<span class="nc" id="L323">					logger.info(&quot;Mismatch between request object and regular parameter for prompt, using request object&quot;);</span>
+<span class="nc" id="L321">			String prompt = claims.getStringClaim(PROMPT);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">			if (prompt != null) {</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">				if (!prompt.equals(request.getExtensions().get(PROMPT))) {</span>
+<span class="nc" id="L324">					logger.info(&quot;Mismatch between request object and regular parameter for prompt, using request object&quot;);</span>
 				}
-<span class="nc" id="L325">				request.getExtensions().put(PROMPT, prompt);</span>
+<span class="nc" id="L326">				request.getExtensions().put(PROMPT, prompt);</span>
 			}
 
-<span class="nc" id="L328">			Set&lt;String&gt; scope = OAuth2Utils.parseParameterList(claims.getStringClaim(SCOPE));</span>
-<span class="nc bnc" id="L329" title="All 2 branches missed.">			if (!scope.isEmpty()) {</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">				if (!scope.equals(request.getScope())) {</span>
-<span class="nc" id="L331">					logger.info(&quot;Mismatch between request object and regular parameter for scope, using request object&quot;);</span>
+<span class="nc" id="L329">			Set&lt;String&gt; scope = OAuth2Utils.parseParameterList(claims.getStringClaim(SCOPE));</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">			if (!scope.isEmpty()) {</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">				if (!scope.equals(request.getScope())) {</span>
+<span class="nc" id="L332">					logger.info(&quot;Mismatch between request object and regular parameter for scope, using request object&quot;);</span>
 				}
-<span class="nc" id="L333">				request.setScope(scope);</span>
+<span class="nc" id="L334">				request.setScope(scope);</span>
 			}
 
-<span class="nc" id="L336">			JsonObject claimRequest = parseClaimRequest(claims.getStringClaim(CLAIMS));</span>
-<span class="nc bnc" id="L337" title="All 2 branches missed.">			if (claimRequest != null) {</span>
-<span class="nc" id="L338">				Serializable claimExtension = request.getExtensions().get(CLAIMS);</span>
-<span class="nc bnc" id="L339" title="All 4 branches missed.">				if (claimExtension == null || !claimRequest.equals(parseClaimRequest(claimExtension.toString()))) {</span>
-<span class="nc" id="L340">					logger.info(&quot;Mismatch between request object and regular parameter for claims, using request object&quot;);</span>
+<span class="nc" id="L337">			JsonObject claimRequest = parseClaimRequest(claims.getStringClaim(CLAIMS));</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">			if (claimRequest != null) {</span>
+<span class="nc" id="L339">				Serializable claimExtension = request.getExtensions().get(CLAIMS);</span>
+<span class="nc bnc" id="L340" title="All 4 branches missed.">				if (claimExtension == null || !claimRequest.equals(parseClaimRequest(claimExtension.toString()))) {</span>
+<span class="nc" id="L341">					logger.info(&quot;Mismatch between request object and regular parameter for claims, using request object&quot;);</span>
 				}
 				// we save the string because the object might not be a Java Serializable, and we can parse it easily enough anyway
-<span class="nc" id="L343">				request.getExtensions().put(CLAIMS, claimRequest.toString());</span>
+<span class="nc" id="L344">				request.getExtensions().put(CLAIMS, claimRequest.toString());</span>
 			}
 
-<span class="nc" id="L346">			String loginHint = claims.getStringClaim(LOGIN_HINT);</span>
-<span class="nc bnc" id="L347" title="All 2 branches missed.">			if (loginHint != null) {</span>
-<span class="nc bnc" id="L348" title="All 2 branches missed.">				if (!loginHint.equals(request.getExtensions().get(LOGIN_HINT))) {</span>
-<span class="nc" id="L349">					logger.info(&quot;Mistmatch between request object and regular parameter for login_hint, using requst object&quot;);</span>
+<span class="nc" id="L347">			String loginHint = claims.getStringClaim(LOGIN_HINT);</span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">			if (loginHint != null) {</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">				if (!loginHint.equals(request.getExtensions().get(LOGIN_HINT))) {</span>
+<span class="nc" id="L350">					logger.info(&quot;Mistmatch between request object and regular parameter for login_hint, using requst object&quot;);</span>
 				}
-<span class="nc" id="L351">				request.getExtensions().put(LOGIN_HINT, loginHint);</span>
+<span class="nc" id="L352">				request.getExtensions().put(LOGIN_HINT, loginHint);</span>
 			}
 
-<span class="nc" id="L354">		} catch (ParseException e) {</span>
-<span class="nc" id="L355">			logger.error(&quot;ParseException while parsing RequestObject:&quot;, e);</span>
-<span class="nc" id="L356">		}</span>
-<span class="nc" id="L357">	}</span>
+<span class="nc" id="L355">		} catch (ParseException e) {</span>
+<span class="nc" id="L356">			logger.error(&quot;ParseException while parsing RequestObject:&quot;, e);</span>
+<span class="nc" id="L357">		}</span>
+<span class="nc" id="L358">	}</span>
 
 	/**
 	 * @param claimRequestString
 	 * @return
 	 */
 	private JsonObject parseClaimRequest(String claimRequestString) {
-<span class="nc bnc" id="L364" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(claimRequestString)) {</span>
-<span class="nc" id="L365">			return null;</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">		if (Strings.isNullOrEmpty(claimRequestString)) {</span>
+<span class="nc" id="L366">			return null;</span>
 		} else {
-<span class="nc" id="L367">			JsonElement el = parser.parse(claimRequestString);</span>
-<span class="nc bnc" id="L368" title="All 4 branches missed.">			if (el != null &amp;&amp; el.isJsonObject()) {</span>
-<span class="nc" id="L369">				return el.getAsJsonObject();</span>
+<span class="nc" id="L368">			JsonElement el = parser.parse(claimRequestString);</span>
+<span class="nc bnc" id="L369" title="All 4 branches missed.">			if (el != null &amp;&amp; el.isJsonObject()) {</span>
+<span class="nc" id="L370">				return el.getAsJsonObject();</span>
 			} else {
-<span class="nc" id="L371">				return null;</span>
+<span class="nc" id="L372">				return null;</span>
 			}
 		}
 	}

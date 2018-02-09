@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JpaOAuth2TokenRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.oauth2.repository.impl</a> &gt; <span class="el_source">JpaOAuth2TokenRepository.java</span></div><h1>JpaOAuth2TokenRepository.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -49,133 +50,133 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 
 @Repository
-<span class="nc" id="L52">public class JpaOAuth2TokenRepository implements OAuth2TokenRepository {</span>
+<span class="nc" id="L53">public class JpaOAuth2TokenRepository implements OAuth2TokenRepository {</span>
 
 	private static final int MAXEXPIREDRESULTS = 1000;
 
-<span class="nc" id="L56">	private static final Logger logger = LoggerFactory.getLogger(JpaOAuth2TokenRepository.class);</span>
+<span class="nc" id="L57">	private static final Logger logger = LoggerFactory.getLogger(JpaOAuth2TokenRepository.class);</span>
 
 	@PersistenceContext(unitName=&quot;defaultPersistenceUnit&quot;)
 	private EntityManager manager;
 
 	@Override
 	public Set&lt;OAuth2AccessTokenEntity&gt; getAllAccessTokens() {
-<span class="nc" id="L63">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_ALL, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L64">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
+<span class="nc" id="L64">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_ALL, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L65">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
 	}
 
 	@Override
 	public Set&lt;OAuth2RefreshTokenEntity&gt; getAllRefreshTokens() {
-<span class="nc" id="L69">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_ALL, OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L70">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
+<span class="nc" id="L70">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_ALL, OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L71">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
 	}
 
 
 	@Override
 	public OAuth2AccessTokenEntity getAccessTokenByValue(String accessTokenValue) {
 		try {
-<span class="nc" id="L77">			JWT jwt = JWTParser.parse(accessTokenValue);</span>
-<span class="nc" id="L78">			TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_TOKEN_VALUE, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L79">			query.setParameter(OAuth2AccessTokenEntity.PARAM_TOKEN_VALUE, jwt);</span>
-<span class="nc" id="L80">			return JpaUtil.getSingleResult(query.getResultList());</span>
-<span class="nc" id="L81">		} catch (ParseException e) {</span>
-<span class="nc" id="L82">			return null;</span>
+<span class="nc" id="L78">			JWT jwt = JWTParser.parse(accessTokenValue);</span>
+<span class="nc" id="L79">			TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_TOKEN_VALUE, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L80">			query.setParameter(OAuth2AccessTokenEntity.PARAM_TOKEN_VALUE, jwt);</span>
+<span class="nc" id="L81">			return JpaUtil.getSingleResult(query.getResultList());</span>
+<span class="nc" id="L82">		} catch (ParseException e) {</span>
+<span class="nc" id="L83">			return null;</span>
 		}
 	}
 
 	@Override
 	public OAuth2AccessTokenEntity getAccessTokenById(Long id) {
-<span class="nc" id="L88">		return manager.find(OAuth2AccessTokenEntity.class, id);</span>
+<span class="nc" id="L89">		return manager.find(OAuth2AccessTokenEntity.class, id);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2AccessTokenEntity saveAccessToken(OAuth2AccessTokenEntity token) {
-<span class="nc" id="L94">		return JpaUtil.saveOrUpdate(token.getId(), manager, token);</span>
+<span class="nc" id="L95">		return JpaUtil.saveOrUpdate(token.getId(), manager, token);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void removeAccessToken(OAuth2AccessTokenEntity accessToken) {
-<span class="nc" id="L100">		OAuth2AccessTokenEntity found = getAccessTokenById(accessToken.getId());</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (found != null) {</span>
-<span class="nc" id="L102">			manager.remove(found);</span>
+<span class="nc" id="L101">		OAuth2AccessTokenEntity found = getAccessTokenById(accessToken.getId());</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc" id="L103">			manager.remove(found);</span>
 		} else {
-<span class="nc" id="L104">			throw new IllegalArgumentException(&quot;Access token not found: &quot; + accessToken);</span>
+<span class="nc" id="L105">			throw new IllegalArgumentException(&quot;Access token not found: &quot; + accessToken);</span>
 		}
-<span class="nc" id="L106">	}</span>
+<span class="nc" id="L107">	}</span>
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearAccessTokensForRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L111">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_REFRESH_TOKEN, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L112">		query.setParameter(OAuth2AccessTokenEntity.PARAM_REFERSH_TOKEN, refreshToken);</span>
-<span class="nc" id="L113">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = query.getResultList();</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity accessToken : accessTokens) {</span>
-<span class="nc" id="L115">			removeAccessToken(accessToken);</span>
-<span class="nc" id="L116">		}</span>
-<span class="nc" id="L117">	}</span>
+<span class="nc" id="L112">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_REFRESH_TOKEN, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L113">		query.setParameter(OAuth2AccessTokenEntity.PARAM_REFERSH_TOKEN, refreshToken);</span>
+<span class="nc" id="L114">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = query.getResultList();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity accessToken : accessTokens) {</span>
+<span class="nc" id="L116">			removeAccessToken(accessToken);</span>
+<span class="nc" id="L117">		}</span>
+<span class="nc" id="L118">	}</span>
 
 	@Override
 	public OAuth2RefreshTokenEntity getRefreshTokenByValue(String refreshTokenValue) {
 		try {
-<span class="nc" id="L122">			JWT jwt = JWTParser.parse(refreshTokenValue);</span>
-<span class="nc" id="L123">			TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_TOKEN_VALUE, OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L124">			query.setParameter(OAuth2RefreshTokenEntity.PARAM_TOKEN_VALUE, jwt);</span>
-<span class="nc" id="L125">			return JpaUtil.getSingleResult(query.getResultList());</span>
-<span class="nc" id="L126">		} catch (ParseException e) {</span>
-<span class="nc" id="L127">			return null;</span>
+<span class="nc" id="L123">			JWT jwt = JWTParser.parse(refreshTokenValue);</span>
+<span class="nc" id="L124">			TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_TOKEN_VALUE, OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L125">			query.setParameter(OAuth2RefreshTokenEntity.PARAM_TOKEN_VALUE, jwt);</span>
+<span class="nc" id="L126">			return JpaUtil.getSingleResult(query.getResultList());</span>
+<span class="nc" id="L127">		} catch (ParseException e) {</span>
+<span class="nc" id="L128">			return null;</span>
 		}
 	}
 
 	@Override
 	public OAuth2RefreshTokenEntity getRefreshTokenById(Long id) {
-<span class="nc" id="L133">		return manager.find(OAuth2RefreshTokenEntity.class, id);</span>
+<span class="nc" id="L134">		return manager.find(OAuth2RefreshTokenEntity.class, id);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public OAuth2RefreshTokenEntity saveRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L139">		return JpaUtil.saveOrUpdate(refreshToken.getId(), manager, refreshToken);</span>
+<span class="nc" id="L140">		return JpaUtil.saveOrUpdate(refreshToken.getId(), manager, refreshToken);</span>
 	}
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void removeRefreshToken(OAuth2RefreshTokenEntity refreshToken) {
-<span class="nc" id="L145">		OAuth2RefreshTokenEntity found = getRefreshTokenById(refreshToken.getId());</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">		if (found != null) {</span>
-<span class="nc" id="L147">			manager.remove(found);</span>
+<span class="nc" id="L146">		OAuth2RefreshTokenEntity found = getRefreshTokenById(refreshToken.getId());</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">		if (found != null) {</span>
+<span class="nc" id="L148">			manager.remove(found);</span>
 		} else {
-<span class="nc" id="L149">			throw new IllegalArgumentException(&quot;Refresh token not found: &quot; + refreshToken);</span>
+<span class="nc" id="L150">			throw new IllegalArgumentException(&quot;Refresh token not found: &quot; + refreshToken);</span>
 		}
-<span class="nc" id="L151">	}</span>
+<span class="nc" id="L152">	}</span>
 
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearTokensForClient(ClientDetailsEntity client) {
-<span class="nc" id="L156">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_CLIENT, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L157">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_CLIENT, client);</span>
-<span class="nc" id="L158">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity accessToken : accessTokens) {</span>
-<span class="nc" id="L160">			removeAccessToken(accessToken);</span>
-<span class="nc" id="L161">		}</span>
-<span class="nc" id="L162">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; queryR = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_CLIENT, OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L163">		queryR.setParameter(OAuth2RefreshTokenEntity.PARAM_CLIENT, client);</span>
-<span class="nc" id="L164">		List&lt;OAuth2RefreshTokenEntity&gt; refreshTokens = queryR.getResultList();</span>
-<span class="nc bnc" id="L165" title="All 2 branches missed.">		for (OAuth2RefreshTokenEntity refreshToken : refreshTokens) {</span>
-<span class="nc" id="L166">			removeRefreshToken(refreshToken);</span>
-<span class="nc" id="L167">		}</span>
-<span class="nc" id="L168">	}</span>
+<span class="nc" id="L157">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_CLIENT, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L158">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_CLIENT, client);</span>
+<span class="nc" id="L159">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">		for (OAuth2AccessTokenEntity accessToken : accessTokens) {</span>
+<span class="nc" id="L161">			removeAccessToken(accessToken);</span>
+<span class="nc" id="L162">		}</span>
+<span class="nc" id="L163">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; queryR = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_CLIENT, OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L164">		queryR.setParameter(OAuth2RefreshTokenEntity.PARAM_CLIENT, client);</span>
+<span class="nc" id="L165">		List&lt;OAuth2RefreshTokenEntity&gt; refreshTokens = queryR.getResultList();</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">		for (OAuth2RefreshTokenEntity refreshToken : refreshTokens) {</span>
+<span class="nc" id="L167">			removeRefreshToken(refreshToken);</span>
+<span class="nc" id="L168">		}</span>
+<span class="nc" id="L169">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.repository.OAuth2TokenRepository#getAccessTokensForClient(org.mitre.oauth2.model.ClientDetailsEntity)
 	 */
 	@Override
 	public List&lt;OAuth2AccessTokenEntity&gt; getAccessTokensForClient(ClientDetailsEntity client) {
-<span class="nc" id="L175">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_CLIENT, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L176">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_CLIENT, client);</span>
-<span class="nc" id="L177">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
-<span class="nc" id="L178">		return accessTokens;</span>
+<span class="nc" id="L176">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_CLIENT, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L177">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_CLIENT, client);</span>
+<span class="nc" id="L178">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
+<span class="nc" id="L179">		return accessTokens;</span>
 	}
 
 	/* (non-Javadoc)
@@ -183,36 +184,36 @@ import com.nimbusds.jwt.JWTParser;
 	 */
 	@Override
 	public List&lt;OAuth2RefreshTokenEntity&gt; getRefreshTokensForClient(ClientDetailsEntity client) {
-<span class="nc" id="L186">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; queryR = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_CLIENT, OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L187">		queryR.setParameter(OAuth2RefreshTokenEntity.PARAM_CLIENT, client);</span>
-<span class="nc" id="L188">		List&lt;OAuth2RefreshTokenEntity&gt; refreshTokens = queryR.getResultList();</span>
-<span class="nc" id="L189">		return refreshTokens;</span>
+<span class="nc" id="L187">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; queryR = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_BY_CLIENT, OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L188">		queryR.setParameter(OAuth2RefreshTokenEntity.PARAM_CLIENT, client);</span>
+<span class="nc" id="L189">		List&lt;OAuth2RefreshTokenEntity&gt; refreshTokens = queryR.getResultList();</span>
+<span class="nc" id="L190">		return refreshTokens;</span>
 	}
 
 	@Override
 	public Set&lt;OAuth2AccessTokenEntity&gt; getAllExpiredAccessTokens() {
-<span class="nc" id="L194">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0, MAXEXPIREDRESULTS);</span>
-<span class="nc" id="L195">		return getAllExpiredAccessTokens(pageCriteria);</span>
+<span class="nc" id="L195">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0, MAXEXPIREDRESULTS);</span>
+<span class="nc" id="L196">		return getAllExpiredAccessTokens(pageCriteria);</span>
 	}
 
 	@Override
 	public Set&lt;OAuth2AccessTokenEntity&gt; getAllExpiredAccessTokens(PageCriteria pageCriteria) {
-<span class="nc" id="L200">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_EXPIRED_BY_DATE, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L201">		query.setParameter(OAuth2AccessTokenEntity.PARAM_DATE, new Date());</span>
-<span class="nc" id="L202">		return new LinkedHashSet&lt;&gt;(JpaUtil.getResultPage(query, pageCriteria));</span>
+<span class="nc" id="L201">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_EXPIRED_BY_DATE, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L202">		query.setParameter(OAuth2AccessTokenEntity.PARAM_DATE, new Date());</span>
+<span class="nc" id="L203">		return new LinkedHashSet&lt;&gt;(JpaUtil.getResultPage(query, pageCriteria));</span>
 	}
 
 	@Override
 	public Set&lt;OAuth2RefreshTokenEntity&gt; getAllExpiredRefreshTokens() {
-<span class="nc" id="L207">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0, MAXEXPIREDRESULTS);</span>
-<span class="nc" id="L208">		return getAllExpiredRefreshTokens(pageCriteria);</span>
+<span class="nc" id="L208">		DefaultPageCriteria pageCriteria = new DefaultPageCriteria(0, MAXEXPIREDRESULTS);</span>
+<span class="nc" id="L209">		return getAllExpiredRefreshTokens(pageCriteria);</span>
 	}
 
 	@Override
 	public Set&lt;OAuth2RefreshTokenEntity&gt; getAllExpiredRefreshTokens(PageCriteria pageCriteria) {
-<span class="nc" id="L213">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_EXPIRED_BY_DATE, OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L214">		query.setParameter(OAuth2AccessTokenEntity.PARAM_DATE, new Date());</span>
-<span class="nc" id="L215">		return new LinkedHashSet&lt;&gt;(JpaUtil.getResultPage(query,pageCriteria));</span>
+<span class="nc" id="L214">		TypedQuery&lt;OAuth2RefreshTokenEntity&gt; query = manager.createNamedQuery(OAuth2RefreshTokenEntity.QUERY_EXPIRED_BY_DATE, OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L215">		query.setParameter(OAuth2AccessTokenEntity.PARAM_DATE, new Date());</span>
+<span class="nc" id="L216">		return new LinkedHashSet&lt;&gt;(JpaUtil.getResultPage(query,pageCriteria));</span>
 	}
 
 
@@ -222,9 +223,9 @@ import com.nimbusds.jwt.JWTParser;
 	 */
 	@Override
 	public Set&lt;OAuth2AccessTokenEntity&gt; getAccessTokensForResourceSet(ResourceSet rs) {
-<span class="nc" id="L225">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_RESOURCE_SET, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L226">		query.setParameter(OAuth2AccessTokenEntity.PARAM_RESOURCE_SET_ID, rs.getId());</span>
-<span class="nc" id="L227">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
+<span class="nc" id="L226">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; query = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_RESOURCE_SET, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L227">		query.setParameter(OAuth2AccessTokenEntity.PARAM_RESOURCE_SET_ID, rs.getId());</span>
+<span class="nc" id="L228">		return new LinkedHashSet&lt;&gt;(query.getResultList());</span>
 	}
 
 	/* (non-Javadoc)
@@ -234,23 +235,23 @@ import com.nimbusds.jwt.JWTParser;
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearDuplicateAccessTokens() {
 
-<span class="nc" id="L237">		Query query = manager.createQuery(&quot;select a.jwt, count(1) as c from OAuth2AccessTokenEntity a GROUP BY a.jwt HAVING count(1) &gt; 1&quot;);</span>
+<span class="nc" id="L238">		Query query = manager.createQuery(&quot;select a.jwt, count(1) as c from OAuth2AccessTokenEntity a GROUP BY a.jwt HAVING count(1) &gt; 1&quot;);</span>
 		@SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L239">		List&lt;Object[]&gt; resultList = query.getResultList();</span>
-<span class="nc" id="L240">		List&lt;JWT&gt; values = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">		for (Object[] r : resultList) {</span>
-<span class="nc" id="L242">			logger.warn(&quot;Found duplicate access tokens: {}, {}&quot;, ((JWT)r[0]).serialize(), r[1]);</span>
-<span class="nc" id="L243">			values.add((JWT) r[0]);</span>
-<span class="nc" id="L244">		}</span>
-<span class="nc bnc" id="L245" title="All 2 branches missed.">		if (values.size() &gt; 0) {</span>
-<span class="nc" id="L246">			CriteriaBuilder cb = manager.getCriteriaBuilder();</span>
-<span class="nc" id="L247">			CriteriaDelete&lt;OAuth2AccessTokenEntity&gt; criteriaDelete = cb.createCriteriaDelete(OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L248">			Root&lt;OAuth2AccessTokenEntity&gt; root = criteriaDelete.from(OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L249">			criteriaDelete.where(root.get(&quot;jwt&quot;).in(values));</span>
-<span class="nc" id="L250">			int result = manager.createQuery(criteriaDelete).executeUpdate();</span>
-<span class="nc" id="L251">			logger.warn(&quot;Deleted {} duplicate access tokens&quot;, result);</span>
+<span class="nc" id="L240">		List&lt;Object[]&gt; resultList = query.getResultList();</span>
+<span class="nc" id="L241">		List&lt;JWT&gt; values = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">		for (Object[] r : resultList) {</span>
+<span class="nc" id="L243">			logger.warn(&quot;Found duplicate access tokens: {}, {}&quot;, ((JWT)r[0]).serialize(), r[1]);</span>
+<span class="nc" id="L244">			values.add((JWT) r[0]);</span>
+<span class="nc" id="L245">		}</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">		if (values.size() &gt; 0) {</span>
+<span class="nc" id="L247">			CriteriaBuilder cb = manager.getCriteriaBuilder();</span>
+<span class="nc" id="L248">			CriteriaDelete&lt;OAuth2AccessTokenEntity&gt; criteriaDelete = cb.createCriteriaDelete(OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L249">			Root&lt;OAuth2AccessTokenEntity&gt; root = criteriaDelete.from(OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L250">			criteriaDelete.where(root.get(&quot;jwt&quot;).in(values));</span>
+<span class="nc" id="L251">			int result = manager.createQuery(criteriaDelete).executeUpdate();</span>
+<span class="nc" id="L252">			logger.warn(&quot;Deleted {} duplicate access tokens&quot;, result);</span>
 		}
-<span class="nc" id="L253">	}</span>
+<span class="nc" id="L254">	}</span>
 
 	/* (non-Javadoc)
 	 * @see org.mitre.oauth2.repository.OAuth2TokenRepository#clearDuplicateRefreshTokens()
@@ -258,31 +259,31 @@ import com.nimbusds.jwt.JWTParser;
 	@Override
 	@Transactional(value=&quot;defaultTransactionManager&quot;)
 	public void clearDuplicateRefreshTokens() {
-<span class="nc" id="L261">		Query query = manager.createQuery(&quot;select a.jwt, count(1) as c from OAuth2RefreshTokenEntity a GROUP BY a.jwt HAVING count(1) &gt; 1&quot;);</span>
+<span class="nc" id="L262">		Query query = manager.createQuery(&quot;select a.jwt, count(1) as c from OAuth2RefreshTokenEntity a GROUP BY a.jwt HAVING count(1) &gt; 1&quot;);</span>
 		@SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L263">		List&lt;Object[]&gt; resultList = query.getResultList();</span>
-<span class="nc" id="L264">		List&lt;JWT&gt; values = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">		for (Object[] r : resultList) {</span>
-<span class="nc" id="L266">			logger.warn(&quot;Found duplicate refresh tokens: {}, {}&quot;, ((JWT)r[0]).serialize(), r[1]);</span>
-<span class="nc" id="L267">			values.add((JWT) r[0]);</span>
-<span class="nc" id="L268">		}</span>
-<span class="nc bnc" id="L269" title="All 2 branches missed.">		if (values.size() &gt; 0) {</span>
-<span class="nc" id="L270">			CriteriaBuilder cb = manager.getCriteriaBuilder();</span>
-<span class="nc" id="L271">			CriteriaDelete&lt;OAuth2RefreshTokenEntity&gt; criteriaDelete = cb.createCriteriaDelete(OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L272">			Root&lt;OAuth2RefreshTokenEntity&gt; root = criteriaDelete.from(OAuth2RefreshTokenEntity.class);</span>
-<span class="nc" id="L273">			criteriaDelete.where(root.get(&quot;jwt&quot;).in(values));</span>
-<span class="nc" id="L274">			int result = manager.createQuery(criteriaDelete).executeUpdate();</span>
-<span class="nc" id="L275">			logger.warn(&quot;Deleted {} duplicate refresh tokens&quot;, result);</span>
+<span class="nc" id="L264">		List&lt;Object[]&gt; resultList = query.getResultList();</span>
+<span class="nc" id="L265">		List&lt;JWT&gt; values = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">		for (Object[] r : resultList) {</span>
+<span class="nc" id="L267">			logger.warn(&quot;Found duplicate refresh tokens: {}, {}&quot;, ((JWT)r[0]).serialize(), r[1]);</span>
+<span class="nc" id="L268">			values.add((JWT) r[0]);</span>
+<span class="nc" id="L269">		}</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">		if (values.size() &gt; 0) {</span>
+<span class="nc" id="L271">			CriteriaBuilder cb = manager.getCriteriaBuilder();</span>
+<span class="nc" id="L272">			CriteriaDelete&lt;OAuth2RefreshTokenEntity&gt; criteriaDelete = cb.createCriteriaDelete(OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L273">			Root&lt;OAuth2RefreshTokenEntity&gt; root = criteriaDelete.from(OAuth2RefreshTokenEntity.class);</span>
+<span class="nc" id="L274">			criteriaDelete.where(root.get(&quot;jwt&quot;).in(values));</span>
+<span class="nc" id="L275">			int result = manager.createQuery(criteriaDelete).executeUpdate();</span>
+<span class="nc" id="L276">			logger.warn(&quot;Deleted {} duplicate refresh tokens&quot;, result);</span>
 		}
 
-<span class="nc" id="L278">	}</span>
+<span class="nc" id="L279">	}</span>
 
 	@Override
 	public List&lt;OAuth2AccessTokenEntity&gt; getAccessTokensForApprovedSite(ApprovedSite approvedSite) {
-<span class="nc" id="L282">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_APPROVED_SITE, OAuth2AccessTokenEntity.class);</span>
-<span class="nc" id="L283">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_APPROVED_SITE, approvedSite);</span>
-<span class="nc" id="L284">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
-<span class="nc" id="L285">		return accessTokens;</span>
+<span class="nc" id="L283">		TypedQuery&lt;OAuth2AccessTokenEntity&gt; queryA = manager.createNamedQuery(OAuth2AccessTokenEntity.QUERY_BY_APPROVED_SITE, OAuth2AccessTokenEntity.class);</span>
+<span class="nc" id="L284">		queryA.setParameter(OAuth2AccessTokenEntity.PARAM_APPROVED_SITE, approvedSite);</span>
+<span class="nc" id="L285">		List&lt;OAuth2AccessTokenEntity&gt; accessTokens = queryA.getResultList();</span>
+<span class="nc" id="L286">		return accessTokens;</span>
 	}
 
 }

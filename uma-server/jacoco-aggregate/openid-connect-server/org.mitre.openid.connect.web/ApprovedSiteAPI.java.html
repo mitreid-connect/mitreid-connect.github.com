@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ApprovedSiteAPI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">UMA Server Library</a> &gt; <a href="../index.html" class="el_bundle">openid-connect-server</a> &gt; <a href="index.source.html" class="el_package">org.mitre.openid.connect.web</a> &gt; <span class="el_source">ApprovedSiteAPI.java</span></div><h1>ApprovedSiteAPI.java</h1><pre class="source lang-java linenums">/*******************************************************************************
- * Copyright 2017 The MITRE Corporation
- *   and the MIT Internet Trust Consortium
+ * Copyright 2017 The MIT Internet Trust Consortium
+ *
+ * Portions copyright 2011-2013 The MITRE Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -47,7 +48,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping(&quot;/&quot; + ApprovedSiteAPI.URL)
 @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-<span class="nc" id="L50">public class ApprovedSiteAPI {</span>
+<span class="nc" id="L51">public class ApprovedSiteAPI {</span>
 
 	public static final String URL = RootController.API_URL + &quot;/approved&quot;;
 
@@ -57,7 +58,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	/**
 	 * Logger for this class
 	 */
-<span class="nc" id="L60">	private static final Logger logger = LoggerFactory.getLogger(ApprovedSiteAPI.class);</span>
+<span class="nc" id="L61">	private static final Logger logger = LoggerFactory.getLogger(ApprovedSiteAPI.class);</span>
 
 	/**
 	 * Get a list of all of this user's approved sites
@@ -67,11 +68,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAllApprovedSites(ModelMap m, Principal p) {
 
-<span class="nc" id="L70">		Collection&lt;ApprovedSite&gt; all = approvedSiteService.getByUserId(p.getName());</span>
+<span class="nc" id="L71">		Collection&lt;ApprovedSite&gt; all = approvedSiteService.getByUserId(p.getName());</span>
 
-<span class="nc" id="L72">		m.put(JsonEntityView.ENTITY, all);</span>
+<span class="nc" id="L73">		m.put(JsonEntityView.ENTITY, all);</span>
 
-<span class="nc" id="L74">		return JsonApprovedSiteView.VIEWNAME;</span>
+<span class="nc" id="L75">		return JsonApprovedSiteView.VIEWNAME;</span>
 	}
 
 	/**
@@ -80,25 +81,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	 */
 	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.DELETE)
 	public String deleteApprovedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
-<span class="nc" id="L83">		ApprovedSite approvedSite = approvedSiteService.getById(id);</span>
+<span class="nc" id="L84">		ApprovedSite approvedSite = approvedSiteService.getById(id);</span>
 
-<span class="nc bnc" id="L85" title="All 2 branches missed.">		if (approvedSite == null) {</span>
-<span class="nc" id="L86">			logger.error(&quot;deleteApprovedSite failed; no approved site found for id: &quot; + id);</span>
-<span class="nc" id="L87">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L88">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete approved site. The requested approved site with id: &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L89">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">		} else if (!approvedSite.getUserId().equals(p.getName())) {</span>
-<span class="nc" id="L91">			logger.error(&quot;deleteApprovedSite failed; principal &quot;</span>
-<span class="nc" id="L92">					+ p.getName() + &quot; does not own approved site&quot; + id);</span>
-<span class="nc" id="L93">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L94">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to delete this approved site. The approved site decision will not be deleted.&quot;);</span>
-<span class="nc" id="L95">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (approvedSite == null) {</span>
+<span class="nc" id="L87">			logger.error(&quot;deleteApprovedSite failed; no approved site found for id: &quot; + id);</span>
+<span class="nc" id="L88">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L89">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;Could not delete approved site. The requested approved site with id: &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L90">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		} else if (!approvedSite.getUserId().equals(p.getName())) {</span>
+<span class="nc" id="L92">			logger.error(&quot;deleteApprovedSite failed; principal &quot;</span>
+<span class="nc" id="L93">					+ p.getName() + &quot; does not own approved site&quot; + id);</span>
+<span class="nc" id="L94">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L95">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to delete this approved site. The approved site decision will not be deleted.&quot;);</span>
+<span class="nc" id="L96">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L97">			m.put(HttpCodeView.CODE, HttpStatus.OK);</span>
-<span class="nc" id="L98">			approvedSiteService.remove(approvedSite);</span>
+<span class="nc" id="L98">			m.put(HttpCodeView.CODE, HttpStatus.OK);</span>
+<span class="nc" id="L99">			approvedSiteService.remove(approvedSite);</span>
 		}
 
-<span class="nc" id="L101">		return HttpCodeView.VIEWNAME;</span>
+<span class="nc" id="L102">		return HttpCodeView.VIEWNAME;</span>
 	}
 
 	/**
@@ -106,21 +107,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	 */
 	@RequestMapping(value=&quot;/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getApprovedSite(@PathVariable(&quot;id&quot;) Long id, ModelMap m, Principal p) {
-<span class="nc" id="L109">		ApprovedSite approvedSite = approvedSiteService.getById(id);</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (approvedSite == null) {</span>
-<span class="nc" id="L111">			logger.error(&quot;getApprovedSite failed; no approved site found for id: &quot; + id);</span>
-<span class="nc" id="L112">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L113">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested approved site with id: &quot; + id + &quot; could not be found.&quot;);</span>
-<span class="nc" id="L114">			return JsonErrorView.VIEWNAME;</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">		} else if (!approvedSite.getUserId().equals(p.getName())) {</span>
-<span class="nc" id="L116">			logger.error(&quot;getApprovedSite failed; principal &quot;</span>
-<span class="nc" id="L117">					+ p.getName() + &quot; does not own approved site&quot; + id);</span>
-<span class="nc" id="L118">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
-<span class="nc" id="L119">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this approved site.&quot;);</span>
-<span class="nc" id="L120">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc" id="L110">		ApprovedSite approvedSite = approvedSiteService.getById(id);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (approvedSite == null) {</span>
+<span class="nc" id="L112">			logger.error(&quot;getApprovedSite failed; no approved site found for id: &quot; + id);</span>
+<span class="nc" id="L113">			m.put(HttpCodeView.CODE, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L114">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;The requested approved site with id: &quot; + id + &quot; could not be found.&quot;);</span>
+<span class="nc" id="L115">			return JsonErrorView.VIEWNAME;</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">		} else if (!approvedSite.getUserId().equals(p.getName())) {</span>
+<span class="nc" id="L117">			logger.error(&quot;getApprovedSite failed; principal &quot;</span>
+<span class="nc" id="L118">					+ p.getName() + &quot; does not own approved site&quot; + id);</span>
+<span class="nc" id="L119">			m.put(HttpCodeView.CODE, HttpStatus.FORBIDDEN);</span>
+<span class="nc" id="L120">			m.put(JsonErrorView.ERROR_MESSAGE, &quot;You do not have permission to view this approved site.&quot;);</span>
+<span class="nc" id="L121">			return JsonErrorView.VIEWNAME;</span>
 		} else {
-<span class="nc" id="L122">			m.put(JsonEntityView.ENTITY, approvedSite);</span>
-<span class="nc" id="L123">			return JsonApprovedSiteView.VIEWNAME;</span>
+<span class="nc" id="L123">			m.put(JsonEntityView.ENTITY, approvedSite);</span>
+<span class="nc" id="L124">			return JsonApprovedSiteView.VIEWNAME;</span>
 		}
 
 	}
